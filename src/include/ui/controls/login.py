@@ -1,3 +1,4 @@
+import asyncio
 import flet as ft
 import gettext
 
@@ -21,13 +22,13 @@ class LoginView(ft.Column):
             color=const.TEXT_COLOR,
             weight=ft.FontWeight.BOLD,
         )
-        self.controls = [self.welcome_text, LoginForm(self)]
+        self.controls = [self.welcome_text, LoginForm()]
 
 
 class LoginForm(ft.Container):
-    def __init__(self, parent_view: LoginView, ref: ft.Ref | None = None, visible=True):
+    def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
-        self.parent_view = parent_view
+        self.parent: LoginView
 
         # Form style definitions
         self.width = const.FORM_WIDTH
@@ -51,7 +52,9 @@ class LoginForm(ft.Container):
         self.username_field = ft.TextField(
             label=_("Username"),
             autofocus=True,
-            on_submit=lambda e: self.password_field.focus(),
+            on_submit=lambda e: e.page.run_task(  # type: ignore
+                self.password_field.focus
+            ),
             expand=True,
         )
 
@@ -89,7 +92,7 @@ class LoginForm(ft.Container):
         assert type(self.page) == ft.Page
         self.server_info = self.page.session.get("server_info")
         assert type(self.server_info) == dict
-        self.parent_view.welcome_text.value = (
+        self.parent.welcome_text.value = (
             f"{self.server_info.get('server_name', 'CFMS Server')}"
         )
         # self.page.update()

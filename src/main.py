@@ -18,7 +18,10 @@ import flet as ft
 from include.ui.models.connect import ConnectToServerModel
 from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
+from include.ui.models.home import HomeModel
 
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
 
 def main(page: ft.Page):
     # Page settings
@@ -31,6 +34,32 @@ def main(page: ft.Page):
     page.spacing = 0
     page.scroll = ft.ScrollMode.AUTO
     page.bgcolor = ft.Colors.TRANSPARENT
+
+    page.fonts = {
+        "Source Han Serif SC Regular": "/fonts/SourceHanSerifSC/SourceHanSerifSC-Regular.otf",
+        # "Deng": "/fonts/Deng.ttf",
+        # "Deng Bold": "/fonts/Dengb.ttf",
+        # "Deng Light": "/fonts/Dengl.ttf"
+    }
+
+    page.theme = ft.Theme(
+        scrollbar_theme=ft.ScrollbarTheme(thickness=0.0),
+        # dialog_theme=ft.DialogTheme(title_text_style=ft.TextStyle(size=22, font_family="Deng Bold")),
+        # text_button_theme=ft.TextButtonTheme(text_style=ft.TextStyle(font_family="Deng")),
+        # elevated_button_theme=ft.ElevatedButtonTheme(text_style=ft.TextStyle(font_family="Deng")),
+        font_family="Source Han Serif SC Regular",
+    )
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    page.decoration = ft.BoxDecoration(
+        gradient=ft.LinearGradient(
+            begin=ft.Alignment.TOP_LEFT,
+            end=ft.Alignment.BOTTOM_RIGHT,
+            colors=["#10162c", "#0c2749", "#0f0f23", "#1a1a2e"],
+            tile_mode=ft.GradientTileMode.MIRROR,
+        )
+    )
 
     page.go("/connect")
 
