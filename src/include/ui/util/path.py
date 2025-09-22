@@ -1,9 +1,13 @@
+import os
 from typing import TYPE_CHECKING
 from datetime import datetime
 import gettext
 import flet as ft
+from include.classes.exceptions.transmission import FileHashMismatchError, FileSizeMismatchError
 from include.ui.util.notifications import send_error
 from include.util.communication import build_request
+from include.util.connect import get_connection
+from include.util.transfer import receive_file_from_server
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
@@ -22,9 +26,18 @@ def update_file_controls(
 ):
     view.controls = []  # reset
 
-    async def on_parent_button_clicked(event: ft.Event[ft.ListTile]):
+    async def parent_button_click(event: ft.Event[ft.ListTile]):
         view.parent_manager.indicator.back()
         await get_directory(id=None if parent_id == "/" else parent_id, view=view)
+
+    async def folder_listtile_click(event: ft.Event[ft.ListTile]):
+        view.parent_manager.indicator.go(event.control.data[1])
+        await get_directory(event.control.data[0], view=view)
+
+    async def document_listtile_click(event: ft.Event[ft.ListTile]):
+        await get_document(
+            event.control.data[0], filename=event.control.data[1], view=view
+        )
 
     if parent_id != None:
         # print("parent_id: ", parent_id)
@@ -33,7 +46,7 @@ def update_file_controls(
                 leading=ft.Icon(ft.Icons.ARROW_BACK),
                 title=ft.Text("<...>"),
                 subtitle=ft.Text(f"Parent directory"),
-                on_click=on_parent_button_clicked,
+                on_click=parent_button_click,
             )
         ]
 
@@ -47,9 +60,9 @@ def update_file_controls(
                         f"Created time: {datetime.fromtimestamp(folder['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
                     ),
                     data=(folder["id"], folder["name"]),
-                    # on_click=on_folder_clicked,
+                    on_click=folder_listtile_click,
                 ),
-                on_secondary_tap=lambda _: print("aaa")# on_folder_right_click_menu,
+                on_secondary_tap=lambda _: print("aaa"),  # on_folder_right_click_menu,
                 # on_long_press_start=on_folder_right_click_menu,
                 # on_hover=on_folder_hover
                 # on_hover=lambda e: update_mouse_position(e),
@@ -73,9 +86,11 @@ def update_file_controls(
                     ),
                     is_three_line=True,
                     data=(document["id"], document["title"]),
-                    # on_click=lambda e: open_document(e.page, *e.control.data),
+                    on_click=document_listtile_click,
                 ),
-                on_secondary_tap=lambda _: print("aaa") # on_document_right_click_menu,
+                on_secondary_tap=lambda _: print(
+                    "aaa"
+                ),  # on_document_right_click_menu,
                 # on_long_press_start=on_document_right_click_menu,
                 # on_hover=lambda e: update_mouse_position(e),
             )
@@ -116,3 +131,77 @@ async def get_directory(id: str | None, view: "FileListView"):
     view.parent_manager.progress_ring.update()
     view.visible = True
     view.update()
+
+
+async def get_document(id: str | None, filename: str, view: "FileListView"):
+    assert type(view.page) == ft.Page
+    response = await build_request(
+        view.parent_manager.conn,
+        action="get_document",
+        data={"document_id": id},
+        username=view.page.session.get("username"),
+        token=view.page.session.get("token"),
+    )
+
+    task_data = response["data"]["task_data"]
+    task_id = task_data["task_id"]
+    task_start_time = task_data["start_time"]
+    task_end_time = task_data["end_time"]
+
+    assert view.page.platform
+    if view.page.platform.value in ["android"]:
+        file_path = f"/storage/emulated/0/{filename if filename else task_id[0:17]}"
+    else:
+        file_path = f"./{filename if filename else task_id[0:17]}"
+
+    transfer_conn = await get_connection(
+        view.page.session.get("server_uri"), max_size=1024**2 * 4
+    )
+
+    # build progress bar
+
+    progress_bar = ft.ProgressBar()
+    progress_info = ft.Text(text_align=ft.TextAlign.CENTER, color=ft.Colors.WHITE)
+    progress_column = ft.Column(
+        controls=[progress_bar, progress_info],
+        alignment=(
+            ft.MainAxisAlignment.START if os.name == "nt" else ft.MainAxisAlignment.END
+        ),
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+    view.page.overlay.append(progress_column)
+    view.page.update()
+
+    try:
+        async for stage, *data in receive_file_from_server(
+            transfer_conn, task_id=task_id, file_path=file_path
+        ):
+            match stage:
+                case 0:
+                    received_file_size, file_size = data
+                    progress_bar.value = received_file_size / file_size
+                    progress_info.value = (
+                        f"{received_file_size / 1024 / 1024:.2f} MB"
+                        f"/{file_size / 1024 / 1024:.2f} MB"
+                    )
+                case 1:
+                    decrypted_chunks, total_chunks = data
+                    progress_bar.value = decrypted_chunks / total_chunks
+                    progress_info.value = _(
+                        f"正在解密分块 [{decrypted_chunks}/{total_chunks}]"
+                    )
+                case 2:
+                    progress_bar.value = None
+                    progress_info.value = _("正在删除临时文件")
+                case 3:
+                    progress_bar.value = None
+                    progress_info.value = _("正在校验文件")
+
+            progress_column.update()
+    except FileHashMismatchError as exc:
+        send_error(view.page, _(f"File hash mismatch: {str(exc)}"))
+    except FileSizeMismatchError as exc:
+        send_error(view.page, _(f"File size mismatch: {str(exc)}"))
+    finally:
+        view.page.overlay.remove(progress_column)
+        view.page.update()

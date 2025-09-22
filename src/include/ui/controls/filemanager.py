@@ -6,8 +6,8 @@ from typing import Optional
 from typing import TYPE_CHECKING
 import gettext
 import flet as ft
-from websockets import ClientConnection
 
+from include.classes.client import LockableClientConnection
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
 from include.util.communication import build_request
@@ -32,9 +32,7 @@ class FilePathIndicator(ft.Column):
             ref=ref,
         )
         self.text = ft.Text()
-        self.controls = [
-            self.text   
-        ]
+        self.controls = [self.text]
         self.text.value = path if path else "./"
         self.paths: list[str] = []
 
@@ -176,9 +174,9 @@ class FileManagerView(ft.Container):
         self.expand = True
 
         # View variable definitions
-        self.previous_directory_id: str|None = None
-        self.current_directory_id: str|None = None
-        self.conn: ClientConnection
+        self.previous_directory_id: str | None = None
+        self.current_directory_id: str | None = None
+        self.conn: LockableClientConnection
 
         # Components
         self.indicator = FilePathIndicator("/")
@@ -220,7 +218,7 @@ class FileManagerView(ft.Container):
     def build(self):
         assert type(self.page) == ft.Page
         conn = self.page.session.get("conn")
-        assert type(conn) == ClientConnection
+        assert type(conn) == LockableClientConnection
         self.conn = conn
 
     async def on_upload_button_click(self, event: ft.Event[ft.IconButton]):
@@ -266,7 +264,7 @@ class FileManagerView(ft.Container):
                 yield
 
             conn = self.page.session.get("conn")
-            assert type(conn) == ClientConnection
+            assert type(conn) == LockableClientConnection
 
             response = await build_request(
                 conn,
@@ -356,7 +354,7 @@ class FileManagerView(ft.Container):
         tree = await build_directory_tree(root_path)
 
         conn = self.page.session.get("conn")
-        assert type(conn) == ClientConnection
+        assert type(conn) == LockableClientConnection
 
         stop_event = asyncio.Event()
         upload_dialog = UploadDirectoryAlertDialog(stop_event)
@@ -450,13 +448,12 @@ class FileManagerView(ft.Container):
                     transfer_conn = None
                     try:
                         transfer_conn = await get_connection(
-                            self.page.session.get("server_uri")
+                            self.page.session.get("server_uri"), max_size=1024**2 * 4
                         )
                         async for current_size in upload_file_to_server(
                             transfer_conn,
                             create_document_response["data"]["task_data"]["task_id"],
                             abs_path,
-                            refresh=False,
                         ):
                             pass
                         break
@@ -505,4 +502,7 @@ class FileManagerView(ft.Container):
     ): ...
 
     async def on_refresh_button_click(self, event: ft.Event[ft.IconButton]):
-        await get_directory(self.current_directory_id, self.file_listview)
+        await get_directory(
+            id=self.current_directory_id,
+            view=self.file_listview,
+        )

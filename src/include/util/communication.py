@@ -1,6 +1,6 @@
 import json, time, ssl
 import flet as ft
-from websockets.asyncio.client import connect, ClientConnection
+from include.classes.client import LockableClientConnection
 from include.ui.util.notifications import send_error
 import threading
 
@@ -9,7 +9,7 @@ import threading
 communication_lock = threading.Lock()
 
 async def build_request(
-    conn: ClientConnection,
+    conn: LockableClientConnection,
     action: str,
     data: dict = {},
     message: str = "",

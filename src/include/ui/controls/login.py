@@ -3,6 +3,7 @@ import flet as ft
 import gettext
 
 from websockets import ClientConnection
+from include.classes.client import LockableClientConnection
 import include.ui.constants as const
 from include.ui.util.notifications import send_error
 from include.util.communication import build_request
@@ -132,7 +133,7 @@ class LoginForm(ft.Container):
             self.page.client_storage.set(k, token[k])
         """
         conn = self.page.session.get("conn")
-        assert type(conn) == ClientConnection
+        assert type(conn) == LockableClientConnection
 
         response = await build_request(
             conn,

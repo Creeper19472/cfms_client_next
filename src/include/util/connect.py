@@ -1,9 +1,12 @@
 import ssl
 from websockets.asyncio.client import connect
+from include.classes.client import LockableClientConnection
 from include.constants import INTEGRATED_CA_CERT
 
 
-async def get_connection(server_address, disable_ssl_enforcement: bool = False):
+async def get_connection(
+    server_address, disable_ssl_enforcement: bool = False, max_size: int = 2**20
+) -> LockableClientConnection:
     ssl_context = ssl.create_default_context()
     if not disable_ssl_enforcement:
         ssl_context.load_verify_locations(cadata=INTEGRATED_CA_CERT)
@@ -13,4 +16,6 @@ async def get_connection(server_address, disable_ssl_enforcement: bool = False):
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
 
-    return await connect(server_address, ssl=ssl_context)
+    return LockableClientConnection(
+        await connect(server_address, ssl=ssl_context, max_size=max_size)
+    )
