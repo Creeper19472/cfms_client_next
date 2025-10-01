@@ -118,7 +118,7 @@ class UploadDirectoryAlertDialog(ft.AlertDialog):
     ):
         super().__init__(ref=ref, visible=visible)
 
-        self.modal = False
+        self.modal = True
         self.scrollable = True
         self.title = ft.Text(_("上传目录"))
 
@@ -303,13 +303,7 @@ class FileManagerView(ft.Container):
 
             task_id = response["data"]["task_data"]["task_id"]
 
-            # print(1)
-            # conn = await get_connection_2(self.page.session.store.get("server_uri"))
-            # print(2)
-            # await conn.close()
-            # print(3)
-
-            async def handle_file_upload(page, task_id):
+            async def handle_file_upload(page, task_id):  # need abstract
                 conn = None
 
                 try:
@@ -334,17 +328,12 @@ class FileManagerView(ft.Container):
                     return
 
                 finally:
-                    print("finally")
                     if conn:
-                        try:
-                            await asyncio.wait_for(conn.close(), timeout=2) # issue: timeout
-                        except:
-                            pass
-                    print("finally out")
+                        await conn._wrapped_connection.close()  # bug: timeout when calling conn.close()
+                        # await asyncio.wait_for(conn.close(), timeout=2) # issue: timeout
 
             async for i in handle_file_upload(self.page, task_id):
                 yield
-            
 
         if len(files) > 1:
             if len(progress_column.controls) <= 2:
@@ -357,6 +346,11 @@ class FileManagerView(ft.Container):
         else:
             self.page.overlay.remove(progress_column)
             yield
+
+        await get_directory(
+            id=self.current_directory_id,
+            view=self.file_listview,
+        )
 
     async def on_upload_directory_button_click(self, event: ft.Event[ft.IconButton]):
         assert type(self.page) == ft.Page
@@ -382,7 +376,7 @@ class FileManagerView(ft.Container):
             if stop_event.is_set():
                 return
 
-            upload_dialog.progress_text.value = f'正在创建目录 "{parent_path}"'
+            upload_dialog.progress_text.value = _(f'正在创建目录 "{parent_path}"')
             upload_dialog.progress_bar.value = None
             upload_dialog.progress_column.update()
 
@@ -428,7 +422,7 @@ class FileManagerView(ft.Container):
                 _current_number = tree["files"].index(filename) + 1
                 _total_number = len(tree["files"])
 
-                upload_dialog.progress_text.value = (
+                upload_dialog.progress_text.value = _(
                     f'[{_current_number}/{_total_number}] 正在上传文件 "{abs_path}"'
                 )
                 upload_dialog.progress_bar.value = _current_number / _total_number
@@ -462,7 +456,8 @@ class FileManagerView(ft.Container):
                     transfer_conn = None
                     try:
                         transfer_conn = await get_connection(
-                            self.page.session.store.get("server_uri"), max_size=1024**2 * 4
+                            self.page.session.store.get("server_uri"),
+                            max_size=1024**2 * 4,
                         )
                         async for current_size in upload_file_to_server(
                             transfer_conn,
@@ -476,11 +471,13 @@ class FileManagerView(ft.Container):
                     ) as e:  # (TimeoutError, websockets.exceptions.ConnectionClosedError)
                         if retry >= max_retries:
                             upload_dialog.error_column.controls.append(
-                                ft.Text(f'在上传文件 "{filename}" 时遇到问题：{str(e)}')
+                                ft.Text(
+                                    _(f'在上传文件 "{filename}" 时遇到问题：{str(e)}')
+                                )
                             )
                             upload_dialog.error_column.update()
                         else:
-                            upload_dialog.progress_text.value = (
+                            upload_dialog.progress_text.value = _(
                                 f"正在重试 [{retry}/{max_retries}]: {str(e)}"
                             )
                             upload_dialog.progress_text.update()
@@ -492,22 +489,26 @@ class FileManagerView(ft.Container):
         upload_dialog.progress_text.update()
 
         await create_dirs_from_tree(
-            root_path, tree, self.page.session.store.get("current_directory_id")
+            root_path, tree, self.current_directory_id
         )
 
-        # load_directory: function = event.page.session.store.get("load_directory")
-        # load_directory(event.page, event.page.session.store.get("current_directory_id"))  # type: ignore
-
         upload_dialog.finish_upload()
+
+        await get_directory(
+            id=self.current_directory_id,
+            view=self.file_listview,
+        )
 
         if total_errors := len(upload_dialog.error_column.controls):
             upload_dialog.progress_text.value = _(
                 _(f"上传完成，共计 {total_errors} 个错误。")
             )
-            upload_dialog.progress_text.update()
+            upload_dialog.ok_button.visible = True
+            # upload_dialog.progress_text.update()
         else:
             upload_dialog.open = False
-            upload_dialog.update()
+        
+        upload_dialog.update()
 
         # return
 

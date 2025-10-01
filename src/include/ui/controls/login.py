@@ -133,7 +133,7 @@ class LoginForm(ft.Container):
             self.page.client_storage.set(k, token[k])
         """
         conn = self.page.session.store.get("conn")
-        assert type(conn) == ClientConnection
+        assert type(conn) == LockableClientConnection
 
         response = await build_request(
             conn,

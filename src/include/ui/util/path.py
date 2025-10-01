@@ -28,10 +28,12 @@ def update_file_controls(
 
     async def parent_button_click(event: ft.Event[ft.ListTile]):
         view.parent_manager.indicator.back()
-        await get_directory(id=None if parent_id == "/" else parent_id, view=view)
+        view.parent_manager.current_directory_id = None if parent_id == "/" else parent_id
+        await get_directory(view.parent_manager.current_directory_id, view=view)
 
     async def folder_listtile_click(event: ft.Event[ft.ListTile]):
         view.parent_manager.indicator.go(event.control.data[1])
+        view.parent_manager.current_directory_id = event.control.data[0]
         await get_directory(event.control.data[0], view=view)
 
     async def document_listtile_click(event: ft.Event[ft.ListTile]):

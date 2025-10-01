@@ -124,7 +124,7 @@ class ConnectForm(ft.Container):
         if (
             server_protocol_version := server_info_response["data"]["protocol_version"]
         ) > PROTOCOL_VERSION:
-            await conn.close()
+            await conn._wrapped_connection.close()
             yield self.enable_interactions()
             send_error(
                 self.page,
