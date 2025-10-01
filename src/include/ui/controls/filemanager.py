@@ -217,7 +217,7 @@ class FileManagerView(ft.Container):
 
     def build(self):
         assert type(self.page) == ft.Page
-        conn = self.page.session.get("conn")
+        conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
         self.conn = conn
 
@@ -263,7 +263,7 @@ class FileManagerView(ft.Container):
                 progress_info.value = f"正在上传文件 [{current_number}/{len(files)}]"
                 yield
 
-            conn = self.page.session.get("conn")
+            conn = self.page.session.store.get("conn")
             assert type(conn) == LockableClientConnection
 
             response = await build_request(
@@ -274,8 +274,8 @@ class FileManagerView(ft.Container):
                     "folder_id": self.current_directory_id,
                     "access_rules": {},
                 },
-                username=self.page.session.get("username"),
-                token=self.page.session.get("token"),
+                username=self.page.session.store.get("username"),
+                token=self.page.session.store.get("token"),
             )
 
             if (code := response["code"]) != 200:
@@ -303,20 +303,26 @@ class FileManagerView(ft.Container):
 
             task_id = response["data"]["task_data"]["task_id"]
 
+            # print(1)
+            # conn = await get_connection_2(self.page.session.store.get("server_uri"))
+            # print(2)
+            # await conn.close()
+            # print(3)
+
             async def handle_file_upload(page, task_id):
                 conn = None
 
                 try:
                     assert each_file.path
                     # get new connection
-                    conn = await get_connection(page.session.get("server_uri"))
+                    conn = await get_connection(page.session.store.get("server_uri"))
 
                     async for current_size, file_size in upload_file_to_server(
                         conn, task_id, each_file.path
                     ):
                         progress_bar.value = current_size / file_size
                         progress_info.value = f"{current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
-                        progress_column.update()
+                        yield
 
                 except Exception as exc:
                     _new_error_text = ft.Text(
@@ -328,10 +334,17 @@ class FileManagerView(ft.Container):
                     return
 
                 finally:
+                    print("finally")
                     if conn:
-                        await conn.close()
+                        try:
+                            await asyncio.wait_for(conn.close(), timeout=2) # issue: timeout
+                        except:
+                            pass
+                    print("finally out")
 
-            await handle_file_upload(self.page, task_id)
+            async for i in handle_file_upload(self.page, task_id):
+                yield
+            
 
         if len(files) > 1:
             if len(progress_column.controls) <= 2:
@@ -342,7 +355,8 @@ class FileManagerView(ft.Container):
                 batch_dialog.cancel_button.disabled = True
                 batch_dialog.update()
         else:
-            yield self.page.overlay.remove(progress_column)
+            self.page.overlay.remove(progress_column)
+            yield
 
     async def on_upload_directory_button_click(self, event: ft.Event[ft.IconButton]):
         assert type(self.page) == ft.Page
@@ -353,7 +367,7 @@ class FileManagerView(ft.Container):
 
         tree = await build_directory_tree(root_path)
 
-        conn = self.page.session.get("conn")
+        conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
 
         stop_event = asyncio.Event()
@@ -381,8 +395,8 @@ class FileManagerView(ft.Container):
                     "name": os.path.basename(parent_path),
                     "exists_ok": True,
                 },
-                username=self.page.session.get("username"),
-                token=self.page.session.get("token"),
+                username=self.page.session.store.get("username"),
+                token=self.page.session.store.get("token"),
             )
 
             if mkdir_resp.get("code") != 200:
@@ -428,8 +442,8 @@ class FileManagerView(ft.Container):
                         "folder_id": mkdir_resp["data"]["id"],
                         "access_rules": {},
                     },
-                    username=self.page.session.get("username"),
-                    token=self.page.session.get("token"),
+                    username=self.page.session.store.get("username"),
+                    token=self.page.session.store.get("token"),
                 )
 
                 if create_document_response.get("code") != 200:
@@ -448,7 +462,7 @@ class FileManagerView(ft.Container):
                     transfer_conn = None
                     try:
                         transfer_conn = await get_connection(
-                            self.page.session.get("server_uri"), max_size=1024**2 * 4
+                            self.page.session.store.get("server_uri"), max_size=1024**2 * 4
                         )
                         async for current_size in upload_file_to_server(
                             transfer_conn,
@@ -474,21 +488,21 @@ class FileManagerView(ft.Container):
 
         # event.page.open(_alertdialog_ref.current)
 
-        upload_dialog.progress_text.value = "请稍候"
+        upload_dialog.progress_text.value = _("请稍候")
         upload_dialog.progress_text.update()
 
         await create_dirs_from_tree(
-            root_path, tree, self.page.session.get("current_directory_id")
+            root_path, tree, self.page.session.store.get("current_directory_id")
         )
 
-        # load_directory: function = event.page.session.get("load_directory")
-        # load_directory(event.page, event.page.session.get("current_directory_id"))  # type: ignore
+        # load_directory: function = event.page.session.store.get("load_directory")
+        # load_directory(event.page, event.page.session.store.get("current_directory_id"))  # type: ignore
 
         upload_dialog.finish_upload()
 
         if total_errors := len(upload_dialog.error_column.controls):
             upload_dialog.progress_text.value = _(
-                f"上传完成，共计 {total_errors} 个错误。"
+                _(f"上传完成，共计 {total_errors} 个错误。")
             )
             upload_dialog.progress_text.update()
         else:

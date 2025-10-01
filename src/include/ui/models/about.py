@@ -158,7 +158,7 @@ class AboutModel(Model):
 
     #         self.suc_release_info.controls = [
     #             ft.Text(
-    #                 f"当前版本：{self.page.session.get('version')}",
+    #                 f"当前版本：{self.page.session.store.get('version')}",
     #                 size=16,
     #                 text_align=ft.TextAlign.LEFT,
     #             ),
@@ -180,7 +180,7 @@ class AboutModel(Model):
     #             ),
     #         ]
 
-    #         build_version = self.page.session.get("build_version")
+    #         build_version = self.page.session.store.get("build_version")
     #         assert build_version
 
     #         if not is_new_version(False, 0, build_version, latest.version):
@@ -323,7 +323,7 @@ class AboutModel(Model):
     #                     )
     #                     # print(upgrade_special_button.value)
 
-    #                     self.ph = self.page.session.get("ph")
+    #                     self.ph = self.page.session.store.get("ph")
     #                     assert type(self.ph) == PermissionHandler
     #                     if (
     #                         self.ph.request_permission(

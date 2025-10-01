@@ -61,12 +61,12 @@ async def upload_file_to_server(
 
         try:
             chunk_size = 8192
-            with open(file_path, "rb") as f:
+            async with aiofiles.open(file_path, "rb") as f:
                 while True:
-                    chunk = f.read(chunk_size)
+                    chunk = await f.read(chunk_size)
                     await client.send(chunk)
 
-                    yield f.tell(), file_size
+                    yield await f.tell(), file_size
 
                     if not chunk or len(chunk) < chunk_size:
                         break

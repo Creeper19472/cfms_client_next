@@ -91,7 +91,7 @@ class LoginForm(ft.Container):
 
     def did_mount(self) -> None:
         assert type(self.page) == ft.Page
-        self.server_info = self.page.session.get("server_info")
+        self.server_info = self.page.session.store.get("server_info")
         assert type(self.server_info) == dict
         self.parent.welcome_text.value = (
             f"{self.server_info.get('server_name', 'CFMS Server')}"
@@ -132,8 +132,8 @@ class LoginForm(ft.Container):
         for k in token:
             self.page.client_storage.set(k, token[k])
         """
-        conn = self.page.session.get("conn")
-        assert type(conn) == LockableClientConnection
+        conn = self.page.session.store.get("conn")
+        assert type(conn) == ClientConnection
 
         response = await build_request(
             conn,
@@ -145,12 +145,12 @@ class LoginForm(ft.Container):
         )
 
         if (code := response["code"]) == 200:
-            self.page.session.set("username", self.username_field.value)
-            self.page.session.set("nickname", response["data"].get("nickname"))
-            self.page.session.set("token", response["data"]["token"])
-            self.page.session.set("exp", response["data"].get("exp"))
-            self.page.session.set("user_permissions", response["data"]["permissions"])
-            self.page.session.set("user_groups", response["data"]["groups"])
+            self.page.session.store.set("username", self.username_field.value)
+            self.page.session.store.set("nickname", response["data"].get("nickname"))
+            self.page.session.store.set("token", response["data"]["token"])
+            self.page.session.store.set("exp", response["data"].get("exp"))
+            self.page.session.store.set("user_permissions", response["data"]["permissions"])
+            self.page.session.store.set("user_groups", response["data"]["groups"])
 
             # if {
             #     "manage_system",
@@ -160,7 +160,7 @@ class LoginForm(ft.Container):
             #     "apply_lockdown",
             #     "bypass_lockdown",
             # } & set(response["data"]["permissions"]):
-            #     navigation_bar = self.page.session.get("navigation_bar")
+            #     navigation_bar = self.page.session.store.get("navigation_bar")
             #     navigation_bar.destinations.append(
             #         ft.NavigationBarDestination(
             #             icon=ft.Icons.CLOUD_CIRCLE, label="Manage"
@@ -174,7 +174,7 @@ class LoginForm(ft.Container):
             self.page.go("/home")
 
         elif code == 403:
-            self.page.session.set("username", self.username_field.value)
+            self.page.session.store.set("username", self.username_field.value)
             # open_change_passwd_dialog(e, "在登录前必须修改密码。")
             yield self.enable_interactions()
 

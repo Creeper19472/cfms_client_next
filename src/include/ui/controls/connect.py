@@ -135,11 +135,11 @@ class ConnectForm(ft.Container):
             return
 
         # save connection ref
-        self.page.session.set("conn", conn)
+        self.page.session.store.set("conn", conn)
 
         # set session data
-        self.page.session.set("server_info", server_info_response["data"])
-        self.page.session.set("server_uri", server_address)
+        self.page.session.store.set("server_info", server_info_response["data"])
+        self.page.session.store.set("server_uri", server_address)
         self.page.title = f"CFMS Client - {server_address}"
         yield
 

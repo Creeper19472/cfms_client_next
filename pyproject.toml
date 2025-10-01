@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 readme = "README.md"
 requires-python = ">=3.10"
@@ -8,18 +8,33 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-  "flet==0.70.0.dev5623"
+  "flet==0.70.0.dev6145",
+  "flet_permission_handler==0.2.0.dev505",
+  "flet-open-file @ git+https://github.com/creeper19472/flet-open-file",
+  "flet_model",
+  "flet-datatable2==0.2.0.dev505",
+  "websockets",
+  "pycryptodome",
+  "cffi",
+  "requests",
+  "aiofiles"
 ]
 
 [tool.flet]
 # Docs: https://flet.dev/docs/publish
-org = "com.mycompany"
+org = "org.crpteam"
 product = "cfms-client-next"
-company = "Flet"
-copyright = "Copyright (C) 2025 by Flet"
+company = "Creeper Team"
+copyright = "Copyright (C) 2025 by Creeper Team"
 
 [tool.flet.app]
 path = "src"
+
+[tool.flet.flutter.pubspec.dependency_overrides]
+webview_flutter_android = "4.10.1"
+
+[tool.flet.android]
+min_sdk_version = 24
 
 [tool.uv]
 dev-dependencies = [

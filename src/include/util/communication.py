@@ -2,11 +2,12 @@ import json, time, ssl
 import flet as ft
 from include.classes.client import LockableClientConnection
 from include.ui.util.notifications import send_error
-import threading
+import threading, asyncio
 
 # from include.function.lockdown import go_lockdown
 
 communication_lock = threading.Lock()
+conn_lock = asyncio.Lock()
 
 async def build_request(
     conn: LockableClientConnection,
@@ -27,8 +28,9 @@ async def build_request(
 
     request_json = json.dumps(request, ensure_ascii=False)
 
-    await conn.send(request_json)
-    response = await conn.recv()
+    async with conn_lock:
+        await conn.send(request_json)
+        response = await conn.recv()
 
     loaded_response: dict = json.loads(response)
     return loaded_response
@@ -57,7 +59,7 @@ async def build_request(
 #         ssl_context.check_hostname = False
 #         ssl_context.verify_mode = ssl.CERT_NONE
 
-#         server_uri = page.session.get("server_uri")
+#         server_uri = page.session.store.get("server_uri")
 #         assert server_uri
 
 #         try:
@@ -66,7 +68,7 @@ async def build_request(
 #             raise
 
 #     else:
-#         websocket = page.session.get("websocket")
+#         websocket = page.session.store.get("websocket")
 #         assert websocket
     
 #     try:
@@ -78,11 +80,11 @@ async def build_request(
 #         ssl_context.check_hostname = False
 #         ssl_context.verify_mode = ssl.CERT_NONE
 
-#         server_uri = page.session.get("server_uri")
+#         server_uri = page.session.store.get("server_uri")
 #         assert server_uri
 
 #         websocket = connect(server_uri, ssl=ssl_context)
-#         page.session.set("websocket", websocket)
+#         page.session.store.set("websocket", websocket)
 
 #         # 重发
 #         websocket.send(request_json)

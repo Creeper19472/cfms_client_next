@@ -112,8 +112,8 @@ async def get_directory(id: str | None, view: "FileListView"):
         view.parent_manager.conn,
         action="list_directory",
         data={"folder_id": id},
-        username=view.page.session.get("username"),
-        token=view.page.session.get("token"),
+        username=view.page.session.store.get("username"),
+        token=view.page.session.store.get("token"),
     )
 
     if (code := response["code"]) != 200:
@@ -139,8 +139,8 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
         view.parent_manager.conn,
         action="get_document",
         data={"document_id": id},
-        username=view.page.session.get("username"),
-        token=view.page.session.get("token"),
+        username=view.page.session.store.get("username"),
+        token=view.page.session.store.get("token"),
     )
 
     task_data = response["data"]["task_data"]
@@ -155,7 +155,7 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
         file_path = f"./{filename if filename else task_id[0:17]}"
 
     transfer_conn = await get_connection(
-        view.page.session.get("server_uri"), max_size=1024**2 * 4
+        view.page.session.store.get("server_uri"), max_size=1024**2 * 4
     )
 
     # build progress bar

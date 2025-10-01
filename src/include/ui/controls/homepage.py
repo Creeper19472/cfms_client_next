@@ -39,6 +39,7 @@ class HomeNavigationBar(ft.NavigationBar):
                 view.visible = True
             else:
                 view.visible = False
+        yield
 
         if e.control.selected_index == 0:
             assert type(self.views[0]) == FileManagerView
@@ -67,16 +68,16 @@ class HomeNavigationBar(ft.NavigationBar):
         #         home_container.visible = False
         #         settings_container.visible = True
         #         settings_avatar.content = ft.Text(
-        #             self.page.session.get("username")[0].upper()
+        #             self.page.session.store.get("username")[0].upper()
         #         )
-        #         _nickname = self.page.session.get("nickname")
+        #         _nickname = self.page.session.store.get("nickname")
         #         settings_username_display.value = (
-        #             _nickname if _nickname else self.page.session.get("username")
+        #             _nickname if _nickname else self.page.session.store.get("username")
         #         )
         #         self.page.update()
         #     case 4:
         #         control.selected_index = control.last_selected_index
-        #         _refresh_user_list_function: function = self.page.session.get(
+        #         _refresh_user_list_function: function = self.page.session.store.get(
         #             "refresh_user_list"
         #         )
         #         _refresh_user_list_function(e.page, _update_page=False)
