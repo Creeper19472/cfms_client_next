@@ -8,10 +8,12 @@ import gettext
 import flet as ft
 
 from include.classes.client import LockableClientConnection
+from include.classes.exceptions.request import CreateDirectoryFailureError
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
 from include.util.communication import build_request
 from include.util.connect import get_connection
+from include.util.create import create_directory
 from include.util.path import build_directory_tree
 from include.util.transfer import upload_file_to_server
 
@@ -60,6 +62,99 @@ class FileListView(ft.ListView):
         self.parent: ft.Column
         self.parent_manager = parent_manager
         self.expand = True
+
+
+class CreateDirectoryDialog(ft.AlertDialog):
+    def __init__(
+        self,
+        parent_manager: "FileManagerView",
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+
+        self.modal = True
+        self.title = ft.Text(_("创建目录"))
+
+        self.parent_manager = parent_manager
+
+        self.progress_ring = ft.ProgressRing(visible=False)
+
+        self.directory_textfield = ft.TextField(
+            label=_("目录名称"),
+            on_submit=self.ok_button_click,
+            expand=True,
+            # on_submit=lambda e: create_directory(
+            #     e.page, e.control.value, parent_id=current_directory_id
+            # ),
+        )
+        self.textfield_empty_message = ft.Text(
+            _("Directory name cannot be empty"), color=ft.Colors.RED, visible=False
+        )
+
+        self.submit_button = ft.TextButton(
+            _("创建"),
+            on_click=self.ok_button_click,
+        )
+        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+
+        self.content = ft.Column(
+            controls=[self.directory_textfield, self.textfield_empty_message],
+            width=400,
+            alignment=ft.MainAxisAlignment.CENTER,
+            scroll=ft.ScrollMode.AUTO,
+            expand=True,
+        )
+        self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
+
+    def disable_interactions(self):
+        self.directory_textfield.disabled = True
+        self.cancel_button.disabled = True
+        self.submit_button.visible = False
+        self.progress_ring.visible = True
+        self.textfield_empty_message.visible = False
+        self.directory_textfield.border_color = None
+
+    def enable_interactions(self):
+        self.directory_textfield.disabled = False
+        self.cancel_button.disabled = False
+        self.submit_button.visible = True
+        self.progress_ring.visible = False
+
+    async def ok_button_click(
+        self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
+    ):
+        yield self.disable_interactions()
+
+        if not (name := self.directory_textfield.value):
+            self.directory_textfield.border_color = ft.Colors.RED
+            self.textfield_empty_message.visible = True
+            yield self.enable_interactions()
+            return
+
+        assert type(self.page) == ft.Page
+        conn = self.page.session.store.get("conn")
+        assert type(conn) == LockableClientConnection
+
+        try:
+            await create_directory(
+                conn,
+                self.parent_manager.current_directory_id,
+                name,
+                self.page.session.store.get("username"),
+                self.page.session.store.get("token"),
+            )
+        except CreateDirectoryFailureError as err:
+            send_error(self.page, str(err))
+
+        await get_directory(
+            self.parent_manager.current_directory_id, self.parent_manager.file_listview
+        )
+        self.page.pop_dialog()
+
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        assert self.page
+        self.page.pop_dialog()
 
 
 class BatchUploadFileAlertDialog(ft.AlertDialog):
@@ -381,33 +476,19 @@ class FileManagerView(ft.Container):
             upload_dialog.progress_column.update()
 
             # 在服务器创建目录
-            mkdir_resp = await build_request(
+            dir_id = await create_directory(
                 conn,
-                "create_directory",
-                data={
-                    "parent_id": parent_id,
-                    "name": os.path.basename(parent_path),
-                    "exists_ok": True,
-                },
-                username=self.page.session.store.get("username"),
-                token=self.page.session.store.get("token"),
+                parent_id,
+                os.path.basename(parent_path),
+                self.page.session.store.get("username"),
+                self.page.session.store.get("token"),
+                exists_ok=True,
             )
-
-            if mkdir_resp.get("code") != 200:
-                upload_dialog.error_column.controls.append(
-                    ft.Text(
-                        _(
-                            f"Failed to create directory {parent_path}: {mkdir_resp.get('message', 'Unknown error')}"
-                        )
-                    )
-                )
-                upload_dialog.error_column.update()
-                return
 
             # 创建当前目录下的所有子目录
             for dirname, subtree in tree["dirs"].items():
                 dir_path = os.path.join(parent_path, dirname)
-                await create_dirs_from_tree(dir_path, subtree, mkdir_resp["data"]["id"])
+                await create_dirs_from_tree(dir_path, subtree, dir_id)
 
             # 依次上传文件
 
@@ -433,7 +514,7 @@ class FileManagerView(ft.Container):
                     action="create_document",
                     data={
                         "title": filename,
-                        "folder_id": mkdir_resp["data"]["id"],
+                        "folder_id": dir_id,
                         "access_rules": {},
                     },
                     username=self.page.session.store.get("username"),
@@ -488,9 +569,7 @@ class FileManagerView(ft.Container):
         upload_dialog.progress_text.value = _("请稍候")
         upload_dialog.progress_text.update()
 
-        await create_dirs_from_tree(
-            root_path, tree, self.current_directory_id
-        )
+        await create_dirs_from_tree(root_path, tree, self.current_directory_id)
 
         upload_dialog.finish_upload()
 
@@ -507,14 +586,14 @@ class FileManagerView(ft.Container):
             # upload_dialog.progress_text.update()
         else:
             upload_dialog.open = False
-        
+
         upload_dialog.update()
 
         # return
 
-    async def on_create_directory_button_click(
-        self, event: ft.Event[ft.IconButton]
-    ): ...
+    async def on_create_directory_button_click(self, event: ft.Event[ft.IconButton]):
+        create_directory_dialog = CreateDirectoryDialog(self)
+        self.page.show_dialog(create_directory_dialog)
 
     async def on_refresh_button_click(self, event: ft.Event[ft.IconButton]):
         await get_directory(

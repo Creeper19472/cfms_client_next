@@ -3,7 +3,10 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 import gettext
 import flet as ft
-from include.classes.exceptions.transmission import FileHashMismatchError, FileSizeMismatchError
+from include.classes.exceptions.transmission import (
+    FileHashMismatchError,
+    FileSizeMismatchError,
+)
 from include.ui.util.notifications import send_error
 from include.util.communication import build_request
 from include.util.connect import get_connection
@@ -28,7 +31,9 @@ def update_file_controls(
 
     async def parent_button_click(event: ft.Event[ft.ListTile]):
         view.parent_manager.indicator.back()
-        view.parent_manager.current_directory_id = None if parent_id == "/" else parent_id
+        view.parent_manager.current_directory_id = (
+            None if parent_id == "/" else parent_id
+        )
         await get_directory(view.parent_manager.current_directory_id, view=view)
 
     async def folder_listtile_click(event: ft.Event[ft.ListTile]):
