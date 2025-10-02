@@ -10,7 +10,7 @@ import flet as ft
 from include.classes.client import LockableClientConnection
 from include.classes.exceptions.request import CreateDirectoryFailureError
 from include.ui.util.notifications import send_error
-from include.ui.util.path import get_directory
+from include.ui.util.file_controls import get_directory
 from include.util.communication import build_request
 from include.util.connect import get_connection
 from include.util.create import create_directory
@@ -84,9 +84,6 @@ class CreateDirectoryDialog(ft.AlertDialog):
             label=_("目录名称"),
             on_submit=self.ok_button_click,
             expand=True,
-            # on_submit=lambda e: create_directory(
-            #     e.page, e.control.value, parent_id=current_directory_id
-            # ),
         )
         self.textfield_empty_message = ft.Text(
             _("Directory name cannot be empty"), color=ft.Colors.RED, visible=False
@@ -107,6 +104,10 @@ class CreateDirectoryDialog(ft.AlertDialog):
         )
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
 
+    def close(self):
+        self.open = False
+        self.update()
+
     def disable_interactions(self):
         self.directory_textfield.disabled = True
         self.cancel_button.disabled = True
@@ -114,12 +115,14 @@ class CreateDirectoryDialog(ft.AlertDialog):
         self.progress_ring.visible = True
         self.textfield_empty_message.visible = False
         self.directory_textfield.border_color = None
+        self.modal = False
 
     def enable_interactions(self):
         self.directory_textfield.disabled = False
         self.cancel_button.disabled = False
         self.submit_button.visible = True
         self.progress_ring.visible = False
+        self.modal = True
 
     async def ok_button_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
@@ -150,11 +153,10 @@ class CreateDirectoryDialog(ft.AlertDialog):
         await get_directory(
             self.parent_manager.current_directory_id, self.parent_manager.file_listview
         )
-        self.page.pop_dialog()
+        self.close()
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
-        assert self.page
-        self.page.pop_dialog()
+        self.close()
 
 
 class BatchUploadFileAlertDialog(ft.AlertDialog):
@@ -193,9 +195,12 @@ class BatchUploadFileAlertDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
+    def close(self):
+        self.open = False
+        self.update()
+
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
-        assert self.page
-        self.page.pop_dialog()
+        self.close()
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         assert self.page
@@ -243,13 +248,16 @@ class UploadDirectoryAlertDialog(ft.AlertDialog):
         )
         self.actions = [self.ok_button, self.cancel_button]
 
+    def close(self):
+        self.open = False
+        self.update()
+
     def finish_upload(self):
         self.ok_button.disabled = False
         self.cancel_button.disabled = True
 
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
-        assert self.page
-        self.page.pop_dialog()
+        self.close()
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         assert self.page

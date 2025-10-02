@@ -3,7 +3,7 @@ import gettext
 import flet as ft
 import include.ui.constants as const
 from include.ui.controls.filemanager import FileManagerView
-from include.ui.util.path import get_directory
+from include.ui.util.file_controls import get_directory
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel

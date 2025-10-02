@@ -6,8 +6,8 @@ import threading, asyncio
 
 # from include.function.lockdown import go_lockdown
 
-communication_lock = threading.Lock()
-conn_lock = asyncio.Lock()
+# communication_lock = threading.Lock()
+# conn_lock = asyncio.Lock()
 
 async def build_request(
     conn: LockableClientConnection,
@@ -28,7 +28,7 @@ async def build_request(
 
     request_json = json.dumps(request, ensure_ascii=False)
 
-    async with conn_lock:
+    async with conn.lock:
         await conn.send(request_json)
         response = await conn.recv()
 
