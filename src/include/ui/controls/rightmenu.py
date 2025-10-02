@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 import gettext
 from include.classes.client import LockableClientConnection
+from include.ui.controls.rulemanager import RuleManager
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
 from include.util.communication import build_request
@@ -151,9 +152,12 @@ class GetDocumentInfoDialog(ft.AlertDialog):
         self.actions = [self.cancel_button]
 
     def did_mount(self):
+        super().did_mount()
+
         async def run():
             async for _ in self.request_document_info():
                 pass
+
         asyncio.create_task(run())
 
     def close(self):
@@ -193,9 +197,7 @@ class GetDocumentInfoDialog(ft.AlertDialog):
             )
         else:
             self.info_listview.controls = [
-                ft.Text(
-                    f"文档ID: {response['data']['document_id']}", selectable=True
-                ),
+                ft.Text(f"文档ID: {response['data']['document_id']}", selectable=True),
                 ft.Text(f"文档标题: {response['data']['title']}", selectable=True),
                 ft.Text(f"文档大小: {response['data']['size']}"),
                 ft.Text(
@@ -238,10 +240,11 @@ class DocumentRightMenuDialog(ft.AlertDialog):
         self.title = ft.Text(_("操作文档"))
 
         self.document_id = document_id
+        self.user_permissions = []
         # self.triggered_event = triggered_event
         # self.triggered_detector = triggered_detector
         self.parent_listview = parent_listview
-        self.user_permissions = []
+        self.access_settings_ref = ft.Ref[ft.ListTile]()
 
         self.menu_listview = ft.ListView(
             controls=[
@@ -272,7 +275,7 @@ class DocumentRightMenuDialog(ft.AlertDialog):
                             title=ft.Text("设置权限"),
                             subtitle=ft.Text(f"对此文件的访问规则进行变更"),
                             on_click=self.set_access_rules_button_click,
-                            visible="set_access_rules" in self.user_permissions,
+                            ref=self.access_settings_ref, # pyright: ignore[reportArgumentType]
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.INFO_OUTLINED),
@@ -286,9 +289,16 @@ class DocumentRightMenuDialog(ft.AlertDialog):
         )
         self.content = ft.Container(self.menu_listview, width=480)
 
-    def did_mount(self):
+    def build(self):
         assert type(self.page) == ft.Page
         self.user_permissions = self.page.session.store.get("user_permissions")
+        assert type(self.user_permissions) == list
+        assert self.access_settings_ref.current
+        self.access_settings_ref.current.visible = "set_access_rules" in self.user_permissions
+
+    def close(self):
+        self.open = False
+        self.update()
 
     def disable_interactions(self):
         self.menu_listview.disabled = True
@@ -314,17 +324,16 @@ class DocumentRightMenuDialog(ft.AlertDialog):
                 self.parent_listview,
             )
 
-        self.open = False
-        self.update()
+        self.close()
 
     async def rename_button_click(self, event: ft.Event[ft.ListTile]):
-        self.open = False
-        self.update()
+        self.close()
         self.page.show_dialog(RenameDocumentDialog(self))
 
-    async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]): ...
+    async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]):
+        self.close()
+        self.page.show_dialog(RuleManager(self, self.document_id, "document"))
 
     async def open_document_info_click(self, event: ft.Event[ft.ListTile]):
-        self.open = False
-        self.update()
-        self.page.show_dialog(GetDocumentInfoDialog(self)) # bug: not always showing
+        self.close()
+        self.page.show_dialog(GetDocumentInfoDialog(self))  # bug: not always showing
