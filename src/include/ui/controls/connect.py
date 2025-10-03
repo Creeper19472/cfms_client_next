@@ -134,7 +134,7 @@ class ConnectForm(ft.Container):
                 "您正在连接到一个使用更高版本协议的服务器"
                 f"（协议版本 {server_protocol_version}），请更新客户端。",
             )
-            self.page.go("/connect/about")
+            await self.page.push_route("/connect/about")
             return
 
         # save connection ref
@@ -147,6 +147,7 @@ class ConnectForm(ft.Container):
         app_config = AppConfig()
         app_config.server_address = server_address
         app_config.server_info = server_info_response["data"]
+        app_config.conn = conn
 
         self.page.title = f"CFMS Client - {server_address}"
         yield
@@ -171,4 +172,4 @@ class ConnectForm(ft.Container):
         if self.page.platform.value == "windows" and os.environ.get("FLET_APP_CONSOLE"):
             os.startfile(os.getcwd())
 
-        self.page.go("/login")
+        await self.page.push_route("/login")

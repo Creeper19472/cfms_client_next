@@ -165,7 +165,7 @@ class LoginForm(ft.Container):
             self.password_field.value = ""
             yield self.enable_interactions()
 
-            self.page.go("/home")
+            await self.page.push_route("/home")
 
         elif code == 403:
             self.page.session.store.set("username", self.username_field.value)

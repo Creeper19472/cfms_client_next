@@ -14,4 +14,4 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
 
     async def button_click(self, event: ft.Event[ft.FloatingActionButton]):
         assert type(self.page) == ft.Page
-        self.page.go("/connect/about/")
+        await self.page.push_route("/connect/about/")

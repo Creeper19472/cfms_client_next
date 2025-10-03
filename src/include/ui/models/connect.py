@@ -17,7 +17,7 @@ class ConnectToServerModel(Model):
     appbar = ft.AppBar(title=ft.Text("Connect to Server"), center_title=True)
 
     floating_action_button = FloatingUpgradeButton()
-    floating_action_button_location = "endFloat"
+    floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
 
     def __init__(self, page: ft.Page):
         super().__init__(page)

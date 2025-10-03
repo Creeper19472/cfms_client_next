@@ -1,17 +1,17 @@
 [project]
 name = "cfms-client-next"
 version = "0.2.0"
-description = ""
+description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Flet developer", email = "you@example.com" }
+    { name = "Creeper19472", email = "creeper19472@crpteam.club" }
 ]
 dependencies = [
-  "flet==0.70.0.dev6176",
+  "flet==0.70.0.dev6196",
   "flet_permission_handler==0.2.0.dev505",
   "flet-open-file @ git+https://github.com/creeper19472/flet-open-file",
-  "flet_model",
+  "flet_model @ git+https://github.com/creeper19472/Flet-Model",
   "flet-datatable2==0.2.0.dev505",
   "websockets",
   "pycryptodome",
@@ -38,11 +38,12 @@ min_sdk_version = 24
 
 [tool.uv]
 dev-dependencies = [
-    "flet[all]==0.70.0.dev6176",
+    "flet[all]==0.70.0.dev6196",
 ]
+prerelease = "allow"
 
 [tool.poetry]
 package-mode = false
 
 [tool.poetry.group.dev.dependencies]
-flet = {extras = ["all"], version = "0.70.0.dev6176"}
+flet = {extras = ["all"], version = "0.70.0.dev6196"}

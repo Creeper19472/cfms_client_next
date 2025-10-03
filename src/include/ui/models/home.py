@@ -2,6 +2,7 @@ import flet as ft
 from flet_model import Model, route
 from include.ui.controls.homepage import HomeView, HomeNavigationBar
 from include.ui.controls.filemanager import FileManagerView
+from include.ui.controls.more import MoreView
 
 
 @route("home")
@@ -28,8 +29,7 @@ class HomeModel(Model):
             FileManagerView(parent_model=self),
             ft.Container(),
             self.homeview,
-            # files_container,
-            # settings_container,
+            MoreView(self)
         ]
         self.navigation_bar = HomeNavigationBar(parent_view=self, views=self.controls[1:])
         self.file_picker: ft.FilePicker

@@ -18,12 +18,13 @@ import flet as ft
 from include.ui.models.connect import ConnectToServerModel
 from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
+from include.ui.models.settings import SettingsModel
 from include.ui.models.home import HomeModel
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     # Page settings
     page.title = "CFMS Client"
     page.theme_mode = ft.ThemeMode.DARK
@@ -61,7 +62,7 @@ def main(page: ft.Page):
         )
     )
 
-    page.go("/connect")
+    await page.push_route("/connect")
 
 
 if __name__ == "__main__":

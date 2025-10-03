@@ -3,6 +3,7 @@ import gettext
 import flet as ft
 import include.ui.constants as const
 from include.ui.controls.filemanager import FileManagerView
+from include.ui.controls.more import MoreView
 from include.ui.util.file_controls import get_directory
 from include.classes.config import AppConfig
 
@@ -39,12 +40,13 @@ class HomeNavigationBar(ft.NavigationBar):
         )
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
-        for view in self.views:
-            if self.views.index(view) == e.control.selected_index:
-                view.visible = True
-            else:
-                view.visible = False
-        yield
+        def show_view(index): 
+            for view in self.views:
+                if self.views.index(view) == index:
+                    view.visible = True
+                else:
+                    view.visible = False
+        yield show_view(e.control.selected_index)
 
         if e.control.selected_index == 0:
             assert type(self.views[0]) == FileManagerView
@@ -53,8 +55,10 @@ class HomeNavigationBar(ft.NavigationBar):
             )
         elif e.control.selected_index == 4:
             assert type(self.page) == ft.Page
-            self.page.go("/home/manage")
+            await self.page.push_route("/home/manage")
             self.selected_index = self.last_selected_index
+            yield show_view(self.selected_index)
+            self.update()
             return
 
         self.last_selected_index = self.selected_index

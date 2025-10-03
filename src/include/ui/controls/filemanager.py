@@ -73,7 +73,7 @@ class CreateDirectoryDialog(ft.AlertDialog):
     ):
         super().__init__(ref=ref, visible=visible)
 
-        self.modal = True
+        self.modal = False
         self.title = ft.Text(_("创建目录"))
 
         self.parent_manager = parent_manager
@@ -115,14 +115,14 @@ class CreateDirectoryDialog(ft.AlertDialog):
         self.progress_ring.visible = True
         self.textfield_empty_message.visible = False
         self.directory_textfield.border_color = None
-        self.modal = False
+        self.modal = True
 
     def enable_interactions(self):
         self.directory_textfield.disabled = False
         self.cancel_button.disabled = False
         self.submit_button.visible = True
         self.progress_ring.visible = False
-        self.modal = True
+        self.modal = False
 
     async def ok_button_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
