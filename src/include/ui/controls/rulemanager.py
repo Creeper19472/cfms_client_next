@@ -7,13 +7,16 @@ from include.ui.util.notifications import send_error
 import flet as ft
 
 if TYPE_CHECKING:
-    from include.ui.controls.rightmenu import DocumentRightMenuDialog
+    from include.ui.controls.rightmenu import (
+        DocumentRightMenuDialog,
+        DirectoryRightMenuDialog,
+    )
 
 
 class RuleManager(ft.AlertDialog):
     def __init__(
         self,
-        parent_dialog: "DocumentRightMenuDialog",
+        parent_dialog: "DocumentRightMenuDialog|DirectoryRightMenuDialog",
         object_id: str,
         object_type: str,
         ref: ft.Ref | None = None,
@@ -29,7 +32,7 @@ class RuleManager(ft.AlertDialog):
             min_lines=16,
             # max_lines=16,
             expand=True,
-            expand_loose=True
+            expand_loose=True,
         )
         self.content_info = ft.Markdown(
             "有关规则格式的说明，请参见 [CFMS 服务端文档]"
@@ -71,12 +74,12 @@ class RuleManager(ft.AlertDialog):
                                     ),
                                 ),
                             ],
-                            expand=True
+                            expand=True,
                         ),
                     ]
                 ),
                 length=2,
-                animation_duration=ft.Duration(milliseconds=450)
+                animation_duration=ft.Duration(milliseconds=450),
             ),
             width=720,
             height=540,

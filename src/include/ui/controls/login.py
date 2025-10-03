@@ -4,6 +4,7 @@ import gettext
 
 from websockets import ClientConnection
 from include.classes.client import LockableClientConnection
+from include.classes.config import AppConfig
 import include.ui.constants as const
 from include.ui.util.notifications import send_error
 from include.util.communication import build_request
@@ -152,20 +153,13 @@ class LoginForm(ft.Container):
             self.page.session.store.set("user_permissions", response["data"]["permissions"])
             self.page.session.store.set("user_groups", response["data"]["groups"])
 
-            # if {
-            #     "manage_system",
-            #     "view_audit_logs",
-            #     "list_users",
-            #     "list_groups",
-            #     "apply_lockdown",
-            #     "bypass_lockdown",
-            # } & set(response["data"]["permissions"]):
-            #     navigation_bar = self.page.session.store.get("navigation_bar")
-            #     navigation_bar.destinations.append(
-            #         ft.NavigationBarDestination(
-            #             icon=ft.Icons.CLOUD_CIRCLE, label="Manage"
-            #         )
-            #     )
+            app_config = AppConfig()
+            app_config.username = self.username_field.value
+            app_config.nickname = response["data"].get("nickname")
+            app_config.token = response["data"]["token"]
+            app_config.token_exp = response["data"].get("exp")
+            app_config.user_permissions = response["data"]["permissions"]
+            app_config.user_groups = response["data"]["groups"]
 
             self.username_field.value = ""
             self.password_field.value = ""

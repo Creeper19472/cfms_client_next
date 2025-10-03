@@ -4,6 +4,7 @@ import flet as ft
 import include.ui.constants as const
 from include.ui.controls.filemanager import FileManagerView
 from include.ui.util.file_controls import get_directory
+from include.classes.config import AppConfig
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -15,6 +16,7 @@ _ = t.gettext
 class HomeNavigationBar(ft.NavigationBar):
     def __init__(self, parent_view: "HomeModel", views: list[ft.Control] = []):
         self.parent_view = parent_view
+        self.app_config = AppConfig()
 
         self.last_selected_index = 2  # 默认值设置成初次进入时默认选中的页面在效果上较好
         self.views = views
@@ -24,6 +26,9 @@ class HomeNavigationBar(ft.NavigationBar):
             ft.NavigationBarDestination(icon=ft.Icons.ARROW_CIRCLE_DOWN, label="Tasks"),
             ft.NavigationBarDestination(icon=ft.Icons.HOME, label="Home"),
             ft.NavigationBarDestination(icon=ft.Icons.MORE_HORIZ, label="More"),
+            ft.NavigationBarDestination(
+                icon=ft.Icons.CLOUD_CIRCLE, label="Manage", visible=False
+            ),
         ]
 
         super().__init__(
@@ -46,47 +51,24 @@ class HomeNavigationBar(ft.NavigationBar):
             await get_directory(
                 self.views[0].current_directory_id, self.views[0].file_listview
             )
+        elif e.control.selected_index == 4:
+            assert type(self.page) == ft.Page
+            self.page.go("/home/manage")
+            self.selected_index = self.last_selected_index
+            return
 
-        # control: MyNavBar = e.control
-        # match control.selected_index:
-        #     case 0:  # Files
-        #         files_container.visible = True
-        #         home_container.visible = False
-        #         settings_container.visible = False
-        #         load_directory(self.page, folder_id=current_directory_id)
+        self.last_selected_index = self.selected_index
 
-        #     case 1:
-        #         control.selected_index = control.last_selected_index
-        #         self.page.go("/home/tasks#object_type=document")
-        #     case 2:
-        #         files_container.visible = False
-        #         home_container.visible = True
-        #         settings_container.visible = False
-        #         self.page.update()
-        #     case 3:
-        #         files_container.visible = False
-        #         home_container.visible = False
-        #         settings_container.visible = True
-        #         settings_avatar.content = ft.Text(
-        #             self.page.session.store.get("username")[0].upper()
-        #         )
-        #         _nickname = self.page.session.store.get("nickname")
-        #         settings_username_display.value = (
-        #             _nickname if _nickname else self.page.session.store.get("username")
-        #         )
-        #         self.page.update()
-        #     case 4:
-        #         control.selected_index = control.last_selected_index
-        #         _refresh_user_list_function: function = self.page.session.store.get(
-        #             "refresh_user_list"
-        #         )
-        #         _refresh_user_list_function(e.page, _update_page=False)
-        #         self.page.go("/home/manage")
-        #     # case 4:
-        #     #     self.page.go("/logos")
-        #     # case 5:
-        #     #     self.page.go("/slides")
-        # control.last_selected_index = control.selected_index
+    def build(self):
+        if {
+            "manage_system",
+            "view_audit_logs",
+            "list_users",
+            "list_groups",
+            "apply_lockdown",
+            "bypass_lockdown",
+        } & set(self.app_config.user_permissions):
+            self.destinations[4].visible = True
 
 
 class WelcomeInfoCard(ft.Card):

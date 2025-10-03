@@ -3,7 +3,10 @@ from datetime import datetime
 import gettext
 import flet as ft
 
-from include.ui.controls.rightmenu import DocumentRightMenuDialog
+from include.ui.controls.rightmenu import (
+    DocumentRightMenuDialog,
+    DirectoryRightMenuDialog,
+)
 from include.ui.util.path import get_directory, get_document
 
 t = gettext.translation("client", "ui/locale", fallback=True)
@@ -40,10 +43,24 @@ def update_file_controls(
             event.control.data[0], filename=event.control.data[1], view=view
         )
 
-    async def document_right_click(event: ft.TapEvent[ft.GestureDetector]):
+    async def document_right_click(
+        event: (
+            ft.TapEvent[ft.GestureDetector] | ft.LongPressStartEvent[ft.GestureDetector]
+        ),
+    ):
         assert event.control.content
         event.page.show_dialog(
             DocumentRightMenuDialog(event.control.content.data[0], view)
+        )
+
+    async def folder_right_click(
+        event: (
+            ft.TapEvent[ft.GestureDetector] | ft.LongPressStartEvent[ft.GestureDetector]
+        ),
+    ):
+        assert event.control.content
+        event.page.show_dialog(
+            DirectoryRightMenuDialog(event.control.content.data[0], view)
         )
 
     if parent_id != None:
@@ -69,8 +86,8 @@ def update_file_controls(
                     data=(folder["id"], folder["name"]),
                     on_click=folder_listtile_click,
                 ),
-                on_secondary_tap=lambda _: print("aaa"),  # on_folder_right_click_menu,
-                # on_long_press_start=on_folder_right_click_menu,
+                on_secondary_tap=folder_right_click,
+                on_long_press_start=folder_right_click,
                 # on_hover=on_folder_hover
                 # on_hover=lambda e: update_mouse_position(e),
             )
@@ -96,7 +113,7 @@ def update_file_controls(
                     on_click=document_listtile_click,
                 ),
                 on_secondary_tap=document_right_click,
-                # on_long_press_start=on_document_right_click_menu,
+                on_long_press_start=document_right_click,
                 # on_hover=lambda e: update_mouse_position(e),
             )
             for document in documents

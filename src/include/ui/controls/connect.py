@@ -1,6 +1,7 @@
 import flet as ft
 import flet_permission_handler as fph
 import gettext, re, os
+from include.classes.config import AppConfig
 from include.constants import PROTOCOL_VERSION
 from include.util.connect import get_connection
 from include.util.communication import build_request
@@ -41,7 +42,7 @@ class ConnectForm(ft.Container):
             value=const.REMOTE_ADDRESS_PLACEHOLDER,  # default
             autofocus=True,
             on_submit=self.connect_button_click,  # Listen for the enter key event
-            expand=True
+            expand=True,
         )
         self.disable_ssl_enforcement_switch = ft.Switch(
             label=_("禁用SSL检查（不安全）"), value=False, scale=1
@@ -94,9 +95,11 @@ class ConnectForm(ft.Container):
         self.remote_address_textfield.disabled = False
         self.disable_ssl_enforcement_switch.disabled = False
 
-    async def connect_button_click(self, event: ft.Event[ft.TextField] | ft.Event[ft.Button]):
+    async def connect_button_click(
+        self, event: ft.Event[ft.TextField] | ft.Event[ft.Button]
+    ):
         assert type(self.page) == ft.Page
-        yield self.disable_interactions() 
+        yield self.disable_interactions()
 
         server_address = "wss://" + self.remote_address_textfield.value
 
@@ -140,6 +143,11 @@ class ConnectForm(ft.Container):
         # set session data
         self.page.session.store.set("server_info", server_info_response["data"])
         self.page.session.store.set("server_uri", server_address)
+
+        app_config = AppConfig()
+        app_config.server_address = server_address
+        app_config.server_info = server_info_response["data"]
+
         self.page.title = f"CFMS Client - {server_address}"
         yield
 
@@ -160,9 +168,7 @@ class ConnectForm(ft.Container):
                     ),
                 )
 
-        if self.page.platform.value == "windows" and os.environ.get(
-            "FLET_APP_CONSOLE"
-        ):
+        if self.page.platform.value == "windows" and os.environ.get("FLET_APP_CONSOLE"):
             os.startfile(os.getcwd())
 
         self.page.go("/login")
