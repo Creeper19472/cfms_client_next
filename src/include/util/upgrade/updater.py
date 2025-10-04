@@ -26,7 +26,7 @@ class GithubRelease:
         self.assets = assets  # <- assets
 
 
-async def get_latest_release() -> GithubRelease | None:
+def get_latest_release() -> GithubRelease | None:
     # check for updates
     try:
         resp = requests.get(

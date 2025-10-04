@@ -1,25 +1,18 @@
 import asyncio
 import flet as ft
 
-from flet_open_file import FletOpenFile
 from flet_model import Model, route
-from include.classes.config import AppConfig
-from include.constants import APP_VERSION
+from include.constants import APP_VERSION, BUILD_VERSION
 
-# from include.request import build_request
+from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.util.upgrade.updater import (
     SUPPORTED_PLATFORM,
     get_latest_release,
     is_new_version,
 )
 
-# from include.constants import RUNTIME_PATH, FLET_APP_STORAGE_TEMP
 from include.ui.util.notifications import send_error
-import requests, os, time
-
-# import threading
-from flet_permission_handler import PermissionHandler, Permission, PermissionStatus
-
+import requests, os
 
 SUPPORTED_PLATFORM: dict
 RUNTIME_PATH: str
@@ -92,7 +85,7 @@ class AboutModel(Model):
 
         self.suc_upgrade_button = ft.Button(
             "更新",
-            # on_click=self.upgrade_button_click,
+            on_click=self.upgrade_button_click,
             visible=False,
         )
         self.suc_release_info = ft.Column(
@@ -158,12 +151,11 @@ class AboutModel(Model):
         async for i in self.check_for_updates():
             yield
 
-    # async def upgrade_button_click(self, event: ft.Event[ft.Button]):
-    #     await self.do_release_upgrade()
+    async def upgrade_button_click(self, event: ft.Event[ft.Button]):
+        await self.do_release_upgrade()
 
     async def check_for_updates(self):
         yield self.disable_interactions()
-        await asyncio.sleep(0)
 
         async def _impl_check_for_updates():
 
@@ -172,7 +164,9 @@ class AboutModel(Model):
             match_text = SUPPORTED_PLATFORM.get(self.page.platform.value)
 
             try:
-                latest = await get_latest_release()
+                # 使用线程池避免阻塞主事件循环
+                loop = asyncio.get_running_loop()
+                latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
                 send_error(self.page, f"连接失败：{e.strerror}")
                 return
@@ -206,10 +200,7 @@ class AboutModel(Model):
                 ),
             ]
 
-            build_version = self.page.session.store.get("build_version")
-            assert build_version
-
-            if not is_new_version(False, 0, build_version, latest.version):
+            if not is_new_version(False, 0, BUILD_VERSION, latest.version):
                 self.suc_unavailable_text.value = "已是最新版本"
                 self.suc_unavailable_text.visible = True
                 return
@@ -232,191 +223,27 @@ class AboutModel(Model):
                 self.suc_unavailable_text.value = "没有找到更新：不支持的架构"
                 self.suc_unavailable_text.visible = True
 
-        if os.environ.get("FLET_APP_CONSOLE"):
+        if not os.environ.get("FLET_APP_CONSOLE"):
             await _impl_check_for_updates()
         else:
-            time.sleep(1)
+            await asyncio.sleep(1)
             self.suc_environ_unavailable_text.visible = True
 
-        self.suc_update_button.disabled = False
-        self.suc_progress_ring.visible = False
-        self.suc_progress_text.visible = False
-        self.page.update()
+        yield self.enable_interactions()
 
-    # def do_release_upgrade(self):
-    #     if not (download_url := self.suc_upgrade_button.data):
-    #         return
-    #     assert type(download_url) == str
-    #     save_filename = download_url.split("/")[-1]
+    async def do_release_upgrade(self):
+        if not (download_url := self.suc_upgrade_button.data):
+            return
+        assert type(download_url) == str
+        save_filename = download_url.split("/")[-1]
 
-    #     self.suc_upgrade_button.disabled = True
-    #     self.page.update()
+        self.suc_upgrade_button.disabled = True
+        self.update()
 
-    #     def _stop_upgrade(e: ft.ControlEvent):
-    #         download_thread.stop()
-    #         e.page.close(upgrade_dialog)
+        self.page.show_dialog(UpgradeDialog(download_url, save_filename))
 
-    #     upgrade_special_button = FletOpenFile(
-    #         value=None, text="执行更新", visible=True  # False
-    #     )
-    #     upgrade_special_note = ft.Text(
-    #         "您使用的设备需要手动执行更新。再次点击“执行更新”以继续。", visible=False
-    #     )
-    #     upgrade_note = ft.Text(visible=False)
-    #     upgrade_progress = ft.ProgressRing(visible=False)
-    #     upgrade_progress = ft.ProgressBar()
-    #     upgrade_progress_text = ft.Text(value="正在准备下载")
-    #     upgrade_dialog = ft.AlertDialog(
-    #         modal=True,
-    #         title=ft.Text("更新"),
-    #         content=ft.Column(
-    #             controls=[
-    #                 upgrade_progress,
-    #                 upgrade_progress_text,
-    #                 upgrade_note,
-    #                 upgrade_special_note,
-    #             ],
-    #             # spacing=15,
-    #             width=400,
-    #             alignment=ft.MainAxisAlignment.CENTER,
-    #             scroll=ft.ScrollMode.AUTO,
-    #             expand=True,
-    #         ),
-    #         actions=[
-    #             # upgrade_special_button,
-    #             ft.TextButton("取消", on_click=_stop_upgrade),
-    #         ],
-    #         # scrollable=True,
-    #     )
-    #     self.page.open(upgrade_dialog)
-
-    #     class UpdateDownloadThread(threading.Thread):
-    #         def __init__(self, download_url: str, save_filename: str, page: ft.Page):
-    #             super().__init__()
-    #             self.download_url = download_url
-    #             self.save_filename = save_filename
-    #             self.page = page
-    #             self._stop_event = threading.Event()
-
-    #         def run(self):
-    #             if self._download_update():
-    #                 # print(os.getcwd())
-    #                 if self.page.platform.value == "windows":
-    #                     # os.startfile(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
-    #                     # 开始执行安装
-    #                     upgrade_progress_text.visible = False
-    #                     upgrade_note.value = "正在解压缩版本包"
-    #                     upgrade_note.visible = True
-    #                     self.page.update()
-
-    #                     from zipfile import ZipFile
-    #                     import subprocess
-
-    #                     with ZipFile(
-    #                         f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}", "r"
-    #                     ) as zip_ref:
-    #                         zip_ref.extractall(f"{FLET_APP_STORAGE_TEMP}/update")
-
-    #                     upgrade_note.value = "正在删除已解压缩的包"
-    #                     self.page.update()
-
-    #                     try:
-    #                         os.remove(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
-    #                     except FileNotFoundError:
-    #                         pass
-    #                     except Exception as e:
-    #                         send_error(self.page, f"删除临时文件失败：{e}")
-
-    #                     upgrade_note.value = "正在写入更新脚本"
-    #                     self.page.update()
-
-    #                     _update_script = f'taskkill -f -im cfms_client.exe & xcopy "{FLET_APP_STORAGE_TEMP}/update/build/windows" "{RUNTIME_PATH}" /I /Y /S & rmdir /s /q "{FLET_APP_STORAGE_TEMP}/update"'
-    #                     with open(f"{FLET_APP_STORAGE_TEMP}/update.cmd", "w") as f:
-    #                         f.write(_update_script)
-
-    #                     upgrade_note.value = "正在关闭应用"
-    #                     self.page.update()
-
-    #                     # os.system(f'start "{FLET_APP_STORAGE_TEMP}/update.cmd"')
-    #                     subprocess.run(
-    #                         ["cmd", "/c", f"{FLET_APP_STORAGE_TEMP}/update.cmd"]
-    #                     )
-    #                     asyncio.create_task(self.page.window.close())
-
-    #                 else:
-    #                     upgrade_special_button.value = (
-    #                         f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
-    #                     )
-    #                     # print(upgrade_special_button.value)
-
-    #                     app_config = AppConfig()
-    #                     ph: PermissionHandler = app_config.get_not_none_attribute("ph_service")
-    #                     if (
-    #                         await ph.request(
-    #                             Permission.REQUEST_INSTALL_PACKAGES
-    #                         )
-    #                         == PermissionStatus.DENIED
-    #                     ):
-    #                         send_error(
-    #                             self.page,
-    #                             "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。",
-    #                         )
-
-    #                     # upgrade_special_button.visible = True
-    #                     upgrade_special_note.visible = True
-    #                     upgrade_dialog.actions.insert(0, upgrade_special_button)
-    #                     self.page.update()
-    #                     # upgrade_special_button.update()
-
-    #         def stop(self):
-    #             self._stop_event.set()
-
-    #         def _download_update(self):
-    #             try:
-    #                 response = requests.get(self.download_url, stream=True)
-    #                 if response.status_code == 200:
-    #                     total_size = response.headers["content-length"]
-    #                     # print(response.headers)
-    #                     with open(
-    #                         f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}", "wb"
-    #                     ) as f:
-    #                         for chunk in response.iter_content(chunk_size=8192):
-    #                             if self._stop_event.is_set():
-    #                                 break
-    #                             if chunk:
-    #                                 f.write(chunk)
-    #                                 upgrade_progress.value = (
-    #                                     int(f.tell() * 100 / int(total_size)) / 100
-    #                                 )
-    #                                 upgrade_progress_text.value = f"{int(f.tell() * 100 / int(total_size))}% ({int(f.tell())} / {total_size})"
-    #                                 self.page.update()
-    #                     if self._stop_event.is_set():
-    #                         try:
-    #                             os.remove(
-    #                                 f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
-    #                             )
-    #                         except FileNotFoundError:
-    #                             pass
-    #                         return False
-    #                     else:
-    #                         return True
-
-    #                 return False
-
-    #             except (
-    #                 requests.exceptions.ConnectionError,
-    #                 requests.exceptions.SSLError,
-    #             ) as e:
-    #                 send_error(self.page, f"在更新时发生错误：{str(e)}")
-    #                 return False
-
-    #     # Start the download in a separate thread
-    #     download_thread = UpdateDownloadThread(download_url, save_filename, self.page)
-    #     download_thread.start()
-    #     download_thread.join()
-
-    #     self.suc_upgrade_button.disabled = False
-    #     self.page.update()
+        self.suc_upgrade_button.disabled = False
+        self.update()
 
     async def back_button_click(self, event: ft.Event[ft.IconButton]):
         self.page.views.pop()
@@ -428,6 +255,6 @@ class AboutModel(Model):
     def did_mount(self) -> None:
         async def run():
             async for _ in self.check_for_updates():
-                pass
+                self.update()
 
         asyncio.create_task(run())
