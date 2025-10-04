@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.2.1"
+version = "0.2.2"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -47,3 +47,10 @@ package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 flet = {extras = ["all"], version = "0.70.0.dev6214"}
+
+[tool.flet.android.permission] # --android-permissions
+"android.permission.READ_EXTERNAL_STORAGE" = true
+"android.permission.WRITE_EXTERNAL_STORAGE" = true
+"android.permission.MANAGE_EXTERNAL_STORAGE" = true
+"android.permission.MANAGE_MEDIA" = true
+"android.permission.REQUEST_INSTALL_PACKAGES" = true
