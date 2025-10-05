@@ -20,6 +20,7 @@ from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
 from include.ui.models.settings import SettingsModel
 from include.ui.models.home import HomeModel
+from include.ui.models.manage import ManageModel
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG)

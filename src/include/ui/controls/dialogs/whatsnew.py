@@ -9,6 +9,13 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.3",
+        "Re-introducing Management Interfaces",
+        "Starting from this version, the functionality of the "
+        "management interface will be gradually reintroduced.",
+        date(2025, 10, 5),
+    ),
+    ChangelogEntry(
         "v0.2.2",
         "Introducing Whats'new Dialog",
         "From now on, a Whats'new dialog will be displayed when "

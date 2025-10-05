@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.2.2"
+version = "0.2.3"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -8,11 +8,11 @@ authors = [
     { name = "Creeper19472", email = "creeper19472@crpteam.club" }
 ]
 dependencies = [
-  "flet==0.70.0.dev6214",
+  "flet>=0.70.0.dev6214",
   "flet_permission_handler==0.2.0.dev505",
   "flet-open-file @ git+https://github.com/creeper19472/flet-open-file",
   "flet_model @ git+https://github.com/creeper19472/Flet-Model",
-  "flet-datatable2==0.2.0.dev505",
+  "flet-datatable2 @ git+https://github.com/Creeper19472/flet-datatable2-patch",
   "websockets",
   "pycryptodome",
   "cffi",
@@ -36,10 +36,12 @@ webview_flutter_android = "4.10.1"
 [tool.flet.android]
 min_sdk_version = 24
 
-[tool.uv]
-dev-dependencies = [
-    "flet[all]==0.70.0.dev6214",
+[dependency-groups]
+dev = [
+    "flet[all]>=0.70.0.dev6214",
 ]
+
+[tool.uv]
 prerelease = "allow"
 
 [tool.poetry]

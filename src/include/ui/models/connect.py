@@ -1,7 +1,7 @@
 import flet as ft
 from flet_model import Model, route
 from include.ui.controls.connect import ConnectForm
-from include.ui.controls.upgrade import FloatingUpgradeButton
+from include.ui.controls.buttons.upgrade import FloatingUpgradeButton
 from include.constants import APP_VERSION
 from include.ui.constants import PLACEHOLDER_COLOR
 
