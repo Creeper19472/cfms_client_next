@@ -36,6 +36,9 @@ webview_flutter_android = "4.10.1"
 [tool.flet.android]
 min_sdk_version = 36
 
+[tool.flet.template]
+url = "gh:creeper19472/flet-build-template"
+
 [dependency-groups]
 dev = [
     "flet[all]>=0.70.0.dev6214",
