@@ -9,6 +9,15 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.4",
+        "Bug fixes",
+        "This release introduces upstream fixes to the flet-open-file "
+        "package, which is expected to resolve compilation failures "
+        "that have persisted for the past few releases and make the "
+        "updater experience smoother on mobile devices.",
+        date(2025, 10, 5),
+    ),
+    ChangelogEntry(
         "v0.2.3",
         "Re-introducing Management Interfaces",
         "Starting from this version, the functionality of the "

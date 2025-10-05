@@ -1,7 +1,7 @@
 import os
 import asyncio, threading
 import flet as ft
-from flet_open_file import FletOpenFile
+from flet_open_file import OpenFile
 from flet_permission_handler import Permission, PermissionHandler, PermissionStatus
 import requests
 
@@ -31,13 +31,7 @@ class UpgradeDialog(ft.AlertDialog):
             self, self.download_url, self.save_filename
         )
 
-        self.upgrade_special_button = FletOpenFile(
-            value=None, text="执行更新", visible=False
-        )
         self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
-        self.upgrade_special_note = ft.Text(
-            "您使用的设备需要手动执行更新。再次点击“执行更新”以继续。", visible=False
-        )
         self.upgrade_note = ft.Text(visible=False)
         self.upgrade_progress = ft.ProgressBar()
         self.upgrade_progress_text = ft.Text(value="正在准备下载")
@@ -47,7 +41,6 @@ class UpgradeDialog(ft.AlertDialog):
                 self.upgrade_progress,
                 self.upgrade_progress_text,
                 self.upgrade_note,
-                self.upgrade_special_note,
             ],
             # spacing=15,
             width=400,
@@ -56,7 +49,6 @@ class UpgradeDialog(ft.AlertDialog):
             expand=True,
         )
         self.actions = [
-            self.upgrade_special_button,
             self.cancel_button,
         ]
 
@@ -128,11 +120,6 @@ class UpgradeDownloadThread(threading.Thread):
                 asyncio.create_task(self.page.window.close())
 
             else:
-                self.upgrade_dialog.upgrade_special_button.value = (
-                    f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
-                )
-                # print(upgrade_special_button.value)
-
                 app_config = AppConfig()
                 ph: PermissionHandler = app_config.get_not_none_attribute("ph_service")
 
@@ -148,9 +135,9 @@ class UpgradeDownloadThread(threading.Thread):
 
                 asyncio.create_task(_async_request())
 
-                self.upgrade_dialog.upgrade_special_button.visible = True
-                self.upgrade_dialog.upgrade_special_note.visible = True
-                self.upgrade_dialog.update()
+                self.open_file_service = OpenFile()
+                self.page._services.append(self.open_file_service)
+                asyncio.create_task(self.open_file_service.open(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"))
 
     def stop(self):
         self._stop_event.set()

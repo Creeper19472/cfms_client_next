@@ -82,6 +82,8 @@ class ConnectForm(ft.Container):
             ref=self.ph_ref  # pyright: ignore[reportArgumentType]
         )
         self.page._services.append(p)
+        app_config = AppConfig()
+        app_config.ph_service = p
 
     def disable_interactions(self):
         self.connect_button.visible = False
