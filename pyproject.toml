@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.2.5"
+version = "0.2.6"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,7 +34,7 @@ path = "src"
 webview_flutter_android = "4.10.1"
 
 [tool.flet.android]
-min_sdk_version = 36
+min_sdk_version = 24
 
 [tool.flet.template]
 url = "gh:creeper19472/flet-build-template"

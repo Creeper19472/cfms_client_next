@@ -9,6 +9,13 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.6",
+        "Bug fixes",
+        "This version corrects the application's compilation settings, "
+        "which is expected to enable it to run on Android API 24 and above.",
+        date(2025, 10, 6),
+    ),
+    ChangelogEntry(
         "v0.2.4",
         "Bug fixes",
         "This release introduces upstream fixes to the flet-open-file "
