@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.2.7"
+version = "0.2.8"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"

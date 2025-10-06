@@ -1,10 +1,11 @@
-import asyncio
+import asyncio, gettext
 import flet as ft
 
 from flet_model import Model, route
 from include.constants import APP_VERSION, BUILD_VERSION
 
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
+from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
 from include.util.upgrade.updater import (
     SUPPORTED_PLATFORM,
     get_latest_release,
@@ -13,6 +14,9 @@ from include.util.upgrade.updater import (
 
 from include.ui.util.notifications import send_error
 import requests, os
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
 
 SUPPORTED_PLATFORM: dict
 RUNTIME_PATH: str
@@ -49,19 +53,22 @@ class AboutModel(Model):
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Text(
-                        f"Version: {APP_VERSION}",
+                        _(f"Version: {APP_VERSION}"),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),
                     ft.Text(
-                        "Copyright © 2025 Creeper Team",
+                        _("Copyright © 2025 Creeper Team"),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),
                     ft.Text(
-                        "Licensed under Apache License Version 2.0.",
+                        _("Licensed under Apache License Version 2.0."),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
+                    ),
+                    ft.TextButton(
+                        _("View changelogs"), on_click=self.view_changelogs_button_click
                     ),
                 ],
                 expand=True,
@@ -77,14 +84,14 @@ class AboutModel(Model):
             on_click=self.suc_button_click,
         )
         self.suc_progress_ring = ft.ProgressRing(visible=False)
-        self.suc_progress_text = ft.Text("正在检查更新", visible=False)
+        self.suc_progress_text = ft.Text(_("正在检查更新"), visible=False)
         self.suc_environ_unavailable_text = ft.Text(
-            "无法更新：源代码运行时不能检查更新。", visible=False
+            _("无法更新：源代码运行时不能检查更新。"), visible=False
         )
         self.suc_unavailable_text = ft.Text(visible=False)
 
         self.suc_upgrade_button = ft.Button(
-            "更新",
+            _("更新"),
             on_click=self.upgrade_button_click,
             visible=False,
         )
@@ -98,7 +105,7 @@ class AboutModel(Model):
                     ft.Row(
                         controls=[
                             ft.Text(
-                                "软件更新",
+                                _("软件更新"),
                                 size=22,
                                 text_align=ft.TextAlign.CENTER,
                             ),
@@ -154,6 +161,9 @@ class AboutModel(Model):
     async def upgrade_button_click(self, event: ft.Event[ft.Button]):
         self.page.run_task(self.do_release_upgrade)
 
+    async def view_changelogs_button_click(self, event: ft.Event[ft.TextButton]):
+        self.page.show_dialog(ChangelogHistoryDialog())
+
     async def check_for_updates(self):
         yield self.disable_interactions()
 
@@ -168,27 +178,27 @@ class AboutModel(Model):
                 loop = asyncio.get_running_loop()
                 latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
-                send_error(self.page, f"连接失败：{e.strerror}")
+                send_error(self.page, _(f"连接失败：{e.strerror}"))
                 return
 
             if not latest:
-                self.suc_unavailable_text.value = "未获取到版本信息"
+                self.suc_unavailable_text.value = _("未获取到版本信息")
                 self.suc_unavailable_text.visible = True
                 return
 
             self.suc_release_info.controls = [
                 ft.Text(
-                    f"当前版本：{APP_VERSION}",
+                    _(f"当前版本：{APP_VERSION}"),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
                 ft.Text(
-                    f"最新版本：{latest.version}",
+                    _(f"最新版本：{latest.version}"),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
                 ft.Text(
-                    "更新说明：",
+                    _("更新说明："),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
@@ -201,7 +211,7 @@ class AboutModel(Model):
             ]
 
             if not is_new_version(False, 0, BUILD_VERSION, latest.version):
-                self.suc_unavailable_text.value = "已是最新版本"
+                self.suc_unavailable_text.value = _("已是最新版本")
                 self.suc_unavailable_text.visible = True
                 return
 
@@ -217,10 +227,10 @@ class AboutModel(Model):
 
                 # 判断是否有找到对应架构的包
                 if not self.suc_upgrade_button.visible:
-                    self.suc_unavailable_text.value = "未在最新版本中找到对应架构的包"
+                    self.suc_unavailable_text.value = _("未在最新版本中找到对应架构的包")
                     self.suc_unavailable_text.visible = True
             else:
-                self.suc_unavailable_text.value = "没有找到更新：不支持的架构"
+                self.suc_unavailable_text.value = _("没有找到更新：不支持的架构")
                 self.suc_unavailable_text.visible = True
 
         if os.environ.get("FLET_APP_CONSOLE"):

@@ -9,6 +9,16 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.8",
+        "Bug fixes",
+        """This version fixes a typo in the code that caused the updater 
+        to refuse to check for updates in production environments. At the 
+        same time, new entrances to view historical release notes have 
+        been added to the "What's New" dialog and the "About" page to view 
+        past updates.""",
+        date(2025, 10, 6),
+    ),
+    ChangelogEntry(
         "v0.2.7",
         "Bug fixes",
         "This version fixes several issues with the app's built-in "
@@ -56,6 +66,67 @@ changelogs = [
 ]
 
 
+class ChangelogEntryColumn(ft.Column):
+    def __init__(
+        self,
+        entry: ChangelogEntry,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        self.entry = entry
+        self.controls = [
+            ft.Text(
+                f"{self.entry.version}: {self.entry.title}",
+                size=21,
+                spans=[
+                    ft.TextSpan(
+                        _(f"  发行于 {str(self.entry.date)}"),
+                        style=ft.TextStyle(14),
+                    )
+                ],
+            ),
+            ft.Markdown(self.entry.content),
+            ft.Text("\n", size=7),  # leave blank spaces
+        ]
+        self.expand = True
+        self.expand_loose = True
+
+
+class ChangelogHistoryDialog(ft.AlertDialog):
+    def __init__(
+        self,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+
+        self.modal = False
+        self.scrollable = True
+        self.title = ft.Text(_(f"Changelogs"))
+
+        self.entry_columns = [
+            ChangelogEntryColumn(each_entry) for each_entry in changelogs
+        ]
+
+        self.content = ft.Container(
+            ft.Column(
+                [
+                    ft.Text(_(f"最后更新于 {str(changelogs[0].date)}\n")),
+                    *self.entry_columns,
+                ]
+            ),
+            width=720,
+        )
+        self.actions = [
+            ft.TextButton(_("OK"), on_click=self.ok_button_click),
+        ]
+
+    async def ok_button_click(self, event: ft.Event[ft.TextButton]):
+        self.open = False
+        self.update()
+
+
 class WhatsNewDialog(ft.AlertDialog):
     def __init__(
         self,
@@ -70,18 +141,26 @@ class WhatsNewDialog(ft.AlertDialog):
         self.scrollable = True
         self.title = ft.Text(_(f"What's new in {self.newest_changelog.version}"))
 
-        self.content = ft.Container(ft.Column(
-            [
-                ft.Text(f"发行于 {str(self.newest_changelog.date)}\n"),
-                ft.Text(self.newest_changelog.title, size=20),
-                ft.Markdown(self.newest_changelog.content),
-            ]
-        ), width=680)
-        self.actions = [ft.TextButton("Got it!", on_click=self.ok_button_click)]
+        self.content = ft.Container(
+            ChangelogEntryColumn(self.newest_changelog),
+            width=680,
+        )
+        self.actions = [
+            ft.TextButton(_("View history"), on_click=self.view_history_button_click),
+            ft.TextButton(_("Got it!"), on_click=self.ok_button_click),
+        ]
 
-    async def ok_button_click(self, event: ft.Event[ft.TextButton]):
+    def close(self):
         self.open = False
         self.update()
+
+    async def ok_button_click(self, event: ft.Event[ft.TextButton]):
+        self.close()
+
+    async def view_history_button_click(self, event: ft.Event[ft.TextButton]):
+        self.close()
+        assert isinstance(self.page, ft.Page)
+        self.page.run_thread(self.page.show_dialog, dialog=ChangelogHistoryDialog())
 
     def did_mount(self):
         super().did_mount()
