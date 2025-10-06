@@ -152,7 +152,7 @@ class AboutModel(Model):
             yield
 
     async def upgrade_button_click(self, event: ft.Event[ft.Button]):
-        await self.do_release_upgrade()
+        self.page.run_task(self.do_release_upgrade)
 
     async def check_for_updates(self):
         yield self.disable_interactions()
@@ -178,7 +178,7 @@ class AboutModel(Model):
 
             self.suc_release_info.controls = [
                 ft.Text(
-                    f"当前版本：{self.page.session.store.get('version')}",
+                    f"当前版本：{APP_VERSION}",
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
@@ -223,7 +223,7 @@ class AboutModel(Model):
                 self.suc_unavailable_text.value = "没有找到更新：不支持的架构"
                 self.suc_unavailable_text.visible = True
 
-        if os.environ.get("FLET_APP_CONSOLE"):
+        if not os.environ.get("FLET_APP_CONSOLE"):
             await _impl_check_for_updates()
         else:
             await asyncio.sleep(1)

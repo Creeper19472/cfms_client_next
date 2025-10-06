@@ -1,5 +1,6 @@
 import os
-import asyncio, threading
+import asyncio
+import threading
 import flet as ft
 from flet_open_file import OpenFile
 from flet_permission_handler import Permission, PermissionHandler, PermissionStatus
@@ -13,7 +14,6 @@ from include.ui.util.notifications import send_error
 class UpgradeDialog(ft.AlertDialog):
     def __init__(
         self,
-        # stop_event: asyncio.Event,
         download_url: str,
         save_filename: str,
         ref: ft.Ref | None = None,
@@ -24,12 +24,9 @@ class UpgradeDialog(ft.AlertDialog):
         self.modal = True
         self.title = ft.Text("更新")
 
-        # self.stop_event = stop_event
+        self.stop_event = asyncio.Event()
         self.download_url = download_url
         self.save_filename = save_filename
-        self.download_thread = UpgradeDownloadThread(
-            self, self.download_url, self.save_filename
-        )
 
         self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
         self.upgrade_note = ft.Text(visible=False)
@@ -42,7 +39,6 @@ class UpgradeDialog(ft.AlertDialog):
                 self.upgrade_progress_text,
                 self.upgrade_note,
             ],
-            # spacing=15,
             width=400,
             alignment=ft.MainAxisAlignment.CENTER,
             scroll=ft.ScrollMode.AUTO,
@@ -56,113 +52,144 @@ class UpgradeDialog(ft.AlertDialog):
         self.open = False
         self.update()
 
+    def did_mount(self):
+        super().did_mount()
+        assert isinstance(self.page, ft.Page)
+        self.page.run_task(self.do_release_upgrade)
+
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
-        # self.stop_event.set()
-        self.download_thread.stop()
+        self.stop_event.set()
         self.close()
 
-
-class UpgradeDownloadThread(threading.Thread):
-    def __init__(
-        self, upgrade_dialog: UpgradeDialog, download_url: str, save_filename: str
-    ):
-        super().__init__()
-        self.download_url = download_url
-        self.save_filename = save_filename
-        self.upgrade_dialog = upgrade_dialog
-        self.page = upgrade_dialog.page
-        self._stop_event = threading.Event()
-
-    def run(self):
-        if self._download_update():
-            # print(os.getcwd())
-            assert type(self.page) == ft.Page
+    async def do_release_upgrade(self):
+        if await self._download_update():
+            assert isinstance(self.page, ft.Page)
             assert self.page.platform
 
             if self.page.platform.value == "windows":
-                # os.startfile(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
-                # 开始执行安装
-                self.upgrade_dialog.upgrade_progress_text.visible = False
-                self.upgrade_dialog.upgrade_note.value = "正在解压缩版本包"
-                self.upgrade_dialog.upgrade_note.visible = True
-                self.upgrade_dialog.update()
-
-                from zipfile import ZipFile
-                import subprocess
-
-                with ZipFile(
-                    f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}", "r"
-                ) as zip_ref:
-                    zip_ref.extractall(f"{FLET_APP_STORAGE_TEMP}/update")
-
-                self.upgrade_dialog.upgrade_note.value = "正在删除已解压缩的包"
-                self.page.update()
-
-                try:
-                    os.remove(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
-                except FileNotFoundError:
-                    pass
-                except Exception as e:
-                    send_error(self.page, f"删除临时文件失败：{e}")
-
-                self.upgrade_dialog.upgrade_note.value = "正在写入更新脚本"
-                self.page.update()
-
-                _update_script = f'taskkill -f -im cfms_client.exe & xcopy "{FLET_APP_STORAGE_TEMP}/update/build/windows" "{RUNTIME_PATH}" /I /Y /S & rmdir /s /q "{FLET_APP_STORAGE_TEMP}/update"'
-                with open(f"{FLET_APP_STORAGE_TEMP}/update.cmd", "w") as f:
-                    f.write(_update_script)
-
-                self.upgrade_dialog.upgrade_note.value = "正在关闭应用"
-                self.page.update()
-
-                # os.system(f'start "{FLET_APP_STORAGE_TEMP}/update.cmd"')
-                subprocess.run(["cmd", "/c", f"{FLET_APP_STORAGE_TEMP}/update.cmd"])
-                asyncio.create_task(self.page.window.close())
-
+                await self._handle_windows_update()
             else:
-                app_config = AppConfig()
-                ph: PermissionHandler = app_config.get_not_none_attribute("ph_service")
+                await self._handle_other_platforms_update()
 
-                async def _async_request():
-                    if (
-                        await ph.request(Permission.REQUEST_INSTALL_PACKAGES)
-                        == PermissionStatus.DENIED
-                    ):
-                        send_error(
-                            self.page,
-                            "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。",
-                        )
+    async def _handle_windows_update(self):
+        self.upgrade_progress_text.visible = False
+        self.upgrade_note.value = "正在解压缩版本包"
+        self.upgrade_note.visible = True
+        self.update()
 
-                asyncio.create_task(_async_request())
-
-                self.open_file_service = OpenFile()
-                self.page._services.append(self.open_file_service)
-                asyncio.create_task(self.open_file_service.open(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"))
-
-    def stop(self):
-        self._stop_event.set()
-
-    def _download_update(self):
         try:
-            response = requests.get(self.download_url, stream=True)
+            from zipfile import ZipFile
+            import subprocess
+
+            # 确保临时目录存在
+            os.makedirs(f"{FLET_APP_STORAGE_TEMP}/update", exist_ok=True)
+
+            with ZipFile(
+                f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}", "r"
+            ) as zip_ref:
+                zip_ref.extractall(f"{FLET_APP_STORAGE_TEMP}/update")
+
+            self.upgrade_note.value = "正在删除已解压缩的包"
+            self.update()
+
+            try:
+                os.remove(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
+            except FileNotFoundError:
+                pass
+            except Exception as e:
+                send_error(self.page, f"删除临时文件失败：{e}")
+
+            self.upgrade_note.value = "正在写入更新脚本"
+            self.update()
+
+            _update_script = f"""@echo off
+timeout /t 2 /nobreak >nul
+taskkill /f /im cfms_client_next.exe >nul 2>&1
+xcopy "{FLET_APP_STORAGE_TEMP}\\update\\build\\windows" "{RUNTIME_PATH}" /I /Y /S
+rmdir /s /q "{FLET_APP_STORAGE_TEMP}\\update"
+del "%~f0"
+start "" "{RUNTIME_PATH}\\cfms_client_next.exe"
+"""
+
+            update_script_path = f"{FLET_APP_STORAGE_TEMP}/update.cmd"
+            with open(update_script_path, "w", encoding="utf-8") as f:
+                f.write(_update_script)
+
+            self.upgrade_note.value = "正在关闭应用"
+            self.update()
+
+            # 使用subprocess启动更新脚本
+            subprocess.Popen(["cmd", "/c", "start", "", update_script_path], shell=True)
+
+            # 关闭应用
+            await asyncio.sleep(1)
+
+            assert isinstance(self.page, ft.Page)
+            await self.page.window.close()
+
+        except Exception as e:
+            send_error(self.page, f"更新过程中发生错误：{e}")
+
+    async def _handle_other_platforms_update(self):
+        assert isinstance(self.page, ft.Page)
+        app_config = AppConfig()
+        ph: PermissionHandler = app_config.get_not_none_attribute("ph_service")
+
+        async def _async_request():
+            if (
+                await ph.request(Permission.REQUEST_INSTALL_PACKAGES)
+                == PermissionStatus.DENIED
+            ):
+                send_error(
+                    self.page,
+                    "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。",
+                )
+                return False
+            return True
+
+        if await _async_request():
+            self.open_file_service = OpenFile()
+            self.page._services.append(self.open_file_service)
+            await self.open_file_service.open(
+                f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
+            )
+
+    async def _download_update(self):
+        """下载更新文件"""
+        try:
+            # 确保临时目录存在
+            os.makedirs(FLET_APP_STORAGE_TEMP, exist_ok=True)
+
+            response = requests.get(self.download_url, stream=True, timeout=30)
             if response.status_code == 200:
-                total_size = response.headers["content-length"]
-                # print(response.headers)
+                total_size = int(response.headers.get("content-length", 0))
+                downloaded_size = 0
+
                 with open(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}", "wb") as f:
                     for chunk in response.iter_content(chunk_size=8192):
-                        if self._stop_event.is_set():
+                        if self.stop_event.is_set():
                             break
                         if chunk:
                             f.write(chunk)
-                            self.upgrade_dialog.upgrade_progress.value = (
-                                int(f.tell() * 100 / int(total_size)) / 100
-                            )
-                            self.upgrade_dialog.upgrade_progress_text.value = (
-                                f"{int(f.tell() * 100 / int(total_size))}%"
-                                f"({int(f.tell())} / {total_size})"
-                            )
-                            self.upgrade_dialog.update()
-                if self._stop_event.is_set():
+                            downloaded_size += len(chunk)
+
+                            # 更新进度
+                            if total_size > 0:
+                                progress = downloaded_size / total_size
+                                self.upgrade_progress.value = progress
+                                self.upgrade_progress_text.value = (
+                                    f"{progress:.1%} "
+                                    f"({downloaded_size} / {total_size} bytes)"
+                                )
+                            else:
+                                self.upgrade_progress_text.value = (
+                                    f"已下载: {downloaded_size} bytes"
+                                )
+
+                            self.update()
+                            await asyncio.sleep(0)  # 让出控制权，避免阻塞
+
+                if self.stop_event.is_set():
                     try:
                         os.remove(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
                     except FileNotFoundError:
@@ -170,12 +197,16 @@ class UpgradeDownloadThread(threading.Thread):
                     return False
                 else:
                     return True
+            else:
+                send_error(self.page, f"下载失败，HTTP状态码: {response.status_code}")
+                return False
 
+        except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
+            send_error(self.page, f"在更新时发生网络错误：{str(e)}")
             return False
-
-        except (
-            requests.exceptions.ConnectionError,
-            requests.exceptions.SSLError,
-        ) as e:
-            send_error(self.page, f"在更新时发生错误：{str(e)}")
+        except requests.exceptions.Timeout:
+            send_error(self.page, "下载超时，请检查网络连接")
+            return False
+        except Exception as e:
+            send_error(self.page, f"下载过程中发生未知错误：{str(e)}")
             return False

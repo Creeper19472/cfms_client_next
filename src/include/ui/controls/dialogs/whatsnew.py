@@ -9,6 +9,14 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.7",
+        "Bug fixes",
+        "This version fixes several issues with the app's built-in "
+        "auto-updater, and now updates can be performed and displayed "
+        "normally.",
+        date(2025, 10, 6),
+    ),
+    ChangelogEntry(
         "v0.2.6",
         "Bug fixes",
         "This version corrects the application's compilation settings, "
