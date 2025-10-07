@@ -1,3 +1,5 @@
+from enum import Enum
+from typing import Optional
 import requests
 import os
 from include.constants import RUNTIME_PATH, FLET_APP_STORAGE_TEMP
@@ -6,9 +8,28 @@ from include.constants import GITHUB_REPO
 SUPPORTED_PLATFORM = {"windows": "windows", "android": ".apk"}
 
 
+class AssetDigestType(Enum):
+    SHA256 = "sha256"
+
+
+class AssetDigest:
+    def __init__(self, raw: str):
+        _raw = raw.split(":")
+        if len(_raw) != 2:
+            raise ValueError("Wrong raw components")
+        self.type = AssetDigestType(_raw[0])
+        self.digest = _raw[1]
+
+
 class GithubAsset:
-    def __init__(self, name: str = "", download_link: str = ""):
+    def __init__(
+        self,
+        name: str = "",
+        digest: Optional[AssetDigest] = None,
+        download_link: str = "",
+    ):
         self.name = name
+        self.digest = digest
         self.download_link = download_link
 
 
@@ -42,6 +63,7 @@ def get_latest_release() -> GithubRelease | None:
         assets.append(
             GithubAsset(
                 name=asset["name"],
+                digest=AssetDigest(asset["digest"]),
                 download_link=asset["browser_download_url"],
             )
         )

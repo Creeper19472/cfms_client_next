@@ -24,7 +24,7 @@ class ChangePasswdDialog(ft.AlertDialog):
     ):
         super().__init__(ref=ref, visible=visible)
 
-        self.modal = True
+        self.modal = False
         self.scrollable = True
         self.title = ft.Text(_("修改密码"))
 

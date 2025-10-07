@@ -1,6 +1,7 @@
 import os
 import asyncio
 import threading
+from typing import Optional
 import flet as ft
 from flet_open_file import OpenFile
 from flet_permission_handler import Permission, PermissionHandler, PermissionStatus
@@ -9,6 +10,8 @@ import requests
 from include.classes.config import AppConfig
 from include.constants import FLET_APP_STORAGE_TEMP, RUNTIME_PATH
 from include.ui.util.notifications import send_error
+from include.util.transfer import calculate_sha256
+from include.util.upgrade.updater import AssetDigest, AssetDigestType
 
 
 class UpgradeDialog(ft.AlertDialog):
@@ -16,6 +19,7 @@ class UpgradeDialog(ft.AlertDialog):
         self,
         download_url: str,
         save_filename: str,
+        asset_digest: Optional[AssetDigest] = None,
         ref: ft.Ref | None = None,
         visible=True,
     ):
@@ -27,6 +31,7 @@ class UpgradeDialog(ft.AlertDialog):
         self.stop_event = asyncio.Event()
         self.download_url = download_url
         self.save_filename = save_filename
+        self.asset_digest = asset_digest
 
         self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
         self.upgrade_note = ft.Text(visible=False)
@@ -108,7 +113,6 @@ taskkill /f /im cfms_client_next.exe >nul 2>&1
 xcopy "{FLET_APP_STORAGE_TEMP}\\update\\build\\windows" "{RUNTIME_PATH}" /I /Y /S
 rmdir /s /q "{FLET_APP_STORAGE_TEMP}\\update"
 del "%~f0"
-start "" "{RUNTIME_PATH}\\cfms_client_next.exe"
 """
 
             update_script_path = f"{FLET_APP_STORAGE_TEMP}/update.cmd"
@@ -159,6 +163,19 @@ start "" "{RUNTIME_PATH}\\cfms_client_next.exe"
         try:
             # 确保临时目录存在
             os.makedirs(FLET_APP_STORAGE_TEMP, exist_ok=True)
+
+            target_path = f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
+            if (
+                self.asset_digest
+                and os.path.exists(target_path)
+                and os.path.getsize(target_path)
+            ):
+                match self.asset_digest.type:
+                    case AssetDigestType.SHA256:
+                        if self.asset_digest.digest == await calculate_sha256(
+                            target_path
+                        ):
+                            return True
 
             response = requests.get(self.download_url, stream=True, timeout=30)
             if response.status_code == 200:

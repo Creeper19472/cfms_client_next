@@ -8,6 +8,7 @@ from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
 from include.util.upgrade.updater import (
     SUPPORTED_PLATFORM,
+    GithubAsset,
     get_latest_release,
     is_new_version,
 )
@@ -218,16 +219,16 @@ class AboutModel(Model):
             if match_text:
                 for asset in latest.assets:
                     if match_text in asset.name:
-                        self.suc_upgrade_button.data = (
-                            asset.download_link
-                        )  # 设置下载链接
+                        self.suc_upgrade_button.data = asset  # 设置下载链接
                         self.suc_upgrade_button.visible = True
                         self.suc_release_info.visible = True
                         break  # releases 方面应当保证匹配结果唯一，如果唯一的话就没必要继续匹配了
 
                 # 判断是否有找到对应架构的包
                 if not self.suc_upgrade_button.visible:
-                    self.suc_unavailable_text.value = _("未在最新版本中找到对应架构的包")
+                    self.suc_unavailable_text.value = _(
+                        "未在最新版本中找到对应架构的包"
+                    )
                     self.suc_unavailable_text.visible = True
             else:
                 self.suc_unavailable_text.value = _("没有找到更新：不支持的架构")
@@ -242,7 +243,8 @@ class AboutModel(Model):
         yield self.enable_interactions()
 
     async def do_release_upgrade(self):
-        if not (download_url := self.suc_upgrade_button.data):
+        target_asset: GithubAsset = self.suc_upgrade_button.data
+        if not (download_url := target_asset.download_link):
             return
         assert type(download_url) == str
         save_filename = download_url.split("/")[-1]
@@ -250,7 +252,9 @@ class AboutModel(Model):
         self.suc_upgrade_button.disabled = True
         self.update()
 
-        self.page.show_dialog(UpgradeDialog(download_url, save_filename))
+        self.page.show_dialog(
+            UpgradeDialog(download_url, save_filename, target_asset.digest)
+        )
 
         self.suc_upgrade_button.disabled = False
         self.update()

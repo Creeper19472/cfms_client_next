@@ -3,7 +3,7 @@ from datetime import datetime
 import flet as ft
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.manage.manage import UserListView
+    from include.ui.controls.views.manage.account import UserListView
 
 
 def update_user_controls(view: "UserListView", users: list[dict], _update=True):

@@ -5,7 +5,8 @@ import flet_datatable2 as fdt
 from datetime import datetime
 
 from include.classes.config import AppConfig
-from include.ui.controls.views.manage.manage import ManageAccountsView
+from include.ui.controls.views.manage.account import ManageAccountsView
+from include.ui.controls.views.manage.group import ManageGroupsView
 
 
 class ManagementNavigationBar(ft.NavigationBar):
@@ -23,9 +24,9 @@ class ManagementNavigationBar(ft.NavigationBar):
                 icon=ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
                 label="Groups",
             ),
-            ft.NavigationBarDestination(
-                icon=ft.Icons.SETTINGS_APPLICATIONS, label="Settings"
-            ),
+            # ft.NavigationBarDestination(
+            #     icon=ft.Icons.SETTINGS_APPLICATIONS, label="Settings"
+            # ),
             ft.NavigationBarDestination(icon=ft.Icons.ARTICLE, label="Logs"),
         ]
 
@@ -68,6 +69,8 @@ class ManageModel(Model):
         
         self.controls = [
             ManageAccountsView(self),
+            ManageGroupsView(self),
+            # ViewAuditLogsView(self)
             # manage_groups_container,
             # view_audit_logs_container,
         ]

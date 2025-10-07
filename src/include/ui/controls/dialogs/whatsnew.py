@@ -9,6 +9,15 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.10",
+        "Re-introducing Group Management Interface & Improvements",
+        """This version reintroduces some features of the user group 
+        management interface and optimizes the updater logic so that 
+        it will check the local cache before starting to download 
+        the update package.""",
+        date(2025, 10, 8),
+    ),
+    ChangelogEntry(
         "v0.2.9",
         "Re-introducing Features for Development & Bug Fixes",
         """This version reintroduces several debugging features and 
