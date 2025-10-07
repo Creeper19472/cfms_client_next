@@ -9,6 +9,14 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.9",
+        "Re-introducing Features for Development & Bug Fixes",
+        """This version reintroduces several debugging features and 
+        resolves an issue where exiting the app with the back key on a 
+        mobile device would cause a crash on the next initial launch.""",
+        date(2025, 10, 7),
+    ),
+    ChangelogEntry(
         "v0.2.8",
         "Bug fixes",
         """This version fixes a typo in the code that caused the updater 

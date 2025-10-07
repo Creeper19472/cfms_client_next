@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import os
 import flet as ft
+from include.ui.controls.dialogs.dev import DevRequestDialog
 from include.ui.models.connect import ConnectToServerModel
 from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
@@ -62,6 +64,20 @@ async def main(page: ft.Page):
             tile_mode=ft.GradientTileMode.MIRROR,
         )
     )
+
+    def on_keyboard(e: ft.KeyboardEvent):
+        if e.key == "W" and e.ctrl:
+            page.show_semantics_debugger = not page.show_semantics_debugger
+            page.update()
+        elif e.key == "Q" and e.ctrl:
+            page.show_dialog(DevRequestDialog())
+
+    def on_state_change(e: ft.AppLifecycleStateChangeEvent):
+        if e.data=='detach' and page.platform == ft.PagePlatform.ANDROID:
+            os._exit(1)
+
+    page.on_keyboard_event = on_keyboard
+    page.on_app_lifecycle_state_change = on_state_change
 
     await page.push_route("/connect")
 
