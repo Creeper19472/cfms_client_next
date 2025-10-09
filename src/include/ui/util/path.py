@@ -12,7 +12,7 @@ from include.util.connect import get_connection
 from include.util.transfer import receive_file_from_server
 
 if TYPE_CHECKING:
-    from include.ui.controls.filemanager import FileListView
+    from include.ui.controls.views.filemanager import FileListView
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext

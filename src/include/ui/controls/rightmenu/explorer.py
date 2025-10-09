@@ -9,7 +9,7 @@ from include.ui.util.path import get_directory
 from include.util.communication import build_request
 
 if TYPE_CHECKING:
-    from ui.controls.filemanager import FileListView
+    from include.ui.controls.views.filemanager import FileListView
 import asyncio
 
 t = gettext.translation("client", "ui/locale", fallback=True)

@@ -1,6 +1,6 @@
 import flet as ft
 from flet_model import Model, route
-from include.ui.controls.login import LoginView
+from include.ui.controls.views.login import LoginView
 
 
 @route("login")

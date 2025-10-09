@@ -2,8 +2,8 @@ import asyncio
 import flet as ft
 from flet_model import Model, route
 from include.ui.controls.homepage import HomeView, HomeNavigationBar
-from include.ui.controls.filemanager import FileManagerView
-from include.ui.controls.more import MoreView
+from include.ui.controls.views.filemanager import FileManagerView
+from include.ui.controls.views.more import MoreView
 from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
 
 

@@ -2,11 +2,30 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 import flet as ft
 
+from include.ui.controls.rightmenu.manage import GroupRightMenuDialog
+
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import GroupListView
 
 
 def update_group_controls(view: "GroupListView", groups: list[dict], _update_page=True):
+
+    async def group_right_click(
+        event: (
+            ft.TapEvent[ft.GestureDetector] | ft.LongPressStartEvent[ft.GestureDetector]
+        ),
+    ):
+        assert event.control.content
+        event.page.show_dialog(
+            GroupRightMenuDialog(event.control.content.data, view)
+        )
+
+    async def group_click(
+        event: ft.Event[ft.ListTile],
+    ):
+        assert event.control.data
+        event.page.show_dialog(GroupRightMenuDialog(event.control.data, view))
+
     view.controls = []  # reset
     view.controls.extend(
         [
@@ -24,13 +43,11 @@ def update_group_controls(view: "GroupListView", groups: list[dict], _update_pag
                     ),
                     is_three_line=True,
                     data=group["name"],
-                    # on_click=on_group_right_click_menu,
+                    on_click=group_click,
                 ),
                 data=group["name"],
-                on_secondary_tap=lambda _: _.page.update()
-                # on_secondary_tap=on_group_right_click_menu,
-                # on_long_press_start=on_group_right_click_menu,
-                # on_hover=lambda e: update_mouse_position(e),
+                on_secondary_tap=group_right_click,
+                on_long_press_start=group_right_click,
             )
             for group in groups
         ]

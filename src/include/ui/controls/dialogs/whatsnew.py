@@ -9,6 +9,15 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.11",
+        "Restoring Full Functionality of the Group Management Interface",
+        """This version completes the functionality of the user 
+        group management interface that was already available in 
+        previous code branches. At the same time, the storage structure 
+        of some codes has also been adjusted.""",
+        date(2025, 10, 9),
+    ),
+    ChangelogEntry(
         "v0.2.10",
         "Re-introducing Group Management Interface & Improvements",
         """This version reintroduces some features of the user group 

@@ -7,7 +7,7 @@ from include.ui.util.notifications import send_error
 import flet as ft
 
 if TYPE_CHECKING:
-    from include.ui.controls.rightmenu import (
+    from include.ui.controls.rightmenu.explorer import (
         DocumentRightMenuDialog,
         DirectoryRightMenuDialog,
     )

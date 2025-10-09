@@ -3,7 +3,7 @@ from datetime import datetime
 import gettext
 import flet as ft
 
-from include.ui.controls.rightmenu import (
+from include.ui.controls.rightmenu.explorer import (
     DocumentRightMenuDialog,
     DirectoryRightMenuDialog,
 )
@@ -13,7 +13,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 if TYPE_CHECKING:
-    from include.ui.controls.filemanager import FileListView
+    from include.ui.controls.views.filemanager import FileListView
 
 # __all__ = ["get_directory"]
 
