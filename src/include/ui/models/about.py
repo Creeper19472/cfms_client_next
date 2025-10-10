@@ -234,7 +234,7 @@ class AboutModel(Model):
                 self.suc_unavailable_text.value = _("没有找到更新：不支持的架构")
                 self.suc_unavailable_text.visible = True
 
-        if os.environ.get("FLET_APP_CONSOLE"):
+        if not os.environ.get("FLET_APP_CONSOLE"):
             await _impl_check_for_updates()
         else:
             await asyncio.sleep(1)

@@ -37,7 +37,6 @@ class ManageGroupsView(ft.Container):
         self.padding = 10
         self.alignment = ft.Alignment.TOP_CENTER
         self.expand = True
-        self.visible = False  # by default
 
         self.progress_ring = ft.Row(
             controls=[

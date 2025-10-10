@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 import flet as ft
 
-from include.ui.controls.rightmenu.manage import GroupRightMenuDialog
+from include.ui.controls.rightmenu.manage.group import GroupRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import GroupListView

@@ -81,6 +81,7 @@ class UpgradeDialog(ft.AlertDialog):
         self.upgrade_note.value = "正在解压缩版本包"
         self.upgrade_note.visible = True
         self.update()
+        await asyncio.sleep(0)
 
         try:
             from zipfile import ZipFile
@@ -96,6 +97,7 @@ class UpgradeDialog(ft.AlertDialog):
 
             self.upgrade_note.value = "正在删除已解压缩的包"
             self.update()
+            await asyncio.sleep(0)
 
             try:
                 os.remove(f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}")
@@ -106,6 +108,7 @@ class UpgradeDialog(ft.AlertDialog):
 
             self.upgrade_note.value = "正在写入更新脚本"
             self.update()
+            await asyncio.sleep(0)
 
             _update_script = f"""@echo off
 timeout /t 2 /nobreak >nul
@@ -121,6 +124,7 @@ del "%~f0"
 
             self.upgrade_note.value = "正在关闭应用"
             self.update()
+            await asyncio.sleep(0)
 
             # 使用subprocess启动更新脚本
             subprocess.Popen(["cmd", "/c", "start", "", update_script_path], shell=True)

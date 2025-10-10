@@ -2,11 +2,28 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 import flet as ft
 
+from include.ui.controls.rightmenu.manage.account import UserRightMenuDialog
+
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.account import UserListView
 
 
 def update_user_controls(view: "UserListView", users: list[dict], _update=True):
+
+    async def user_right_click(
+        event: (
+            ft.TapEvent[ft.GestureDetector] | ft.LongPressStartEvent[ft.GestureDetector]
+        ),
+    ):
+        assert event.control.content
+        event.page.show_dialog(UserRightMenuDialog(event.control.content.data[0], view))
+
+    async def user_click(
+        event: ft.Event[ft.ListTile],
+    ):
+        assert event.control.data
+        event.page.show_dialog(UserRightMenuDialog(event.control.data, view))
+
     view.controls = []  # reset
     view.controls.extend(
         [
@@ -22,11 +39,11 @@ def update_user_controls(view: "UserListView", users: list[dict], _update=True):
                     ),
                     is_three_line=True,
                     data=user["username"],
-                    # on_click=on_user_right_click_menu,
+                    on_click=user_click,
                 ),
                 data=user["username"],
-                on_secondary_tap=lambda _: _.page.update() # on_user_right_click_menu,
-                # on_long_press_start=on_user_right_click_menu,
+                on_secondary_tap=user_right_click,
+                on_long_press_start=user_right_click,
             )
             for user in users
         ]
