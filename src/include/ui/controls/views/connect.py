@@ -6,6 +6,7 @@ from include.constants import PROTOCOL_VERSION
 from include.util.connect import get_connection
 from include.util.communication import build_request
 from include.ui import constants as const
+from include.constants import DEFAULT_WINDOW_TITLE
 from include.ui.util.notifications import send_error
 
 t = gettext.translation("client", "ui/locale", fallback=True)
@@ -23,6 +24,7 @@ class ConnectForm(ft.Container):
         self.padding = 20
 
         # Form variable definitions
+        self.app_config = AppConfig()
 
         # Form reference definitions
         self.ph_ref = ft.Ref[fph.PermissionHandler]()
@@ -85,6 +87,19 @@ class ConnectForm(ft.Container):
         app_config = AppConfig()
         app_config.ph_service = p
 
+    def did_mount(self):
+        super().did_mount()
+        self.page.title = DEFAULT_WINDOW_TITLE
+        # make sure previous connection is closed
+        if self.app_config.conn:
+            assert isinstance(self.page, ft.Page)
+            self.page.run_task(self.app_config.conn.close)
+
+    def will_unmount(self):
+        super().will_unmount()
+        self.enable_interactions()
+        self.disable_ssl_enforcement_switch.value = False
+
     def disable_interactions(self):
         self.connect_button.visible = False
         self.loading_animation.visible = True
@@ -118,7 +133,9 @@ class ConnectForm(ft.Container):
 
         try:
             conn = await get_connection(
-                server_address, self.disable_ssl_enforcement_switch.value
+                server_address,
+                self.disable_ssl_enforcement_switch.value,
+                proxy=self.app_config.preferences["settings"]["proxy_settings"],
             )
         except Exception as e:
             yield self.enable_interactions()

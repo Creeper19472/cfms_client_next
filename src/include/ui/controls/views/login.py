@@ -60,14 +60,13 @@ class LoginForm(ft.Container):
             expand=True,
         )
 
-        self.login_button = ft.Button(
-            content=_("Login"),
-            bgcolor=const.PRIMARY_COLOR,
-            color=const.TEXT_COLOR,
-            on_click=self.request_login,
-            style=ft.ButtonStyle(
-                shape=ft.RoundedRectangleBorder(radius=const.BUTTON_RADIUS)
-            ),
+        self.login_button = ft.IconButton(
+            icon=ft.Icons.LOGIN_OUTLINED, on_click=self.request_login, tooltip="Login"
+        )
+        self.disconnect_button = ft.IconButton(
+            icon=ft.Icons.CHEVRON_LEFT,
+            on_click=self.disconnect_button_click,
+            tooltip="Disconnect",
         )
         self.loading_animation = ft.ProgressRing(visible=False)
 
@@ -80,9 +79,11 @@ class LoginForm(ft.Container):
                         self.password_field,
                         ft.Row(
                             controls=[
-                                self.login_button,
+                                self.disconnect_button,
                                 self.loading_animation,
-                            ]
+                                self.login_button,
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         ),
                     ]
                 ),
@@ -104,14 +105,20 @@ class LoginForm(ft.Container):
         self.loading_animation.visible = True
         self.username_field.disabled = True
         self.password_field.disabled = True
+        self.disconnect_button.disabled = True
 
     def enable_interactions(self):
         self.login_button.visible = True
         self.loading_animation.visible = False
         self.username_field.disabled = False
         self.password_field.disabled = False
+        self.disconnect_button.disabled = False
 
-    async def request_login(self, e: ft.Event[ft.Button] | ft.Event[ft.TextField]):
+    async def disconnect_button_click(self, event: ft.Event[ft.IconButton]):
+        assert isinstance(self.page, ft.Page)
+        await self.page.push_route("/connect")
+
+    async def request_login(self, e: ft.Event[ft.IconButton] | ft.Event[ft.TextField]):
         assert type(self.page) == ft.Page
         yield self.disable_interactions()
 
@@ -150,7 +157,9 @@ class LoginForm(ft.Container):
             self.page.session.store.set("nickname", response["data"].get("nickname"))
             self.page.session.store.set("token", response["data"]["token"])
             self.page.session.store.set("exp", response["data"].get("exp"))
-            self.page.session.store.set("user_permissions", response["data"]["permissions"])
+            self.page.session.store.set(
+                "user_permissions", response["data"]["permissions"]
+            )
             self.page.session.store.set("user_groups", response["data"]["groups"])
 
             app_config = AppConfig()

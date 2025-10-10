@@ -20,7 +20,8 @@ from include.ui.controls.dialogs.dev import DevRequestDialog
 from include.ui.models.connect import ConnectToServerModel
 from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
-from include.ui.models.settings import SettingsModel
+from include.ui.models.settings.overview import SettingsModel
+from include.ui.models.settings.connection import ConnectionSettingsModel
 from include.ui.models.home import HomeModel
 from include.ui.models.manage import ManageModel
 
@@ -72,12 +73,12 @@ async def main(page: ft.Page):
         elif e.key == "Q" and e.ctrl:
             page.show_dialog(DevRequestDialog())
 
-    def on_state_change(e: ft.AppLifecycleStateChangeEvent):
-        if e.data=='detach' and page.platform == ft.PagePlatform.ANDROID:
-            os._exit(1)
+    # def on_state_change(e: ft.AppLifecycleStateChangeEvent):
+    #     if e.data=='detach' and page.platform == ft.PagePlatform.ANDROID:
+    #         os._exit(1)
 
     page.on_keyboard_event = on_keyboard
-    page.on_app_lifecycle_state_change = on_state_change
+    # page.on_app_lifecycle_state_change = on_state_change
 
     await page.push_route("/connect")
 

@@ -6,6 +6,7 @@ from include.constants import APP_VERSION, BUILD_VERSION
 
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
+from include.ui.util.route import get_parent_route
 from include.util.upgrade.updater import (
     SUPPORTED_PLATFORM,
     GithubAsset,
@@ -260,11 +261,7 @@ class AboutModel(Model):
         self.update()
 
     async def back_button_click(self, event: ft.Event[ft.IconButton]):
-        self.page.views.pop()
-        if last_route := self.page.views[-1].route:
-            await self.page.push_route(last_route)
-        else:
-            await self.page.push_route("/home")  # fallback
+         await self.page.push_route(get_parent_route(self.page.route))
 
     def did_mount(self) -> None:
         async def run():

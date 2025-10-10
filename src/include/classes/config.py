@@ -1,9 +1,12 @@
+import os
 from typing import Optional, Any
-import threading
-
+import threading, yaml
 from flet_permission_handler import PermissionHandler
 
 from include.classes.client import LockableClientConnection
+from include.constants import FLET_APP_STORAGE_DATA
+
+PREFERENCES_PATH = f'{FLET_APP_STORAGE_DATA}/preferences.yaml'
 
 __all__ = ["AppConfig"]
 
@@ -45,9 +48,30 @@ class AppConfig(object):
         self.nickname = nickname
         self.user_permissions = user_permissions
         self.user_groups = user_groups
+
+        if not os.path.exists(PREFERENCES_PATH):
+            self.init_preferences()
+
+        with open(PREFERENCES_PATH, 'r', encoding='utf-8') as file:
+            self.preferences = yaml.safe_load(file)
+
         self._initialized = True
 
     def get_not_none_attribute(self, name):
         _attr = getattr(self, name)
         assert _attr is not None
         return _attr
+    
+    def init_preferences(self):
+        doc = {
+            "settings": {
+                "proxy_settings": None
+            }
+        }
+
+        with open(PREFERENCES_PATH, "w", encoding="utf-8") as f:
+            yaml.safe_dump(doc, f)
+
+    def dump_preferences(self):
+        with open(PREFERENCES_PATH, "w", encoding="utf-8") as f:
+            yaml.safe_dump(self.preferences, f)

@@ -1,11 +1,15 @@
 import ssl
+from typing import Literal
 from websockets.asyncio.client import connect
 from include.classes.client import LockableClientConnection
 from include.constants import INTEGRATED_CA_CERT
 
 
 async def get_connection(
-    server_address, disable_ssl_enforcement: bool = False, max_size: int = 2**20
+    server_address,
+    disable_ssl_enforcement: bool = False,
+    max_size: int = 2**20,
+    proxy: str | Literal[True] | None = True,
 ) -> LockableClientConnection:
     ssl_context = ssl.create_default_context()
     if not disable_ssl_enforcement:
@@ -17,5 +21,5 @@ async def get_connection(
         ssl_context.verify_mode = ssl.CERT_NONE
 
     return LockableClientConnection(
-        await connect(server_address, ssl=ssl_context, max_size=max_size)
+        await connect(server_address, ssl=ssl_context, max_size=max_size, proxy=proxy)
     )

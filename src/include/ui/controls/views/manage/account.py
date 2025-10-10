@@ -41,13 +41,13 @@ class ManageAccountsView(ft.Container):
         self.progress_ring = ft.Row(
             controls=[
                 ft.ProgressRing(
-                    visible=True,
                     width=40,
                     height=40,
                     stroke_width=4,
                     value=None,
                 )
             ],
+            visible=False,
             alignment=ft.MainAxisAlignment.CENTER,
         )
         self.user_listview = UserListView(self)

@@ -9,6 +9,26 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.12",
+        "Major Feature Reintroduction Complete",
+        """
+Starting with this version, all the basic functionality that 
+was already implemented in the old code branch has been 
+reintroduced.
+        
+In addition to some silent features that are still waiting to 
+be reintroduced, the following known issues are still waiting 
+to be resolved:
+        
+- Significant lag when loading large amounts of data due to 
+flet-datatable2
+- When different dialog boxes are switched, the latter dialog 
+box may not be displayed
+- Minor issues with the updater
+        """,
+        date(2025, 10, 10),
+    ),
+    ChangelogEntry(
         "v0.2.11",
         "Restoring Full Functionality of the Group Management Interface",
         """This version completes the functionality of the user 
@@ -96,6 +116,7 @@ class ChangelogEntryColumn(ft.Column):
     def __init__(
         self,
         entry: ChangelogEntry,
+        leave_blank: bool = False,
         ref: ft.Ref | None = None,
         visible=True,
     ):
@@ -113,7 +134,7 @@ class ChangelogEntryColumn(ft.Column):
                 ],
             ),
             ft.Markdown(self.entry.content),
-            ft.Text("\n", size=7),  # leave blank spaces
+            ft.Text("\n", size=7, visible=leave_blank),
         ]
         self.expand = True
         self.expand_loose = True
@@ -132,7 +153,8 @@ class ChangelogHistoryDialog(ft.AlertDialog):
         self.title = ft.Text(_(f"Changelogs"))
 
         self.entry_columns = [
-            ChangelogEntryColumn(each_entry) for each_entry in changelogs
+            ChangelogEntryColumn(each_entry, leave_blank=True)
+            for each_entry in changelogs
         ]
 
         self.content = ft.Container(

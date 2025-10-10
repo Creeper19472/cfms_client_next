@@ -5,6 +5,7 @@ from include.classes.config import AppConfig
 from include.ui.controls.views.manage.account import ManageAccountsView
 from include.ui.controls.views.manage.audit import AuditLogView
 from include.ui.controls.views.manage.group import ManageGroupsView
+from include.ui.util.route import get_parent_route
 
 
 class ManagementNavigationBar(ft.NavigationBar):
@@ -36,13 +37,10 @@ class ManagementNavigationBar(ft.NavigationBar):
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
         def show_view(index):
-            for view in self.views:
-                if self.views.index(view) == index:
-                    view.visible = True
-                else:
-                    view.visible = False
+            for i, view in enumerate(self.views):
+                view.visible = i == index
 
-        yield show_view(e.control.selected_index)
+        show_view(e.control.selected_index)
         self.last_selected_index = self.selected_index
 
 
@@ -64,11 +62,11 @@ class ManageModel(Model):
             title=ft.Text("Management"),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
         )
-        
+
         self.controls = [
             ManageAccountsView(self),
             ManageGroupsView(self, visible=False),
-            AuditLogView(self, visible=False)
+            AuditLogView(self, visible=False),
         ]
         self.navigation_bar = ManagementNavigationBar(self, self.controls)
 
@@ -80,9 +78,7 @@ class ManageModel(Model):
         # self.page.session.set("refresh_user_list", refresh_user_list)
 
     async def _go_back(self, event: ft.Event[ft.IconButton]):
-        self.page.views.pop()
-        if last_route := self.page.views[-1].route:
-            await self.page.push_route(last_route)
+        await self.page.push_route(get_parent_route(self.page.route))
 
     def did_mount(self) -> None:
         pass

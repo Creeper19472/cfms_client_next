@@ -1,5 +1,4 @@
-import asyncio
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 import flet as ft
 import flet_datatable2 as fdt
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
 class AuditLogDatatable(fdt.DataTable2):
     def __init__(
         self,
-        ref: ft.Ref | None = None,
+        ref: Optional[ft.Ref] = None,
         visible=False,
     ):
         super().__init__(
@@ -71,7 +70,7 @@ class AuditLogDatatable(fdt.DataTable2):
 
 class AuditLogView(ft.Container):
     def __init__(
-        self, parent_model: "ManageModel", ref: ft.Ref | None = None, visible=True
+        self, parent_model: "ManageModel", ref: Optional[ft.Ref] = None, visible=True
     ):
         super().__init__(ref=ref, visible=visible)
         self.parent_model: "ManageModel" = parent_model
@@ -88,13 +87,13 @@ class AuditLogView(ft.Container):
         self.progress_ring = ft.Row(
             controls=[
                 ft.ProgressRing(
-                    visible=True,
                     width=40,
                     height=40,
                     stroke_width=4,
                     value=None,
                 )
             ],
+            visible=False,
             alignment=ft.MainAxisAlignment.CENTER,
         )
 
@@ -138,9 +137,21 @@ class AuditLogView(ft.Container):
         assert isinstance(self.page, ft.Page)
         self.page.run_task(self.refresh_audit_logs)
 
+    def disable_interactions(self):
+        # 显示加载状态
+        self.progress_ring.visible = True
+        self.audit_logs_datatable.visible = False
+        self.refresh_button.disabled = True
+        self.navigate_before_button.disabled = True
+        self.navigate_next_button.disabled = True
+
+    def enable_interactions(self):
+        self.progress_ring.visible = False
+        self.audit_logs_datatable.visible = True
+        self.refresh_button.disabled = False
+
     async def refresh_button_click(self, event: ft.Event[ft.IconButton]):
-        assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.refresh_audit_logs)
+        await self.refresh_audit_logs()
 
     async def audit_view_navigate_before_pressed(self, event: ft.Event[ft.IconButton]):
         self.audit_view_offset -= self.audit_view_count
@@ -153,11 +164,9 @@ class AuditLogView(ft.Container):
         await self.refresh_audit_logs()
 
     async def refresh_audit_logs(self):
-
-        async def update_audit_logs_controls(entries: list[dict]):
+        def update_audit_logs_controls(entries: list[dict]):
             self.audit_logs_datatable.rows.clear()
 
-            audit_logged_actions = set()
             for entry in entries:
                 self.audit_logs_datatable.rows.append(
                     fdt.DataRow2(
@@ -181,37 +190,53 @@ class AuditLogView(ft.Container):
                         ]
                     )
                 )
-                audit_logged_actions.add(entry["action"])
 
-        self.progress_ring.visible = True
-        self.audit_logs_datatable.visible = False
+        self.disable_interactions()
         self.update()
 
-        response = await build_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="view_audit_logs",
-            data={"offset": self.audit_view_offset, "count": self.audit_view_count},
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        self.progress_ring.visible = False
-        self.update()
+        try:
+            response = await build_request(
+                self.app_config.get_not_none_attribute("conn"),
+                action="view_audit_logs",
+                data={"offset": self.audit_view_offset, "count": self.audit_view_count},
+                username=self.app_config.username,
+                token=self.app_config.token,
+            )
 
-        if (code := response["code"]) != 200:
-            send_error(self.page, f"加载失败: ({code}) {response['message']}")
-        else:
-            view_start = self.audit_view_offset + 1
-            view_end = self.audit_view_offset + self.audit_view_count
-            if view_end > response["data"]["total"]:
-                view_end = response["data"]["total"]
-            self.audit_info_text.value = (
-                f"{view_start} - {view_end} 条，共 {response["data"]["total"]} 条"
-            )
-            self.navigate_before_button.disabled = self.audit_view_offset <= 0
-            self.navigate_next_button.disabled = (
-                self.audit_view_offset + self.audit_view_count
-                >= response["data"]["total"]
-            )
-            await update_audit_logs_controls(response["data"]["entries"])
-            self.audit_logs_datatable.visible = True
+            if (code := response["code"]) != 200:
+                send_error(
+                    self.page,
+                    f"加载失败: ({code}) {response.get('message', 'Unknown error')}",
+                )
+            else:
+                data: dict = response.get("data", {})
+                total = data.get("total", 0)
+                entries = data.get("entries", [])
+
+                view_start = self.audit_view_offset + 1
+                view_end = self.audit_view_offset + len(entries)
+
+                # 修复字符串格式化问题
+                self.audit_info_text.value = (
+                    f"{view_start} - {view_end} 条，共 {total} 条"
+                )
+
+                self.navigate_before_button.disabled = self.audit_view_offset <= 0
+                self.navigate_next_button.disabled = (
+                    self.audit_view_offset + self.audit_view_count >= total
+                )
+
+                update_audit_logs_controls(entries)
+
+            self.enable_interactions()
             self.update()
+
+        except Exception as e:
+            # 隐藏加载状态并启用按钮
+            self.progress_ring.controls[0].visible = False
+            self.refresh_button.disabled = False
+            self.navigate_before_button.disabled = self.audit_view_offset <= 0
+            self.navigate_next_button.disabled = False
+            self.update()
+
+            send_error(self.page, f"加载失败: {str(e)}")
