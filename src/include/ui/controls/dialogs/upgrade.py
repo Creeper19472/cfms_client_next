@@ -115,7 +115,6 @@ timeout /t 2 /nobreak >nul
 taskkill /f /im cfms_client_next.exe >nul 2>&1
 xcopy "{FLET_APP_STORAGE_TEMP}\\update\\build\\windows" "{RUNTIME_PATH}" /I /Y /S
 rmdir /s /q "{FLET_APP_STORAGE_TEMP}\\update"
-del "%~f0"
 """
 
             update_script_path = f"{FLET_APP_STORAGE_TEMP}/update.cmd"
