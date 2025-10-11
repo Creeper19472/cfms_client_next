@@ -14,13 +14,24 @@ class ConnectToServerModel(Model):
     padding = 20
     spacing = 10
 
-    appbar = ft.AppBar(title=ft.Text("Connect to Server"), center_title=True)
-
-    floating_action_button = FloatingUpgradeButton()
-    floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
-
     def __init__(self, page: ft.Page):
         super().__init__(page)
+
+        self.appbar = ft.AppBar(
+            title=ft.Text("Connect to Server"),
+            center_title=True,
+            actions=[
+                ft.IconButton(
+                    ft.Icons.SETTINGS_OUTLINED,
+                    tooltip="Connection Settings",
+                    on_click=self.conn_settings_button_click,
+                ),
+            ],
+            actions_padding=10
+        )
+
+        self.floating_action_button = FloatingUpgradeButton()
+        self.floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
 
         explanation_text = ft.Text(
             APP_VERSION,
@@ -35,3 +46,6 @@ class ConnectToServerModel(Model):
         )
 
         self.controls = [ConnectForm(), version_container]
+
+    async def conn_settings_button_click(self, event: ft.Event[ft.IconButton]):
+        await self.page.push_route(self.page.route + "/conn_settings")

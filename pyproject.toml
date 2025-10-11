@@ -1,6 +1,6 @@
 [project]
 name = "cfms-client-next"
-version = "0.2.13"
+version = "0.2.14"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,7 +18,8 @@ dependencies = [
   "cffi",
   "requests",
   "aiofiles",
-  "PyYAML"
+  "PyYAML",
+  "python-socks"
 ]
 
 [tool.flet]

@@ -22,11 +22,13 @@ from include.ui.models.login import LoginModel
 from include.ui.models.about import AboutModel
 from include.ui.models.settings.overview import SettingsModel
 from include.ui.models.settings.connection import ConnectionSettingsModel
+from include.ui.models.settings.safety import SafetySettingsModel
 from include.ui.models.home import HomeModel
 from include.ui.models.manage import ManageModel
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
+
 
 async def main(page: ft.Page):
     # Page settings
@@ -49,6 +51,10 @@ async def main(page: ft.Page):
 
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(thickness=0.0),
+        snackbar_theme=ft.SnackBarTheme(
+            show_close_icon=True,
+            behavior=ft.SnackBarBehavior.FLOATING,
+        ),
         # dialog_theme=ft.DialogTheme(title_text_style=ft.TextStyle(size=22, font_family="Deng Bold")),
         # text_button_theme=ft.TextButtonTheme(text_style=ft.TextStyle(font_family="Deng")),
         # elevated_button_theme=ft.ElevatedButtonTheme(text_style=ft.TextStyle(font_family="Deng")),

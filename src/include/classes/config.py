@@ -65,7 +65,9 @@ class AppConfig(object):
     def init_preferences(self):
         doc = {
             "settings": {
-                "proxy_settings": None
+                "proxy_settings": None,
+                "custom_proxy": "",
+                "enable_conn_history_logging": False,
             }
         }
 

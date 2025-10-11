@@ -7,7 +7,7 @@ from include.util.connect import get_connection
 from include.util.communication import build_request
 from include.ui import constants as const
 from include.constants import DEFAULT_WINDOW_TITLE
-from include.ui.util.notifications import send_error
+from include.ui.util.notifications import send_error, send_success
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
@@ -137,9 +137,13 @@ class ConnectForm(ft.Container):
                 self.disable_ssl_enforcement_switch.value,
                 proxy=self.app_config.preferences["settings"]["proxy_settings"],
             )
+        except ConnectionResetError as e:
+            yield self.enable_interactions()
+            send_error(self.page, _(f"建立连接失败，因为连接已重置。"))
+            return
         except Exception as e:
             yield self.enable_interactions()
-            send_error(self.page, _(f"建立连接失败：{e}"))
+            send_error(self.page, _(f"建立连接失败：({e.__class__.__name__}) {str(e)}"))
             return
 
         server_info_response = await build_request(conn, "server_info")

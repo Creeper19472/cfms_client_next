@@ -9,6 +9,14 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.14",
+        "Add Connection Settings",
+        "This version adds some new connection settings that "
+        "allow you to adjust the configuration of the "
+        "application using the proxy.",
+        date(2025, 10, 11),
+    ),
+    ChangelogEntry(
         "v0.2.12",
         "Major Feature Reintroduction Complete",
         """
