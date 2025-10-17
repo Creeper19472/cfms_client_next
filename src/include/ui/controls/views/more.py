@@ -5,6 +5,7 @@ import flet as ft
 
 from include.classes.config import AppConfig
 from include.ui.controls.dialogs.base import AlertDialog
+from include.ui.controls.dialogs.manage.accounts import PasswdUserDialog
 from include.ui.util.notifications import send_error
 from include.ui.util.quotes import get_quote
 from include.util.requests import do_request
@@ -14,110 +15,6 @@ if TYPE_CHECKING:
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
-
-
-class ChangePasswdDialog(AlertDialog):
-    def __init__(
-        self,
-        tip: str = "",
-        ref: ft.Ref | None = None,
-        visible=True,
-    ):
-        super().__init__(ref=ref, visible=visible)
-
-        self.modal = False
-        self.scrollable = True
-        self.title = ft.Text(_("修改密码"))
-
-        self.app_config = AppConfig()
-
-        self.progress_ring = ft.ProgressRing(visible=False)
-        self.new_passwd_field = ft.TextField(
-            label=_("新密码"),
-            on_submit=self.request_set_passwd,
-            password=True,
-            can_reveal_password=True,
-            expand=True
-        )
-        self.old_passwd_field = ft.TextField(
-            label=_("旧密码"),
-            on_submit=lambda _: self.new_passwd_field.focus(),
-            password=True,
-            can_reveal_password=True,
-            expand=True
-        )
-        self.tip_text = ft.Text(tip, visible=bool(tip), text_align=ft.TextAlign.CENTER)
-
-        self.submit_button = ft.Button(
-            "修改",
-            on_click=self.request_set_passwd,
-        )
-        self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
-
-        self.content = ft.Column(
-            controls=[
-                self.old_passwd_field,
-                self.new_passwd_field,
-                self.tip_text,
-            ],
-            width=400,
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            expand=True,
-            scroll=ft.ScrollMode.AUTO,
-        )
-        self.actions = [
-            self.progress_ring,
-            self.submit_button,
-            self.cancel_button,
-        ]
-
-    def disable_interactions(self):
-        self.old_passwd_field.disabled = True
-        self.new_passwd_field.disabled = True
-        self.cancel_button.disabled = True
-        self.submit_button.visible = False
-        self.progress_ring.visible = True
-        self.modal = True
-
-    def enable_interactions(self):
-        self.old_passwd_field.disabled = False
-        self.new_passwd_field.disabled = False
-        self.cancel_button.disabled = False
-        self.submit_button.visible = True
-        self.progress_ring.visible = False
-        self.modal = False
-
-    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
-        self.close()
-
-    async def request_set_passwd(
-        self, event: ft.Event[ft.TextField] | ft.Event[ft.Button]
-    ):
-        yield self.disable_interactions()
-
-        response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            "set_passwd",
-            data={
-                "username": self.app_config.username,
-                "old_passwd": self.old_passwd_field.value,
-                "new_passwd": self.new_passwd_field.value,
-            },  # 修改密码，无需 data 外提供 username 和 token
-        )
-
-        yield self.close()
-
-        if response["code"] != 200:
-            send_error(event.page, f"修改密码失败: {response['message']}")
-        else:
-            assert type(self.page) == ft.Page
-            assert self.page.platform
-
-            if self.page.platform.value not in ["ios", "android"]:
-                await self.page.window.close()
-            else:
-                send_error(event.page, "您已登出，请手动重启应用")
 
 
 class MoreView(ft.Container):
@@ -192,7 +89,7 @@ class MoreView(ft.Container):
         )
 
     async def passwd_listtile_click(self, event: ft.Event[ft.ListTile]):
-        self.page.show_dialog(ChangePasswdDialog())
+        self.page.show_dialog(PasswdUserDialog())
 
     async def settings_listtile_click(self, event: ft.Event[ft.ListTile]):
         assert type(self.page) == ft.Page

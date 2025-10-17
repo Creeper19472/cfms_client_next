@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import gettext
 from include.classes.client import LockableClientConnection
 from include.classes.config import AppConfig
+from include.ui.controls.dialogs.manage.accounts import PasswdUserDialog
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -59,8 +60,8 @@ class LoginFormController:
 
         elif code == 403:
             self.view.page.session.store.set("username", username)
-            # open_change_passwd_dialog(e, "在登录前必须修改密码。")
+            self.view.page.show_dialog(PasswdUserDialog(_("在登录前必须修改密码。")))
             return
 
         else:
-            self.view.send_error(f"登录失败：({code}) {response['message']}")
+            self.view.send_error(_(f"登录失败：({code}) {response['message']}"))

@@ -1,14 +1,9 @@
-import asyncio
 import flet as ft
 import gettext
 
-from websockets import ClientConnection
-from include.classes.client import LockableClientConnection
-from include.classes.config import AppConfig
 from include.controllers.login import LoginFormController
 import include.ui.constants as const
 from include.ui.util.notifications import send_error
-from include.util.requests import do_request
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext

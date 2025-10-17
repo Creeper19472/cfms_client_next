@@ -2,15 +2,12 @@ from typing import TYPE_CHECKING
 import flet as ft
 import asyncio, gettext
 
-from include.classes.client import LockableClientConnection
-from include.classes.exceptions.request import (
-    CreateDirectoryFailureError,
-    RequestFailureError,
+from include.controllers.dialogs.directory import (
+    CreateDirectoryDialogController,
+    OpenDirectoryDialogController,
 )
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
-from include.ui.util.path import get_directory
-from include.util.create import create_directory
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -27,6 +24,8 @@ class CreateDirectoryDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = CreateDirectoryDialogController(self)
 
         self.modal = False
         self.title = ft.Text(_("创建目录"))
@@ -40,9 +39,6 @@ class CreateDirectoryDialog(AlertDialog):
             on_submit=self.ok_button_click,
             expand=True,
         )
-        self.textfield_empty_message = ft.Text(
-            _("Directory name cannot be empty"), color=ft.Colors.RED, visible=False
-        )
 
         self.submit_button = ft.TextButton(
             _("创建"),
@@ -51,7 +47,7 @@ class CreateDirectoryDialog(AlertDialog):
         self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
-            controls=[self.directory_textfield, self.textfield_empty_message],
+            controls=[self.directory_textfield],
             width=400,
             alignment=ft.MainAxisAlignment.CENTER,
             scroll=ft.ScrollMode.AUTO,
@@ -64,8 +60,7 @@ class CreateDirectoryDialog(AlertDialog):
         self.cancel_button.disabled = True
         self.submit_button.visible = False
         self.progress_ring.visible = True
-        self.textfield_empty_message.visible = False
-        self.directory_textfield.border_color = None
+        self.directory_textfield.error = None
         self.modal = True
 
     def enable_interactions(self):
@@ -75,36 +70,20 @@ class CreateDirectoryDialog(AlertDialog):
         self.progress_ring.visible = False
         self.modal = False
 
+    def send_error(self, msg: str):
+        send_error(self.page, msg)
+
     async def ok_button_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
     ):
         yield self.disable_interactions()
 
-        if not (name := self.directory_textfield.value):
-            self.directory_textfield.border_color = ft.Colors.RED
-            self.textfield_empty_message.visible = True
+        if not (directory_name := self.directory_textfield.value):
+            self.directory_textfield.error = _("Directory name cannot be empty")
             yield self.enable_interactions()
             return
 
-        assert type(self.page) == ft.Page
-        conn = self.page.session.store.get("conn")
-        assert type(conn) == LockableClientConnection
-
-        try:
-            await create_directory(
-                conn,
-                self.parent_manager.current_directory_id,
-                name,
-                self.page.session.store.get("username"),
-                self.page.session.store.get("token"),
-            )
-        except CreateDirectoryFailureError as err:
-            send_error(self.page, str(err))
-
-        await get_directory(
-            self.parent_manager.current_directory_id, self.parent_manager.file_listview
-        )
-        self.close()
+        self.page.run_task(self.controller.action_create_directory, directory_name)
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
@@ -217,6 +196,8 @@ class OpenDirectoryDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = OpenDirectoryDialogController(self)
 
         self.modal = False
         self.title = ft.Text(_("跳转至..."))
@@ -230,9 +211,6 @@ class OpenDirectoryDialog(AlertDialog):
             on_submit=self.ok_button_click,
             expand=True,
         )
-        self.textfield_empty_message = ft.Text(
-            _("Directory id cannot be empty"), color=ft.Colors.RED, visible=False
-        )
 
         self.submit_button = ft.TextButton(
             _("提交"),
@@ -241,7 +219,7 @@ class OpenDirectoryDialog(AlertDialog):
         self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
-            controls=[self.directory_textfield, self.textfield_empty_message],
+            controls=[self.directory_textfield],
             width=400,
             alignment=ft.MainAxisAlignment.CENTER,
             scroll=ft.ScrollMode.AUTO,
@@ -254,10 +232,9 @@ class OpenDirectoryDialog(AlertDialog):
         self.cancel_button.disabled = True
         self.submit_button.visible = False
         self.progress_ring.visible = True
-        self.textfield_empty_message.visible = False
-        self.directory_textfield.border_color = None
         self.directory_textfield.error = None
         self.modal = True
+        self.update()
 
     def enable_interactions(self):
         self.directory_textfield.disabled = False
@@ -265,6 +242,7 @@ class OpenDirectoryDialog(AlertDialog):
         self.submit_button.visible = True
         self.progress_ring.visible = False
         self.modal = False
+        self.update()
 
     async def ok_button_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
@@ -272,30 +250,11 @@ class OpenDirectoryDialog(AlertDialog):
         yield self.disable_interactions()
 
         if not (dir_id := self.directory_textfield.value):
-            self.directory_textfield.border_color = ft.Colors.RED
-            self.textfield_empty_message.visible = True
-            yield self.enable_interactions()
+            self.directory_textfield.error = _("Directory id cannot be empty")
+            self.enable_interactions()
             return
 
-        try:
-            await get_directory(
-                dir_id,
-                self.parent_manager.file_listview,
-                fallback="",
-                _raise_on_error=True,
-            )
-        except RequestFailureError as exc:
-            if exc.response:
-                self.directory_textfield.error = (
-                    "Get directory failed: "
-                    f"({exc.response["code"]}) {exc.response["message"]}"
-                )
-            yield self.enable_interactions()
-            return
-
-        self.parent_manager.indicator.clear()
-        self.parent_manager.indicator.go(dir_id)
-        self.close()
+        self.page.run_task(self.controller.action_open_directory, dir_id)
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()

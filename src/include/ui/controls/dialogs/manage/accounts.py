@@ -20,7 +20,7 @@ _ = t.gettext
 class PasswdUserDialog(AlertDialog):
     def __init__(
         self,
-        tip: str | None = None,
+        tip: str = "",
         ref: ft.Ref | None = None,
         visible=True,
     ):
@@ -49,17 +49,16 @@ class PasswdUserDialog(AlertDialog):
             on_submit=self.request_passwd_user,
             expand=True,
         )
+        self.tip_text = ft.Text(tip, text_align=ft.TextAlign.CENTER, visible=bool(tip))
         self.submit_button = ft.TextButton("提交", on_click=self.request_passwd_user)
         self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
 
         self.content = ft.Column(
-            controls=[
-                self.new_passwd_field,
-            ],
+            controls=[self.old_passwd_field, self.new_passwd_field, self.tip_text],
             width=400,
             alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             expand=True,
-            scroll=ft.ScrollMode.AUTO,
         )
         self.actions = [
             self.progress_ring,
