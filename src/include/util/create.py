@@ -3,7 +3,7 @@ from include.classes.client import LockableClientConnection
 from include.classes.exceptions.request import (
     CreateDirectoryFailureError,
 )
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 
 async def create_directory(
@@ -14,7 +14,7 @@ async def create_directory(
     token: str | Any,
     exists_ok: bool = False,
 ) -> str:
-    mkdir_resp = await build_request(
+    mkdir_resp = await do_request(
         conn,
         "create_directory",
         data={

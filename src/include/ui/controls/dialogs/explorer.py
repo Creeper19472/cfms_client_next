@@ -7,18 +7,19 @@ from include.classes.exceptions.request import (
     CreateDirectoryFailureError,
     RequestFailureError,
 )
+from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
 from include.util.create import create_directory
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.filemanager import FileManagerView
+    from include.ui.controls.views.explorer import FileManagerView
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class CreateDirectoryDialog(ft.AlertDialog):
+class CreateDirectoryDialog(AlertDialog):
     def __init__(
         self,
         parent_manager: "FileManagerView",
@@ -57,10 +58,6 @@ class CreateDirectoryDialog(ft.AlertDialog):
             expand=True,
         )
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
-
-    def close(self):
-        self.open = False
-        self.update()
 
     def disable_interactions(self):
         self.directory_textfield.disabled = True
@@ -113,7 +110,7 @@ class CreateDirectoryDialog(ft.AlertDialog):
         self.close()
 
 
-class BatchUploadFileAlertDialog(ft.AlertDialog):
+class BatchUploadFileAlertDialog(AlertDialog):
     def __init__(
         self,
         progress_column,
@@ -149,10 +146,6 @@ class BatchUploadFileAlertDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
@@ -163,7 +156,7 @@ class BatchUploadFileAlertDialog(ft.AlertDialog):
         yield
 
 
-class UploadDirectoryAlertDialog(ft.AlertDialog):
+class UploadDirectoryAlertDialog(AlertDialog):
     def __init__(
         self,
         stop_event: asyncio.Event,
@@ -202,10 +195,6 @@ class UploadDirectoryAlertDialog(ft.AlertDialog):
         )
         self.actions = [self.ok_button, self.cancel_button]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def finish_upload(self):
         self.ok_button.disabled = False
         self.cancel_button.disabled = True
@@ -220,7 +209,7 @@ class UploadDirectoryAlertDialog(ft.AlertDialog):
         yield
 
 
-class OpenDirectoryDialog(ft.AlertDialog):
+class OpenDirectoryDialog(AlertDialog):
     def __init__(
         self,
         parent_manager: "FileManagerView",
@@ -259,10 +248,6 @@ class OpenDirectoryDialog(ft.AlertDialog):
             expand=True,
         )
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
-
-    def close(self):
-        self.open = False
-        self.update()
 
     def disable_interactions(self):
         self.directory_textfield.disabled = True

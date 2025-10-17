@@ -3,8 +3,10 @@ import flet as ft
 import gettext
 
 from include.classes.config import AppConfig
+from include.ui.controls.dialogs.base import AlertDialog
+from include.ui.controls.rightmenu.base import RightMenuDialog
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from ui.controls.views.manage.group import GroupListView
@@ -13,7 +15,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class GroupRightMenuDialog(ft.AlertDialog):
+class GroupRightMenuDialog(RightMenuDialog):
     def __init__(
         self,
         group_name: str,
@@ -21,52 +23,39 @@ class GroupRightMenuDialog(ft.AlertDialog):
         ref: ft.Ref | None = None,
         visible=True,
     ):
-        super().__init__(ref=ref, visible=visible)
-
-        self.modal = False
-        self.scrollable = True
-        self.title = ft.Text(_("操作用户组"))
-
         self.group_name = group_name
         self.app_config = AppConfig()
         self.parent_listview = parent_listview
 
-        self.menu_listview = ft.ListView(
-            controls=[
-                ft.Column(
-                    [
-                        ft.ListTile(
-                            leading=ft.Icon(ft.Icons.GROUP_REMOVE),
-                            title=ft.Text("删除"),
-                            subtitle=ft.Text(f"删除此用户组"),
-                            on_click=self.remove_button_click,
-                        ),
-                        ft.ListTile(
-                            leading=ft.Icon(
-                                ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED
-                            ),
-                            title=ft.Text("重命名"),
-                            subtitle=ft.Text(f"为用户组更改展示的名称"),
-                            on_click=self.rename_button_click,
-                        ),
-                        ft.ListTile(
-                            leading=ft.Icon(ft.Icons.SETTINGS_OUTLINED),
-                            title=ft.Text("设置权限"),
-                            subtitle=ft.Text(f"为用户组更改拥有的权限"),
-                            on_click=self.settings_button_click,
-                        ),
-                    ],
-                )
-            ]
+        menu_items = [
+            {
+                "icon": ft.Icons.GROUP_REMOVE,
+                "title": _("删除"),
+                "subtitle": _("删除此用户组"),
+                "on_click": self.remove_button_click,
+            },
+            {
+                "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                "title": _("重命名"),
+                "subtitle": _("为用户组更改展示的名称"),
+                "on_click": self.rename_button_click,
+            },
+            {
+                "icon": ft.Icons.SETTINGS_OUTLINED,
+                "title": _("设置权限"),
+                "subtitle": _("为用户组更改拥有的权限"),
+                "on_click": self.settings_button_click,
+            },
+        ]
+        super().__init__(
+            title=ft.Text(_("操作用户组")),
+            menu_items=menu_items,
+            ref=ref,
+            visible=visible,
         )
-        self.content = ft.Container(self.menu_listview, width=480)
-
-    def close(self):
-        self.open = False
-        self.update()
 
     async def remove_button_click(self, event: ft.Event[ft.ListTile]):
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="delete_group",
             data={"group_name": self.group_name},
@@ -89,7 +78,7 @@ class GroupRightMenuDialog(ft.AlertDialog):
         self.page.show_dialog(EditGroupPermissionDialog(self))
 
 
-class RenameGroupDialog(ft.AlertDialog):
+class RenameGroupDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "GroupRightMenuDialog",
@@ -129,10 +118,6 @@ class RenameGroupDialog(ft.AlertDialog):
         )
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.name_textfield.disabled = True
         self.cancel_button.disabled = True
@@ -160,7 +145,7 @@ class RenameGroupDialog(ft.AlertDialog):
             yield self.enable_interactions()
             return
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="rename_group",
             data={
@@ -182,7 +167,7 @@ class RenameGroupDialog(ft.AlertDialog):
         self.close()
 
 
-class EditGroupPermissionDialog(ft.AlertDialog):
+class EditGroupPermissionDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "GroupRightMenuDialog",
@@ -240,10 +225,6 @@ class EditGroupPermissionDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def did_mount(self):
         super().did_mount()
         assert isinstance(self.page, ft.Page)
@@ -289,7 +270,7 @@ class EditGroupPermissionDialog(ft.AlertDialog):
             if checkbox.value == True:
                 to_submit_list.append(checkbox.data)
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="change_group_permissions",
             data={
@@ -326,7 +307,7 @@ class EditGroupPermissionDialog(ft.AlertDialog):
         self.permission_listview.controls = []
 
         # 拉取用户组信息
-        group_info_response = await build_request(
+        group_info_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="get_group_info",
             data={"group_name": self.parent_dialog.group_name},

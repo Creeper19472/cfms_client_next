@@ -7,7 +7,7 @@ import flet as ft
 
 from include.classes.client import LockableClientConnection
 from include.classes.exceptions.request import RequestFailureError
-from include.ui.controls.dialogs.filemanager import (
+from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     CreateDirectoryDialog,
     OpenDirectoryDialog,
@@ -15,7 +15,7 @@ from include.ui.controls.dialogs.filemanager import (
 )
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import get_directory
-from include.util.communication import build_request
+from include.util.requests import do_request
 from include.util.connect import get_connection
 from include.util.create import create_directory
 from include.util.path import build_directory_tree
@@ -189,7 +189,7 @@ class FileManagerView(ft.Container):
             conn = self.page.session.store.get("conn")
             assert type(conn) == LockableClientConnection
 
-            response = await build_request(
+            response = await do_request(
                 conn,
                 action="create_document",
                 data={
@@ -337,7 +337,7 @@ class FileManagerView(ft.Container):
                 upload_dialog.progress_bar.value = _current_number / _total_number
                 upload_dialog.progress_column.update()
 
-                create_document_response = await build_request(
+                create_document_response = await do_request(
                     conn,
                     action="create_document",
                     data={

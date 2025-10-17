@@ -9,12 +9,13 @@ import requests
 
 from include.classes.config import AppConfig
 from include.constants import FLET_APP_STORAGE_TEMP, RUNTIME_PATH
+from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.util.transfer import calculate_sha256
 from include.util.upgrade.updater import AssetDigest, AssetDigestType
 
 
-class UpgradeDialog(ft.AlertDialog):
+class UpgradeDialog(AlertDialog):
     def __init__(
         self,
         download_url: str,
@@ -52,10 +53,6 @@ class UpgradeDialog(ft.AlertDialog):
         self.actions = [
             self.cancel_button,
         ]
-
-    def close(self):
-        self.open = False
-        self.update()
 
     def did_mount(self):
         super().did_mount()

@@ -6,7 +6,7 @@ from include.classes.config import AppConfig
 from include.ui.controls.dialogs.manage.accounts import AddUserAccountDialog
 from include.ui.util.notifications import send_error
 from include.ui.util.user_controls import update_user_controls
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
@@ -93,7 +93,7 @@ class ManageAccountsView(ft.Container):
         self.disable_interactions()
         self.update()
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="list_users",
             data={},

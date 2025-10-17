@@ -3,20 +3,22 @@ from typing import TYPE_CHECKING, Type
 import flet as ft
 import gettext
 from include.classes.client import LockableClientConnection
+from include.ui.controls.dialogs.base import AlertDialog
+from include.ui.controls.rightmenu.base import RightMenuDialog
 from include.ui.controls.rulemanager import RuleManager
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.filemanager import FileListView
+    from include.ui.controls.views.explorer import FileListView
 import asyncio
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class RenameDialog(ft.AlertDialog):
+class RenameDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "DocumentRightMenuDialog|DirectoryRightMenuDialog",
@@ -37,7 +39,7 @@ class RenameDialog(ft.AlertDialog):
         self.modal = False
         self.title = ft.Text(_(f"重命名{self.object_display_name}"))
 
-        self.parent_dialog = parent_dialog    
+        self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
@@ -46,7 +48,9 @@ class RenameDialog(ft.AlertDialog):
             expand=True,
         )
         self.textfield_empty_message = ft.Text(
-            _(f"{self.object_display_name} name cannot be empty"), color=ft.Colors.RED, visible=False
+            _(f"{self.object_display_name} name cannot be empty"),
+            color=ft.Colors.RED,
+            visible=False,
         )
 
         self.submit_button = ft.TextButton(
@@ -96,7 +100,7 @@ class RenameDialog(ft.AlertDialog):
         assert type(conn) == LockableClientConnection
 
         if type(self.parent_dialog) == DocumentRightMenuDialog:
-            response = await build_request(
+            response = await do_request(
                 conn,
                 "rename_document",
                 {
@@ -108,7 +112,7 @@ class RenameDialog(ft.AlertDialog):
                 self.page.session.store.get("token"),
             )
         elif type(self.parent_dialog) == DirectoryRightMenuDialog:
-            response = await build_request(
+            response = await do_request(
                 conn,
                 "rename_directory",
                 {
@@ -138,7 +142,7 @@ class RenameDialog(ft.AlertDialog):
         self.update()
 
 
-class GetDocumentInfoDialog(ft.AlertDialog):
+class GetDocumentInfoDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "DocumentRightMenuDialog",
@@ -183,10 +187,6 @@ class GetDocumentInfoDialog(ft.AlertDialog):
 
         asyncio.create_task(run())
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.progress_ring.visible = True
         self.info_listview.visible = False
@@ -203,7 +203,7 @@ class GetDocumentInfoDialog(ft.AlertDialog):
         conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
 
-        response = await build_request(
+        response = await do_request(
             conn,
             action="get_document_info",
             data={
@@ -246,71 +246,57 @@ class GetDocumentInfoDialog(ft.AlertDialog):
     refresh_button_click = request_document_info
 
 
-class DocumentRightMenuDialog(ft.AlertDialog):
+class DocumentRightMenuDialog(RightMenuDialog):
     def __init__(
         self,
         document_id: str,
-        # triggered_event: ft.TapEvent[ft.GestureDetector],
-        # triggered_detector: ft.GestureDetector,
         parent_listview: "FileListView",
         ref: ft.Ref | None = None,
         visible=True,
     ):
-        super().__init__(ref=ref, visible=visible)
-
-        self.modal = False
-        self.scrollable = True
-        self.title = ft.Text(_("操作文档"))
-
         self.document_id = document_id
         self.user_permissions = []
-        # self.triggered_event = triggered_event
-        # self.triggered_detector = triggered_detector
         self.parent_listview = parent_listview
         self.access_settings_ref = ft.Ref[ft.ListTile]()
 
-        self.menu_listview = ft.ListView(
-            controls=[
-                ft.Column(
-                    [
-                        ft.ListTile(
-                            leading=ft.Icon(ft.Icons.DELETE),
-                            title=ft.Text("删除"),
-                            subtitle=ft.Text(f"删除此文件"),
-                            on_click=self.delete_button_click,
-                        ),
-                        # ft.ListTile(
-                        #     leading=ft.Icon(ft.Icons.DRIVE_FILE_MOVE_OUTLINED),
-                        #     title=ft.Text("移动"),
-                        #     subtitle=ft.Text(f"将文件移动到其他位置"),
-                        #     on_click=move_document,
-                        # ),
-                        ft.ListTile(
-                            leading=ft.Icon(
-                                ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED
-                            ),
-                            title=ft.Text("重命名"),
-                            subtitle=ft.Text(f"重命名此文件"),
-                            on_click=self.rename_button_click,
-                        ),
-                        ft.ListTile(
-                            leading=ft.Icon(ft.Icons.SETTINGS_OUTLINED),
-                            title=ft.Text("设置权限"),
-                            subtitle=ft.Text(f"对此文件的访问规则进行变更"),
-                            on_click=self.set_access_rules_button_click,
-                            ref=self.access_settings_ref,  # pyright: ignore[reportArgumentType]
-                        ),
-                        ft.ListTile(
-                            leading=ft.Icon(ft.Icons.INFO_OUTLINED),
-                            title=ft.Text("属性"),
-                            subtitle=ft.Text(f"查看该文件的详细信息"),
-                            on_click=self.open_document_info_click,
-                        ),
-                    ],
-                )
-            ]
+        super().__init__(
+            title=ft.Text(_("操作文档")),
+            menu_items=[
+                {
+                    "icon": ft.Icons.DELETE,
+                    "title": "删除",
+                    "subtitle": "删除此文件",
+                    "handler": self.delete_button_click,
+                },
+                # {
+                #     "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                #     "title": "移动",
+                #     "subtitle": "将文件移动到其他位置",
+                #     "handler": move_document,
+                # },
+                {
+                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "title": "重命名",
+                    "subtitle": "重命名此文件",
+                    "handler": self.rename_button_click,
+                },
+                {
+                    "icon": ft.Icons.SETTINGS_OUTLINED,
+                    "title": "设置权限",
+                    "subtitle": "对此文件的访问规则进行变更",
+                    "handler": self.set_access_rules_button_click,
+                    "ref": self.access_settings_ref,
+                },
+                {
+                    "icon": ft.Icons.INFO_OUTLINED,
+                    "title": "属性",
+                    "subtitle": "查看该文件的详细信息",
+                    "handler": self.open_document_info_click,
+                },
+            ],
+            ref=ref,
+            visible=visible,
         )
-        self.content = ft.Container(self.menu_listview, width=480)
 
     def build(self):
         assert type(self.page) == ft.Page
@@ -321,10 +307,6 @@ class DocumentRightMenuDialog(ft.AlertDialog):
             "set_access_rules" in self.user_permissions
         )
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.menu_listview.disabled = True
 
@@ -334,7 +316,7 @@ class DocumentRightMenuDialog(ft.AlertDialog):
         assert type(conn) == LockableClientConnection
         yield self.disable_interactions()
 
-        response = await build_request(
+        response = await do_request(
             conn,
             action="delete_document",
             data={"document_id": self.document_id},
@@ -364,7 +346,7 @@ class DocumentRightMenuDialog(ft.AlertDialog):
         self.page.show_dialog(GetDocumentInfoDialog(self))  # bug: not always showing
 
 
-class GetDirectoryInfoDialog(ft.AlertDialog):
+class GetDirectoryInfoDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "DirectoryRightMenuDialog",
@@ -409,10 +391,6 @@ class GetDirectoryInfoDialog(ft.AlertDialog):
 
         asyncio.create_task(run())
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.progress_ring.visible = True
         self.info_listview.visible = False
@@ -429,7 +407,7 @@ class GetDirectoryInfoDialog(ft.AlertDialog):
         conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
 
-        response = await build_request(
+        response = await do_request(
             conn,
             action="get_directory_info",
             data={
@@ -471,7 +449,7 @@ class GetDirectoryInfoDialog(ft.AlertDialog):
     refresh_button_click = request_directory_info
 
 
-class DirectoryRightMenuDialog(ft.AlertDialog):
+class DirectoryRightMenuDialog(AlertDialog):
     def __init__(
         self,
         directory_id: str,
@@ -536,10 +514,6 @@ class DirectoryRightMenuDialog(ft.AlertDialog):
             "set_access_rules" in self.user_permissions
         )
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.menu_listview.disabled = True
 
@@ -549,7 +523,7 @@ class DirectoryRightMenuDialog(ft.AlertDialog):
         assert type(conn) == LockableClientConnection
         yield self.disable_interactions()
 
-        response = await build_request(
+        response = await do_request(
             conn,
             action="delete_directory",
             data={"folder_id": self.directory_id},

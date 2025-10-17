@@ -4,8 +4,10 @@ import flet as ft
 import gettext, asyncio
 
 from include.classes.config import AppConfig
+from include.controllers.dialogs.passwd import PasswdDialogController
+from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.account import ManageAccountsView
@@ -15,7 +17,69 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class AddUserAccountDialog(ft.AlertDialog):
+class PasswdUserDialog(AlertDialog):
+    def __init__(
+        self,
+        tip: str | None = None,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.app_config = AppConfig()
+        self.controller = PasswdDialogController(self)
+
+        self.modal = False
+        self.scrollable = True
+        self.title = ft.Text("重置用户密码")
+
+        self.progress_ring = ft.ProgressRing(visible=False)
+
+        self.old_passwd_field = ft.TextField(
+            label="旧密码",
+            password=True,
+            can_reveal_password=True,
+            on_submit=lambda e: asyncio.create_task(self.new_passwd_field.focus()),
+            expand=True,
+        )
+        self.new_passwd_field = ft.TextField(
+            label="新密码",
+            password=True,
+            can_reveal_password=True,
+            on_submit=self.request_passwd_user,
+            expand=True,
+        )
+        self.submit_button = ft.TextButton("提交", on_click=self.request_passwd_user)
+        self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
+
+        self.content = ft.Column(
+            controls=[
+                self.new_passwd_field,
+            ],
+            width=400,
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True,
+            scroll=ft.ScrollMode.AUTO,
+        )
+        self.actions = [
+            self.progress_ring,
+            self.submit_button,
+            self.cancel_button,
+        ]
+
+    def send_error(self, message: str):
+        send_error(self.page, message)
+
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        self.close()
+
+    async def request_passwd_user(
+        self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
+    ):
+        self.page.run_task(self.controller.action_passwd_user)
+
+
+class AddUserAccountDialog(AlertDialog):
     def __init__(
         self,
         parent_view: "ManageAccountsView",
@@ -79,10 +143,6 @@ class AddUserAccountDialog(ft.AlertDialog):
         self.cancel_button.disabled = True
         self.modal = True
 
-    def close(self):
-        self.open = False
-        self.update()
-
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
@@ -92,7 +152,7 @@ class AddUserAccountDialog(ft.AlertDialog):
 
         yield self.disable_interactions()
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="create_user",
             data={
@@ -113,7 +173,7 @@ class AddUserAccountDialog(ft.AlertDialog):
         self.close()
 
 
-class RenameUserNicknameDialog(ft.AlertDialog):
+class RenameUserNicknameDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "UserRightMenuDialog",
@@ -151,10 +211,6 @@ class RenameUserNicknameDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def disable_interactions(self):
         self.nickname_field.disabled = True
         self.submit_button.visible = False
@@ -168,7 +224,7 @@ class RenameUserNicknameDialog(ft.AlertDialog):
     async def request_rename_user(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
     ):
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="rename_user",
             data={
@@ -190,7 +246,7 @@ class RenameUserNicknameDialog(ft.AlertDialog):
         self.close()
 
 
-class EditUserGroupDialog(ft.AlertDialog):
+class EditUserGroupDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "UserRightMenuDialog",
@@ -237,10 +293,6 @@ class EditUserGroupDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def did_mount(self):
         super().did_mount()
         assert isinstance(self.page, ft.Page)
@@ -258,7 +310,7 @@ class EditUserGroupDialog(ft.AlertDialog):
             if checkbox.value == True:
                 to_submit_list.append(checkbox.data)
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="change_user_groups",
             data={
@@ -293,7 +345,7 @@ class EditUserGroupDialog(ft.AlertDialog):
         self.group_listview.controls = []
 
         # 拉取用户组信息
-        group_list_response = await build_request(
+        group_list_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="list_groups",
             data={},
@@ -311,7 +363,7 @@ class EditUserGroupDialog(ft.AlertDialog):
             group["name"] for group in group_list_response["data"]["groups"]
         ]
 
-        user_data_response = await build_request(
+        user_data_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="get_user_info",
             data={
@@ -343,7 +395,7 @@ class EditUserGroupDialog(ft.AlertDialog):
         self.update()
 
 
-class ViewUserInfoDialog(ft.AlertDialog):
+class ViewUserInfoDialog(AlertDialog):
     def __init__(
         self,
         parent_dialog: "UserRightMenuDialog",
@@ -384,10 +436,6 @@ class ViewUserInfoDialog(ft.AlertDialog):
             self.cancel_button,
         ]
 
-    def close(self):
-        self.open = False
-        self.update()
-
     def did_mount(self):
         super().did_mount()
         assert isinstance(self.page, ft.Page)
@@ -406,7 +454,7 @@ class ViewUserInfoDialog(ft.AlertDialog):
         self.info_listview.visible = False
         self.update()
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="get_user_info",
             data={

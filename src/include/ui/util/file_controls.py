@@ -13,7 +13,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.filemanager import FileListView
+    from include.ui.controls.views.explorer import FileListView
 
 # __all__ = ["get_directory"]
 

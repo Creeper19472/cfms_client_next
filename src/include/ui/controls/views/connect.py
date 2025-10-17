@@ -3,8 +3,9 @@ import flet_permission_handler as fph
 import gettext, re, os
 from include.classes.config import AppConfig
 from include.constants import PROTOCOL_VERSION
+from include.controllers.connect import ConnectFormController
 from include.util.connect import get_connection
-from include.util.communication import build_request
+from include.util.requests import do_request
 from include.ui import constants as const
 from include.constants import DEFAULT_WINDOW_TITLE
 from include.ui.util.notifications import send_error, send_success
@@ -16,6 +17,10 @@ _ = t.gettext
 class ConnectForm(ft.Container):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+
+        # Controller assignment
+        self.controller = ConnectFormController(self)
 
         # Form style definitions
         self.width = const.FORM_WIDTH
@@ -91,26 +96,35 @@ class ConnectForm(ft.Container):
         super().did_mount()
         self.page.title = DEFAULT_WINDOW_TITLE
         # make sure previous connection is closed
-        if self.app_config.conn:
-            assert isinstance(self.page, ft.Page)
-            self.page.run_task(self.app_config.conn.close)
+        assert isinstance(self.page, ft.Page)
+        self.page.run_task(self.controller.close_previous_connection)
 
     def will_unmount(self):
         super().will_unmount()
         self.enable_interactions()
         self.disable_ssl_enforcement_switch.value = False
 
+    def send_error(self, message: str):
+        send_error(self.page, message)
+
     def disable_interactions(self):
         self.connect_button.visible = False
         self.loading_animation.visible = True
         self.remote_address_textfield.disabled = True
+        self.remote_address_textfield.error = None
         self.disable_ssl_enforcement_switch.disabled = True
+        self.update()
 
     def enable_interactions(self):
         self.connect_button.visible = True
         self.loading_animation.visible = False
         self.remote_address_textfield.disabled = False
         self.disable_ssl_enforcement_switch.disabled = False
+        self.update()
+
+    async def push_route(self, route: str):
+        assert isinstance(self.page, ft.Page)
+        await self.page.push_route(route)
 
     async def connect_button_click(
         self, event: ft.Event[ft.TextField] | ft.Event[ft.Button]
@@ -127,76 +141,8 @@ class ConnectForm(ft.Container):
 
         # Check if the server address matches the pattern
         if not server_address or not re.match(wss_pattern, server_address):
-            yield self.enable_interactions()
-            send_error(self.page, _("无效的服务器地址"))
+            self.remote_address_textfield.error = _("无效的服务器地址")
+            self.enable_interactions()
             return  # Exit the function if the pattern is invalid
 
-        try:
-            conn = await get_connection(
-                server_address,
-                self.disable_ssl_enforcement_switch.value,
-                proxy=self.app_config.preferences["settings"]["proxy_settings"],
-            )
-        except ConnectionResetError as e:
-            yield self.enable_interactions()
-            if e.strerror:
-                errmsg = _(f"建立连接失败，因为连接已重置: {e.strerror}")
-            else:
-                errmsg = _("建立连接失败，因为连接已重置。")
-            send_error(self.page, errmsg)
-            return
-        except Exception as e:
-            yield self.enable_interactions()
-            send_error(self.page, _(f"建立连接失败：({e.__class__.__name__}) {str(e)}"))
-            return
-
-        server_info_response = await build_request(conn, "server_info")
-        if (
-            server_protocol_version := server_info_response["data"]["protocol_version"]
-        ) > PROTOCOL_VERSION:
-            await conn._wrapped_connection.close()
-            yield self.enable_interactions()
-            send_error(
-                self.page,
-                "您正在连接到一个使用更高版本协议的服务器"
-                f"（协议版本 {server_protocol_version}），请更新客户端。",
-            )
-            await self.page.push_route("/connect/about")
-            return
-
-        # save connection ref
-        self.page.session.store.set("conn", conn)
-
-        # set session data
-        self.page.session.store.set("server_info", server_info_response["data"])
-        self.page.session.store.set("server_uri", server_address)
-
-        app_config = AppConfig()
-        app_config.server_address = server_address
-        app_config.server_info = server_info_response["data"]
-        app_config.conn = conn
-
-        self.page.title = f"CFMS Client - {server_address}"
-        yield
-
-        assert self.ph_ref.current
-        assert self.page.platform
-        if (
-            await self.ph_ref.current.request(fph.Permission.MANAGE_EXTERNAL_STORAGE)
-            == fph.PermissionStatus.DENIED
-        ):
-            if self.page.platform.value not in ["ios", "android"]:
-                self.page.run_task(self.page.window.close)
-            else:
-                send_error(
-                    self.page,
-                    _(
-                        "授权失败，您将无法正常下载文件。"
-                        "请在设置中允许应用访问您的文件。"
-                    ),
-                )
-
-        if self.page.platform.value == "windows" and os.environ.get("FLET_APP_CONSOLE"):
-            os.startfile(os.getcwd())
-
-        await self.page.push_route("/login")
+        self.page.run_task(self.controller.action_connect, server_address)

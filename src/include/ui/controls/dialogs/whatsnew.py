@@ -2,6 +2,7 @@ import flet as ft
 import gettext
 from datetime import date
 from include.classes.changelog import ChangelogEntry
+from include.ui.controls.dialogs.base import AlertDialog
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
@@ -148,7 +149,7 @@ class ChangelogEntryColumn(ft.Column):
         self.expand_loose = True
 
 
-class ChangelogHistoryDialog(ft.AlertDialog):
+class ChangelogHistoryDialog(AlertDialog):
     def __init__(
         self,
         ref: ft.Ref | None = None,
@@ -183,7 +184,7 @@ class ChangelogHistoryDialog(ft.AlertDialog):
         self.update()
 
 
-class WhatsNewDialog(ft.AlertDialog):
+class WhatsNewDialog(AlertDialog):
     def __init__(
         self,
         ref: ft.Ref | None = None,
@@ -205,10 +206,6 @@ class WhatsNewDialog(ft.AlertDialog):
             ft.TextButton(_("View history"), on_click=self.view_history_button_click),
             ft.TextButton(_("Got it!"), on_click=self.ok_button_click),
         ]
-
-    def close(self):
-        self.open = False
-        self.update()
 
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()

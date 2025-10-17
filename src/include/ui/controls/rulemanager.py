@@ -2,7 +2,8 @@ import asyncio
 import json
 from typing import TYPE_CHECKING, Any, Callable, List
 from include.classes.client import LockableClientConnection
-from include.util.communication import build_request
+from include.ui.controls.dialogs.base import AlertDialog
+from include.util.requests import do_request
 from include.ui.util.notifications import send_error
 import flet as ft
 
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     )
 
 
-class RuleManager(ft.AlertDialog):
+class RuleManager(AlertDialog):
     def __init__(
         self,
         parent_dialog: "DocumentRightMenuDialog|DirectoryRightMenuDialog",
@@ -95,10 +96,6 @@ class RuleManager(ft.AlertDialog):
         self.object_id = object_id
         self.object_type = object_type
 
-    def close(self):
-        self.open = False
-        self.update()
-
     async def on_link_tapped(self, e: ft.Event[ft.Markdown]):
         assert type(self.page) == ft.Page
         assert type(e.data) == str
@@ -144,7 +141,7 @@ class RuleManager(ft.AlertDialog):
         conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
 
-        info_resp = await build_request(
+        info_resp = await do_request(
             conn,
             action,
             data,
@@ -197,7 +194,7 @@ class RuleManager(ft.AlertDialog):
         conn = self.page.session.store.get("conn")
         assert type(conn) == LockableClientConnection
 
-        submit_resp = await build_request(
+        submit_resp = await do_request(
             conn,
             action,
             data,

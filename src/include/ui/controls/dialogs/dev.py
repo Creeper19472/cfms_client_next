@@ -1,7 +1,7 @@
 import flet as ft
 import json, gettext
 from include.classes.config import AppConfig
-from include.util.communication import build_request
+from include.util.requests import do_request
 from include.ui.util.notifications import send_error
 
 t = gettext.translation("client", "ui/locale", fallback=True)
@@ -60,7 +60,7 @@ class DevRequestDialog(ft.AlertDialog):
         else:
             data_to_send = {}
 
-        resp = await build_request(
+        resp = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             request_name,
             data_to_send,

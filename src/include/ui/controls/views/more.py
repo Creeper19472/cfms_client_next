@@ -4,9 +4,10 @@ import gettext
 import flet as ft
 
 from include.classes.config import AppConfig
+from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.ui.util.quotes import get_quote
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -15,7 +16,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class ChangePasswdDialog(ft.AlertDialog):
+class ChangePasswdDialog(AlertDialog):
     def __init__(
         self,
         tip: str = "",
@@ -87,10 +88,6 @@ class ChangePasswdDialog(ft.AlertDialog):
         self.progress_ring.visible = False
         self.modal = False
 
-    def close(self):
-        self.open = False
-        self.update()
-
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
@@ -99,7 +96,7 @@ class ChangePasswdDialog(ft.AlertDialog):
     ):
         yield self.disable_interactions()
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             "set_passwd",
             data={

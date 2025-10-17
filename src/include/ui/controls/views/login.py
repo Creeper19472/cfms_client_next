@@ -5,9 +5,10 @@ import gettext
 from websockets import ClientConnection
 from include.classes.client import LockableClientConnection
 from include.classes.config import AppConfig
+from include.controllers.login import LoginFormController
 import include.ui.constants as const
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
@@ -30,7 +31,9 @@ class LoginView(ft.Column):
 class LoginForm(ft.Container):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
         self.parent: LoginView
+        self.controller = LoginFormController(self)
 
         # Form style definitions
         self.width = const.FORM_WIDTH
@@ -107,80 +110,45 @@ class LoginForm(ft.Container):
         self.password_field.disabled = True
         self.disconnect_button.disabled = True
 
+        # clear previous errors
+        self.username_field.error = None
+        self.password_field.error = None
+        self.update()
+
     def enable_interactions(self):
         self.login_button.visible = True
         self.loading_animation.visible = False
         self.username_field.disabled = False
         self.password_field.disabled = False
         self.disconnect_button.disabled = False
+        self.update()
+
+    def clear_fields(self):
+        self.username_field.value = ""
+        self.password_field.value = ""
+        self.update()
+
+    def send_error(self, message: str):
+        send_error(self.page, message)
 
     async def disconnect_button_click(self, event: ft.Event[ft.IconButton]):
         assert isinstance(self.page, ft.Page)
         await self.page.push_route("/connect")
 
     async def request_login(self, e: ft.Event[ft.IconButton] | ft.Event[ft.TextField]):
-        assert type(self.page) == ft.Page
         yield self.disable_interactions()
 
-        if self.username_field.value == "" or self.password_field.value == "":
-            # empty fields show error
-            yield self.enable_interactions()
-            send_error(self.page, _("Username and Password cannot be empty"))
+        # validate fields individually and set corresponding errors
+        if not (self.username_field.value and self.username_field.value.strip()):
+            self.username_field.error = _("用户名不能为空")
+        if not (self.password_field.value and self.password_field.value.strip()):
+            self.password_field.error = _("密码不能为空")
+
+        # if any error was set, re-enable interactions and return early
+        if self.username_field.error or self.password_field.error:
+            self.enable_interactions()
             return
 
-        """
-        Send request and handle response here
-        use utils.build_request or utils.async_build_request to send your requests
+        self.page.run_task(self.controller.action_login)
 
-        data = {"username": self.username_field.value, "password": self.password_field.value}
-        login_resp = build_request(self.page, YOUR_FULL_LOGIN_URL, data, authenticated=False)
-        token = json.loads(login_resp.text)
-
-        #save the token to client storage (refresh and access tokens)
-        for k in token:
-            self.page.client_storage.set(k, token[k])
-        """
-        conn = self.page.session.store.get("conn")
-        assert type(conn) == LockableClientConnection
-
-        response = await build_request(
-            conn,
-            "login",
-            {
-                "username": self.username_field.value,
-                "password": self.password_field.value,
-            },
-        )
-
-        if (code := response["code"]) == 200:
-            self.page.session.store.set("username", self.username_field.value)
-            self.page.session.store.set("nickname", response["data"].get("nickname"))
-            self.page.session.store.set("token", response["data"]["token"])
-            self.page.session.store.set("exp", response["data"].get("exp"))
-            self.page.session.store.set(
-                "user_permissions", response["data"]["permissions"]
-            )
-            self.page.session.store.set("user_groups", response["data"]["groups"])
-
-            app_config = AppConfig()
-            app_config.username = self.username_field.value
-            app_config.nickname = response["data"].get("nickname")
-            app_config.token = response["data"]["token"]
-            app_config.token_exp = response["data"].get("exp")
-            app_config.user_permissions = response["data"]["permissions"]
-            app_config.user_groups = response["data"]["groups"]
-
-            self.username_field.value = ""
-            self.password_field.value = ""
-            yield self.enable_interactions()
-
-            await self.page.push_route("/home")
-
-        elif code == 403:
-            self.page.session.store.set("username", self.username_field.value)
-            # open_change_passwd_dialog(e, "在登录前必须修改密码。")
-            yield self.enable_interactions()
-
-        else:
-            yield self.enable_interactions()
-            send_error(self.page, f"登录失败：({code}) {response['message']}")
+        

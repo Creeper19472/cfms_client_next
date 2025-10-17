@@ -5,7 +5,7 @@ import flet_datatable2 as fdt
 
 from include.classes.config import AppConfig
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
@@ -195,7 +195,7 @@ class AuditLogView(ft.Container):
         self.update()
 
         try:
-            response = await build_request(
+            response = await do_request(
                 self.app_config.get_not_none_attribute("conn"),
                 action="view_audit_logs",
                 data={"offset": self.audit_view_offset, "count": self.audit_view_count},

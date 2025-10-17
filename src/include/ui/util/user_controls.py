@@ -16,7 +16,7 @@ def update_user_controls(view: "UserListView", users: list[dict], _update=True):
         ),
     ):
         assert event.control.content
-        event.page.show_dialog(UserRightMenuDialog(event.control.content.data[0], view))
+        event.page.show_dialog(UserRightMenuDialog(event.control.content.data, view))
 
     async def user_click(
         event: ft.Event[ft.ListTile],

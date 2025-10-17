@@ -3,8 +3,9 @@ import flet as ft
 import gettext, asyncio
 
 from include.classes.config import AppConfig
+from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import ManageGroupsView
@@ -13,7 +14,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-class AddUserGroupDialog(ft.AlertDialog):
+class AddUserGroupDialog(AlertDialog):
     def __init__(
         self,
         parent_view: "ManageGroupsView",
@@ -66,10 +67,6 @@ class AddUserGroupDialog(ft.AlertDialog):
         self.cancel_button.disabled = True
         self.modal = True
 
-    def close(self):
-        self.open = False
-        self.update()
-
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
@@ -79,7 +76,7 @@ class AddUserGroupDialog(ft.AlertDialog):
 
         yield self.disable_interactions()
 
-        response = await build_request(
+        response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="create_group",
             data={

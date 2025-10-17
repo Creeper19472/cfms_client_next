@@ -8,12 +8,12 @@ from include.classes.exceptions.transmission import (
     FileSizeMismatchError,
 )
 from include.ui.util.notifications import send_error
-from include.util.communication import build_request
+from include.util.requests import do_request
 from include.util.connect import get_connection
 from include.util.transfer import receive_file_from_server
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.filemanager import FileListView
+    from include.ui.controls.views.explorer import FileListView
 
 t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
@@ -29,7 +29,7 @@ async def get_directory(id: str | None, view: "FileListView", fallback: Optional
     view.update()
 
     assert type(view.page) == ft.Page
-    response = await build_request(
+    response = await do_request(
         view.parent_manager.conn,
         action="list_directory",
         data={"folder_id": id},
@@ -64,7 +64,7 @@ async def get_directory(id: str | None, view: "FileListView", fallback: Optional
 
 async def get_document(id: str | None, filename: str, view: "FileListView"):
     assert type(view.page) == ft.Page
-    response = await build_request(
+    response = await do_request(
         view.parent_manager.conn,
         action="get_document",
         data={"document_id": id},

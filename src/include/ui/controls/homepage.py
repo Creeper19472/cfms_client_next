@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 import gettext
 import flet as ft
 import include.ui.constants as const
-from include.ui.controls.views.filemanager import FileManagerView
+from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.util.file_controls import get_directory
 from include.classes.config import AppConfig
