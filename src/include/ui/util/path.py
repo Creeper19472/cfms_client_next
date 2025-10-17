@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import os
 import gettext
 import flet as ft
+from include.classes.exceptions.request import RequestFailureError
 from include.classes.exceptions.transmission import (
     FileHashMismatchError,
     FileSizeMismatchError,
@@ -18,7 +19,7 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-async def get_directory(id: str | None, view: "FileListView"):
+async def get_directory(id: str | None, view: "FileListView", fallback: Optional[str] = None, _raise_on_error=False,):
     from include.ui.util.file_controls import update_file_controls
 
     view.parent_manager.current_directory_id = id
@@ -38,6 +39,14 @@ async def get_directory(id: str | None, view: "FileListView"):
 
     if (code := response["code"]) != 200:
         update_file_controls(view, [], [], view.parent_manager.previous_directory_id)
+        if _raise_on_error:
+            view.parent_manager.progress_ring.visible = False
+            view.parent_manager.progress_ring.update()
+            view.visible = True
+            view.update()
+            if fallback != None:
+                await get_directory(fallback, view)
+            raise RequestFailureError("Get directory failed", response)
         send_error(view.page, _(f"加载失败: ({code}) {response['message']}"))
     else:
         update_file_controls(

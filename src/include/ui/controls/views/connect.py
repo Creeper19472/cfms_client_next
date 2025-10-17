@@ -139,7 +139,11 @@ class ConnectForm(ft.Container):
             )
         except ConnectionResetError as e:
             yield self.enable_interactions()
-            send_error(self.page, _(f"建立连接失败，因为连接已重置。"))
+            if e.strerror:
+                errmsg = _(f"建立连接失败，因为连接已重置: {e.strerror}")
+            else:
+                errmsg = _("建立连接失败，因为连接已重置。")
+            send_error(self.page, errmsg)
             return
         except Exception as e:
             yield self.enable_interactions()

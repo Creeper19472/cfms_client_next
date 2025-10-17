@@ -1,6 +1,13 @@
 import os
 
-__all__ = ["RUNTIME_PATH", "FLET_APP_STORAGE_TEMP"]
+__all__ = [
+    "RUNTIME_PATH",
+    "FLET_APP_STORAGE_TEMP",
+    "FLET_APP_STORAGE_DATA",
+    "APP_VERSION",
+    "BUILD_VERSION",
+    "PROTOCOL_VERSION",
+]
 
 RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
 FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
@@ -8,7 +15,7 @@ FLET_APP_STORAGE_DATA = os.environ.get("FLET_APP_STORAGE_DATA", ".")
 
 DEFAULT_WINDOW_TITLE = "CFMS Client"
 
-BUILD_VERSION = "v0.2.14"
+BUILD_VERSION = "v0.2.15"
 APP_VERSION = f"{BUILD_VERSION[1:]}.20251011_alpha NEXT"
 PROTOCOL_VERSION = 3
 GITHUB_REPO = "Creeper19472/cfms_client_next"

@@ -32,6 +32,7 @@ class SafetySettingsModel(Model):
                 "Enable connection history logging",
             ),
             on_change=self.switch_click,
+            disabled=True,
         )
         self.logging_hint_text = ft.Text(
             "Decide whether the app should log the "
