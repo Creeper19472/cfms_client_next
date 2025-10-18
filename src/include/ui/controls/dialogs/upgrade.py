@@ -212,7 +212,7 @@ exit
                                 )
                             else:
                                 self.upgrade_progress_text.value = _(
-                                    _("Downloaded: {downloaded_size} bytes")
+                                    "Downloaded: {downloaded_size} bytes"
                                 ).format(downloaded_size=downloaded_size)
 
                             self.update()

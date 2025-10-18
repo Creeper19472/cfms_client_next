@@ -200,14 +200,13 @@ class FileExplorerController:
                 _total_number = len(tree["files"])
 
                 upload_dialog.progress_text.value = _(
-                    _(
-                        '[{_current_number}/{_total_number}] Uploading file "{abs_path}"'
-                    ).format(
-                        _current_number=_current_number,
-                        _total_number=_total_number,
-                        abs_path=abs_path,
-                    )
+                    '[{_current_number}/{_total_number}] Uploading file "{abs_path}"'
+                ).format(
+                    _current_number=_current_number,
+                    _total_number=_total_number,
+                    abs_path=abs_path,
                 )
+
                 upload_dialog.progress_bar.value = _current_number / _total_number
                 upload_dialog.progress_column.update()
 
@@ -296,10 +295,8 @@ class FileExplorerController:
 
         if total_errors := len(upload_dialog.error_column.controls):
             upload_dialog.progress_text.value = _(
-                _("Upload completed with {total_errors} error(s).").format(
-                    total_errors=total_errors
-                )
-            )
+                "Upload completed with {total_errors} error(s)."
+            ).format(total_errors=total_errors)
 
             upload_dialog.ok_button.visible = True
         else:

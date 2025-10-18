@@ -61,7 +61,7 @@ class AboutModel(Model):
                         text_align=ft.TextAlign.LEFT,
                     ),
                     ft.Text(
-                        _("Copyright © 2025 Creeper Team"),
+                        _("Copyright (C) 2025 Creeper Team"),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),

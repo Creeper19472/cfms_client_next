@@ -127,12 +127,10 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
                     decrypted_chunks, total_chunks = data
                     progress_bar.value = decrypted_chunks / total_chunks
                     progress_info.value = _(
-                        _(
-                            "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
-                        ).format(
-                            decrypted_chunks=decrypted_chunks,
-                            total_chunks=total_chunks,
-                        )
+                        "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+                    ).format(
+                        decrypted_chunks=decrypted_chunks,
+                        total_chunks=total_chunks,
                     )
                 case 2:
                     progress_bar.value = None
@@ -143,9 +141,9 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
 
             progress_column.update()
     except FileHashMismatchError as exc:
-        send_error(view.page, _("File hash mismatch: {str(exc)}").format(str=str(exc)))
+        send_error(view.page, _("File hash mismatch: {exc}").format(exc=str(exc)))
     except FileSizeMismatchError as exc:
-        send_error(view.page, _("File size mismatch: {str(exc)}").format(str=str(exc)))
+        send_error(view.page, _("File size mismatch: {exc}").format(exc=str(exc)))
     finally:
         view.page.overlay.remove(progress_column)
         view.page.update()
