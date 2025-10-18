@@ -36,19 +36,19 @@ class UserRightMenuDialog(RightMenuDialog):
             {
                 "icon": ft.Icons.DELETE,
                 "title": _("Delete"),
-                "subtitle": _("Delete This User"),
+                "subtitle": _("Delete this user"),
                 "on_click": self.delete_user,
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                 "title": _("Change Nickname"),
-                "subtitle": _("Change User's Nickname"),
+                "subtitle": _("Change user's nickname"),
                 "on_click": self.rename_user,
             },
             {
                 "icon": ft.Icons.FORMAT_LIST_BULLETED,
                 "title": _("Edit User Group"),
-                "subtitle": _("Change User's Group Membership"),
+                "subtitle": _("Change user's group membership"),
                 "on_click": self.edit_user_group,
             },
             {

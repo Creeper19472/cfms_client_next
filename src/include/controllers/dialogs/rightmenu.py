@@ -50,7 +50,7 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(_(f"Renamefailed: ({code}) {response['message']}"))
+            self.view.send_error(_(f"Rename failed: ({code}) {response['message']}"))
         else:
             await get_directory(
                 self.view.parent_dialog.parent_listview.parent_manager.current_directory_id,
@@ -81,7 +81,7 @@ class GetDirectoryInfoController:
         else:
             self.view.info_listview.controls = [
                 ft.Text(
-                    _(f"DirectoryID: {response['data']['directory_id']}"), selectable=True
+                    _(f"Directory ID: {response['data']['directory_id']}"), selectable=True
                 ),
                 ft.Text(_(f"Directory Name: {response['data']['name']}"), selectable=True),
                 ft.Text(

@@ -111,7 +111,7 @@ class FileExplorerController:
 
                 except Exception as exc:
                     _new_error_text = ft.Text(
-                        _(f'Uploading "{each_file.name}" Problem occurred: {exc}'),
+                        _(f'Problem occurred when uploading "{each_file.name}": {exc}'),
                         text_align=ft.TextAlign.CENTER,
                     )
                     progress_column.controls.append(_new_error_text)
@@ -244,7 +244,7 @@ class FileExplorerController:
                         if retry >= max_retries:
                             upload_dialog.error_column.controls.append(
                                 ft.Text(
-                                    _(f'Uploading file "{filename}" Problem occurred:{str(e)}')
+                                    _(f'Problem occurred when uploading file "{filename}": {str(e)}')
                                 )
                             )
 

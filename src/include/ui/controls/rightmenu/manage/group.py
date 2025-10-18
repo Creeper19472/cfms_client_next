@@ -31,19 +31,19 @@ class GroupRightMenuDialog(RightMenuDialog):
             {
                 "icon": ft.Icons.GROUP_REMOVE,
                 "title": _("Delete"),
-                "subtitle": _("Delete This User Group"),
+                "subtitle": _("Delete this user group"),
                 "on_click": self.remove_button_click,
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                 "title": _("Rename"),
-                "subtitle": _("Change Display Name for User Group"),
+                "subtitle": _("Change display name for user group"),
                 "on_click": self.rename_button_click,
             },
             {
                 "icon": ft.Icons.SETTINGS_OUTLINED,
                 "title": _("Set Permissions"),
-                "subtitle": _("Change Permissions for User Group"),
+                "subtitle": _("Change permissions for user group"),
                 "on_click": self.settings_button_click,
             },
         ]
@@ -157,7 +157,7 @@ class RenameGroupDialog(AlertDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Renamefailed: ({code}) {response['message']}"))
+            send_error(self.page, _(f"Rename failed: ({code}) {response['message']}"))
         else:
             await self.parent_dialog.parent_listview.parent_manager.refresh_group_list()
 
@@ -283,7 +283,7 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := response["code"]) != 200:
             send_error(
                 self.page,
-                _(f"Change User Group Permissionsfailed: ({code}) {response['message']}"),
+                _(f"Change user group permissions failed: ({code}) {response['message']}"),
             )
         else:
             await self.refresh_permission_list()

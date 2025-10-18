@@ -206,7 +206,7 @@ class OpenDirectoryDialog(AlertDialog):
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.directory_textfield = ft.TextField(
-            label=_("DirectoryID"),
+            label=_("Directory ID"),
             on_submit=self.ok_button_click,
             expand=True,
         )

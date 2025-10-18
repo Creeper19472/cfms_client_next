@@ -67,7 +67,7 @@ class RenameUserNicknameDialogController:
 
         if (code := response["code"]) != 200:
             self.view.send_error(
-                _(f"Rename User Nicknamefailed: ({code}) {response['message']}"),
+                _(f"Rename user nickname failed: ({code}) {response['message']}"),
             )
         else:
             await self.view.parent_dialog.parent_listview.parent_manager.refresh_user_list()
@@ -94,7 +94,7 @@ class EditUserGroupDialogController:
         )
         if (code := response["code"]) != 200:
             self.view.send_error(
-                _(f"Change User Groupfailed: ({code}) {response['message']}"),
+                _(f"Change user group failed: ({code}) {response['message']}"),
             )
 
         self.view.close()
