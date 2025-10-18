@@ -43,13 +43,13 @@ class RenameDialog(AlertDialog):
                 raise
 
         self.modal = False
-        self.title = ft.Text(_(f"Rename {self.object_display_name}"))
+        self.title = ft.Text(_("Rename {self.object_display_name}").format(self=self.object_display_name))
 
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
-            label=_(f"New {self.object_display_name} name"),
+            label=_("New {self.object_display_name} name").format(self=self.object_display_name),
             on_submit=self.ok_button_click,
             expand=True,
         )
@@ -179,15 +179,15 @@ class GetDocumentInfoDialog(AlertDialog):
             self.close()
             send_error(
                 self.page,
-                _(f"Failed to fetch document info: ({code}) {response['message']}"),
+                _("Failed to fetch document info: ({code}) {message}").format(code=code, message=response['message']),
             )
         else:
             self.info_listview.controls = [
                 ft.Text(
-                    _(f"Document ID: {response['data']['document_id']}"), selectable=True
+                    _("Document ID: {response['data']['document_id']}").format(response=response['data']['document_id']), selectable=True
                 ),
-                ft.Text(_(f"Document title: {response['data']['title']}"), selectable=True),
-                ft.Text(_(f"Document size: {response['data']['size']}")),
+                ft.Text(_("Document title: {response['data']['title']}").format(response=response['data']['title']), selectable=True),
+                ft.Text(_("Document size: {response['data']['size']}").format(response=response['data']['size'])),
                 ft.Text(
                     _(
                         f"Created: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
@@ -199,7 +199,7 @@ class GetDocumentInfoDialog(AlertDialog):
                     ),
                 ),
                 ft.Text(
-                    _(f"Parent directory ID: {response['data']['parent_id']}"), selectable=True
+                    _("Parent directory ID: {response['data']['parent_id']}").format(response=response['data']['parent_id']), selectable=True
                 ),
                 ft.Text(
                     _(

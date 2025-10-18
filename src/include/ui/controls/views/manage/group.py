@@ -110,7 +110,7 @@ class ManageGroupsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Load failed: ({code}) {response['message']}"))
+            send_error(self.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             update_group_controls(
                 self.group_listview, response["data"]["groups"], _update_page

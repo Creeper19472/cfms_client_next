@@ -50,7 +50,7 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(_(f"Rename failed: ({code}) {response['message']}"))
+            self.view.send_error(_("Rename failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await get_directory(
                 self.view.parent_dialog.parent_listview.parent_manager.current_directory_id,
@@ -77,15 +77,15 @@ class GetDirectoryInfoController:
         )
         if (code := response["code"]) != 200:
             self.view.close()
-            self.view.send_error(_(f"Failed to fetch directory info: ({code}) {response['message']}"))
+            self.view.send_error(_("Failed to fetch directory info: ({code}) {message}").format(code=code, message=response['message']))
         else:
             self.view.info_listview.controls = [
                 ft.Text(
-                    _(f"Directory ID: {response['data']['directory_id']}"), selectable=True
+                    _("Directory ID: {response['data']['directory_id']}").format(response=response['data']['directory_id']), selectable=True
                 ),
-                ft.Text(_(f"Directory Name: {response['data']['name']}"), selectable=True),
+                ft.Text(_("Directory Name: {response['data']['name']}").format(response=response['data']['name']), selectable=True),
                 ft.Text(
-                    _(f"Child object count: {response['data']['count_of_child']}"),
+                    _("Child object count: {response['data']['count_of_child']}").format(response=response['data']['count_of_child']),
                 ),
                 ft.Text(
                     _(
@@ -93,7 +93,7 @@ class GetDirectoryInfoController:
                     ),
                 ),
                 ft.Text(
-                    _(f"Parent directory ID: {response['data']['parent_id']}"), selectable=True
+                    _("Parent directory ID: {response['data']['parent_id']}").format(response=response['data']['parent_id']), selectable=True
                 ),
                 ft.Text(
                     _(

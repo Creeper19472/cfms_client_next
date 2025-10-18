@@ -75,7 +75,7 @@ class UserRightMenuDialog(RightMenuDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Failed to delete user: ({code}) {response['message']}"))
+            send_error(self.page, _("Failed to delete user: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_listview.parent_manager.refresh_user_list()
 

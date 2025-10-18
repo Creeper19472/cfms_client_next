@@ -107,7 +107,7 @@ class UpgradeDialog(AlertDialog):
             except FileNotFoundError:
                 pass
             except Exception as e:
-                send_error(self.page, _(f"Failed to delete temporary file: {e}"))
+                send_error(self.page, _("Failed to delete temporary file: {e}").format(e=e))
 
             self.upgrade_note.value = "Writing update script"
             self.update()
@@ -139,7 +139,7 @@ exit
             await self.page.window.close()
 
         except Exception as e:
-            send_error(self.page, _(f"Error occurred during update: {e}"))
+            send_error(self.page, _("Error occurred during update: {e}").format(e=e))
 
     async def _handle_other_platforms_update(self):
         assert isinstance(self.page, ft.Page)
@@ -207,7 +207,7 @@ exit
                                 )
                             else:
                                 self.upgrade_progress_text.value = (
-                                    _(f"Downloaded: {downloaded_size} bytes")
+                                    _("Downloaded: {downloaded_size} bytes").format(downloaded_size=downloaded_size)
                                 )
 
                             self.update()
@@ -222,15 +222,15 @@ exit
                 else:
                     return True
             else:
-                send_error(self.page, _(f"Download failed, HTTP status code: {response.status_code}"))
+                send_error(self.page, _("Download failed, HTTP status code: {response.status_code}").format(response=response.status_code))
                 return False
 
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            send_error(self.page, _(f"Network error occurred during update: {str(e)}"))
+            send_error(self.page, _("Network error occurred during update: {str(e)}").format(str=str(e)))
             return False
         except requests.exceptions.Timeout:
             send_error(self.page, "Download timeout, please check network connection")
             return False
         except Exception as e:
-            send_error(self.page, _(f"Unknown error occurred during download: {str(e)}"))
+            send_error(self.page, _("Unknown error occurred during download: {str(e)}").format(str=str(e)))
             return False

@@ -47,7 +47,7 @@ async def get_directory(id: str | None, view: "FileListView", fallback: Optional
             if fallback != None:
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
-        send_error(view.page, _(f"Load failed: ({code}) {response['message']}"))
+        send_error(view.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
     else:
         update_file_controls(
             view,
@@ -128,9 +128,9 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
 
             progress_column.update()
     except FileHashMismatchError as exc:
-        send_error(view.page, _(f"File hash mismatch: {str(exc)}"))
+        send_error(view.page, _("File hash mismatch: {str(exc)}").format(str=str(exc)))
     except FileSizeMismatchError as exc:
-        send_error(view.page, _(f"File size mismatch: {str(exc)}"))
+        send_error(view.page, _("File size mismatch: {str(exc)}").format(str=str(exc)))
     finally:
         view.page.overlay.remove(progress_column)
         view.page.update()

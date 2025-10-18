@@ -212,7 +212,7 @@ class AuditLogView(ft.Container):
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
-                    _(f"Load failed: ({code}) {response.get('message', 'Unknown error')}"),
+                    _("Load failed: ({code}) {response.get('message', 'Unknown error')}").format(code=code, response=response.get('message', 'Unknown error')),
                 )
             else:
                 data: dict = response.get("data", {})
@@ -224,7 +224,7 @@ class AuditLogView(ft.Container):
 
                 # Fix string formatting issue
                 self.audit_info_text.value = (
-                    _(f"{view_start} - {view_end} of {total} items")
+                    _("{view_start} - {view_end} of {total} items").format(view_start=view_start, view_end=view_end, total=total)
                 )
 
                 self.navigate_before_button.disabled = self.audit_view_offset <= 0
@@ -245,4 +245,4 @@ class AuditLogView(ft.Container):
             self.navigate_next_button.disabled = False
             self.update()
 
-            send_error(self.page, _(f"Load failed: {str(e)}"))
+            send_error(self.page, _("Load failed: {str(e)}").format(str=str(e)))

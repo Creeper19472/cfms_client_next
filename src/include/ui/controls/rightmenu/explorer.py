@@ -99,7 +99,7 @@ class DocumentRightMenuDialog(RightMenuDialog):
             token=self.page.session.store.get("token"),
         )
         if (code := response["code"]) != 200:
-            send_error(event.page, _(f"Deletion failed: ({code}) {response['message']}"))
+            send_error(event.page, _("Deletion failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await get_directory(
                 self.parent_listview.parent_manager.current_directory_id,
@@ -203,7 +203,7 @@ class DirectoryRightMenuDialog(AlertDialog):
             token=self.page.session.store.get("token"),
         )
         if (code := response["code"]) != 200:
-            send_error(event.page, _(f"Deletion failed: ({code}) {response['message']}"))
+            send_error(event.page, _("Deletion failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await get_directory(
                 self.parent_listview.parent_manager.current_directory_id,

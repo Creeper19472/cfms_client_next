@@ -88,7 +88,7 @@ class AddUserGroupDialog(AlertDialog):
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Failed to create user group: ({code}) {response['message']}"))
+            send_error(self.page, _("Failed to create user group: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_view.refresh_group_list()
 

@@ -56,7 +56,7 @@ class AboutModel(Model):
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Text(
-                        _(f"Version: {APP_VERSION}"),
+                        _("Version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),
@@ -181,7 +181,7 @@ class AboutModel(Model):
                 loop = asyncio.get_running_loop()
                 latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
-                send_error(self.page, _(f"Connection failed: {e.strerror}"))
+                send_error(self.page, _("Connection failed: {e.strerror}").format(e=e.strerror))
                 return
 
             if not latest:
@@ -191,12 +191,12 @@ class AboutModel(Model):
 
             self.suc_release_info.controls = [
                 ft.Text(
-                    _(f"Current version: {APP_VERSION}"),
+                    _("Current version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
                 ft.Text(
-                    _(f"Latest version: {latest.version}"),
+                    _("Latest version: {latest.version}").format(latest=latest.version),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),

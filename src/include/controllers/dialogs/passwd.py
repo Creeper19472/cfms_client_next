@@ -29,7 +29,7 @@ class PasswdDialogController:
         self.dialog.close()
 
         if response["code"] != 200:
-            self.dialog.send_error(_(f"Change password failed: {response['message']}"))
+            self.dialog.send_error(_("Change password failed: {message}").format(message=response['message']))
         else:
             assert self.dialog.page.platform
             if self.dialog.page.platform.value not in ["ios", "android"]:

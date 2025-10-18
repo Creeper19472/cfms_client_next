@@ -63,7 +63,7 @@ class GroupRightMenuDialog(RightMenuDialog):
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Failed to delete user group: ({code}) {response['message']}"))
+            send_error(self.page, _("Failed to delete user group: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_listview.parent_manager.refresh_group_list()
 
@@ -88,19 +88,19 @@ class RenameGroupDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.modal = False
-        self.title = ft.Text(_(f"Rename User Group"))
+        self.title = ft.Text(_("Rename User Group"))
 
         self.parent_dialog = parent_dialog
         self.app_config = AppConfig()
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
-            label=_(f"New User Group Name"),
+            label=_("New User Group Name"),
             on_submit=self.ok_button_click,
             expand=True,
         )
         self.textfield_empty_message = ft.Text(
-            _(f"Group name cannot be empty"), color=ft.Colors.RED, visible=False
+            _("Group name cannot be empty"), color=ft.Colors.RED, visible=False
         )
 
         self.submit_button = ft.TextButton(
@@ -157,7 +157,7 @@ class RenameGroupDialog(AlertDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Rename failed: ({code}) {response['message']}"))
+            send_error(self.page, _("Rename failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_dialog.parent_listview.parent_manager.refresh_group_list()
 
@@ -283,7 +283,7 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := response["code"]) != 200:
             send_error(
                 self.page,
-                _(f"Change user group permissions failed: ({code}) {response['message']}"),
+                _("Change user group permissions failed: ({code}) {message}").format(code=code, message=response['message']),
             )
         else:
             await self.refresh_permission_list()
@@ -317,7 +317,7 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := group_info_response["code"]) != 200:
             send_error(
                 self.page,
-                _(f"Failed to fetch user group info: ({code}) {group_info_response['message']}"),
+                _("Failed to fetch user group info: ({code}) {message}").format(code=code, message=group_info_response['message']),
             )
             return
 

@@ -33,14 +33,14 @@ class ConnectFormController:
         except ConnectionResetError as e:
             self.view.enable_interactions()
             if e.strerror:
-                errmsg = _(f"Connection failed because the connection was reset: {e.strerror}")
+                errmsg = _("Connection failed because the connection was reset: {e.strerror}").format(e=e.strerror)
             else:
                 errmsg = _("Connection failed because the connection was reset.")
             self.view.send_error(errmsg)
             return
         except Exception as e:
             self.view.enable_interactions()
-            self.view.send_error(_(f"Connection failed: ({e.__class__.__name__}) {str(e)}"))
+            self.view.send_error(_("Connection failed: ({e.__class__.__name__}) {str(e)}").format(e=e.__class__.__name__, str=str(e)))
             return
 
         server_info_response = await do_request(conn, "server_info")
@@ -52,7 +52,7 @@ class ConnectFormController:
             self.view.send_error(
                 _("You are connecting to a server using a higher version protocol")
                 + " "
-                + _(f"(Protocol version {server_protocol_version}), please update the client."),
+                + _("(Protocol version {server_protocol_version}), please update the client.").format(server_protocol_version=server_protocol_version),
             )
             await self.view.push_route("/connect/about")
             return

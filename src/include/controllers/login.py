@@ -64,4 +64,4 @@ class LoginFormController:
             return
 
         else:
-            self.view.send_error(_(f"Login failed: ({code}) {response['message']}"))
+            self.view.send_error(_("Login failed: ({code}) {message}").format(code=code, message=response['message']))

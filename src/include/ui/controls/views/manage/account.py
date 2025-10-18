@@ -108,7 +108,7 @@ class ManageAccountsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"Load failed: ({code}) {response['message']}"))
+            send_error(self.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             update_user_controls(
                 self.user_listview, response["data"]["users"], _update_page
