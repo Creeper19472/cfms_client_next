@@ -39,7 +39,7 @@ class AddUserAccountDialogController:
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            self.view.send_error(f"创建用户失败: ({code}) {response['message']}")
+            self.view.send_error(_(f"创建用户失败: ({code}) {response['message']}"))
         else:
             await self.view.parent_view.refresh_user_list()
 
@@ -67,7 +67,7 @@ class RenameUserNicknameDialogController:
 
         if (code := response["code"]) != 200:
             self.view.send_error(
-                f"重命名用户昵称失败: ({code}) {response['message']}",
+                _(f"重命名用户昵称失败: ({code}) {response['message']}"),
             )
         else:
             await self.view.parent_dialog.parent_listview.parent_manager.refresh_user_list()
@@ -94,7 +94,7 @@ class EditUserGroupDialogController:
         )
         if (code := response["code"]) != 200:
             self.view.send_error(
-                f"更改用户组失败: ({code}) {response['message']}",
+                _(f"更改用户组失败: ({code}) {response['message']}"),
             )
 
         self.view.close()
@@ -116,7 +116,7 @@ class EditUserGroupDialogController:
         )
         if (code := group_list_response["code"]) != 200:
             self.view.send_error(
-                f"拉取用户组列表失败: ({code}) {group_list_response['message']}",
+                _(f"拉取用户组列表失败: ({code}) {group_list_response['message']}"),
             )
             return
 
@@ -135,7 +135,7 @@ class EditUserGroupDialogController:
         )
         if (code := user_data_response["code"]) != 200:
             self.view.send_error(
-                f"拉取用户信息失败: ({code}) {user_data_response['message']}",
+                _(f"拉取用户信息失败: ({code}) {user_data_response['message']}"),
             )
             return
         user_membership_list = user_data_response["data"]["groups"]
@@ -176,21 +176,21 @@ class ViewUserInfoDialogController:
         if (code := response["code"]) != 200:
             self.view.close()
             self.view.send_error(
-                f"拉取用户信息失败: ({code}) {response['message']}",
+                _(f"拉取用户信息失败: ({code}) {response['message']}"),
             )
         else:
             self.view.info_listview.controls = [
-                ft.Text(f"用户名: {response['data']['username']}"),
+                ft.Text(_(f"用户名: {response['data']['username']}")),
                 ft.Text(
-                    f"用户昵称: {response['data']['nickname'] if response['data']['nickname'] else '（无）'}"
+                    _(f"用户昵称: {response['data']['nickname'] if response['data']['nickname'] else _(_('（无）'))}")
                 ),
-                ft.Text(f"用户权限: {response['data']['permissions']}"),
-                ft.Text(f"用户组： {response['data']['groups']}"),
+                ft.Text(_(f"用户权限: {response['data']['permissions']}")),
+                ft.Text(_(f"用户组： {response['data']['groups']}")),
                 ft.Text(
-                    f"用户注册时间: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    _(f"用户注册时间: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}")
                 ),
                 ft.Text(
-                    f"最后登录于: {datetime.fromtimestamp(response['data']['last_login']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    _(f"最后登录于: {datetime.fromtimestamp(response['data']['last_login']).strftime('%Y-%m-%d %H:%M:%S')}")
                 ),
             ]
             self.view.progress_ring.visible = False

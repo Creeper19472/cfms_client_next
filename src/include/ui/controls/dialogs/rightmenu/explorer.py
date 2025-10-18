@@ -33,29 +33,29 @@ class RenameDialog(AlertDialog):
         self.object_type = object_type
         match self.object_type:
             case "document":
-                self.object_display_name = _("文档")
+                self.object_display_name = _(_("文档"))
             case "directory":
-                self.object_display_name = _("目录")
+                self.object_display_name = _(_("目录"))
             case _:
                 raise
 
         self.modal = False
-        self.title = ft.Text(_(f"重命名{self.object_display_name}"))
+        self.title = ft.Text(_(_(f"重命名{self.object_display_name}")))
 
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
-            label=_(f"新{self.object_display_name}名称"),
+            label=_(_(f"新{self.object_display_name}名称")),
             on_submit=self.ok_button_click,
             expand=True,
         )
 
         self.submit_button = ft.TextButton(
-            _("提交"),
+            _(_("提交")),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_(_("取消")), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
             controls=[self.name_textfield],
@@ -114,7 +114,7 @@ class GetDocumentInfoDialog(AlertDialog):
         self.modal = False
         self.title = ft.Row(
             controls=[
-                ft.Text(_("文档详情")),
+                ft.Text(_(_("文档详情"))),
                 ft.IconButton(
                     ft.Icons.REFRESH,
                     on_click=self.refresh_button_click,
@@ -125,7 +125,7 @@ class GetDocumentInfoDialog(AlertDialog):
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_(_("取消")), on_click=self.cancel_button_click)
 
         self.info_listview = ft.ListView(visible=False)
 
@@ -176,24 +176,24 @@ class GetDocumentInfoDialog(AlertDialog):
             self.close()
             send_error(
                 self.page,
-                _(f"拉取文档信息失败: ({code}) {response['message']}"),
+                _(_(f"拉取文档信息失败: ({code}) {response['message']}")),
             )
         else:
             self.info_listview.controls = [
-                ft.Text(f"文档ID: {response['data']['document_id']}", selectable=True),
-                ft.Text(f"文档标题: {response['data']['title']}", selectable=True),
-                ft.Text(f"文档大小: {response['data']['size']}"),
+                ft.Text(_(f"文档ID: {response['data']['document_id']}"), selectable=True),
+                ft.Text(_(f"文档标题: {response['data']['title']}"), selectable=True),
+                ft.Text(_(f"文档大小: {response['data']['size']}")),
                 ft.Text(
-                    f"创建于: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}",
+                    _(f"创建于: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"),
                 ),
                 ft.Text(
-                    f"最后更改时间: {datetime.fromtimestamp(response['data']['last_modified']).strftime('%Y-%m-%d %H:%M:%S')}",
+                    _(f"最后更改时间: {datetime.fromtimestamp(response['data']['last_modified']).strftime('%Y-%m-%d %H:%M:%S')}"),
                 ),
                 ft.Text(
-                    f"父级目录ID: {response['data']['parent_id']}", selectable=True
+                    _(f"父级目录ID: {response['data']['parent_id']}"), selectable=True
                 ),
                 ft.Text(
-                    f"访问规则: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}",
+                    _(f"访问规则: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}"),
                     selectable=True,
                 ),
             ]
@@ -220,7 +220,7 @@ class GetDirectoryInfoDialog(AlertDialog):
         self.modal = False
         self.title = ft.Row(
             controls=[
-                ft.Text(_("目录详情")),
+                ft.Text(_(_("目录详情"))),
                 ft.IconButton(
                     ft.Icons.REFRESH,
                     on_click=self.refresh_button_click,
@@ -231,7 +231,7 @@ class GetDirectoryInfoDialog(AlertDialog):
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_(_("取消")), on_click=self.cancel_button_click)
 
         self.info_listview = ft.ListView(visible=False)
 

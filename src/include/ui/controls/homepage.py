@@ -112,7 +112,7 @@ class HomeTabs(ft.Tabs):
             controls=[
                 ft.Container(
                     ft.Column(
-                        controls=[ft.Text("您尚未收藏任何文档或文件夹。")],
+                        controls=[ft.Text(_("您尚未收藏任何文档或文件夹。"))],
                         # alignment=ft.alignment.center,
                     ),
                     margin=15,

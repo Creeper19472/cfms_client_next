@@ -7,6 +7,12 @@ from include.classes.config import AppConfig
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
 
@@ -115,7 +121,7 @@ class AuditLogView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text("审计日志", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("审计日志"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         self.refresh_button,
@@ -206,7 +212,7 @@ class AuditLogView(ft.Container):
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
-                    f"加载失败: ({code}) {response.get('message', 'Unknown error')}",
+                    _(f"加载失败: ({code}) {response.get('message', 'Unknown error')}"),
                 )
             else:
                 data: dict = response.get("data", {})
@@ -218,7 +224,7 @@ class AuditLogView(ft.Container):
 
                 # 修复字符串格式化问题
                 self.audit_info_text.value = (
-                    f"{view_start} - {view_end} 条，共 {total} 条"
+                    _(f"{view_start} - {view_end} 条，共 {total} 条")
                 )
 
                 self.navigate_before_button.disabled = self.audit_view_offset <= 0
@@ -239,4 +245,4 @@ class AuditLogView(ft.Container):
             self.navigate_next_button.disabled = False
             self.update()
 
-            send_error(self.page, f"加载失败: {str(e)}")
+            send_error(self.page, _(f"加载失败: {str(e)}"))

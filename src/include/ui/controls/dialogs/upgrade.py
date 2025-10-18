@@ -14,6 +14,12 @@ from include.ui.util.notifications import send_error
 from include.util.transfer import calculate_sha256
 from include.util.upgrade.updater import AssetDigest, AssetDigestType
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 
 class UpgradeDialog(AlertDialog):
     def __init__(
@@ -27,17 +33,17 @@ class UpgradeDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.modal = True
-        self.title = ft.Text("更新")
+        self.title = ft.Text(_("更新"))
 
         self.stop_event = asyncio.Event()
         self.download_url = download_url
         self.save_filename = save_filename
         self.asset_digest = asset_digest
 
-        self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
         self.upgrade_note = ft.Text(visible=False)
         self.upgrade_progress = ft.ProgressBar()
-        self.upgrade_progress_text = ft.Text(value="正在准备下载")
+        self.upgrade_progress_text = ft.Text(value=_("正在准备下载"))
 
         self.content = ft.Column(
             controls=[
@@ -101,7 +107,7 @@ class UpgradeDialog(AlertDialog):
             except FileNotFoundError:
                 pass
             except Exception as e:
-                send_error(self.page, f"删除临时文件失败：{e}")
+                send_error(self.page, _(f"删除临时文件失败：{e}"))
 
             self.upgrade_note.value = "正在写入更新脚本"
             self.update()
@@ -133,7 +139,7 @@ exit
             await self.page.window.close()
 
         except Exception as e:
-            send_error(self.page, f"更新过程中发生错误：{e}")
+            send_error(self.page, _(f"更新过程中发生错误：{e}"))
 
     async def _handle_other_platforms_update(self):
         assert isinstance(self.page, ft.Page)
@@ -201,7 +207,7 @@ exit
                                 )
                             else:
                                 self.upgrade_progress_text.value = (
-                                    f"已下载: {downloaded_size} bytes"
+                                    _(f"已下载: {downloaded_size} bytes")
                                 )
 
                             self.update()
@@ -216,15 +222,15 @@ exit
                 else:
                     return True
             else:
-                send_error(self.page, f"下载失败，HTTP状态码: {response.status_code}")
+                send_error(self.page, _(f"下载失败，HTTP状态码: {response.status_code}"))
                 return False
 
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            send_error(self.page, f"在更新时发生网络错误：{str(e)}")
+            send_error(self.page, _(f"在更新时发生网络错误：{str(e)}"))
             return False
         except requests.exceptions.Timeout:
             send_error(self.page, "下载超时，请检查网络连接")
             return False
         except Exception as e:
-            send_error(self.page, f"下载过程中发生未知错误：{str(e)}")
+            send_error(self.page, _(f"下载过程中发生未知错误：{str(e)}"))
             return False

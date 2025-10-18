@@ -4,6 +4,12 @@ from include.controllers.dialogs.rulemanager import RuleManagerController
 from include.ui.controls.dialogs.base import AlertDialog
 import flet as ft
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 if TYPE_CHECKING:
     from include.ui.controls.rightmenu.explorer import (
         DocumentRightMenuDialog,
@@ -30,7 +36,7 @@ class RuleManager(AlertDialog):
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.content_textfield = ft.TextField(
-            label="规则内容",
+            label=_("规则内容"),
             multiline=True,
             min_lines=16,
             # max_lines=16,
@@ -44,7 +50,7 @@ class RuleManager(AlertDialog):
             selectable=False,
             on_tap_link=self.on_link_tapped,
         )
-        self.submit_button = ft.TextButton("提交", on_click=self.submit_button_click)
+        self.submit_button = ft.TextButton(_("提交"), on_click=self.submit_button_click)
 
         self.title = "规则管理器"
         self.content = ft.Container(
@@ -90,7 +96,7 @@ class RuleManager(AlertDialog):
         self.actions = [
             self.progress_ring,
             self.submit_button,
-            ft.TextButton("取消", on_click=lambda event: self.close()),
+            ft.TextButton(_("取消"), on_click=lambda event: self.close()),
         ]
 
         self.object_id = object_id
@@ -133,7 +139,7 @@ class RuleManager(AlertDialog):
                 ),
             }
         except json.decoder.JSONDecodeError:
-            self.content_textfield.error = _("提交的规则不是有效的JSON")
+            self.content_textfield.error = _(_("提交的规则不是有效的JSON"))
             return
 
         self.page.run_task(self.controller.action_submit_rule, data)

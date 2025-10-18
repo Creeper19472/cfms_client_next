@@ -3,6 +3,12 @@ from flet_model import Model, route
 
 from include.ui.util.route import get_parent_route
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 
 @route("settings")
 class SettingsModel(Model):
@@ -24,20 +30,20 @@ class SettingsModel(Model):
         self.listtiles = [
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.LINK),
-                title=ft.Text("连接"),
-                subtitle=ft.Text("更改应用使用代理的规则"),
+                title=ft.Text(_("连接")),
+                subtitle=ft.Text(_("更改应用使用代理的规则")),
                 on_click=self.configure_conn_listtile_click,
             ),
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.SECURITY),
-                title=ft.Text("安全"),
-                subtitle=ft.Text("调整应用记住连接历史的策略"),
+                title=ft.Text(_("安全")),
+                subtitle=ft.Text(_("调整应用记住连接历史的策略")),
                 on_click=self.configure_safety_listtile_click,
             ),
             # ft.ListTile(
             #     leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
-            #     title=ft.Text("更新"),
-            #     subtitle=ft.Text("自动检查和安装更新"),
+            #     title=ft.Text(_("更新")),
+            #     subtitle=ft.Text(_("自动检查和安装更新")),
             #     # on_click=open_change_passwd_dialog,
             # ),
         ]

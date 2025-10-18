@@ -117,7 +117,7 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
                     decrypted_chunks, total_chunks = data
                     progress_bar.value = decrypted_chunks / total_chunks
                     progress_info.value = _(
-                        f"正在解密分块 [{decrypted_chunks}/{total_chunks}]"
+                        f_("正在解密分块 [{decrypted_chunks}/{total_chunks}]")
                     )
                 case 2:
                     progress_bar.value = None

@@ -34,19 +34,19 @@ class PasswdUserDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text("重置用户密码")
+        self.title = ft.Text(_("重置用户密码"))
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.old_passwd_field = ft.TextField(
-            label="旧密码",
+            label=_("旧密码"),
             password=True,
             can_reveal_password=True,
             on_submit=lambda e: asyncio.create_task(self.new_passwd_field.focus()),
             expand=True,
         )
         self.new_passwd_field = ft.TextField(
-            label="新密码",
+            label=_("新密码"),
             password=True,
             can_reveal_password=True,
             on_submit=self.request_passwd_user,
@@ -98,19 +98,19 @@ class AddUserAccountDialog(AlertDialog):
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.password_field = ft.TextField(
-            label="密码",
+            label=_("密码"),
             password=True,
             can_reveal_password=True,
             on_submit=self.request_create_user,
             expand=True,
         )
         self.nickname_field = ft.TextField(
-            label="昵称",
+            label=_("昵称"),
             on_submit=lambda _: asyncio.create_task(self.password_field.focus()),
             expand=True,
         )
         self.username_field = ft.TextField(
-            label="用户名",
+            label=_("用户名"),
             on_submit=lambda _: asyncio.create_task(self.nickname_field.focus()),
             expand=True,
         )
@@ -169,14 +169,14 @@ class RenameUserNicknameDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text("重命名用户昵称")
+        self.title = ft.Text(_("重命名用户昵称"))
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.nickname_field = ft.TextField(
-            label="用户的新昵称", on_submit=self.request_rename_user, expand=True
+            label=_("用户的新昵称"), on_submit=self.request_rename_user, expand=True
         )
-        self.submit_button = ft.TextButton("重命名", on_click=self.request_rename_user)
+        self.submit_button = ft.TextButton(_("重命名"), on_click=self.request_rename_user)
         self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
 
         self.content = ft.Column(
@@ -233,7 +233,7 @@ class EditUserGroupDialog(AlertDialog):
             controls=[
                 ft.Row(
                     controls=[
-                        ft.Text("更改用户组"),
+                        ft.Text(_("更改用户组")),
                         self.refresh_button,
                     ]
                 ),
@@ -313,7 +313,7 @@ class ViewUserInfoDialog(AlertDialog):
 
         self.title = ft.Row(
             controls=[
-                ft.Text("用户详情"),
+                ft.Text(_("用户详情")),
                 ft.IconButton(
                     ft.Icons.REFRESH,
                     on_click=self.refresh_button_click,

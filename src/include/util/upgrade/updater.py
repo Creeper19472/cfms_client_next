@@ -5,6 +5,12 @@ import os
 from include.constants import RUNTIME_PATH, FLET_APP_STORAGE_TEMP
 from include.constants import GITHUB_REPO
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 SUPPORTED_PLATFORM = {"windows": "windows", "android": ".apk"}
 
 
