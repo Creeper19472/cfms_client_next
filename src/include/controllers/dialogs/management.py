@@ -39,7 +39,7 @@ class AddUserAccountDialogController:
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            self.view.send_error(_(f"Create Userfailed: ({code}) {response['message']}"))
+            self.view.send_error(_(f"Create user failed: ({code}) {response['message']}"))
         else:
             await self.view.parent_view.refresh_user_list()
 

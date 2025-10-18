@@ -211,7 +211,7 @@ class FileExplorerController:
                     upload_dialog.error_column.controls.append(
                         ft.Text(
                             _(
-                                f'Create file "{filename}_(" failed: {create_document_response.get("))message", "Unknown error")}'
+                                f'Create file "{filename}" failed: {create_document_response.get("message", "Unknown error")}'
                             )
                         )
                     )
