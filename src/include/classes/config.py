@@ -65,6 +65,7 @@ class AppConfig(object):
     def init_preferences(self):
         doc = {
             "settings": {
+                "language": "zh_CN",  # Default to Chinese
                 "proxy_settings": None,
                 "custom_proxy": "",
                 "enable_conn_history_logging": False,
