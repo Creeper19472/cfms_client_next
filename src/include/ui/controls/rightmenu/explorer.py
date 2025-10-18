@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 import gettext
 from include.classes.client import LockableClientConnection
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.controls.dialogs.rightmenu.explorer import (
     GetDirectoryInfoDialog,
@@ -17,7 +18,7 @@ from include.util.requests import do_request
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

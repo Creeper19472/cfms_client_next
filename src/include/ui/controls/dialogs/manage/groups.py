@@ -3,6 +3,7 @@ import flet as ft
 import gettext, asyncio
 
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
@@ -10,7 +11,7 @@ from include.util.requests import do_request
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import ManageGroupsView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

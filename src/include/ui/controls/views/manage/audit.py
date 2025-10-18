@@ -4,12 +4,13 @@ import flet as ft
 import flet_datatable2 as fdt
 
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

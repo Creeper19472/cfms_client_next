@@ -1,16 +1,14 @@
 import flet as ft
 import flet_permission_handler as fph
-import gettext, re, os
+import gettext, re
 from include.classes.config import AppConfig
-from include.constants import PROTOCOL_VERSION
+from include.constants import LOCALE_PATH
 from include.controllers.connect import ConnectFormController
-from include.util.connect import get_connection
-from include.util.requests import do_request
 from include.ui import constants as const
 from include.constants import DEFAULT_WINDOW_TITLE
-from include.ui.util.notifications import send_error, send_success
+from include.ui.util.notifications import send_error
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

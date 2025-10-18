@@ -3,12 +3,13 @@ import gettext
 from datetime import datetime
 import flet as ft
 
+from include.constants import LOCALE_PATH
 from include.ui.controls.rightmenu.manage.account import UserRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.account import UserListView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 
@@ -40,11 +41,13 @@ def update_user_controls(view: "UserListView", users: list[dict], _update=True):
                     subtitle=ft.Text(
                         f"{user["groups"]}\n"
                         + _("Last login: {last_login}").format(
-                            datetime.fromtimestamp(user["last_login"]).strftime(
-                                "%Y-%m-%d %H:%M:%S"
+                            last_login=(
+                                datetime.fromtimestamp(user["last_login"]).strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                )
+                                if user["last_login"]
+                                else "Unknown"
                             )
-                            if user["last_login"]
-                            else "Unknown"
                         )
                     ),
                     is_three_line=True,

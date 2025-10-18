@@ -1,11 +1,12 @@
 import flet as ft
 from flet_model import Model, route
 
+from include.constants import LOCALE_PATH
 from include.ui.util.route import get_parent_route
 
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

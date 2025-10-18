@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 import gettext
 import flet as ft
+from include.constants import LOCALE_PATH
 import include.ui.constants as const
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
@@ -10,7 +11,7 @@ from include.classes.config import AppConfig
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

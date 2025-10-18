@@ -3,13 +3,14 @@ from datetime import datetime
 import gettext
 import flet as ft
 
+from include.constants import LOCALE_PATH
 from include.ui.controls.rightmenu.explorer import (
     DocumentRightMenuDialog,
     DirectoryRightMenuDialog,
 )
 from include.ui.util.path import get_directory, get_document
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 if TYPE_CHECKING:
@@ -106,9 +107,9 @@ def update_file_controls(
                     title=ft.Text(document["title"]),
                     subtitle=ft.Text(
                         _("Last modified: {last_modified}\n").format(
-                            datetime.fromtimestamp(document["last_modified"]).strftime(
-                                "%Y-%m-%d %H:%M:%S"
-                            )
+                            last_modified=datetime.fromtimestamp(
+                                document["last_modified"]
+                            ).strftime("%Y-%m-%d %H:%M:%S")
                         )
                         + (
                             f"{document["size"] / 1024 / 1024:.3f} MB"

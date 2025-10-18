@@ -5,6 +5,7 @@ from include.classes.exceptions.request import (
     CreateDirectoryFailureError,
     RequestFailureError,
 )
+from include.constants import LOCALE_PATH
 from include.ui.util.path import get_directory
 from include.util.create import create_directory
 
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
         OpenDirectoryDialog,
     )
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 
@@ -52,7 +53,7 @@ class OpenDirectoryDialogController:
             await get_directory(
                 directory_id,
                 self.view.parent_manager.file_listview,
-                fallback="",
+                fallback=self.view.parent_manager.current_directory_id,
                 _raise_on_error=True,
             )
         except RequestFailureError as exc:

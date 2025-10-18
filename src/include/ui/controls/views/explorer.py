@@ -5,6 +5,7 @@ import flet as ft
 
 from include.classes.client import LockableClientConnection
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.controllers.explorer import FileExplorerController
 from include.ui.controls.dialogs.explorer import (
     CreateDirectoryDialog,
@@ -16,7 +17,7 @@ from include.ui.util.file_controls import get_directory
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

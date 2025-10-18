@@ -1,13 +1,12 @@
 from enum import Enum
 from typing import Optional
 import requests
-import os
-from include.constants import RUNTIME_PATH, FLET_APP_STORAGE_TEMP
+from include.constants import LOCALE_PATH
 from include.constants import GITHUB_REPO
 
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

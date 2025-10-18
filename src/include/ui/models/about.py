@@ -3,7 +3,7 @@ import gettext
 import flet as ft
 
 from flet_model import Model, route
-from include.constants import APP_VERSION, BUILD_VERSION
+from include.constants import APP_VERSION, BUILD_VERSION, LOCALE_PATH
 
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
@@ -18,7 +18,7 @@ from include.util.upgrade.updater import (
 from include.ui.util.notifications import send_error
 import requests, os
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 SUPPORTED_PLATFORM: dict

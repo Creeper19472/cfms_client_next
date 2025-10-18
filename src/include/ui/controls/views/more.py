@@ -3,13 +3,14 @@ import gettext
 import flet as ft
 
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.manage.accounts import PasswdUserDialog
 from include.ui.util.quotes import get_quote
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

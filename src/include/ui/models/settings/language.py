@@ -36,6 +36,8 @@ class LanguageSettingsModel(Model):
                 ft.dropdown.Option(key="en", text="English"),
             ],
             expand=True,
+            expand_loose=True,
+            disabled=True,  # This feature is currently disabled since it doesnt work
         )
 
         self.language_hint_text = ft.Text(

@@ -2,9 +2,10 @@ import flet as ft
 import gettext
 from datetime import date
 from include.classes.changelog import ChangelogEntry
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

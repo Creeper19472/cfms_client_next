@@ -808,7 +808,7 @@ msgstr "创建时间：{created_time}"
 
 #: .\include\ui\util\file_controls.py:108
 msgid "Last modified: {last_modified}\n"
-msgstr "最后更改时间：{last_modified}"
+msgstr "最后更改时间：{last_modified}\n"
 
 #: .\include\ui\util\group_controls.py:43
 msgid "Permissions: {permissions}\n"

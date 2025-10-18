@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 import asyncio, gettext
 
+from include.constants import LOCALE_PATH
 from include.controllers.dialogs.directory import (
     CreateDirectoryDialogController,
     OpenDirectoryDialogController,
@@ -11,7 +12,7 @@ from include.ui.controls.dialogs.base import AlertDialog
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

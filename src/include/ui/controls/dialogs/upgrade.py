@@ -8,7 +8,7 @@ from flet_permission_handler import Permission, PermissionHandler, PermissionSta
 import requests
 
 from include.classes.config import AppConfig
-from include.constants import FLET_APP_STORAGE_TEMP, RUNTIME_PATH
+from include.constants import FLET_APP_STORAGE_TEMP, LOCALE_PATH, RUNTIME_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.util.transfer import calculate_sha256
@@ -16,7 +16,7 @@ from include.util.upgrade.updater import AssetDigest, AssetDigestType
 
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

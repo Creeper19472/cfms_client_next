@@ -1,11 +1,12 @@
 import flet as ft
 import gettext
 
+from include.constants import LOCALE_PATH
 from include.controllers.login import LoginFormController
 import include.ui.constants as const
 from include.ui.util.notifications import send_error
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

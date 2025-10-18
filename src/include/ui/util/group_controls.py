@@ -3,12 +3,13 @@ from datetime import datetime
 import flet as ft
 import gettext
 
+from include.constants import LOCALE_PATH
 from include.ui.controls.rightmenu.manage.group import GroupRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import GroupListView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

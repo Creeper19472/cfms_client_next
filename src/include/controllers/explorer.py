@@ -5,6 +5,7 @@ import gettext
 import flet as ft
 from flet import FilePickerFile
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
@@ -19,7 +20,7 @@ from include.util.transfer import upload_file_to_server
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

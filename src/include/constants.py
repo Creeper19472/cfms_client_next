@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 __all__ = [
     "RUNTIME_PATH",
@@ -9,6 +10,9 @@ __all__ = [
     "PROTOCOL_VERSION",
 ]
 
+
+ROOT_PATH = Path(os.environ.get("FLET_ASSETS_DIR", "")).resolve().parent
+LOCALE_PATH = f"{ROOT_PATH}/include/ui/locale"
 RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
 FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
 FLET_APP_STORAGE_DATA = os.environ.get("FLET_APP_STORAGE_DATA", ".")

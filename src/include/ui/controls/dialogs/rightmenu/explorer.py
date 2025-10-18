@@ -6,6 +6,7 @@ import flet as ft
 import gettext
 import asyncio
 from include.classes.client import LockableClientConnection
+from include.constants import LOCALE_PATH
 from include.controllers.dialogs.rightmenu import (
     GetDirectoryInfoController,
     RenameDialogController,
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
         DirectoryRightMenuDialog,
     )
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

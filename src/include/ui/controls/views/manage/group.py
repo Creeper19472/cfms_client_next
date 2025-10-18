@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.manage.groups import AddUserGroupDialog
 from include.ui.util.notifications import send_error
 from include.ui.util.group_controls import update_group_controls
@@ -10,7 +11,7 @@ from include.util.requests import do_request
 
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

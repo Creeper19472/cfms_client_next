@@ -7,6 +7,7 @@ from include.classes.exceptions.transmission import (
     FileHashMismatchError,
     FileSizeMismatchError,
 )
+from include.constants import LOCALE_PATH
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 from include.util.connect import get_connection
@@ -15,7 +16,7 @@ from include.util.transfer import receive_file_from_server
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

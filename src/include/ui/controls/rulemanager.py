@@ -1,14 +1,9 @@
 import json, gettext
 from typing import TYPE_CHECKING
+from include.constants import LOCALE_PATH
 from include.controllers.dialogs.rulemanager import RuleManagerController
 from include.ui.controls.dialogs.base import AlertDialog
 import flet as ft
-
-import gettext
-
-t = gettext.translation("client", "ui/locale", fallback=True)
-_ = t.gettext
-
 
 if TYPE_CHECKING:
     from include.ui.controls.rightmenu.explorer import (
@@ -16,7 +11,7 @@ if TYPE_CHECKING:
         DirectoryRightMenuDialog,
     )
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 
@@ -50,7 +45,9 @@ class RuleManager(AlertDialog):
             selectable=False,
             on_tap_link=self.on_link_tapped,
         )
-        self.submit_button = ft.TextButton(_("Submit"), on_click=self.submit_button_click)
+        self.submit_button = ft.TextButton(
+            _("Submit"), on_click=self.submit_button_click
+        )
 
         self.title = "Rule Manager"
         self.content = ft.Container(

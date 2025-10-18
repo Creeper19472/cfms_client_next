@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import gettext
 import flet as ft
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.ui.util.path import get_directory
 from include.util.requests import do_request
 
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
         GetDirectoryInfoDialog,
     )
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

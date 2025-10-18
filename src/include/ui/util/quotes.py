@@ -1,8 +1,8 @@
 import random
-
 import gettext
+from include.constants import LOCALE_PATH
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

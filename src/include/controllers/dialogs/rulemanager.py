@@ -2,6 +2,7 @@ import json
 from typing import TYPE_CHECKING, Any
 import gettext
 from include.classes.config import AppConfig
+from include.constants import LOCALE_PATH
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
         RuleManager,
     )
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

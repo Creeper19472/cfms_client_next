@@ -1,7 +1,9 @@
 import flet as ft
 import gettext
 
-t = gettext.translation("client", "ui/locale", fallback=True)
+from include.constants import LOCALE_PATH
+
+t = gettext.translation("client", LOCALE_PATH, fallback=True)
 _ = t.gettext
 
 

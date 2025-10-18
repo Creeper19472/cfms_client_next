@@ -17,6 +17,8 @@ limitations under the License.
 import gettext
 import os
 
+from include.constants import LOCALE_PATH
+
 __all__ = ["get_translation", "SUPPORTED_LANGUAGES"]
 
 # Supported languages
@@ -44,7 +46,7 @@ def get_translation(language: str = "zh_CN"):
         # Try to load the specified language
         translation = gettext.translation(
             "client",
-            localedir="ui/locale",
+            localedir=LOCALE_PATH,
             languages=[language],
         )
         _current_translation = translation
@@ -53,7 +55,7 @@ def get_translation(language: str = "zh_CN"):
         # Fallback to default (Chinese) if translation file not found
         translation = gettext.translation(
             "client",
-            localedir="ui/locale",
+            localedir=LOCALE_PATH,
             fallback=True,
         )
         _current_translation = translation
