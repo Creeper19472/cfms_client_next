@@ -40,7 +40,7 @@ class DocumentRightMenuDialog(RightMenuDialog):
                 {
                     "icon": ft.Icons.DELETE,
                     "title": _("Delete"),
-                    "subtitle": _("Delete This File"),
+                    "subtitle": _("Delete this file"),
                     "on_click": self.delete_button_click,
                 },
                 # {
@@ -52,13 +52,13 @@ class DocumentRightMenuDialog(RightMenuDialog):
                 {
                     "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                     "title": "Rename",
-                    "subtitle": _("Rename This File"),
+                    "subtitle": _("Rename this file"),
                     "on_click": self.rename_button_click,
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
                     "title": _("Set Permissions"),
-                    "subtitle": _("Change Access Rules for This File"),
+                    "subtitle": _("Change access rules for this file"),
                     "on_click": self.set_access_rules_button_click,
                     "ref": self.access_settings_ref,
                 },
@@ -147,7 +147,7 @@ class DirectoryRightMenuDialog(AlertDialog):
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.DELETE),
                             title=ft.Text(_("Delete")),
-                            subtitle=ft.Text(_("Delete This Directory")),
+                            subtitle=ft.Text(_("Delete this directory")),
                             on_click=self.delete_button_click,
                         ),
                         ft.ListTile(
@@ -155,13 +155,13 @@ class DirectoryRightMenuDialog(AlertDialog):
                                 ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED
                             ),
                             title=ft.Text(_("Rename")),
-                            subtitle=ft.Text(_("Rename This Directory")),
+                            subtitle=ft.Text(_("Rename this directory")),
                             on_click=self.rename_button_click,
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.SETTINGS_OUTLINED),
                             title=ft.Text(_("Set Permissions")),
-                            subtitle=ft.Text(_("Change Access Rules for This Directory")),
+                            subtitle=ft.Text(_("Change access rules for this directory")),
                             on_click=self.set_access_rules_button_click,
                             ref=self.access_settings_ref,  # pyright: ignore[reportArgumentType]
                         ),

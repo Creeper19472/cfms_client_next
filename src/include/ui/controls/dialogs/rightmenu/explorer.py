@@ -184,7 +184,7 @@ class GetDocumentInfoDialog(AlertDialog):
         else:
             self.info_listview.controls = [
                 ft.Text(
-                    _(f"DocumentID: {response['data']['document_id']}"), selectable=True
+                    _(f"Document ID: {response['data']['document_id']}"), selectable=True
                 ),
                 ft.Text(_(f"Document title: {response['data']['title']}"), selectable=True),
                 ft.Text(_(f"Document size: {response['data']['size']}")),
