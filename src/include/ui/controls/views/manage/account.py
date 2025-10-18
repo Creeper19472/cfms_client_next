@@ -60,7 +60,7 @@ class ManageAccountsView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text(_("用户列表"), size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("User List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         ft.IconButton(ft.Icons.ADD, on_click=self.add_button_click),
@@ -108,7 +108,7 @@ class ManageAccountsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"加载失败: ({code}) {response['message']}"))
+            send_error(self.page, _(f"Load failed: ({code}) {response['message']}"))
         else:
             update_user_controls(
                 self.user_listview, response["data"]["users"], _update_page

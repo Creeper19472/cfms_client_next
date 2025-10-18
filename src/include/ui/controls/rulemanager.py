@@ -36,7 +36,7 @@ class RuleManager(AlertDialog):
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.content_textfield = ft.TextField(
-            label=_("规则内容"),
+            label=_("Rule Content"),
             multiline=True,
             min_lines=16,
             # max_lines=16,
@@ -44,15 +44,15 @@ class RuleManager(AlertDialog):
             expand_loose=True,
         )
         self.content_info = ft.Markdown(
-            "有关规则格式的说明，请参见 [CFMS 服务端文档]"
+            "For rule format documentation, please refer to [CFMS Server Documentation]"
             "(https://cfms-server-doc.readthedocs.io/zh-cn/latest/"
             "groups_and_rights.html#match-rules)。",
             selectable=False,
             on_tap_link=self.on_link_tapped,
         )
-        self.submit_button = ft.TextButton(_("提交"), on_click=self.submit_button_click)
+        self.submit_button = ft.TextButton(_("Submit"), on_click=self.submit_button_click)
 
-        self.title = "规则管理器"
+        self.title = "Rule Manager"
         self.content = ft.Container(
             content=ft.Tabs(
                 ft.Column(
@@ -60,10 +60,10 @@ class RuleManager(AlertDialog):
                         ft.TabBar(
                             [
                                 ft.Tab(
-                                    "可视化",
+                                    "Visualization",
                                 ),
                                 ft.Tab(
-                                    "源代码",
+                                    "Source Code",
                                 ),
                             ]
                         ),
@@ -96,7 +96,7 @@ class RuleManager(AlertDialog):
         self.actions = [
             self.progress_ring,
             self.submit_button,
-            ft.TextButton(_("取消"), on_click=lambda event: self.close()),
+            ft.TextButton(_("Cancel"), on_click=lambda event: self.close()),
         ]
 
         self.object_id = object_id
@@ -139,7 +139,7 @@ class RuleManager(AlertDialog):
                 ),
             }
         except json.decoder.JSONDecodeError:
-            self.content_textfield.error = _("提交的规则不是有效的JSON")
+            self.content_textfield.error = _("The submitted rule is not valid JSON")
             return
 
         self.page.run_task(self.controller.action_submit_rule, data)

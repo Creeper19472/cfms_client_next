@@ -135,9 +135,9 @@ class LoginForm(ft.Container):
 
         # validate fields individually and set corresponding errors
         if not (self.username_field.value and self.username_field.value.strip()):
-            self.username_field.error = _("用户名不能为空")
+            self.username_field.error = _("Username cannot be empty")
         if not (self.password_field.value and self.password_field.value.strip()):
-            self.password_field.error = _("密码不能为空")
+            self.password_field.error = _("Password cannot be empty")
 
         # if any error was set, re-enable interactions and return early
         if self.username_field.error or self.password_field.error:

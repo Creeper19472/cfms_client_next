@@ -90,7 +90,7 @@ class FileManagerView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text(_("文件管理"), size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("File Management"), size=24, weight=ft.FontWeight.BOLD),
                 self.indicator,
                 ft.Row(
                     controls=[

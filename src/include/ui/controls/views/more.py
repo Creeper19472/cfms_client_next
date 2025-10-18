@@ -52,17 +52,17 @@ class MoreView(ft.Container):
                     controls=[
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.PASSWORD),
-                            title=ft.Text(_("修改密码")),
+                            title=ft.Text(_("Change Password")),
                             on_click=self.passwd_listtile_click,
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.SETTINGS),
-                            title=ft.Text(_("设置")),
+                            title=ft.Text(_("Settings")),
                             on_click=self.settings_listtile_click,
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.INFO),
-                            title=ft.Text(_("关于")),
+                            title=ft.Text(_("About")),
                             on_click=self.about_listtile_click,
                         ),
                     ]

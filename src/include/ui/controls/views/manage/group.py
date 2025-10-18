@@ -60,7 +60,7 @@ class ManageGroupsView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text(_("用户组列表"), size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("User Group List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         ft.IconButton(
@@ -110,7 +110,7 @@ class ManageGroupsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"加载失败: ({code}) {response['message']}"))
+            send_error(self.page, _(f"Load failed: ({code}) {response['message']}"))
         else:
             update_group_controls(
                 self.group_listview, response["data"]["groups"], _update_page

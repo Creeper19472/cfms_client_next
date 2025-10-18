@@ -36,14 +36,14 @@ class SettingsModel(Model):
             ),
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.LINK),
-                title=ft.Text(_("连接")),
-                subtitle=ft.Text(_("更改应用使用代理的规则")),
+                title=ft.Text(_("Connect")),
+                subtitle=ft.Text(_("Change application proxy settings")),
                 on_click=self.configure_conn_listtile_click,
             ),
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.SECURITY),
-                title=ft.Text(_("安全")),
-                subtitle=ft.Text(_("调整应用记住连接历史的策略")),
+                title=ft.Text(_("Security")),
+                subtitle=ft.Text(_("Adjust application connection history policy")),
                 on_click=self.configure_safety_listtile_click,
             ),
             # ft.ListTile(

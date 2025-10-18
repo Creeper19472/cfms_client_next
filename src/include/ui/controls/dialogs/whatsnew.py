@@ -150,7 +150,7 @@ class ChangelogEntryColumn(ft.Column):
                 size=21,
                 spans=[
                     ft.TextSpan(
-                        _(f"  发行于 {str(self.entry.date)}"),
+                        _(f"  Released on {str(self.entry.date)}"),
                         style=ft.TextStyle(14),
                     )
                 ],
@@ -182,7 +182,7 @@ class ChangelogHistoryDialog(AlertDialog):
         self.content = ft.Container(
             ft.Column(
                 [
-                    ft.Text(_(f"最后更新于 {str(changelogs[0].date)}\n")),
+                    ft.Text(_(f"Last updated on {str(changelogs[0].date)}\n")),
                     *self.entry_columns,
                 ]
             ),

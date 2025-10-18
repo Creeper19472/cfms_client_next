@@ -35,12 +35,12 @@ class DocumentRightMenuDialog(RightMenuDialog):
         self.access_settings_ref = ft.Ref[ft.ListTile]()
 
         super().__init__(
-            title=ft.Text(_("操作文档")),
+            title=ft.Text(_("Manage Documents")),
             menu_items=[
                 {
                     "icon": ft.Icons.DELETE,
-                    "title": _("删除"),
-                    "subtitle": _("删除此文件"),
+                    "title": _("Delete"),
+                    "subtitle": _("Delete This File"),
                     "on_click": self.delete_button_click,
                 },
                 # {
@@ -51,21 +51,21 @@ class DocumentRightMenuDialog(RightMenuDialog):
                 # },
                 {
                     "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
-                    "title": "重命名",
-                    "subtitle": _("重命名此文件"),
+                    "title": "Rename",
+                    "subtitle": _("Rename This File"),
                     "on_click": self.rename_button_click,
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
-                    "title": _("设置权限"),
-                    "subtitle": _("对此文件的访问规则进行变更"),
+                    "title": _("Set Permissions"),
+                    "subtitle": _("Change Access Rules for This File"),
                     "on_click": self.set_access_rules_button_click,
                     "ref": self.access_settings_ref,
                 },
                 {
                     "icon": ft.Icons.INFO_OUTLINED,
-                    "title": _("属性"),
-                    "subtitle": _("查看该文件的详细信息"),
+                    "title": _("Properties"),
+                    "subtitle": _("View file details"),
                     "on_click": self.open_document_info_click,
                 },
             ],
@@ -99,7 +99,7 @@ class DocumentRightMenuDialog(RightMenuDialog):
             token=self.page.session.store.get("token"),
         )
         if (code := response["code"]) != 200:
-            send_error(event.page, _(f"删除失败: ({code}) {response['message']}"))
+            send_error(event.page, _(f"Deletefailed: ({code}) {response['message']}"))
         else:
             await get_directory(
                 self.parent_listview.parent_manager.current_directory_id,
@@ -133,7 +133,7 @@ class DirectoryRightMenuDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_("操作目录"))
+        self.title = ft.Text(_("Manage Directories"))
 
         self.directory_id = directory_id
         self.user_permissions = []
@@ -146,29 +146,29 @@ class DirectoryRightMenuDialog(AlertDialog):
                     [
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.DELETE),
-                            title=ft.Text(_("删除")),
-                            subtitle=ft.Text(_("删除此目录")),
+                            title=ft.Text(_("Delete")),
+                            subtitle=ft.Text(_("Delete This Directory")),
                             on_click=self.delete_button_click,
                         ),
                         ft.ListTile(
                             leading=ft.Icon(
                                 ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED
                             ),
-                            title=ft.Text(_("重命名")),
-                            subtitle=ft.Text(_("重命名此目录")),
+                            title=ft.Text(_("Rename")),
+                            subtitle=ft.Text(_("Rename This Directory")),
                             on_click=self.rename_button_click,
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.SETTINGS_OUTLINED),
-                            title=ft.Text(_("设置权限")),
-                            subtitle=ft.Text(_("对此目录的访问规则进行变更")),
+                            title=ft.Text(_("Set Permissions")),
+                            subtitle=ft.Text(_("Change Access Rules for This Directory")),
                             on_click=self.set_access_rules_button_click,
                             ref=self.access_settings_ref,  # pyright: ignore[reportArgumentType]
                         ),
                         ft.ListTile(
                             leading=ft.Icon(ft.Icons.INFO_OUTLINED),
-                            title=ft.Text(_("属性")),
-                            subtitle=ft.Text(_("查看此目录的详细信息")),
+                            title=ft.Text(_("Properties")),
+                            subtitle=ft.Text(_("View directory details")),
                             on_click=self.open_directory_info_click,
                         ),
                     ],
@@ -203,7 +203,7 @@ class DirectoryRightMenuDialog(AlertDialog):
             token=self.page.session.store.get("token"),
         )
         if (code := response["code"]) != 200:
-            send_error(event.page, _(f"删除失败: ({code}) {response['message']}"))
+            send_error(event.page, _(f"Deletefailed: ({code}) {response['message']}"))
         else:
             await get_directory(
                 self.parent_listview.parent_manager.current_directory_id,

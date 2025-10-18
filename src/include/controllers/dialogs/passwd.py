@@ -29,10 +29,10 @@ class PasswdDialogController:
         self.dialog.close()
 
         if response["code"] != 200:
-            self.dialog.send_error(_(f"修改密码失败: {response['message']}"))
+            self.dialog.send_error(_(f"Change Passwordfailed: {response['message']}"))
         else:
             assert self.dialog.page.platform
             if self.dialog.page.platform.value not in ["ios", "android"]:
                 await self.dialog.page.window.close()
             else:
-                self.dialog.send_error(_("您已登出，请手动重启应用"))
+                self.dialog.send_error(_("You have been logged out, please restart the application manually"))

@@ -1,12 +1,9 @@
-# CFMS Client NEXT Translation
-# Copyright (C) 2025 Creeper Team
-# This file is distributed under the same license as the cfms-client-next package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.2.16\n"
-"POT-Creation-Date: 2025-10-18 09:27\n"
-"PO-Revision-Date: 2025-10-18 09:27\n"
+"POT-Creation-Date: 2025-10-18 10:23\n"
+"PO-Revision-Date: 2025-10-18 10:23\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: English\n"
 "Language: en\n"
@@ -14,599 +11,618 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/include/controllers/explorer.py:194
+msgid "(None)"
+msgstr "(None)"
+
+msgid ""
+"(Protocol version {server_protocol_version}), please update the client."
+msgstr ""
+"(Protocol version {server_protocol_version}), please update the client."
+
+msgid "A true hero among mortals, no need to test their cry further."
+msgstr "A true hero among mortals, no need to test their cry further."
+
+msgid "About"
+msgstr "About"
+
+msgid "Access rules:"
+msgstr "Access rules:"
+
+msgid "Add Permission"
+msgstr "Add Permission"
+
+msgid "Adjust application connection history policy"
+msgstr "Adjust application connection history policy"
+
+msgid "Already on the latest version"
+msgstr "Already on the latest version"
+
+msgid "Audit Logs"
+msgstr "Audit Logs"
+
+msgid "Authorization failed, you will not be able to download files normally."
+msgstr ""
+"Authorization failed, you will not be able to download files normally."
+
+msgid ""
+"Authorization failed, you will not be able to install updates normally. "
+"Please allow the app to install updates in settings."
+msgstr ""
+"Authorization failed, you will not be able to install updates normally. "
+"Please allow the app to install updates in settings."
+
+msgid "Automatically check and install updates"
+msgstr "Automatically check and install updates"
+
+msgid "Batch Upload"
+msgstr "Batch Upload"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Cannot update: Cannot check for updates when running from source code."
+msgstr ""
+"Cannot update: Cannot check for updates when running from source code."
+
+msgid "Change Access Rules for This Directory"
+msgstr "Change Access Rules for This Directory"
+
+msgid "Change Access Rules for This File"
+msgstr "Change Access Rules for This File"
+
+msgid "Change Display Name for User Group"
+msgstr "Change Display Name for User Group"
+
+msgid "Change Nickname"
+msgstr "Change Nickname"
+
+msgid "Change Password"
+msgstr "Change Password"
+
+msgid "Change Permissions for User Group"
+msgstr "Change Permissions for User Group"
+
+msgid "Change User Group"
+msgstr "Change User Group"
+
+msgid "Change User Group Permissions"
+msgstr "Change User Group Permissions"
+
+msgid "Change User's Group Membership"
+msgstr "Change User's Group Membership"
+
+msgid "Change User's Nickname"
+msgstr "Change User's Nickname"
+
+msgid "Change application proxy settings"
+msgstr "Change application proxy settings"
+
+msgid "Check for Updates"
+msgstr "Check for Updates"
+
+msgid "Checking for updates"
+msgstr "Checking for updates"
+
+msgid "Child object count:"
+msgstr "Child object count:"
+
+msgid "Closing application"
+msgstr "Closing application"
+
+msgid "Connect"
+msgstr "Connect"
+
+msgid "Connection failed because the connection was reset."
+msgstr "Connection failed because the connection was reset."
+
+msgid "Connection failed because the connection was reset: {e.strerror}"
+msgstr "Connection failed because the connection was reset: {e.strerror}"
+
+msgid "Connection failed: ({e.__class__.__name__}) {str(e)}"
+msgstr "Connection failed: ({e.__class__.__name__}) {str(e)}"
+
+msgid "Connection failed: {e.strerror}"
+msgstr "Connection failed: {e.strerror}"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Create Directory"
+msgstr "Create Directory"
+
+msgid "Create User"
+msgstr "Create User"
+
+msgid "Create file"
+msgstr "Create file"
+
+msgid "Created:"
+msgstr "Created:"
+
+msgid "Creating directory"
+msgstr "Creating directory"
+
+msgid "Current version: {APP_VERSION}"
+msgstr "Current version: {APP_VERSION}"
+
+msgid "Decrypting chunk"
+msgstr "Decrypting chunk"
+
+msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+msgstr "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Delete This Directory"
+msgstr "Delete This Directory"
+
+msgid "Delete This File"
+msgstr "Delete This File"
+
+msgid "Delete This User"
+msgstr "Delete This User"
+
+msgid "Delete This User Group"
+msgstr "Delete This User Group"
+
+msgid "Delete failed:"
+msgstr "Delete failed:"
+
+msgid "Deleting extracted package"
+msgstr "Deleting extracted package"
+
+msgid "Deleting temporary files"
+msgstr "Deleting temporary files"
+
+msgid "Directory"
+msgstr "Directory"
+
+msgid "Directory Details"
+msgstr "Directory Details"
+
+msgid "Directory ID:"
+msgstr "Directory ID:"
+
+msgid "Directory Name"
+msgstr "Directory Name"
+
+msgid "Directory name:"
+msgstr "Directory name:"
+
+msgid "Disable SSL verification (Insecure)"
+msgstr "Disable SSL verification (Insecure)"
+
+msgid "Display Name"
+msgstr "Display Name"
+
+msgid "Document"
+msgstr "Document"
+
+msgid "Document Details"
+msgstr "Document Details"
+
+msgid "Document ID:"
+msgstr "Document ID:"
+
+msgid "Document size:"
+msgstr "Document size:"
+
+msgid "Document title:"
+msgstr "Document title:"
+
+msgid "Download Update File"
+msgstr "Download Update File"
+
+msgid "Download failed, HTTP status code:"
+msgstr "Download failed, HTTP status code:"
+
+msgid "Download failed, HTTP status code: {response.status_code}"
+msgstr "Download failed, HTTP status code: {response.status_code}"
+
+msgid "Download timeout, please check network connection"
+msgstr "Download timeout, please check network connection"
+
+msgid "Downloaded:"
+msgstr "Downloaded:"
+
+msgid "Downloaded: {downloaded_size} bytes"
+msgstr "Downloaded: {downloaded_size} bytes"
+
+msgid ""
+"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
+"echoing with bugles."
+msgstr ""
+"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
+"echoing with bugles."
+
+msgid "Edit User Group"
+msgstr "Edit User Group"
+
+msgid "Error occurred during update:"
+msgstr "Error occurred during update:"
+
+msgid "Error occurred during update: {e}"
+msgstr "Error occurred during update: {e}"
+
+msgid "Extracting version package"
+msgstr "Extracting version package"
+
+msgid "Failed to change password:"
+msgstr "Failed to change password:"
+
+msgid "Failed to change user group permissions:"
+msgstr "Failed to change user group permissions:"
+
+msgid "Failed to change user group:"
+msgstr "Failed to change user group:"
+
+msgid "Failed to create user group:"
+msgstr "Failed to create user group:"
+
+msgid "Failed to create user:"
+msgstr "Failed to create user:"
+
+msgid "Failed to delete temporary file:"
+msgstr "Failed to delete temporary file:"
+
+msgid "Failed to delete temporary file: {e}"
+msgstr "Failed to delete temporary file: {e}"
+
+msgid "Failed to delete user group:"
+msgstr "Failed to delete user group:"
+
+msgid "Failed to delete user:"
+msgstr "Failed to delete user:"
+
+msgid "Failed to fetch directory info:"
+msgstr "Failed to fetch directory info:"
+
+msgid "Failed to fetch document info:"
+msgstr "Failed to fetch document info:"
+
+msgid "Failed to fetch user group info:"
+msgstr "Failed to fetch user group info:"
+
+msgid "Failed to fetch user group list:"
+msgstr "Failed to fetch user group list:"
+
+msgid "Failed to fetch user info:"
+msgstr "Failed to fetch user info:"
+
+msgid "Failed to rename user nickname:"
+msgstr "Failed to rename user nickname:"
+
+msgid "Failed to retrieve version information"
+msgstr "Failed to retrieve version information"
+
+msgid "Favorites"
+msgstr "Favorites"
+
+msgid "File Management"
+msgstr "File Management"
+
+msgid ""
+"For rule format documentation, please refer to [CFMS Server Documentation]"
+msgstr ""
+"For rule format documentation, please refer to [CFMS Server Documentation]"
+
+msgid "Invalid server address"
+msgstr "Invalid server address"
+
+msgid "Jump to..."
+msgstr "Jump to..."
+
+msgid "Last login:"
+msgstr "Last login:"
+
+msgid "Last modified:"
+msgstr "Last modified:"
+
+msgid "Latest version: {latest.version}"
+msgstr "Latest version: {latest.version}"
+
+msgid "Load failed:"
+msgstr "Load failed:"
+
+msgid "Load failed: {str(e)}"
+msgstr "Load failed: {str(e)}"
+
+msgid "Login failed: "
+msgstr "Login failed: "
+
+msgid "Manage Directories"
+msgstr "Manage Directories"
+
+msgid "Manage Documents"
+msgstr "Manage Documents"
+
+msgid "Manage User Groups"
+msgstr "Manage User Groups"
+
+msgid "Manage Users"
+msgstr "Manage Users"
+
+msgid "Modification failed:"
+msgstr "Modification failed:"
+
+msgid "Move"
+msgstr "Move"
+
+msgid "Move File to Another Location"
+msgstr "Move File to Another Location"
+
+msgid "Network error occurred during update:"
+msgstr "Network error occurred during update:"
+
+msgid "Network error occurred during update: {str(e)}"
+msgstr "Network error occurred during update: {str(e)}"
+
+msgid "New Password"
+msgstr "New Password"
+
+msgid "New User Group Name"
+msgstr "New User Group Name"
+
+msgid "New {self.object_display_name} name"
+msgstr "New {self.object_display_name} name"
+
+msgid "Nickname"
+msgstr "Nickname"
+
+msgid ""
+"No package found for the corresponding architecture in the latest version"
+msgstr ""
+"No package found for the corresponding architecture in the latest version"
+
+msgid "No update found: Unsupported architecture"
+msgstr "No update found: Unsupported architecture"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Old Password"
+msgstr "Old Password"
+
+msgid "Parent directory ID:"
+msgstr "Parent directory ID:"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Password cannot be empty"
+msgstr "Password cannot be empty"
+
+msgid "Password must be changed before login."
+msgstr "Password must be changed before login."
+
+msgid "Please allow the app to access your files in settings."
+msgstr "Please allow the app to access your files in settings."
+
+msgid "Please wait"
+msgstr "Please wait"
+
+msgid "Preparing download"
+msgstr "Preparing download"
+
+msgid "Preparing upload"
+msgstr "Preparing upload"
+
+msgid "Problem occurred:"
+msgstr "Problem occurred:"
+
+msgid "Properties"
+msgstr "Properties"
+
+msgid "Released on"
+msgstr "Released on"
+
+msgid "Released on {str(self.entry.date)}"
+msgstr "Released on {str(self.entry.date)}"
+
+msgid "Rename"
+msgstr "Rename"
+
+msgid "Rename This Directory"
+msgstr "Rename This Directory"
+
+msgid "Rename This File"
+msgstr "Rename This File"
+
+msgid "Rename User Group"
+msgstr "Rename User Group"
+
+msgid "Rename User Nickname"
+msgstr "Rename User Nickname"
+
+msgid "Rename failed:"
+msgstr "Rename failed:"
+
+msgid "Rename {self.object_display_name}"
+msgstr "Rename {self.object_display_name}"
+
+msgid "Reset User Password"
+msgstr "Reset User Password"
+
+msgid "Retrying"
+msgstr "Retrying"
+
+msgid "Retrying [{retry}/{max_retries}]: {str(e)}"
+msgstr "Retrying [{retry}/{max_retries}]: {str(e)}"
+
+msgid "Rule Content"
+msgstr "Rule Content"
+
+msgid "Rule Manager"
+msgstr "Rule Manager"
+
+msgid "Security"
+msgstr "Security"
+
+msgid ""
+"Seeking each other on dream paths, amid flying rain and falling flowers."
+msgstr ""
+"Seeking each other on dream paths, amid flying rain and falling flowers."
+
+msgid "Server Address"
+msgstr "Server Address"
+
+msgid "Set Permissions"
+msgstr "Set Permissions"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Software Update"
+msgstr "Software Update"
+
+msgid "Source Code"
+msgstr "Source Code"
+
+msgid ""
+"Stars hang low over the vast plain, the moon surges over the great river."
+msgstr ""
+"Stars hang low over the vast plain, the moon surges over the great river."
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "The submitted rule is not valid JSON"
+msgstr "The submitted rule is not valid JSON"
+
+msgid ""
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
+msgstr ""
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
+
+msgid ""
+"Though lacking wings like the colorful phoenix to fly side by side, our "
+"hearts connect with the clarity of a rhinoceros horn."
+msgstr ""
+"Though lacking wings like the colorful phoenix to fly side by side, our "
+"hearts connect with the clarity of a rhinoceros horn."
+
+msgid "Unknown error occurred during download:"
+msgstr "Unknown error occurred during download:"
+
+msgid "Unknown error occurred during download: {str(e)}"
+msgstr "Unknown error occurred during download: {str(e)}"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Update Notes:"
+msgstr "Update Notes:"
+
+msgid "Upload Directory"
+msgstr "Upload Directory"
+
+msgid "Upload completed with {total_errors} error(s)."
+msgstr "Upload completed with {total_errors} error(s)."
+
+msgid "Upload failed:"
+msgstr "Upload failed:"
+
+msgid "Upload failed: No permission to upload files"
+msgstr "Upload failed: No permission to upload files"
+
+msgid "Uploading"
+msgstr "Uploading"
+
+msgid "Uploading file"
+msgstr "Uploading file"
+
+msgid "Uploading file [{current_number}/{len(files)}]"
+msgstr "Uploading file [{current_number}/{len(files)}]"
+
+msgid "User Details"
+msgstr "User Details"
+
+msgid "User Group List"
+msgstr "User Group List"
+
+msgid "User List"
+msgstr "User List"
+
+msgid "User groups:"
+msgstr "User groups:"
+
+msgid "User nickname:"
+msgstr "User nickname:"
+
+msgid "User permissions:"
+msgstr "User permissions:"
+
+msgid "User registration time:"
+msgstr "User registration time:"
+
+msgid "User's New Nickname"
+msgstr "User's New Nickname"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Username cannot be empty"
+msgstr "Username cannot be empty"
+
+msgid "Username:"
+msgstr "Username:"
+
+msgid "Verifying file"
+msgstr "Verifying file"
+
+msgid "View directory details"
+msgstr "View directory details"
+
+msgid "View file details"
+msgstr "View file details"
+
+msgid "View user details"
+msgstr "View user details"
+
+msgid "Visualization"
+msgstr "Visualization"
+
+msgid "Welcome to Confidential Document Management System (CFMS)"
+msgstr "Welcome to Confidential Document Management System (CFMS)"
+
+msgid "Writing update script"
+msgstr "Writing update script"
+
+msgid "You are connecting to a server using a higher version protocol"
+msgstr "You are connecting to a server using a higher version protocol"
+
+msgid "You have been logged out, please restart the application manually"
+msgstr "You have been logged out, please restart the application manually"
+
+msgid "You have not favorited any documents or folders yet."
+msgstr "You have not favorited any documents or folders yet."
+
 msgid "[{_current_number}/{_total_number}] 正在上传文件"
 msgstr "[{_current_number}/{_total_number}] 正在上传文件"
 
-#: src/include/ui/controls/views/manage/audit.py:221
-msgid "{view_start} - {view_end} 条，共 {total} 条"
+msgid "failed:"
+msgstr "failed:"
+
+msgid "{view_start} - {view_end} of {total} items"
 msgstr "{view_start} - {view_end} of {total} items"
 
-#: src/include/controllers/explorer.py:76
-msgid "上传失败: 无权上传文件"
-msgstr "Upload failed: No permission to upload files"
-
-#: src/include/controllers/explorer.py:273
-msgid "上传完成，共计 {total_errors} 个错误。"
-msgstr "Upload completed with {total_errors} error(s)."
-
-#: src/include/ui/controls/dialogs/explorer.py:145
-msgid "上传目录"
-msgstr "Upload Directory"
-
-#: src/include/ui/controls/dialogs/upgrade.py:219
-msgid "下载失败，HTTP状态码: {response.status_code}"
-msgstr "Download failed, HTTP status code: {response.status_code}"
-
-#: src/include/ui/controls/dialogs/upgrade.py:163
-msgid "下载更新文件"
-msgstr "Download Update File"
-
-#: src/include/ui/controls/dialogs/upgrade.py:226
-msgid "下载超时，请检查网络连接"
-msgstr "Download timeout, please check network connection"
-
-#: src/include/ui/controls/dialogs/upgrade.py:229
-msgid "下载过程中发生未知错误：{str(e)}"
-msgstr "Unknown error occurred during download: {str(e)}"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:51
-msgid "为用户更改所属的用户组"
-msgstr "Change User's Group Membership"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:45
-msgid "为用户更改昵称"
-msgstr "Change User's Nickname"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:40
-msgid "为用户组更改展示的名称"
-msgstr "Change Display Name for User Group"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:46
-msgid "为用户组更改拥有的权限"
-msgstr "Change Permissions for User Group"
-
-#: src/include/ui/controls/views/more.py:55
-msgid "修改密码"
-msgstr "Change Password"
-
-#: src/include/ui/controls/views/more.py:65
-msgid "关于"
-msgstr "About"
-
-#: src/include/ui/controls/dialogs/explorer.py:43
-msgid "创建"
-msgstr "Create"
-
-#: src/include/controllers/explorer.py:215
-msgid "创建文件"
-msgstr "创建文件"
-
-#: src/include/ui/controls/dialogs/manage/groups.py:30
-msgid "创建用户"
-msgstr "Create User"
-
-#: src/include/ui/controls/dialogs/explorer.py:30
-msgid "创建目录"
-msgstr "Create Directory"
-
-#: src/include/ui/controls/rightmenu/explorer.py:42
-msgid "删除"
-msgstr "Delete"
-
-#: src/include/ui/controls/dialogs/upgrade.py:104
-msgid "删除临时文件失败：{e}"
-msgstr "Failed to delete temporary file: {e}"
-
-#: src/include/ui/controls/rightmenu/explorer.py:43
-msgid "删除此文件"
-msgstr "Delete This File"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:39
-msgid "删除此用户"
-msgstr "Delete This User"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:34
-msgid "删除此用户组"
-msgstr "Delete This User Group"
-
-#: src/include/ui/controls/rightmenu/explorer.py:150
-msgid "删除此目录"
-msgstr "Delete This Directory"
-
-#: src/include/ui/controls/views/manage/audit.py:242
-msgid "加载失败: {str(e)}"
-msgstr "Load failed: {str(e)}"
-
-#: src/include/ui/controls/dialogs/whatsnew.py:153
-msgid "发行于 {str(self.entry.date)}"
-msgstr "Released on {str(self.entry.date)}"
-
-#: src/include/ui/controls/rulemanager.py:93
-msgid "取消"
-msgstr "Cancel"
-
-#: src/include/ui/controls/rulemanager.py:57
-msgid "可视化"
-msgstr "Visualization"
-
-#: src/include/controllers/explorer.py:115
-msgid "在上传"
-msgstr "在上传"
-
-#: src/include/controllers/explorer.py:248
 msgid "在上传文件"
 msgstr "在上传文件"
 
-#: src/include/ui/controls/dialogs/upgrade.py:223
-msgid "在更新时发生网络错误：{str(e)}"
-msgstr "Network error occurred during update: {str(e)}"
-
-#: src/include/controllers/login.py:63
-msgid "在登录前必须修改密码。"
-msgstr "Password must be changed before login."
-
-#: src/include/ui/models/settings/overview.py:33
-msgid "安全"
-msgstr "Security"
-
-#: src/include/ui/controls/views/manage/audit.py:118
-msgid "审计日志"
-msgstr "Audit Logs"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:101
-msgid "密码"
-msgstr "Password"
-
-#: src/include/ui/controls/views/login.py:140
-msgid "密码不能为空"
-msgstr "Password cannot be empty"
-
-#: src/include/ui/controls/rightmenu/explorer.py:61
-msgid "对此文件的访问规则进行变更"
-msgstr "Change Access Rules for This File"
-
-#: src/include/ui/controls/rightmenu/explorer.py:164
-msgid "对此目录的访问规则进行变更"
-msgstr "Change Access Rules for This Directory"
-
-#: src/include/ui/controls/rightmenu/explorer.py:49
-msgid "将文件移动到其他位置"
-msgstr "Move File to Another Location"
-
-#: src/include/ui/controls/dialogs/manage/groups.py:35
-msgid "展示名称"
-msgstr "Display Name"
-
-#: src/include/ui/controls/rightmenu/explorer.py:67
-msgid "属性"
-msgstr "Properties"
-
-#: src/include/ui/controls/dialogs/upgrade.py:204
-msgid "已下载: {downloaded_size} bytes"
-msgstr "Downloaded: {downloaded_size} bytes"
-
-#: src/include/ui/models/about.py:216
-msgid "已是最新版本"
-msgstr "Already on the latest version"
-
-#: src/include/controllers/connect.py:36
-msgid "建立连接失败，因为连接已重置: {e.strerror}"
-msgstr "Connection failed because the connection was reset: {e.strerror}"
-
-#: src/include/controllers/connect.py:38
-msgid "建立连接失败，因为连接已重置。"
-msgstr "Connection failed because the connection was reset."
-
-#: src/include/controllers/connect.py:43
-msgid "建立连接失败：({e.__class__.__name__}) {str(e)}"
-msgstr "Connection failed: ({e.__class__.__name__}) {str(e)}"
-
-#: src/include/ui/models/about.py:193
-msgid "当前版本：{APP_VERSION}"
-msgstr "Current version: {APP_VERSION}"
-
-#: src/include/ui/controls/homepage.py:115
-msgid "您尚未收藏任何文档或文件夹。"
-msgstr "You have not favorited any documents or folders yet."
-
-#: src/include/controllers/dialogs/passwd.py:38
-msgid "您已登出，请手动重启应用"
-msgstr "You have been logged out, please restart the application manually"
-
-#: src/include/controllers/connect.py:53
-msgid "您正在连接到一个使用更高版本协议的服务器"
-msgstr "You are connecting to a server using a higher version protocol"
-
-#: src/include/ui/controls/dialogs/explorer.py:99
-msgid "批量上传"
-msgstr "Batch Upload"
-
-#: src/include/controllers/connect.py:86
-msgid "授权失败，您将无法正常下载文件。"
-msgstr "Authorization failed, you will not be able to download files normally."
-
-#: src/include/ui/controls/dialogs/upgrade.py:150
-msgid "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。"
-msgstr "Authorization failed, you will not be able to install updates normally. Please allow the app to install updates in settings."
-
-#: src/include/ui/controls/rulemanager.py:47
-msgid "提交"
-msgstr "Submit"
-
-#: src/include/ui/controls/rulemanager.py:136
-msgid "提交的规则不是有效的JSON"
-msgstr "The submitted rule is not valid JSON"
-
-#: src/include/ui/controls/rightmenu/explorer.py:38
-msgid "操作文档"
-msgstr "Manage Documents"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:62
-msgid "操作用户"
-msgstr "Manage Users"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:51
-msgid "操作用户组"
-msgstr "Manage User Groups"
-
-#: src/include/ui/controls/rightmenu/explorer.py:136
-msgid "操作目录"
-msgstr "Manage Directories"
-
-#: src/include/ui/controls/homepage.py:106
-msgid "收藏"
-msgstr "Favorites"
-
-#: src/include/ui/controls/views/explorer.py:93
-msgid "文件管理"
-msgstr "File Management"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:36
-msgid "文档"
-msgstr "Document"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:117
-msgid "文档详情"
-msgstr "Document Details"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:49
-msgid "新{self.object_display_name}名称"
-msgstr "New {self.object_display_name} name"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:190
-msgid "新增权限"
-msgstr "Add Permission"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:49
-msgid "新密码"
-msgstr "New Password"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:98
-msgid "新用户组名称"
-msgstr "New User Group Name"
-
-#: src/include/ui/controls/views/connect.py:144
-msgid "无效的服务器地址"
-msgstr "Invalid server address"
-
-#: src/include/ui/models/about.py:91
-msgid "无法更新：源代码运行时不能检查更新。"
-msgstr "Cannot update: Cannot check for updates when running from source code."
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:42
-msgid "旧密码"
-msgstr "Old Password"
-
-#: src/include/controllers/explorer.py:115
 msgid "时遇到问题: {exc}"
 msgstr "时遇到问题: {exc}"
 
-#: src/include/controllers/explorer.py:248
 msgid "时遇到问题：{str(e)}"
 msgstr "时遇到问题：{str(e)}"
 
-#: src/include/ui/util/quotes.py:6
-msgid "星垂平野阔，月涌大江流。"
-msgstr "Stars hang low over the vast plain, the moon surges over the great river."
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:108
-msgid "昵称"
-msgstr "Nickname"
-
-#: src/include/ui/models/settings/overview.py:28
-msgid "更改应用使用代理的规则"
-msgstr "Change application proxy settings"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:44
-msgid "更改昵称"
-msgstr "Change Nickname"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:236
-msgid "更改用户组"
-msgstr "Change User Group"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:201
-msgid "更改用户组权限"
-msgstr "Change User Group Permissions"
-
-#: src/include/ui/models/about.py:96
-msgid "更新"
-msgstr "Update"
-
-#: src/include/ui/models/about.py:203
-msgid "更新说明："
-msgstr "Update Notes:"
-
-#: src/include/ui/controls/dialogs/upgrade.py:136
-msgid "更新过程中发生错误：{e}"
-msgstr "Error occurred during update: {e}"
-
-#: src/include/ui/controls/dialogs/whatsnew.py:185
 msgid "最后更新于 {str(changelogs[0].date)}\\n"
 msgstr "最后更新于 {str(changelogs[0].date)}\\n"
 
-#: src/include/ui/models/about.py:198
-msgid "最新版本：{latest.version}"
-msgstr "Latest version: {latest.version}"
-
-#: src/include/ui/controls/rulemanager.py:41
-msgid "有关规则格式的说明，请参见 [CFMS 服务端文档]"
-msgstr "For rule format documentation, please refer to [CFMS Server Documentation]"
-
-#: src/include/ui/controls/views/connect.py:39
-msgid "服务器地址"
-msgstr "Server Address"
-
-#: src/include/ui/models/about.py:231
-msgid "未在最新版本中找到对应架构的包"
-msgstr "No package found for the corresponding architecture in the latest version"
-
-#: src/include/ui/models/about.py:187
-msgid "未获取到版本信息"
-msgstr "Failed to retrieve version information"
-
-#: src/include/ui/controls/rightmenu/explorer.py:171
-msgid "查看此目录的详细信息"
-msgstr "View directory details"
-
-#: src/include/ui/controls/rightmenu/explorer.py:68
-msgid "查看该文件的详细信息"
-msgstr "View file details"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:57
-msgid "查看该用户的详细信息"
-msgstr "View user details"
-
-#: src/include/ui/controls/buttons/upgrade.py:13
-msgid "检查更新"
-msgstr "Check for Updates"
-
-#: src/include/ui/controls/homepage.py:86
-msgid "欢迎访问 保密文档管理系统（CFMS）"
-msgstr "Welcome to Confidential Document Management System (CFMS)"
-
-#: src/include/controllers/explorer.py:58
-msgid "正在上传文件 [{current_number}/{len(files)}]"
-msgstr "Uploading file [{current_number}/{len(files)}]"
-
-#: src/include/ui/controls/dialogs/upgrade.py:122
-msgid "正在关闭应用"
-msgstr "Closing application"
-
-#: src/include/ui/controls/dialogs/upgrade.py:106
-msgid "正在写入更新脚本"
-msgstr "Writing update script"
-
-#: src/include/controllers/explorer.py:34
-msgid "正在准备上传"
-msgstr "Preparing upload"
-
-#: src/include/ui/controls/dialogs/upgrade.py:40
-msgid "正在准备下载"
-msgstr "Preparing download"
-
-#: src/include/controllers/explorer.py:159
-msgid "正在创建目录"
-msgstr "正在创建目录"
-
-#: src/include/ui/util/path.py:124
-msgid "正在删除临时文件"
-msgstr "Deleting temporary files"
-
-#: src/include/ui/controls/dialogs/upgrade.py:95
-msgid "正在删除已解压缩的包"
-msgstr "Deleting extracted package"
-
-#: src/include/ui/util/path.py:127
-msgid "正在校验文件"
-msgstr "Verifying file"
-
-#: src/include/ui/models/about.py:89
-msgid "正在检查更新"
-msgstr "Checking for updates"
-
-#: src/include/ui/controls/dialogs/upgrade.py:78
-msgid "正在解压缩版本包"
-msgstr "Extracting version package"
-
-#: src/include/ui/util/path.py:120
-msgid "正在解密分块 [{decrypted_chunks}/{total_chunks}]"
-msgstr "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
-
-#: src/include/controllers/explorer.py:254
-msgid "正在重试 [{retry}/{max_retries}]: {str(e)}"
-msgstr "Retrying [{retry}/{max_retries}]: {str(e)}"
-
-#: src/include/ui/models/about.py:235
-msgid "没有找到更新：不支持的架构"
-msgstr "No update found: Unsupported architecture"
-
-#: src/include/ui/controls/rulemanager.py:60
-msgid "源代码"
-msgstr "Source Code"
-
-#: src/include/ui/controls/views/manage/account.py:57
-msgid "用户列表"
-msgstr "User List"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:113
-msgid "用户名"
-msgstr "Username"
-
-#: src/include/ui/controls/views/login.py:138
-msgid "用户名不能为空"
-msgstr "Username cannot be empty"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:177
-msgid "用户的新昵称"
-msgstr "User's New Nickname"
-
-#: src/include/ui/controls/views/manage/group.py:57
-msgid "用户组列表"
-msgstr "User Group List"
-
-#: src/include/ui/controls/dialogs/manage/groups.py:38
 msgid "用户组名称"
 msgstr "用户组名称"
 
-#: src/include/ui/controls/dialogs/manage/accounts.py:316
-msgid "用户详情"
-msgstr "User Details"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:38
-msgid "目录"
-msgstr "Directory"
-
-#: src/include/ui/controls/dialogs/explorer.py:209
 msgid "目录ID"
 msgstr "目录ID"
-
-#: src/include/ui/controls/dialogs/explorer.py:37
-msgid "目录名称"
-msgstr "Directory Name"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:223
-msgid "目录详情"
-msgstr "Directory Details"
-
-#: src/include/ui/util/quotes.py:10
-msgid "相寻梦里路，飞雨落花中。"
-msgstr "Seeking each other on dream paths, amid flying rain and falling flowers."
-
-#: src/include/ui/controls/dialogs/explorer.py:105
-msgid "确定"
-msgstr "OK"
-
-#: src/include/ui/controls/views/connect.py:55
-msgid "禁用SSL检查（不安全）"
-msgstr "Disable SSL verification (Insecure)"
-
-#: src/include/ui/controls/rightmenu/explorer.py:48
-msgid "移动"
-msgstr "Move"
-
-#: src/include/ui/controls/rightmenu/manage/account.py:50
-msgid "编辑用户组"
-msgstr "Edit User Group"
-
-#: src/include/ui/models/settings/overview.py:40
-msgid "自动检查和安装更新"
-msgstr "Automatically check and install updates"
-
-#: src/include/ui/util/quotes.py:7
-msgid "自是人间英物，不须更试啼声。"
-msgstr "A true hero among mortals, no need to test their cry further."
-
-#: src/include/ui/controls/homepage.py:87
-msgid "落霞与孤鹜齐飞，秋水共长天一色。"
-msgstr "The sunset glow and the lone wild duck fly together, autumn water shares the same color with the vast sky."
-
-#: src/include/ui/controls/rulemanager.py:33
-msgid "规则内容"
-msgstr "Rule Content"
-
-#: src/include/ui/controls/rulemanager.py:49
-msgid "规则管理器"
-msgstr "Rule Manager"
-
-#: src/include/ui/controls/views/more.py:60
-msgid "设置"
-msgstr "Settings"
-
-#: src/include/ui/controls/rightmenu/explorer.py:60
-msgid "设置权限"
-msgstr "Set Permissions"
-
-#: src/include/controllers/connect.py:87
-msgid "请在设置中允许应用访问您的文件。"
-msgstr "Please allow the app to access your files in settings."
-
-#: src/include/controllers/explorer.py:259
-msgid "请稍候"
-msgstr "Please wait"
-
-#: src/include/ui/models/settings/overview.py:34
-msgid "调整应用记住连接历史的策略"
-msgstr "Adjust application connection history policy"
-
-#: src/include/ui/controls/dialogs/explorer.py:202
-msgid "跳转至..."
-msgstr "Jump to..."
-
-#: src/include/ui/util/quotes.py:9
-msgid "身无彩凤双飞翼，心有灵犀一点通。"
-msgstr "Though lacking wings like the colorful phoenix to fly side by side, our hearts connect with the clarity of a rhinoceros horn."
-
-#: src/include/ui/models/about.py:110
-msgid "软件更新"
-msgstr "Software Update"
-
-#: src/include/ui/models/settings/overview.py:27
-msgid "连接"
-msgstr "Connect"
-
-#: src/include/ui/models/about.py:183
-msgid "连接失败：{e.strerror}"
-msgstr "Connection failed: {e.strerror}"
-
-#: src/include/ui/util/quotes.py:8
-msgid "醉里挑灯看剑，梦回吹角连营。"
-msgstr "Drunk, I trim the lamp to examine my sword; in dreams I return to camps echoing with bugles."
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:179
-msgid "重命名"
-msgstr "Rename"
-
-#: src/include/ui/controls/dialogs/rightmenu/explorer.py:43
-msgid "重命名{self.object_display_name}"
-msgstr "Rename {self.object_display_name}"
-
-#: src/include/ui/controls/rightmenu/explorer.py:55
-msgid "重命名此文件"
-msgstr "Rename This File"
-
-#: src/include/ui/controls/rightmenu/explorer.py:158
-msgid "重命名此目录"
-msgstr "Rename This Directory"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:172
-msgid "重命名用户昵称"
-msgstr "Rename User Nickname"
-
-#: src/include/ui/controls/rightmenu/manage/group.py:91
-msgid "重命名用户组"
-msgstr "Rename User Group"
-
-#: src/include/ui/controls/dialogs/manage/accounts.py:37
-msgid "重置用户密码"
-msgstr "Reset User Password"
-
-#: src/include/controllers/connect.py:54
-msgid "（协议版本 {server_protocol_version}），请更新客户端。"
-msgstr "(Protocol version {server_protocol_version}), please update the client."
-
-#: src/include/controllers/dialogs/management.py:185
-msgid "（无）"
-msgstr "(None)"
-

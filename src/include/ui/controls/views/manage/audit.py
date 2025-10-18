@@ -121,7 +121,7 @@ class AuditLogView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text(_("审计日志"), size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("Audit Logs"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         self.refresh_button,
@@ -212,7 +212,7 @@ class AuditLogView(ft.Container):
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
-                    _(f"加载失败: ({code}) {response.get('message', 'Unknown error')}"),
+                    _(f"Load failed: ({code}) {response.get('message', 'Unknown error')}"),
                 )
             else:
                 data: dict = response.get("data", {})
@@ -224,7 +224,7 @@ class AuditLogView(ft.Container):
 
                 # Fix string formatting issue
                 self.audit_info_text.value = (
-                    _(f"{view_start} - {view_end} 条，共 {total} 条")
+                    _(f"{view_start} - {view_end} of {total} items")
                 )
 
                 self.navigate_before_button.disabled = self.audit_view_offset <= 0
@@ -245,4 +245,4 @@ class AuditLogView(ft.Container):
             self.navigate_next_button.disabled = False
             self.update()
 
-            send_error(self.page, _(f"加载失败: {str(e)}"))
+            send_error(self.page, _(f"Load failed: {str(e)}"))

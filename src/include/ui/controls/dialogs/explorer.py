@@ -27,23 +27,23 @@ class CreateDirectoryDialog(AlertDialog):
         self.controller = CreateDirectoryDialogController(self)
 
         self.modal = False
-        self.title = ft.Text(_("创建目录"))
+        self.title = ft.Text(_("Create Directory"))
 
         self.parent_manager = parent_manager
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.directory_textfield = ft.TextField(
-            label=_("目录名称"),
+            label=_("Directory Name"),
             on_submit=self.ok_button_click,
             expand=True,
         )
 
         self.submit_button = ft.TextButton(
-            _("创建"),
+            _("Create"),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
             controls=[self.directory_textfield],
@@ -96,16 +96,16 @@ class BatchUploadFileAlertDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.modal = True
-        self.title = ft.Text(_("批量上传"))
+        self.title = ft.Text(_("Batch Upload"))
 
         self.stop_event = stop_event
 
         # Predefined buttons
         self.ok_button = ft.TextButton(
-            content=_("确定"), on_click=self.ok_button_click, visible=False
+            content=_("OK"), on_click=self.ok_button_click, visible=False
         )
         self.cancel_button = ft.TextButton(
-            content=_("取消"), on_click=self.cancel_button_click
+            content=_("Cancel"), on_click=self.cancel_button_click
         )
 
         self.content = ft.Column(
@@ -142,16 +142,16 @@ class UploadDirectoryAlertDialog(AlertDialog):
 
         self.modal = True
         self.scrollable = True
-        self.title = ft.Text(_("上传目录"))
+        self.title = ft.Text(_("Upload Directory"))
 
         self.stop_event = stop_event
 
         # Predefined buttons
         self.ok_button = ft.TextButton(
-            content=_("确定"), on_click=self.ok_button_click, visible=False
+            content=_("OK"), on_click=self.ok_button_click, visible=False
         )
         self.cancel_button = ft.TextButton(
-            content=_("取消"), on_click=self.cancel_button_click
+            content=_("Cancel"), on_click=self.cancel_button_click
         )
 
         # Component definitions
@@ -199,23 +199,23 @@ class OpenDirectoryDialog(AlertDialog):
         self.controller = OpenDirectoryDialogController(self)
 
         self.modal = False
-        self.title = ft.Text(_("跳转至..."))
+        self.title = ft.Text(_("Jump to..."))
 
         self.parent_manager = parent_manager
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.directory_textfield = ft.TextField(
-            label=_("目录ID"),
+            label=_("DirectoryID"),
             on_submit=self.ok_button_click,
             expand=True,
         )
 
         self.submit_button = ft.TextButton(
-            _("提交"),
+            _("Submit"),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
             controls=[self.directory_textfield],

@@ -27,24 +27,24 @@ class AddUserGroupDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_("创建用户"))
+        self.title = ft.Text(_("Create User"))
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.display_name_field = ft.TextField(
-            label=_("展示名称"), on_submit=self.request_create_group, expand=True
+            label=_("Display Name"), on_submit=self.request_create_group, expand=True
         )
         self.group_name_field = ft.TextField(
-            label=_("用户组名称"),
+            label=_("User Group Name"),
             on_submit=lambda _: asyncio.create_task(self.display_name_field.focus()),
             expand=True,
         )
 
         self.submit_button = ft.TextButton(
-            "创建",
+            "Create",
             on_click=self.request_create_group,
         )
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
             controls=[self.display_name_field, self.group_name_field],
@@ -88,7 +88,7 @@ class AddUserGroupDialog(AlertDialog):
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"创建用户组失败: ({code}) {response['message']}"))
+            send_error(self.page, _(f"Failed to create user group: ({code}) {response['message']}"))
         else:
             await self.parent_view.refresh_group_list()
 

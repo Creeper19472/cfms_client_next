@@ -74,6 +74,6 @@ class RuleManagerController:
         )
 
         if submit_resp["code"] != 200:
-            self.view.send_error(_(f"修改失败：{submit_resp['message']}"))
+            self.view.send_error(_(f"Modification failed:{submit_resp['message']}"))
 
         self.view.close()

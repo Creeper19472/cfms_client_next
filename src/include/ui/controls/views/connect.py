@@ -36,7 +36,7 @@ class ConnectForm(ft.Container):
 
         # Form element definitions
         self.remote_address_textfield = ft.TextField(
-            label=_("服务器地址"),
+            label=_("Server Address"),
             prefix="wss://",
             hint_text="e.g. localhost:5104",
             border_color=const.BORDER_COLOR,
@@ -52,11 +52,11 @@ class ConnectForm(ft.Container):
             expand=True,
         )
         self.disable_ssl_enforcement_switch = ft.Switch(
-            label=_("禁用SSL检查（不安全）"), value=False, scale=1
+            label=_("Disable SSL verification (Insecure)"), value=False, scale=1
         )
 
         self.connect_button = ft.Button(
-            content=_("连接"),
+            content=_("Connect"),
             bgcolor=const.PRIMARY_COLOR,
             color=const.TEXT_COLOR,
             on_click=self.connect_button_click,
@@ -141,7 +141,7 @@ class ConnectForm(ft.Container):
 
         # Check if the server address matches the pattern
         if not server_address or not re.match(wss_pattern, server_address):
-            self.remote_address_textfield.error = _("无效的服务器地址")
+            self.remote_address_textfield.error = _("Invalid server address")
             self.enable_interactions()
             return  # Exit the function if the pattern is invalid
 
