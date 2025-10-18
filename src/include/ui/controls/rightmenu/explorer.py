@@ -45,8 +45,8 @@ class DocumentRightMenuDialog(RightMenuDialog):
                 },
                 # {
                 #     "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
-                #     "title": _("移动"),
-                #     "subtitle": _("将文件移动到其他位置"),
+                #     "title": _("Move"),
+                #     "subtitle": _("Move file to another location"),
                 #     "handler": move_document,
                 # },
                 {

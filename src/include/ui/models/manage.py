@@ -12,7 +12,7 @@ class ManagementNavigationBar(ft.NavigationBar):
     def __init__(self, parent_view: "ManageModel", views: list[ft.Control] = []):
         self.parent_view = parent_view
 
-        self.last_selected_index = 0  # 默认值设置成初次进入时默认选中的页面在效果上较好
+        self.last_selected_index = 0  # Setting default to initially selected page works better
         self.views = views
 
         nav_destinations = [

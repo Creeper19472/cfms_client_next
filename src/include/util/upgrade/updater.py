@@ -88,15 +88,15 @@ def is_new_version(
     version_name: str,
     version_tag: str,
 ) -> bool:
-    # 移除前缀，如 "r" 或 "v"
+    # Remove prefix like 'r' or 'v'
     new_version = version_tag[1:]
     if is_preview:
-        # 预览版本：基于 "mihonapp/mihon-preview" 仓库的发布
-        # 标记为类似 "r1234"
+        # Preview version: based on 'mihonapp/mihon-preview' repository releases
+        # Tagged as 'r1234' format
         return new_version.isdigit() and int(new_version) > commit_count
     else:
-        # 发布版本：基于 "mihonapp/mihon" 仓库的发布
-        # 标记为类似 "v0.1.2"
+        # Release version: based on 'mihonapp/mihon' repository releases
+        # Tagged as 'v0.1.2' format
         old_version = version_name[1:]
 
         new_sem_ver = [int(part) for part in new_version.split(".")]

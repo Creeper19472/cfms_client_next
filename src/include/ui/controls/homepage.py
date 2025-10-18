@@ -19,7 +19,7 @@ class HomeNavigationBar(ft.NavigationBar):
         self.parent_view = parent_view
         self.app_config = AppConfig()
 
-        self.last_selected_index = 2  # 默认值设置成初次进入时默认选中的页面在效果上较好
+        self.last_selected_index = 2  # Setting default to initially selected page works better
         self.views = views
 
         nav_destinations = [

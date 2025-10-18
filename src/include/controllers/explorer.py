@@ -148,10 +148,10 @@ class FileExplorerController:
         upload_dialog = UploadDirectoryAlertDialog(stop_event)
         self.view.page.show_dialog(upload_dialog)
 
-        # 暂时先采用FTP的模式创建目录树。
+        # Temporarily use FTP mode to create directory tree.
         async def create_dirs_from_tree(parent_path, tree, parent_id=None):
 
-            # 如果发现终止信号就返回
+            # Return if termination signal is detected
             if stop_event.is_set():
                 return
 
@@ -161,7 +161,7 @@ class FileExplorerController:
 
             conn = self.app_config.get_not_none_attribute("conn")
 
-            # 在服务器创建目录
+            # Create directory on server
             dir_id = await create_directory(
                 conn,
                 parent_id,
@@ -171,16 +171,16 @@ class FileExplorerController:
                 exists_ok=True,
             )
 
-            # 创建当前目录下的所有子目录
+            # Create all subdirectories under current directory
             for dirname, subtree in tree["dirs"].items():
                 dir_path = os.path.join(parent_path, dirname)
                 await create_dirs_from_tree(dir_path, subtree, dir_id)
 
-            # 依次上传文件
+            # Upload files sequentially
 
             for filename in tree["files"]:
 
-                # 同样地，如果发现终止信号就返回
+                # Similarly, return if termination signal is detected
                 if stop_event.is_set():
                     return
 

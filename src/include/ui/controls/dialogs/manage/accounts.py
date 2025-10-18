@@ -279,7 +279,7 @@ class EditUserGroupDialog(AlertDialog):
         yield
 
         # ... "data": {"latest": []}
-        # 提交更改后所有勾选的用户组
+        # All selected user groups after submitting changes
         to_submit_list = []
         for checkbox in self.group_listview.controls:
             assert isinstance(checkbox, ft.Checkbox)

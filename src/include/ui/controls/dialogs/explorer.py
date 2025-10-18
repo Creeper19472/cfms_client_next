@@ -100,7 +100,7 @@ class BatchUploadFileAlertDialog(AlertDialog):
 
         self.stop_event = stop_event
 
-        # 预定义按钮
+        # Predefined buttons
         self.ok_button = ft.TextButton(
             content=_("确定"), on_click=self.ok_button_click, visible=False
         )
@@ -146,7 +146,7 @@ class UploadDirectoryAlertDialog(AlertDialog):
 
         self.stop_event = stop_event
 
-        # 预定义按钮
+        # Predefined buttons
         self.ok_button = ft.TextButton(
             content=_("确定"), on_click=self.ok_button_click, visible=False
         )

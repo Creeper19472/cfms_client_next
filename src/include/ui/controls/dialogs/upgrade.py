@@ -90,7 +90,7 @@ class UpgradeDialog(AlertDialog):
             from zipfile import ZipFile
             import subprocess
 
-            # 确保临时目录存在
+            # Ensure temporary directory exists
             os.makedirs(f"{FLET_APP_STORAGE_TEMP}/update", exist_ok=True)
 
             with ZipFile(
@@ -129,10 +129,10 @@ exit
             self.update()
             await asyncio.sleep(0)
 
-            # 使用subprocess启动更新脚本
+            # Launch update script using subprocess
             subprocess.Popen(["cmd", "/c", "start", "", update_script_path], shell=True)
 
-            # 关闭应用
+            # Close application
             await asyncio.sleep(1)
 
             assert isinstance(self.page, ft.Page)
@@ -168,7 +168,7 @@ exit
     async def _download_update(self):
         """下载更新文件"""
         try:
-            # 确保临时目录存在
+            # Ensure temporary directory exists
             os.makedirs(FLET_APP_STORAGE_TEMP, exist_ok=True)
 
             target_path = f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
@@ -197,7 +197,7 @@ exit
                             f.write(chunk)
                             downloaded_size += len(chunk)
 
-                            # 更新进度
+                            # Update progress
                             if total_size > 0:
                                 progress = downloaded_size / total_size
                                 self.upgrade_progress.value = progress
@@ -211,7 +211,7 @@ exit
                                 )
 
                             self.update()
-                            await asyncio.sleep(0)  # 让出控制权，避免阻塞
+                            await asyncio.sleep(0)  # Yield control to avoid blocking
 
                 if self.stop_event.is_set():
                     try:

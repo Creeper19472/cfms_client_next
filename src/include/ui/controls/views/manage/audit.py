@@ -144,7 +144,7 @@ class AuditLogView(ft.Container):
         self.page.run_task(self.refresh_audit_logs)
 
     def disable_interactions(self):
-        # 显示加载状态
+        # Show loading status
         self.progress_ring.visible = True
         self.audit_logs_datatable.visible = False
         self.refresh_button.disabled = True
@@ -222,7 +222,7 @@ class AuditLogView(ft.Container):
                 view_start = self.audit_view_offset + 1
                 view_end = self.audit_view_offset + len(entries)
 
-                # 修复字符串格式化问题
+                # Fix string formatting issue
                 self.audit_info_text.value = (
                     _(f"{view_start} - {view_end} 条，共 {total} 条")
                 )
@@ -238,7 +238,7 @@ class AuditLogView(ft.Container):
             self.update()
 
         except Exception as e:
-            # 隐藏加载状态并启用按钮
+            # Hide loading status and enable button
             self.progress_ring.controls[0].visible = False
             self.refresh_button.disabled = False
             self.navigate_before_button.disabled = self.audit_view_offset <= 0

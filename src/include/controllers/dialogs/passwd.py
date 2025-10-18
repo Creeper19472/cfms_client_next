@@ -23,7 +23,7 @@ class PasswdDialogController:
                 "username": self.app_config.username,
                 "old_passwd": self.dialog.old_passwd_field.value,
                 "new_passwd": self.dialog.new_passwd_field.value,
-            },  # 修改密码，无需 data 外提供 username 和 token
+            },  # Change password, username and token not required outside data
         )
 
         self.dialog.close()

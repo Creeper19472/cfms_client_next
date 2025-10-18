@@ -103,10 +103,10 @@ class EditUserGroupDialogController:
     async def action_refresh_permission_list(self):
         self.view.disable_interactions()
 
-        # 重置列表
+        # Reset list
         self.view.group_listview.controls = []
 
-        # 拉取用户组信息
+        # Fetch user group information
         group_list_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="list_groups",
@@ -143,9 +143,9 @@ class EditUserGroupDialogController:
         for each_group in all_group_list:
             self.view.group_listview.controls.append(
                 ft.Checkbox(
-                    label=each_group,  # 后面可能改成显示名称
+                    label=each_group,  # May change to display name later
                     data=each_group,
-                    on_change=None,  # 提交前什么都不处理
+                    on_change=None,  # Do nothing before submission
                     value=each_group in user_membership_list,
                 )
             )

@@ -243,8 +243,8 @@ class EditGroupPermissionDialog(AlertDialog):
                 ft.Checkbox(
                     label=self.add_textfield.value,
                     data=self.add_textfield.value,
-                    on_change=None,  # 提交前什么都不处理
-                    value=True,  # 默认选中
+                    on_change=None,  # Do nothing before submission
+                    value=True,  # Selected by default
                 )
             )
 
@@ -263,7 +263,7 @@ class EditGroupPermissionDialog(AlertDialog):
         yield
 
         # ... "data": {"latest": []}
-        # 提交更改后所有勾选的用户组
+        # All selected user groups after submitting changes
         to_submit_list = []
         for checkbox in self.permission_listview.controls:
             assert isinstance(checkbox, ft.Checkbox)
@@ -303,10 +303,10 @@ class EditGroupPermissionDialog(AlertDialog):
         self.refresh_button.disabled = True
         self.update()
 
-        # 重置列表
+        # Reset list
         self.permission_listview.controls = []
 
-        # 拉取用户组信息
+        # Fetch user group information
         group_info_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="get_group_info",
@@ -326,9 +326,9 @@ class EditGroupPermissionDialog(AlertDialog):
         for each_permission in all_permission_list:
             self.permission_listview.controls.append(
                 ft.Checkbox(
-                    label=each_permission,  # 后面可能改成显示名称
+                    label=each_permission,  # May change to display name later
                     data=each_permission,
-                    on_change=None,  # 提交前什么都不处理
+                    on_change=None,  # Do nothing before submission
                     value=each_permission in all_permission_list,
                 )
             )

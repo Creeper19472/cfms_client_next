@@ -172,12 +172,12 @@ class AboutModel(Model):
 
         async def _impl_check_for_updates():
 
-            # 设定运行架构下要查找的版本。
+            # Set the version to find for the running architecture.
             assert self.page.platform
             match_text = SUPPORTED_PLATFORM.get(self.page.platform.value)
 
             try:
-                # 使用线程池避免阻塞主事件循环
+                # Use thread pool to avoid blocking main event loop
                 loop = asyncio.get_running_loop()
                 latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
@@ -221,12 +221,12 @@ class AboutModel(Model):
             if match_text:
                 for asset in latest.assets:
                     if match_text in asset.name:
-                        self.suc_upgrade_button.data = asset  # 设置下载链接
+                        self.suc_upgrade_button.data = asset  # Set download link
                         self.suc_upgrade_button.visible = True
                         self.suc_release_info.visible = True
-                        break  # releases 方面应当保证匹配结果唯一，如果唯一的话就没必要继续匹配了
+                        break  # Releases should ensure unique match, no need to continue if unique
 
-                # 判断是否有找到对应架构的包
+                # Check if package for corresponding architecture is found
                 if not self.suc_upgrade_button.visible:
                     self.suc_unavailable_text.value = _(
                         "未在最新版本中找到对应架构的包"
