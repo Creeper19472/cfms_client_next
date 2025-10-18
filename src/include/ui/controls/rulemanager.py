@@ -1,10 +1,7 @@
-import asyncio
-import json
-from typing import TYPE_CHECKING, Any, Callable, List
-from include.classes.client import LockableClientConnection
+import json, gettext
+from typing import TYPE_CHECKING
+from include.controllers.dialogs.rulemanager import RuleManagerController
 from include.ui.controls.dialogs.base import AlertDialog
-from include.util.requests import do_request
-from include.ui.util.notifications import send_error
 import flet as ft
 
 if TYPE_CHECKING:
@@ -12,6 +9,9 @@ if TYPE_CHECKING:
         DocumentRightMenuDialog,
         DirectoryRightMenuDialog,
     )
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
 
 
 class RuleManager(AlertDialog):
@@ -24,6 +24,8 @@ class RuleManager(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = RuleManagerController(self)
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
@@ -91,24 +93,17 @@ class RuleManager(AlertDialog):
             ft.TextButton("取消", on_click=lambda event: self.close()),
         ]
 
-        # self.scrollable = True
-
         self.object_id = object_id
         self.object_type = object_type
 
-    async def on_link_tapped(self, e: ft.Event[ft.Markdown]):
+    async def on_link_tapped(self, event: ft.Event[ft.Markdown]):
         assert type(self.page) == ft.Page
-        assert type(e.data) == str
-        await self.page.launch_url(e.data)
+        assert type(event.data) == str
+        await self.page.launch_url(event.data)
 
     def did_mount(self):
         super().did_mount()
-
-        async def run():
-            async for _ in self.update_rule():
-                pass
-
-        asyncio.create_task(run())
+        self.page.run_task(self.controller.update_rule)
 
     def will_unmount(self): ...
 
@@ -116,50 +111,13 @@ class RuleManager(AlertDialog):
         self.content_textfield.disabled = True
         self.progress_ring.visible = True
         self.submit_button.visible = False
+        self.content_textfield.error = None
+        self.update()
 
     def unlock_edit(self):
         self.content_textfield.disabled = False
         self.progress_ring.visible = False
         self.submit_button.visible = True
-
-    async def update_rule(self):
-        match self.object_type:
-            case "document":
-                action = "get_document_access_rules"
-                data = {"document_id": self.object_id}
-            case "directory":
-                action = "get_directory_access_rules"
-                data = {"directory_id": self.object_id}
-            case _:
-                raise ValueError(f"Invaild object type '{self.object_type}'")
-        assert self.page
-
-        self.content_textfield.visible = False
-        yield self.lock_edit()
-
-        assert type(self.page) == ft.Page
-        conn = self.page.session.store.get("conn")
-        assert type(conn) == LockableClientConnection
-
-        info_resp = await do_request(
-            conn,
-            action,
-            data,
-            username=self.page.session.store.get("username"),
-            token=self.page.session.store.get("token"),
-        )
-        if info_resp["code"] != 200:
-            self.content_textfield.value = (
-                f"Failed to fetch current rules: {info_resp['message']}"
-            )
-        else:
-            self.fetched_access_rules = info_resp["data"]
-            self.content_textfield.value = json.dumps(
-                self.fetched_access_rules, indent=4
-            )
-            yield self.unlock_edit()
-
-        self.content_textfield.visible = True
         self.update()
 
     async def submit_button_click(self, event: ft.Event[ft.TextButton]):
@@ -175,37 +133,10 @@ class RuleManager(AlertDialog):
                 ),
             }
         except json.decoder.JSONDecodeError:
-            send_error(self.page, "提交的规则不是有效的JSON")
-            self.close()
+            self.content_textfield.error = _("提交的规则不是有效的JSON")
             return
 
-        match self.object_type:
-            case "document":
-                action = "set_document_rules"
-                data["document_id"] = self.object_id
-
-            case "directory":
-                action = "set_directory_rules"
-                data["directory_id"] = self.object_id
-            case _:
-                raise ValueError(f"Invaild object type '{self.object_type}'")
-
-        assert type(self.page) == ft.Page
-        conn = self.page.session.store.get("conn")
-        assert type(conn) == LockableClientConnection
-
-        submit_resp = await do_request(
-            conn,
-            action,
-            data,
-            username=self.page.session.store.get("username"),
-            token=self.page.session.store.get("token"),
-        )
-
-        if submit_resp["code"] != 200:
-            send_error(self.page, f"修改失败：{submit_resp["message"]}")
-
-        self.close()
+        self.page.run_task(self.controller.action_submit_rule, data)
 
 
 class VisualRuleEditor(ft.Column):

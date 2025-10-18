@@ -5,7 +5,10 @@ import gettext
 import flet as ft
 from flet import FilePickerFile
 from include.classes.config import AppConfig
-from include.ui.controls.dialogs.explorer import BatchUploadFileAlertDialog, UploadDirectoryAlertDialog
+from include.ui.controls.dialogs.explorer import (
+    BatchUploadFileAlertDialog,
+    UploadDirectoryAlertDialog,
+)
 from include.ui.util.path import get_directory
 from include.util.connect import get_connection
 from include.util.create import create_directory
@@ -104,6 +107,8 @@ class FileExplorerController:
                         progress_bar.value = current_size / file_size
                         progress_info.value = f"{current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
                         progress_column.update()
+                        if stop_event.is_set():
+                            break
 
                 except Exception as exc:
                     _new_error_text = ft.Text(
@@ -222,12 +227,17 @@ class FileExplorerController:
                             self.app_config.server_address,
                             max_size=1024**2 * 4,
                         )
-                        async for current_size in upload_file_to_server(
+                        async for current_size, file_size in upload_file_to_server(
                             transfer_conn,
                             create_document_response["data"]["task_data"]["task_id"],
                             abs_path,
                         ):
-                            pass
+                            upload_dialog.progress_bar.value = current_size / file_size
+                            upload_dialog.progress_text.value = f"{current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
+                            upload_dialog.progress_column.update()
+                            if stop_event.is_set():
+                                break
+                        await transfer_conn._wrapped_connection.close()
                         break
                     except (
                         Exception

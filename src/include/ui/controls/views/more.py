@@ -1,14 +1,10 @@
-from math import exp
 from typing import TYPE_CHECKING
 import gettext
 import flet as ft
 
 from include.classes.config import AppConfig
-from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.controls.dialogs.manage.accounts import PasswdUserDialog
-from include.ui.util.notifications import send_error
 from include.ui.util.quotes import get_quote
-from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel

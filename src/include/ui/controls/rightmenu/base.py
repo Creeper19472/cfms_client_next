@@ -38,6 +38,7 @@ class RightMenuDialog(AlertDialog):
                     title=ft.Text(item["title"]),
                     subtitle=ft.Text(item["subtitle"]),
                     on_click=item["on_click"],
+                    ref=item.get("ref"),  # Optional ref
                 )
                 for item in menu_items
             ]

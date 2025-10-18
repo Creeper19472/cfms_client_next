@@ -7,7 +7,6 @@ from include.controllers.dialogs.directory import (
     OpenDirectoryDialogController,
 )
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.util.notifications import send_error
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -69,9 +68,6 @@ class CreateDirectoryDialog(AlertDialog):
         self.submit_button.visible = True
         self.progress_ring.visible = False
         self.modal = False
-
-    def send_error(self, msg: str):
-        send_error(self.page, msg)
 
     async def ok_button_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
@@ -160,8 +156,11 @@ class UploadDirectoryAlertDialog(AlertDialog):
 
         # Component definitions
         self.progress_bar = ft.ProgressBar()
-        self.progress_text = ft.Text()
-        self.progress_column = ft.Column([self.progress_bar, self.progress_text])
+        self.progress_text = ft.Text(text_align=ft.TextAlign.CENTER)
+        self.progress_column = ft.Column(
+            [self.progress_bar, self.progress_text],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        )
 
         self.error_column = ft.Column()
 

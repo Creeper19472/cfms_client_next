@@ -1,5 +1,7 @@
 import flet as ft
 
+from include.ui.util.notifications import send_error
+
 
 class AlertDialog(ft.AlertDialog):
     """
@@ -39,6 +41,9 @@ class AlertDialog(ft.AlertDialog):
         Override in subclasses if needed.
         """
         pass
+
+    def send_error(self, message: str):
+        send_error(self.page, message)
 
     def close(self) -> None:
         self.open = False

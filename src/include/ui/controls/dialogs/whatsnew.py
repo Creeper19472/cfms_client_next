@@ -10,6 +10,12 @@ _ = t.gettext
 
 changelogs = [
     ChangelogEntry(
+        "v0.2.16",
+        "Bug fixes",
+        "This version fixes a variety of issues.",
+        date(2025, 10, 18),
+    ),
+    ChangelogEntry(
         "v0.2.15",
         "Improved Code Structures",
         "This version added Controllers to separate the UI and "

@@ -1,13 +1,16 @@
-from datetime import datetime
 from typing import TYPE_CHECKING
 import flet as ft
 import gettext, asyncio
 
 from include.classes.config import AppConfig
+from include.controllers.dialogs.management import (
+    AddUserAccountDialogController,
+    EditUserGroupDialogController,
+    RenameUserNicknameDialogController,
+    ViewUserInfoDialogController,
+)
 from include.controllers.dialogs.passwd import PasswdDialogController
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.util.notifications import send_error
-from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.account import ManageAccountsView
@@ -66,9 +69,6 @@ class PasswdUserDialog(AlertDialog):
             self.cancel_button,
         ]
 
-    def send_error(self, message: str):
-        send_error(self.page, message)
-
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
@@ -86,6 +86,8 @@ class AddUserAccountDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = AddUserAccountDialogController(self)
         self.parent_view = parent_view
         self.app_config = AppConfig()
 
@@ -148,28 +150,8 @@ class AddUserAccountDialog(AlertDialog):
     async def request_create_user(
         self, event: ft.Event[ft.TextField] | ft.Event[ft.TextButton]
     ):
-
         yield self.disable_interactions()
-
-        response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="create_user",
-            data={
-                "username": self.username_field.value,
-                "password": self.password_field.value,
-                "nickname": self.nickname_field.value,
-                "permissions": [],  # TODO
-                "groups": [],
-            },
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        if (code := response["code"]) != 200:
-            send_error(event.page, f"创建用户失败: ({code}) {response['message']}")
-        else:
-            await self.parent_view.refresh_user_list()
-
-        self.close()
+        self.page.run_task(self.controller.action_add_user_account)
 
 
 class RenameUserNicknameDialog(AlertDialog):
@@ -180,6 +162,8 @@ class RenameUserNicknameDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = RenameUserNicknameDialogController(self)
         self.parent_dialog = parent_dialog
         self.app_config = AppConfig()
 
@@ -223,26 +207,7 @@ class RenameUserNicknameDialog(AlertDialog):
     async def request_rename_user(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
     ):
-        response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="rename_user",
-            data={
-                "username": self.parent_dialog.username,
-                "nickname": self.nickname_field.value,
-            },
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-
-        if (code := response["code"]) != 200:
-            send_error(
-                self.page,
-                f"重命名用户昵称失败: ({code}) {response['message']}",
-            )
-        else:
-            await self.parent_dialog.parent_listview.parent_manager.refresh_user_list()
-
-        self.close()
+        self.page.run_task(self.controller.action_rename_user_nickname)
 
 
 class EditUserGroupDialog(AlertDialog):
@@ -253,6 +218,8 @@ class EditUserGroupDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = EditUserGroupDialogController(self)
 
         self.refresh_button = ft.IconButton(
             ft.Icons.REFRESH,
@@ -292,10 +259,20 @@ class EditUserGroupDialog(AlertDialog):
             self.cancel_button,
         ]
 
+    def enable_interactions(self):
+        self.group_listview.disabled = False
+        self.refresh_button.disabled = False
+        self.update()
+
+    def disable_interactions(self):
+        self.group_listview.disabled = True
+        self.refresh_button.disabled = True
+        self.update()
+
     def did_mount(self):
         super().did_mount()
         assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.refresh_permission_list)
+        self.page.run_task(self.controller.action_refresh_permission_list)
 
     async def submit_button_click(self, event: ft.Event[ft.TextButton]):
         self.group_listview.disabled = True
@@ -309,89 +286,13 @@ class EditUserGroupDialog(AlertDialog):
             if checkbox.value == True:
                 to_submit_list.append(checkbox.data)
 
-        response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="change_user_groups",
-            data={
-                "username": self.parent_dialog.username,
-                "groups": to_submit_list,
-            },
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        if (code := response["code"]) != 200:
-            send_error(
-                self.page,
-                f"更改用户组失败: ({code}) {response['message']}",
-            )
-
-        self.close()
-        await self.parent_dialog.parent_listview.parent_manager.refresh_user_list()
+        self.page.run_task(self.controller.submit_user_group_change, to_submit_list)
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
     async def refresh_button_click(self, event: ft.Event[ft.IconButton]):
-        assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.refresh_permission_list)
-
-    async def refresh_permission_list(self):
-        self.group_listview.disabled = True
-        self.refresh_button.disabled = True
-        self.update()
-
-        # 重置列表
-        self.group_listview.controls = []
-
-        # 拉取用户组信息
-        group_list_response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="list_groups",
-            data={},
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        if (code := group_list_response["code"]) != 200:
-            send_error(
-                self.page,
-                f"拉取用户组列表失败: ({code}) {group_list_response['message']}",
-            )
-            return
-
-        all_group_list = [
-            group["name"] for group in group_list_response["data"]["groups"]
-        ]
-
-        user_data_response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="get_user_info",
-            data={
-                "username": self.parent_dialog.username,
-            },
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        if (code := user_data_response["code"]) != 200:
-            send_error(
-                self.page,
-                f"拉取用户信息失败: ({code}) {user_data_response['message']}",
-            )
-            return
-        user_membership_list = user_data_response["data"]["groups"]
-
-        for each_group in all_group_list:
-            self.group_listview.controls.append(
-                ft.Checkbox(
-                    label=each_group,  # 后面可能改成显示名称
-                    data=each_group,
-                    on_change=None,  # 提交前什么都不处理
-                    value=each_group in user_membership_list,
-                )
-            )
-
-        self.group_listview.disabled = False
-        self.refresh_button.disabled = False
-        self.update()
+        self.page.run_task(self.controller.action_refresh_permission_list)
 
 
 class ViewUserInfoDialog(AlertDialog):
@@ -402,6 +303,8 @@ class ViewUserInfoDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = ViewUserInfoDialogController(self)
         self.parent_dialog = parent_dialog
         self.app_config = AppConfig()
 
@@ -437,53 +340,10 @@ class ViewUserInfoDialog(AlertDialog):
 
     def did_mount(self):
         super().did_mount()
-        assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.request_user_info)
+        self.page.run_task(self.controller.action_refresh_user_info)
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
 
     async def refresh_button_click(self, event: ft.Event[ft.IconButton]):
-        assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.request_user_info)
-
-    async def request_user_info(self):
-
-        self.progress_ring.visible = True
-        self.info_listview.visible = False
-        self.update()
-
-        response = await do_request(
-            self.app_config.get_not_none_attribute("conn"),
-            action="get_user_info",
-            data={
-                "username": self.parent_dialog.username,
-            },
-            username=self.app_config.username,
-            token=self.app_config.token,
-        )
-        if (code := response["code"]) != 200:
-            self.close()
-            send_error(
-                self.page,
-                f"拉取用户信息失败: ({code}) {response['message']}",
-            )
-        else:
-            self.info_listview.controls = [
-                ft.Text(f"用户名: {response['data']['username']}"),
-                ft.Text(
-                    f"用户昵称: {response['data']['nickname'] if response['data']['nickname'] else '（无）'}"
-                ),
-                ft.Text(f"用户权限: {response['data']['permissions']}"),
-                ft.Text(f"用户组： {response['data']['groups']}"),
-                ft.Text(
-                    f"用户注册时间: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
-                ),
-                ft.Text(
-                    f"最后登录于: {datetime.fromtimestamp(response['data']['last_login']).strftime('%Y-%m-%d %H:%M:%S')}"
-                ),
-            ]
-            self.progress_ring.visible = False
-            self.info_listview.visible = True
-
-        self.update()
+        self.page.run_task(self.controller.action_refresh_user_info)
