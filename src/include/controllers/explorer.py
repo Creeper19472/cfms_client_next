@@ -272,7 +272,11 @@ class FileExplorerController:
                             upload_dialog.error_column.update()
                         else:
                             upload_dialog.progress_text.value = _(
-                                f"Retrying [{retry}/{max_retries}]: {str(e)}"
+                                "Retrying [{retry}/{max_retries}]: {strerr}"
+                            ).format(
+                                retry=retry,
+                                max_retries=max_retries,
+                                strerr=str(e),
                             )
 
                             upload_dialog.progress_text.update()

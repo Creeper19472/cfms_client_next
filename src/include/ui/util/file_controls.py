@@ -69,7 +69,7 @@ def update_file_controls(
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.ARROW_BACK),
                 title=ft.Text("<...>"),
-                subtitle=ft.Text(f"Parent directory"),
+                subtitle=ft.Text(_("Parent directory")),
                 on_click=parent_button_click,
             )
         ]
@@ -81,7 +81,11 @@ def update_file_controls(
                     leading=ft.Icon(ft.Icons.FOLDER),
                     title=ft.Text(folder["name"]),
                     subtitle=ft.Text(
-                        f"Created time: {datetime.fromtimestamp(folder['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
+                        _("Created time: {created_time}").format(
+                            created_time=datetime.fromtimestamp(
+                                folder["created_time"]
+                            ).strftime("%Y-%m-%d %H:%M:%S")
+                        )
                     ),
                     data=(folder["id"], folder["name"]),
                     on_click=folder_listtile_click,
@@ -101,7 +105,11 @@ def update_file_controls(
                     leading=ft.Icon(ft.Icons.FILE_COPY),
                     title=ft.Text(document["title"]),
                     subtitle=ft.Text(
-                        f"Last modified: {datetime.fromtimestamp(document['last_modified']).strftime('%Y-%m-%d %H:%M:%S')}\n"
+                        _("Last modified: {last_modified}\n").format(
+                            datetime.fromtimestamp(document["last_modified"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            )
+                        )
                         + (
                             f"{document["size"] / 1024 / 1024:.3f} MB"
                             if document["size"] > 0

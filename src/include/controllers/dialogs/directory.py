@@ -58,7 +58,7 @@ class OpenDirectoryDialogController:
         except RequestFailureError as exc:
             if exc.response:
                 self.view.directory_textfield.error = (
-                    "Get directory failed: "
+                    _("Get directory failed: ") + 
                     f"({exc.response["code"]}) {exc.response["message"]}"
                 )
             self.view.enable_interactions()

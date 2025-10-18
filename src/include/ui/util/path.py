@@ -19,7 +19,12 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-async def get_directory(id: str | None, view: "FileListView", fallback: Optional[str] = None, _raise_on_error=False,):
+async def get_directory(
+    id: str | None,
+    view: "FileListView",
+    fallback: Optional[str] = None,
+    _raise_on_error=False,
+):
     from include.ui.util.file_controls import update_file_controls
 
     view.parent_manager.current_directory_id = id
@@ -47,7 +52,12 @@ async def get_directory(id: str | None, view: "FileListView", fallback: Optional
             if fallback != None:
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
-        send_error(view.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
+        send_error(
+            view.page,
+            _("Load failed: ({code}) {message}").format(
+                code=code, message=response["message"]
+            ),
+        )
     else:
         update_file_controls(
             view,
@@ -117,7 +127,12 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
                     decrypted_chunks, total_chunks = data
                     progress_bar.value = decrypted_chunks / total_chunks
                     progress_info.value = _(
-                        f_("Decrypting chunk [{decrypted_chunks}/{total_chunks}]")
+                        _(
+                            "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+                        ).format(
+                            decrypted_chunks=decrypted_chunks,
+                            total_chunks=total_chunks,
+                        )
                     )
                 case 2:
                     progress_bar.value = None
