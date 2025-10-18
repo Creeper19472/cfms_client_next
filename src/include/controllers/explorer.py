@@ -31,7 +31,7 @@ class FileExplorerController:
     async def action_upload(self, files: list[FilePickerFile]):
         progress_bar = ft.ProgressBar()
         progress_info = ft.Text(
-            _(_("正在准备上传")), text_align=ft.TextAlign.CENTER, color=ft.Colors.WHITE
+            _("正在准备上传"), text_align=ft.TextAlign.CENTER, color=ft.Colors.WHITE
         )
         progress_column = ft.Column(
             controls=[progress_bar, progress_info],
@@ -55,7 +55,7 @@ class FileExplorerController:
                 current_number = files.index(each_file) + 1
 
                 progress_bar.value = current_number / len(files)
-                progress_info.value = f_(_("正在上传文件 [{current_number}/{len(files)}]"))
+                progress_info.value = _(f"正在上传文件 [{current_number}/{len(files)}]")
                 progress_column.update()
 
             response = await do_request(
@@ -72,12 +72,11 @@ class FileExplorerController:
 
             if (code := response["code"]) != 200:
                 if code == 403:
-                    self.view.send_error(
-                        _(_("上传失败: 无权上传文件")),
-                    )
+                    self.view.send_error(_("上传失败: 无权上传文件"))
+
                     return
                 else:
-                    errmsg = _(_(f"上传失败: ({response['code']}) {response['message']}"))
+                    errmsg = _(f"上传失败: ({response['code']}) {response['message']}")
                     if progress_column not in self.view.page.overlay:
                         _new_error_text = ft.Text(
                             errmsg,
@@ -156,7 +155,7 @@ class FileExplorerController:
             if stop_event.is_set():
                 return
 
-            upload_dialog.progress_text.value = _(_(f'正在创建目录 "{parent_path}"'))
+            upload_dialog.progress_text.value = _(f'正在创建目录 "{parent_path}"')
             upload_dialog.progress_bar.value = None
             upload_dialog.progress_column.update()
 
@@ -212,7 +211,7 @@ class FileExplorerController:
                     upload_dialog.error_column.controls.append(
                         ft.Text(
                             _(
-                                _(f'创建文件 "{filename}_(_(" 失败: {create_document_response.get("))message", "Unknown error")}')
+                                f'创建文件 "{filename}_(" 失败: {create_document_response.get("))message", "Unknown error")}'
                             )
                         )
                     )
@@ -245,18 +244,20 @@ class FileExplorerController:
                         if retry >= max_retries:
                             upload_dialog.error_column.controls.append(
                                 ft.Text(
-                                    _(_(f'在上传文件 "{filename}" 时遇到问题：{str(e)}'))
+                                    _(f'在上传文件 "{filename}" 时遇到问题：{str(e)}')
                                 )
                             )
+
                             upload_dialog.error_column.update()
                         else:
                             upload_dialog.progress_text.value = _(
-                                f_("正在重试 [{retry}/{max_retries}]: {str(e)}")
+                                f"正在重试 [{retry}/{max_retries}]: {str(e)}"
                             )
+
                             upload_dialog.progress_text.update()
                         continue
 
-        upload_dialog.progress_text.value = _(_("请稍候"))
+        upload_dialog.progress_text.value = _("请稍候")
         upload_dialog.progress_text.update()
 
         await create_dirs_from_tree(root_path, tree, self.view.current_directory_id)
@@ -270,8 +271,9 @@ class FileExplorerController:
 
         if total_errors := len(upload_dialog.error_column.controls):
             upload_dialog.progress_text.value = _(
-                _(_(f"上传完成，共计 {total_errors} 个错误。"))
+                _(f"上传完成，共计 {total_errors} 个错误。")
             )
+
             upload_dialog.ok_button.visible = True
         else:
             upload_dialog.open = False

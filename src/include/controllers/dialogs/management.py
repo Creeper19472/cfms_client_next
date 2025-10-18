@@ -182,7 +182,7 @@ class ViewUserInfoDialogController:
             self.view.info_listview.controls = [
                 ft.Text(_(f"用户名: {response['data']['username']}")),
                 ft.Text(
-                    _(f"用户昵称: {response['data']['nickname'] if response['data']['nickname'] else _(_('（无）'))}")
+                    _(f"用户昵称: {response['data']['nickname'] if response['data']['nickname'] else _('（无）')}")
                 ),
                 ft.Text(_(f"用户权限: {response['data']['permissions']}")),
                 ft.Text(_(f"用户组： {response['data']['groups']}")),

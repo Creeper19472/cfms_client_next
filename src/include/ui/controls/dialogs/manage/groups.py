@@ -27,15 +27,15 @@ class AddUserGroupDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_(_("创建用户")))
+        self.title = ft.Text(_("创建用户"))
 
         self.progress_ring = ft.ProgressRing(visible=False)
 
         self.display_name_field = ft.TextField(
-            label=_(_("展示名称")), on_submit=self.request_create_group, expand=True
+            label=_("展示名称"), on_submit=self.request_create_group, expand=True
         )
         self.group_name_field = ft.TextField(
-            label=_(_("用户组名称")),
+            label=_("用户组名称"),
             on_submit=lambda _: asyncio.create_task(self.display_name_field.focus()),
             expand=True,
         )

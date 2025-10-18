@@ -50,7 +50,7 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(_(_(f"重命名失败: ({code}) {response['message']}")))
+            self.view.send_error(_(f"重命名失败: ({code}) {response['message']}"))
         else:
             await get_directory(
                 self.view.parent_dialog.parent_listview.parent_manager.current_directory_id,
@@ -77,24 +77,28 @@ class GetDirectoryInfoController:
         )
         if (code := response["code"]) != 200:
             self.view.close()
-            self.view.send_error(
-                _(_(f"拉取目录信息失败: ({code}) {response['message']}")),
-            )
+            self.view.send_error(_(f"拉取目录信息失败: ({code}) {response['message']}"))
         else:
             self.view.info_listview.controls = [
-                ft.Text(_(f"目录ID: {response['data']['directory_id']}"), selectable=True),
+                ft.Text(
+                    _(f"目录ID: {response['data']['directory_id']}"), selectable=True
+                ),
                 ft.Text(_(f"目录名称: {response['data']['name']}"), selectable=True),
                 ft.Text(
                     _(f"子对象数: {response['data']['count_of_child']}"),
                 ),
                 ft.Text(
-                    _(f"创建于: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"),
+                    _(
+                        f"创建于: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    ),
                 ),
                 ft.Text(
                     _(f"父级目录ID: {response['data']['parent_id']}"), selectable=True
                 ),
                 ft.Text(
-                    _(f"访问规则: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}"),
+                    _(
+                        f"访问规则: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}"
+                    ),
                     selectable=True,
                 ),
             ]

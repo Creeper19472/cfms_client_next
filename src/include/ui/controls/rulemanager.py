@@ -139,7 +139,7 @@ class RuleManager(AlertDialog):
                 ),
             }
         except json.decoder.JSONDecodeError:
-            self.content_textfield.error = _(_("提交的规则不是有效的JSON"))
+            self.content_textfield.error = _("提交的规则不是有效的JSON")
             return
 
         self.page.run_task(self.controller.action_submit_rule, data)
