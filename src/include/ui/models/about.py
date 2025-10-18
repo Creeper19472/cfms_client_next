@@ -181,7 +181,7 @@ class AboutModel(Model):
                 loop = asyncio.get_running_loop()
                 latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
-                send_error(self.page, _("Connection failed: {e.strerror}").format(e=e.strerror))
+                send_error(self.page, _("Connection failed: {strerror}").format(strerror=e.strerror))
                 return
 
             if not latest:

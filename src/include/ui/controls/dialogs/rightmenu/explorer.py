@@ -1,4 +1,6 @@
 from datetime import datetime
+import dis
+from os import access
 from typing import TYPE_CHECKING
 import flet as ft
 import gettext
@@ -43,13 +45,17 @@ class RenameDialog(AlertDialog):
                 raise
 
         self.modal = False
-        self.title = ft.Text(_("Rename {self.object_display_name}").format(self=self.object_display_name))
+        self.title = ft.Text(
+            _("Rename {display_name}").format(display_name=self.object_display_name)
+        )
 
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
-            label=_("New {self.object_display_name} name").format(self=self.object_display_name),
+            label=_("New {display_name} name").format(
+                display_name=self.object_display_name
+            ),
             on_submit=self.ok_button_click,
             expand=True,
         )
@@ -58,7 +64,9 @@ class RenameDialog(AlertDialog):
             _("Submit"),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.content = ft.Column(
             controls=[self.name_textfield],
@@ -92,8 +100,8 @@ class RenameDialog(AlertDialog):
         yield self.disable_interactions()
 
         if not (new_title := self.name_textfield.value):
-            self.name_textfield.error = _(
-                f"{self.object_display_name} name cannot be empty"
+            self.name_textfield.error = _("{display_name} name cannot be empty").format(
+                display_name=self.object_display_name
             )
             self.enable_interactions()
             return
@@ -128,7 +136,9 @@ class GetDocumentInfoDialog(AlertDialog):
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.info_listview = ft.ListView(visible=False)
 
@@ -179,31 +189,56 @@ class GetDocumentInfoDialog(AlertDialog):
             self.close()
             send_error(
                 self.page,
-                _("Failed to fetch document info: ({code}) {message}").format(code=code, message=response['message']),
+                _("Failed to fetch document info: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                ),
             )
         else:
             self.info_listview.controls = [
                 ft.Text(
-                    _("Document ID: {response['data']['document_id']}").format(response=response['data']['document_id']), selectable=True
+                    _("Document ID: {doc_id}").format(
+                        doc_id=response["data"]["document_id"]
+                    ),
+                    selectable=True,
                 ),
-                ft.Text(_("Document title: {response['data']['title']}").format(response=response['data']['title']), selectable=True),
-                ft.Text(_("Document size: {response['data']['size']}").format(response=response['data']['size'])),
                 ft.Text(
-                    _(
-                        f"Created: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    _("Document title: {doc_title}").format(
+                        doc_title=response["data"]["title"]
+                    ),
+                    selectable=True,
+                ),
+                ft.Text(
+                    _("Document size: {doc_size}").format(
+                        doc_size=response["data"]["size"]
+                    )
+                ),
+                ft.Text(
+                    _("Created: {created_time}").format(
+                        created_time=datetime.fromtimestamp(
+                            response["data"]["created_time"]
+                        ).strftime("%Y-%m-%d %H:%M:%S")
                     ),
                 ),
                 ft.Text(
-                    _(
-                        f"Last modified: {datetime.fromtimestamp(response['data']['last_modified']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    _("Last modified: {last_modified}").format(
+                        last_modified=datetime.fromtimestamp(
+                            response["data"]["last_modified"]
+                        ).strftime("%Y-%m-%d %H:%M:%S")
                     ),
                 ),
                 ft.Text(
-                    _("Parent directory ID: {response['data']['parent_id']}").format(response=response['data']['parent_id']), selectable=True
+                    _("Parent directory ID: {parent_id}").format(
+                        parent_id=response["data"]["parent_id"]
+                    ),
+                    selectable=True,
                 ),
                 ft.Text(
-                    _(
-                        f"Access rules: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}"
+                    _("Access rules: {access_rules}").format(
+                        access_rules=(
+                            response["data"]["access_rules"]
+                            if not response["data"]["info_code"]
+                            else "Unavailable"
+                        )
                     ),
                     selectable=True,
                 ),
@@ -242,7 +277,9 @@ class GetDirectoryInfoDialog(AlertDialog):
         self.parent_dialog = parent_dialog
 
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.info_listview = ft.ListView(visible=False)
 

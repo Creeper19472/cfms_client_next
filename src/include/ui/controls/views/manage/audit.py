@@ -212,7 +212,7 @@ class AuditLogView(ft.Container):
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
-                    _("Load failed: ({code}) {response.get('message', 'Unknown error')}").format(code=code, response=response.get('message', 'Unknown error')),
+                    _("Load failed: ({code}) {errmsg}").format(code=code, errmsg=response.get('message', 'Unknown error')),
                 )
             else:
                 data: dict = response.get("data", {})
@@ -245,4 +245,4 @@ class AuditLogView(ft.Container):
             self.navigate_next_button.disabled = False
             self.update()
 
-            send_error(self.page, _("Load failed: {str(e)}").format(str=str(e)))
+            send_error(self.page, _("Load failed: {errstr}").format(errstr=str(e)))

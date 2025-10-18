@@ -20,7 +20,6 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-
 class UpgradeDialog(AlertDialog):
     def __init__(
         self,
@@ -40,7 +39,9 @@ class UpgradeDialog(AlertDialog):
         self.save_filename = save_filename
         self.asset_digest = asset_digest
 
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
         self.upgrade_note = ft.Text(visible=False)
         self.upgrade_progress = ft.ProgressBar()
         self.upgrade_progress_text = ft.Text(value=_("Preparing download"))
@@ -81,7 +82,7 @@ class UpgradeDialog(AlertDialog):
 
     async def _handle_windows_update(self):
         self.upgrade_progress_text.visible = False
-        self.upgrade_note.value = "Extracting version package"
+        self.upgrade_note.value = _("Extracting version package")
         self.upgrade_note.visible = True
         self.update()
         await asyncio.sleep(0)
@@ -98,7 +99,7 @@ class UpgradeDialog(AlertDialog):
             ) as zip_ref:
                 zip_ref.extractall(f"{FLET_APP_STORAGE_TEMP}/update")
 
-            self.upgrade_note.value = "Deleting extracted package"
+            self.upgrade_note.value = _("Deleting extracted package")
             self.update()
             await asyncio.sleep(0)
 
@@ -107,9 +108,11 @@ class UpgradeDialog(AlertDialog):
             except FileNotFoundError:
                 pass
             except Exception as e:
-                send_error(self.page, _("Failed to delete temporary file: {e}").format(e=e))
+                send_error(
+                    self.page, _("Failed to delete temporary file: {e}").format(e=e)
+                )
 
-            self.upgrade_note.value = "Writing update script"
+            self.upgrade_note.value = _("Writing update script")
             self.update()
             await asyncio.sleep(0)
 
@@ -125,7 +128,7 @@ exit
             with open(update_script_path, "w", encoding="utf-8") as f:
                 f.write(_update_script)
 
-            self.upgrade_note.value = "Closing application"
+            self.upgrade_note.value = _("Closing application")
             self.update()
             await asyncio.sleep(0)
 
@@ -153,7 +156,9 @@ exit
             ):
                 send_error(
                     self.page,
-                    "Authorization failed, you will not be able to install updates normally. Please allow the app to install updates in settings.",
+                    _(
+                        "Authorization failed, you will not be able to install updates normally. Please allow the app to install updates in settings."
+                    ),
                 )
                 return False
             return True
@@ -206,9 +211,9 @@ exit
                                     f"({downloaded_size} / {total_size} bytes)"
                                 )
                             else:
-                                self.upgrade_progress_text.value = (
-                                    _("Downloaded: {downloaded_size} bytes").format(downloaded_size=downloaded_size)
-                                )
+                                self.upgrade_progress_text.value = _(
+                                    _("Downloaded: {downloaded_size} bytes")
+                                ).format(downloaded_size=downloaded_size)
 
                             self.update()
                             await asyncio.sleep(0)  # Yield control to avoid blocking
@@ -222,15 +227,32 @@ exit
                 else:
                     return True
             else:
-                send_error(self.page, _("Download failed, HTTP status code: {response.status_code}").format(response=response.status_code))
+                send_error(
+                    self.page,
+                    _("Download failed, HTTP status code: {status_code}").format(
+                        status_code=response.status_code
+                    ),
+                )
                 return False
 
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            send_error(self.page, _("Network error occurred during update: {str(e)}").format(str=str(e)))
+            send_error(
+                self.page,
+                _("Network error occurred during update: {strerr}").format(
+                    strerr=str(e)
+                ),
+            )
             return False
         except requests.exceptions.Timeout:
-            send_error(self.page, "Download timeout, please check network connection")
+            send_error(
+                self.page, _("Download timeout, please check network connection")
+            )
             return False
         except Exception as e:
-            send_error(self.page, _("Unknown error occurred during download: {str(e)}").format(str=str(e)))
+            send_error(
+                self.page,
+                _("Unknown error occurred during download: {strerr}").format(
+                    strerr=str(e)
+                ),
+            )
             return False

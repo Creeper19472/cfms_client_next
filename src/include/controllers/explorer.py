@@ -55,7 +55,9 @@ class FileExplorerController:
                 current_number = files.index(each_file) + 1
 
                 progress_bar.value = current_number / len(files)
-                progress_info.value = _("Uploading file [{current_number}/{len(files)}]").format(current_number=current_number, len=len(files))
+                progress_info.value = _("Uploading file [{current}/{total}]").format(
+                    current=current_number, total=len(files)
+                )
                 progress_column.update()
 
             response = await do_request(
@@ -72,11 +74,15 @@ class FileExplorerController:
 
             if (code := response["code"]) != 200:
                 if code == 403:
-                    self.view.send_error(_("Upload failed: No permission to upload files"))
+                    self.view.send_error(
+                        _("Upload failed: No permission to upload files")
+                    )
 
                     return
                 else:
-                    errmsg = _("Upload failed: ({code}) {message}").format(code=response['code'], message=response['message'])
+                    errmsg = _("Upload failed: ({code}) {message}").format(
+                        code=response["code"], message=response["message"]
+                    )
                     if progress_column not in self.view.page.overlay:
                         _new_error_text = ft.Text(
                             errmsg,
@@ -111,7 +117,9 @@ class FileExplorerController:
 
                 except Exception as exc:
                     _new_error_text = ft.Text(
-                        _('Problem occurred when uploading "{each_file.name}": {exc}').format(each_file=each_file.name, exc=exc),
+                        _(
+                            'Problem occurred when uploading "{each_file_name}": {exc}'
+                        ).format(each_file_name=each_file.name, exc=exc),
                         text_align=ft.TextAlign.CENTER,
                     )
                     progress_column.controls.append(_new_error_text)
@@ -155,7 +163,9 @@ class FileExplorerController:
             if stop_event.is_set():
                 return
 
-            upload_dialog.progress_text.value = _('Creating directory "{parent_path}"').format(parent_path=parent_path)
+            upload_dialog.progress_text.value = _(
+                'Creating directory "{parent_path}"'
+            ).format(parent_path=parent_path)
             upload_dialog.progress_bar.value = None
             upload_dialog.progress_column.update()
 
@@ -190,7 +200,13 @@ class FileExplorerController:
                 _total_number = len(tree["files"])
 
                 upload_dialog.progress_text.value = _(
-                    _('[{_current_number}/{_total_number}] Uploading file "{abs_path}"').format(_current_number=_current_number, _total_number=_total_number, abs_path=abs_path)
+                    _(
+                        '[{_current_number}/{_total_number}] Uploading file "{abs_path}"'
+                    ).format(
+                        _current_number=_current_number,
+                        _total_number=_total_number,
+                        abs_path=abs_path,
+                    )
                 )
                 upload_dialog.progress_bar.value = _current_number / _total_number
                 upload_dialog.progress_column.update()
@@ -210,8 +226,11 @@ class FileExplorerController:
                 if create_document_response.get("code") != 200:
                     upload_dialog.error_column.controls.append(
                         ft.Text(
-                            _(
-                                f'Create file "{filename}" failed: {create_document_response.get("message", "Unknown error")}'
+                            _('Create file "{filename}" failed: {errmsg}').format(
+                                filename=filename,
+                                errmsg=create_document_response.get(
+                                    "message", "Unknown error"
+                                ),
                             )
                         )
                     )
@@ -244,7 +263,9 @@ class FileExplorerController:
                         if retry >= max_retries:
                             upload_dialog.error_column.controls.append(
                                 ft.Text(
-                                    _('Problem occurred when uploading file "{filename}": {str(e)}').format(filename=filename, str=str(e))
+                                    _(
+                                        'Problem occurred when uploading file "{filename}": {err}'
+                                    ).format(filename=filename, err=str(e))
                                 )
                             )
 
@@ -271,7 +292,9 @@ class FileExplorerController:
 
         if total_errors := len(upload_dialog.error_column.controls):
             upload_dialog.progress_text.value = _(
-                _("Upload completed with {total_errors} error(s).").format(total_errors=total_errors)
+                _("Upload completed with {total_errors} error(s).").format(
+                    total_errors=total_errors
+                )
             )
 
             upload_dialog.ok_button.visible = True

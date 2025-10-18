@@ -150,7 +150,9 @@ class ChangelogEntryColumn(ft.Column):
                 size=21,
                 spans=[
                     ft.TextSpan(
-                        _("  Released on {str(self.entry.date)}").format(str=str(self.entry.date)),
+                        _("  Released on {release_date}").format(
+                            release_date=str(self.entry.date)
+                        ),
                         style=ft.TextStyle(14),
                     )
                 ],
@@ -182,7 +184,11 @@ class ChangelogHistoryDialog(AlertDialog):
         self.content = ft.Container(
             ft.Column(
                 [
-                    ft.Text(_("Last updated on {str(changelogs[0].date)}\n").format(str=str(changelogs[0].date))),
+                    ft.Text(
+                        _("Last updated on {last_updated}\n").format(
+                            last_updated=str(changelogs[0].date)
+                        )
+                    ),
                     *self.entry_columns,
                 ]
             ),
@@ -209,7 +215,11 @@ class WhatsNewDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_("What's new in {self.newest_changelog.version}").format(self=self.newest_changelog.version))
+        self.title = ft.Text(
+            _("What's new in {newest_version}").format(
+                newest_version=self.newest_changelog.version
+            )
+        )
 
         self.content = ft.Container(
             ChangelogEntryColumn(self.newest_changelog),

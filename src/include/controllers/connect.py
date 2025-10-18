@@ -32,15 +32,23 @@ class ConnectFormController:
             )
         except ConnectionResetError as e:
             self.view.enable_interactions()
-            if e.strerror:
-                errmsg = _("Connection failed because the connection was reset: {e.strerror}").format(e=e.strerror)
+            if (
+                e.strerror
+            ):  # We'll use str.format() until Python 3.14 is supported by upstream
+                errmsg = _(
+                    "Connection failed because the connection was reset: {strerror}"
+                ).format(strerror=e.strerror)
             else:
                 errmsg = _("Connection failed because the connection was reset.")
             self.view.send_error(errmsg)
             return
         except Exception as e:
             self.view.enable_interactions()
-            self.view.send_error(_("Connection failed: ({e.__class__.__name__}) {str(e)}").format(e=e.__class__.__name__, str=str(e)))
+            self.view.send_error(
+                _("Connection failed: ({exc_class_name}) {str_err}").format(
+                    exc_class_name=e.__class__.__name__, str_err=str(e)
+                )
+            )
             return
 
         server_info_response = await do_request(conn, "server_info")
@@ -52,7 +60,9 @@ class ConnectFormController:
             self.view.send_error(
                 _("You are connecting to a server using a higher version protocol")
                 + " "
-                + _("(Protocol version {server_protocol_version}), please update the client.").format(server_protocol_version=server_protocol_version),
+                + _(
+                    "(Protocol version {server_protocol_version}), please update the client."
+                ).format(server_protocol_version=server_protocol_version),
             )
             await self.view.push_route("/connect/about")
             return
@@ -83,7 +93,9 @@ class ConnectFormController:
                 self.view.page.run_task(self.view.page.window.close)
             else:
                 self.view.send_error(
-                    _("Authorization failed, you will not be able to download files normally.")
+                    _(
+                        "Authorization failed, you will not be able to download files normally."
+                    )
                     + " "
                     + _("Please allow the app to access your files in settings.")
                 )

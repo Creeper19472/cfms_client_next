@@ -50,7 +50,11 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(_("Rename failed: ({code}) {message}").format(code=code, message=response['message']))
+            self.view.send_error(
+                _("Rename failed: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
         else:
             await get_directory(
                 self.view.parent_dialog.parent_listview.parent_manager.current_directory_id,
@@ -77,27 +81,50 @@ class GetDirectoryInfoController:
         )
         if (code := response["code"]) != 200:
             self.view.close()
-            self.view.send_error(_("Failed to fetch directory info: ({code}) {message}").format(code=code, message=response['message']))
+            self.view.send_error(
+                _("Failed to fetch directory info: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
         else:
             self.view.info_listview.controls = [
                 ft.Text(
-                    _("Directory ID: {response['data']['directory_id']}").format(response=response['data']['directory_id']), selectable=True
+                    _("Directory ID: {dir_id}").format(
+                        dir_id=response["data"]["directory_id"]
+                    ),
+                    selectable=True,
                 ),
-                ft.Text(_("Directory Name: {response['data']['name']}").format(response=response['data']['name']), selectable=True),
                 ft.Text(
-                    _("Child object count: {response['data']['count_of_child']}").format(response=response['data']['count_of_child']),
+                    _("Directory Name: {dir_name}").format(
+                        dir_name=response["data"]["name"]
+                    ),
+                    selectable=True,
                 ),
                 ft.Text(
-                    _(
-                        f"Created: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}"
+                    _("Child object count: {child_count}").format(
+                        child_count=response["data"]["count_of_child"]
                     ),
                 ),
                 ft.Text(
-                    _("Parent directory ID: {response['data']['parent_id']}").format(response=response['data']['parent_id']), selectable=True
+                    _("Created: {created_time}").format(
+                        created_time=datetime.fromtimestamp(
+                            response["data"]["created_time"]
+                        ).strftime("%Y-%m-%d %H:%M:%S")
+                    )
                 ),
                 ft.Text(
-                    _(
-                        f"Access rules: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}"
+                    _("Parent directory ID: {parent_id}").format(
+                        parent_id=response["data"]["parent_id"]
+                    ),
+                    selectable=True,
+                ),
+                ft.Text(
+                    _("Access rules: {access_rules}").format(
+                        access_rules=(
+                            response["data"]["access_rules"]
+                            if not response["data"]["info_code"]
+                            else "Unavailable"
+                        )
                     ),
                     selectable=True,
                 ),
