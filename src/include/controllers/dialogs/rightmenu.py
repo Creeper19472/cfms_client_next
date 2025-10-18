@@ -50,7 +50,11 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(_(f"重命名失败: ({code}) {response['message']}"))
+            self.view.send_error(
+                _("Rename failed: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
         else:
             await get_directory(
                 self.view.parent_dialog.parent_listview.parent_manager.current_directory_id,
@@ -78,23 +82,50 @@ class GetDirectoryInfoController:
         if (code := response["code"]) != 200:
             self.view.close()
             self.view.send_error(
-                _(f"拉取目录信息失败: ({code}) {response['message']}"),
+                _("Failed to fetch directory info: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
             )
         else:
             self.view.info_listview.controls = [
-                ft.Text(f"目录ID: {response['data']['directory_id']}", selectable=True),
-                ft.Text(f"目录名称: {response['data']['name']}", selectable=True),
                 ft.Text(
-                    f"子对象数: {response['data']['count_of_child']}",
+                    _("Directory ID: {dir_id}").format(
+                        dir_id=response["data"]["directory_id"]
+                    ),
+                    selectable=True,
                 ),
                 ft.Text(
-                    f"创建于: {datetime.fromtimestamp(response['data']['created_time']).strftime('%Y-%m-%d %H:%M:%S')}",
+                    _("Directory Name: {dir_name}").format(
+                        dir_name=response["data"]["name"]
+                    ),
+                    selectable=True,
                 ),
                 ft.Text(
-                    f"父级目录ID: {response['data']['parent_id']}", selectable=True
+                    _("Child object count: {child_count}").format(
+                        child_count=response["data"]["count_of_child"]
+                    ),
                 ),
                 ft.Text(
-                    f"访问规则: {response['data']['access_rules'] if not response['data']['info_code'] else 'Unavailable'}",
+                    _("Created: {created_time}").format(
+                        created_time=datetime.fromtimestamp(
+                            response["data"]["created_time"]
+                        ).strftime("%Y-%m-%d %H:%M:%S")
+                    )
+                ),
+                ft.Text(
+                    _("Parent directory ID: {parent_id}").format(
+                        parent_id=response["data"]["parent_id"]
+                    ),
+                    selectable=True,
+                ),
+                ft.Text(
+                    _("Access rules: {access_rules}").format(
+                        access_rules=(
+                            response["data"]["access_rules"]
+                            if not response["data"]["info_code"]
+                            else "Unavailable"
+                        )
+                    ),
                     selectable=True,
                 ),
             ]

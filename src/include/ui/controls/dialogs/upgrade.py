@@ -14,6 +14,11 @@ from include.ui.util.notifications import send_error
 from include.util.transfer import calculate_sha256
 from include.util.upgrade.updater import AssetDigest, AssetDigestType
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
 
 class UpgradeDialog(AlertDialog):
     def __init__(
@@ -27,17 +32,19 @@ class UpgradeDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.modal = True
-        self.title = ft.Text("更新")
+        self.title = ft.Text(_("Update"))
 
         self.stop_event = asyncio.Event()
         self.download_url = download_url
         self.save_filename = save_filename
         self.asset_digest = asset_digest
 
-        self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
         self.upgrade_note = ft.Text(visible=False)
         self.upgrade_progress = ft.ProgressBar()
-        self.upgrade_progress_text = ft.Text(value="正在准备下载")
+        self.upgrade_progress_text = ft.Text(value=_("Preparing download"))
 
         self.content = ft.Column(
             controls=[
@@ -75,7 +82,7 @@ class UpgradeDialog(AlertDialog):
 
     async def _handle_windows_update(self):
         self.upgrade_progress_text.visible = False
-        self.upgrade_note.value = "正在解压缩版本包"
+        self.upgrade_note.value = _("Extracting version package")
         self.upgrade_note.visible = True
         self.update()
         await asyncio.sleep(0)
@@ -84,7 +91,7 @@ class UpgradeDialog(AlertDialog):
             from zipfile import ZipFile
             import subprocess
 
-            # 确保临时目录存在
+            # Ensure temporary directory exists
             os.makedirs(f"{FLET_APP_STORAGE_TEMP}/update", exist_ok=True)
 
             with ZipFile(
@@ -92,7 +99,7 @@ class UpgradeDialog(AlertDialog):
             ) as zip_ref:
                 zip_ref.extractall(f"{FLET_APP_STORAGE_TEMP}/update")
 
-            self.upgrade_note.value = "正在删除已解压缩的包"
+            self.upgrade_note.value = _("Deleting extracted package")
             self.update()
             await asyncio.sleep(0)
 
@@ -101,9 +108,11 @@ class UpgradeDialog(AlertDialog):
             except FileNotFoundError:
                 pass
             except Exception as e:
-                send_error(self.page, f"删除临时文件失败：{e}")
+                send_error(
+                    self.page, _("Failed to delete temporary file: {e}").format(e=e)
+                )
 
-            self.upgrade_note.value = "正在写入更新脚本"
+            self.upgrade_note.value = _("Writing update script")
             self.update()
             await asyncio.sleep(0)
 
@@ -119,21 +128,21 @@ exit
             with open(update_script_path, "w", encoding="utf-8") as f:
                 f.write(_update_script)
 
-            self.upgrade_note.value = "正在关闭应用"
+            self.upgrade_note.value = _("Closing application")
             self.update()
             await asyncio.sleep(0)
 
-            # 使用subprocess启动更新脚本
+            # Launch update script using subprocess
             subprocess.Popen(["cmd", "/c", "start", "", update_script_path], shell=True)
 
-            # 关闭应用
+            # Close application
             await asyncio.sleep(1)
 
             assert isinstance(self.page, ft.Page)
             await self.page.window.close()
 
         except Exception as e:
-            send_error(self.page, f"更新过程中发生错误：{e}")
+            send_error(self.page, _("Error occurred during update: {e}").format(e=e))
 
     async def _handle_other_platforms_update(self):
         assert isinstance(self.page, ft.Page)
@@ -147,7 +156,9 @@ exit
             ):
                 send_error(
                     self.page,
-                    "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。",
+                    _(
+                        "Authorization failed, you will not be able to install updates normally. Please allow the app to install updates in settings."
+                    ),
                 )
                 return False
             return True
@@ -160,9 +171,9 @@ exit
             )
 
     async def _download_update(self):
-        """下载更新文件"""
+        """Download Update File"""
         try:
-            # 确保临时目录存在
+            # Ensure temporary directory exists
             os.makedirs(FLET_APP_STORAGE_TEMP, exist_ok=True)
 
             target_path = f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
@@ -191,7 +202,7 @@ exit
                             f.write(chunk)
                             downloaded_size += len(chunk)
 
-                            # 更新进度
+                            # Update progress
                             if total_size > 0:
                                 progress = downloaded_size / total_size
                                 self.upgrade_progress.value = progress
@@ -200,12 +211,12 @@ exit
                                     f"({downloaded_size} / {total_size} bytes)"
                                 )
                             else:
-                                self.upgrade_progress_text.value = (
-                                    f"已下载: {downloaded_size} bytes"
-                                )
+                                self.upgrade_progress_text.value = _(
+                                    "Downloaded: {downloaded_size} bytes"
+                                ).format(downloaded_size=downloaded_size)
 
                             self.update()
-                            await asyncio.sleep(0)  # 让出控制权，避免阻塞
+                            await asyncio.sleep(0)  # Yield control to avoid blocking
 
                 if self.stop_event.is_set():
                     try:
@@ -216,15 +227,32 @@ exit
                 else:
                     return True
             else:
-                send_error(self.page, f"下载失败，HTTP状态码: {response.status_code}")
+                send_error(
+                    self.page,
+                    _("Download failed, HTTP status code: {status_code}").format(
+                        status_code=response.status_code
+                    ),
+                )
                 return False
 
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            send_error(self.page, f"在更新时发生网络错误：{str(e)}")
+            send_error(
+                self.page,
+                _("Network error occurred during update: {strerr}").format(
+                    strerr=str(e)
+                ),
+            )
             return False
         except requests.exceptions.Timeout:
-            send_error(self.page, "下载超时，请检查网络连接")
+            send_error(
+                self.page, _("Download timeout, please check network connection")
+            )
             return False
         except Exception as e:
-            send_error(self.page, f"下载过程中发生未知错误：{str(e)}")
+            send_error(
+                self.page,
+                _("Unknown error occurred during download: {strerr}").format(
+                    strerr=str(e)
+                ),
+            )
             return False

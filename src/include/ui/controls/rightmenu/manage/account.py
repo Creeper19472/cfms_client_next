@@ -35,31 +35,31 @@ class UserRightMenuDialog(RightMenuDialog):
         menu_items = [
             {
                 "icon": ft.Icons.DELETE,
-                "title": _("删除"),
-                "subtitle": _("删除此用户"),
+                "title": _("Delete"),
+                "subtitle": _("Delete this user"),
                 "on_click": self.delete_user,
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
-                "title": _("更改昵称"),
-                "subtitle": _("为用户更改昵称"),
+                "title": _("Change Nickname"),
+                "subtitle": _("Change user's nickname"),
                 "on_click": self.rename_user,
             },
             {
                 "icon": ft.Icons.FORMAT_LIST_BULLETED,
-                "title": _("编辑用户组"),
-                "subtitle": _("为用户更改所属的用户组"),
+                "title": _("Edit User Group"),
+                "subtitle": _("Change user's group membership"),
                 "on_click": self.edit_user_group,
             },
             {
                 "icon": ft.Icons.INFO_OUTLINED,
-                "title": _("属性"),
-                "subtitle": _("查看该用户的详细信息"),
+                "title": _("Properties"),
+                "subtitle": _("View user details"),
                 "on_click": self.view_user_info,
             },
         ]
         super().__init__(
-            title=ft.Text(_("操作用户")),
+            title=ft.Text(_("Manage Users")),
             menu_items=menu_items,
             ref=ref,
             visible=visible,
@@ -75,7 +75,7 @@ class UserRightMenuDialog(RightMenuDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, f"删除用户失败: ({code}) {response['message']}")
+            send_error(self.page, _("Failed to delete user: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_listview.parent_manager.refresh_user_list()
 

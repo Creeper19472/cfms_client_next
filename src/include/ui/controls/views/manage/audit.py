@@ -7,6 +7,12 @@ from include.classes.config import AppConfig
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
 
@@ -115,7 +121,7 @@ class AuditLogView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text("审计日志", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("Audit Logs"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         self.refresh_button,
@@ -138,7 +144,7 @@ class AuditLogView(ft.Container):
         self.page.run_task(self.refresh_audit_logs)
 
     def disable_interactions(self):
-        # 显示加载状态
+        # Show loading status
         self.progress_ring.visible = True
         self.audit_logs_datatable.visible = False
         self.refresh_button.disabled = True
@@ -206,7 +212,7 @@ class AuditLogView(ft.Container):
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
-                    f"加载失败: ({code}) {response.get('message', 'Unknown error')}",
+                    _("Load failed: ({code}) {errmsg}").format(code=code, errmsg=response.get('message', 'Unknown error')),
                 )
             else:
                 data: dict = response.get("data", {})
@@ -216,9 +222,9 @@ class AuditLogView(ft.Container):
                 view_start = self.audit_view_offset + 1
                 view_end = self.audit_view_offset + len(entries)
 
-                # 修复字符串格式化问题
+                # Fix string formatting issue
                 self.audit_info_text.value = (
-                    f"{view_start} - {view_end} 条，共 {total} 条"
+                    _("{view_start} - {view_end} of {total} items").format(view_start=view_start, view_end=view_end, total=total)
                 )
 
                 self.navigate_before_button.disabled = self.audit_view_offset <= 0
@@ -232,11 +238,11 @@ class AuditLogView(ft.Container):
             self.update()
 
         except Exception as e:
-            # 隐藏加载状态并启用按钮
+            # Hide loading status and enable button
             self.progress_ring.controls[0].visible = False
             self.refresh_button.disabled = False
             self.navigate_before_button.disabled = self.audit_view_offset <= 0
             self.navigate_next_button.disabled = False
             self.update()
 
-            send_error(self.page, f"加载失败: {str(e)}")
+            send_error(self.page, _("Load failed: {errstr}").format(errstr=str(e)))

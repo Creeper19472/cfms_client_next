@@ -10,7 +10,7 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
         super().__init__(ref=ref, visible=visible)
         self.icon = ft.Icons.BROWSER_UPDATED_OUTLINED
         self.on_click = self.button_click
-        self.tooltip = _("检查更新")
+        self.tooltip = _("Check for Updates")
 
     async def button_click(self, event: ft.Event[ft.FloatingActionButton]):
         assert type(self.page) == ft.Page

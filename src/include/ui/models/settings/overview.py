@@ -3,6 +3,12 @@ from flet_model import Model, route
 
 from include.ui.util.route import get_parent_route
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 
 @route("settings")
 class SettingsModel(Model):
@@ -23,21 +29,27 @@ class SettingsModel(Model):
 
         self.listtiles = [
             ft.ListTile(
+                leading=ft.Icon(ft.Icons.LANGUAGE),
+                title=ft.Text("Language"),
+                subtitle=ft.Text("Select your preferred language"),
+                on_click=self.configure_language_listtile_click,
+            ),
+            ft.ListTile(
                 leading=ft.Icon(ft.Icons.LINK),
-                title=ft.Text("连接"),
-                subtitle=ft.Text("更改应用使用代理的规则"),
+                title=ft.Text(_("Connect")),
+                subtitle=ft.Text(_("Change application proxy settings")),
                 on_click=self.configure_conn_listtile_click,
             ),
             ft.ListTile(
                 leading=ft.Icon(ft.Icons.SECURITY),
-                title=ft.Text("安全"),
-                subtitle=ft.Text("调整应用记住连接历史的策略"),
+                title=ft.Text(_("Security")),
+                subtitle=ft.Text(_("Adjust application connection history policy")),
                 on_click=self.configure_safety_listtile_click,
             ),
             # ft.ListTile(
             #     leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
-            #     title=ft.Text("更新"),
-            #     subtitle=ft.Text("自动检查和安装更新"),
+            #     title=ft.Text(_("Updates")),
+            #     subtitle=ft.Text(_("Automatically check and install updates")),
             #     # on_click=open_change_passwd_dialog,
             # ),
         ]
@@ -53,6 +65,9 @@ class SettingsModel(Model):
 
     async def _go_back(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
+
+    async def configure_language_listtile_click(self, event: ft.Event[ft.ListTile]):
+        await self.page.push_route(self.page.route + "/language_settings")
 
     async def configure_conn_listtile_click(self, event: ft.Event[ft.ListTile]):
         await self.page.push_route(self.page.route + "/conn_settings")

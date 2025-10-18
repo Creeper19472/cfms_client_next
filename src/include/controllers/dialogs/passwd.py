@@ -23,16 +23,16 @@ class PasswdDialogController:
                 "username": self.app_config.username,
                 "old_passwd": self.dialog.old_passwd_field.value,
                 "new_passwd": self.dialog.new_passwd_field.value,
-            },  # 修改密码，无需 data 外提供 username 和 token
+            },  # Change password, username and token not required outside data
         )
 
         self.dialog.close()
 
         if response["code"] != 200:
-            self.dialog.send_error(_(f"修改密码失败: {response['message']}"))
+            self.dialog.send_error(_("Change password failed: {message}").format(message=response['message']))
         else:
             assert self.dialog.page.platform
             if self.dialog.page.platform.value not in ["ios", "android"]:
                 await self.dialog.page.window.close()
             else:
-                self.dialog.send_error(_("您已登出，请手动重启应用"))
+                self.dialog.send_error(_("You have been logged out, please restart the application manually"))

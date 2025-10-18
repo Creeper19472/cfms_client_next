@@ -8,6 +8,12 @@ from include.ui.util.notifications import send_error
 from include.ui.util.user_controls import update_user_controls
 from include.util.requests import do_request
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
 
@@ -54,7 +60,7 @@ class ManageAccountsView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text("用户列表", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("User List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         ft.IconButton(ft.Icons.ADD, on_click=self.add_button_click),
@@ -102,7 +108,7 @@ class ManageAccountsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, f"加载失败: ({code}) {response['message']}")
+            send_error(self.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             update_user_controls(
                 self.user_listview, response["data"]["users"], _update_page

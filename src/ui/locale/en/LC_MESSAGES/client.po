@@ -1,0 +1,879 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cfms-client-next 0.2.16\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-18 22:12+0800\n"
+"PO-Revision-Date: 2025-10-18 14:19\n"
+"Last-Translator: Auto Generated\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\include\controllers\connect.py:38
+msgid "Connection failed because the connection was reset: {strerror}"
+msgstr "Connection failed because the connection was reset: {strerror}"
+
+#: .\include\controllers\connect.py:42
+msgid "Connection failed because the connection was reset."
+msgstr "Connection failed because the connection was reset."
+
+#: .\include\controllers\connect.py:48
+msgid "Connection failed: ({exc_class_name}) {str_err}"
+msgstr "Connection failed: ({exc_class_name}) {str_err}"
+
+#: .\include\controllers\connect.py:61
+msgid "You are connecting to a server using a higher version protocol"
+msgstr "You are connecting to a server using a higher version protocol"
+
+#: .\include\controllers\connect.py:63
+msgid ""
+"(Protocol version {server_protocol_version}), please update the client."
+msgstr ""
+"(Protocol version {server_protocol_version}), please update the client."
+
+#: .\include\controllers\connect.py:96
+msgid "Authorization failed, you will not be able to download files normally."
+msgstr ""
+"Authorization failed, you will not be able to download files normally."
+
+#: .\include\controllers\connect.py:100
+msgid "Please allow the app to access your files in settings."
+msgstr "Please allow the app to access your files in settings."
+
+#: .\include\controllers\dialogs\directory.py:61
+msgid "Get directory failed: "
+msgstr "Get directory failed: "
+
+#: .\include\controllers\dialogs\management.py:42
+msgid "Create user failed: ({code}) {message}"
+msgstr "Create user failed: ({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:70
+msgid "Rename user nickname failed: ({code}) {message}"
+msgstr "Rename user nickname failed: ({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:97
+msgid "Change user group failed: ({code}) {message}"
+msgstr "Change user group failed: ({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:119
+msgid "Failed to fetch user group list: ({code}) {message}"
+msgstr "Failed to fetch user group list: ({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:138
+#: .\include\controllers\dialogs\management.py:179
+msgid "Failed to fetch user info: ({code}) {message}"
+msgstr "Failed to fetch user info: ({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:183
+msgid "Username: {username}"
+msgstr "Username: {username}"
+
+#: .\include\controllers\dialogs\management.py:185
+msgid "User nickname: {nickname}"
+msgstr "User nickname: {nickname}"
+
+#: .\include\controllers\dialogs\management.py:185
+msgid "(None)"
+msgstr "(None)"
+
+#: .\include\controllers\dialogs\management.py:187
+msgid "User permissions: {permissions}"
+msgstr "User permissions: {permissions}"
+
+#: .\include\controllers\dialogs\management.py:188
+msgid "User groups: {groups}"
+msgstr "User groups: {groups}"
+
+#: .\include\controllers\dialogs\management.py:190
+msgid "User registration time: {created_time}"
+msgstr "User registration time: {created_time}"
+
+#: .\include\controllers\dialogs\management.py:193
+#: .\include\ui\util\user_controls.py:42
+msgid "Last login: {last_login}"
+msgstr "Last login: {last_login}"
+
+#: .\include\controllers\dialogs\passwd.py:32
+msgid "Change password failed: {message}"
+msgstr "Change password failed: {message}"
+
+#: .\include\controllers\dialogs\passwd.py:38
+msgid "You have been logged out, please restart the application manually"
+msgstr "You have been logged out, please restart the application manually"
+
+#: .\include\controllers\dialogs\rightmenu.py:54
+#: .\include\ui\controls\rightmenu\manage\group.py:160
+msgid "Rename failed: ({code}) {message}"
+msgstr "Rename failed: ({code}) {message}"
+
+#: .\include\controllers\dialogs\rightmenu.py:85
+msgid "Failed to fetch directory info: ({code}) {message}"
+msgstr "Failed to fetch directory info: ({code}) {message}"
+
+#: .\include\controllers\dialogs\rightmenu.py:92
+msgid "Directory ID: {dir_id}"
+msgstr "Directory ID: {dir_id}"
+
+#: .\include\controllers\dialogs\rightmenu.py:98
+msgid "Directory Name: {dir_name}"
+msgstr "Directory Name: {dir_name}"
+
+#: .\include\controllers\dialogs\rightmenu.py:104
+msgid "Child object count: {child_count}"
+msgstr "Child object count: {child_count}"
+
+#: .\include\controllers\dialogs\rightmenu.py:109
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:216
+msgid "Created: {created_time}"
+msgstr "Created: {created_time}"
+
+#: .\include\controllers\dialogs\rightmenu.py:116
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:230
+msgid "Parent directory ID: {parent_id}"
+msgstr "Parent directory ID: {parent_id}"
+
+#: .\include\controllers\dialogs\rightmenu.py:122
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:236
+msgid "Access rules: {access_rules}"
+msgstr "Access rules: {access_rules}"
+
+#: .\include\controllers\dialogs\rulemanager.py:77
+msgid "Modification failed: {message}"
+msgstr "Modification failed: {message}"
+
+#: .\include\controllers\explorer.py:34
+msgid "Preparing upload"
+msgstr "Preparing upload"
+
+#: .\include\controllers\explorer.py:58
+msgid "Uploading file [{current}/{total}]"
+msgstr "Uploading file [{current}/{total}]"
+
+#: .\include\controllers\explorer.py:78
+msgid "Upload failed: No permission to upload files"
+msgstr "Upload failed: No permission to upload files"
+
+#: .\include\controllers\explorer.py:83
+msgid "Upload failed: ({code}) {message}"
+msgstr "Upload failed: ({code}) {message}"
+
+#: .\include\controllers\explorer.py:120
+msgid "Problem occurred when uploading \"{each_file_name}\": {exc}"
+msgstr "Problem occurred when uploading \"{each_file_name}\": {exc}"
+
+#: .\include\controllers\explorer.py:166
+msgid "Creating directory \"{parent_path}\""
+msgstr "Creating directory \"{parent_path}\""
+
+#: .\include\controllers\explorer.py:202
+msgid "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
+msgstr "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
+
+#: .\include\controllers\explorer.py:228
+msgid "Create file \"{filename}\" failed: {errmsg}"
+msgstr "Create file \"{filename}\" failed: {errmsg}"
+
+#: .\include\controllers\explorer.py:265
+msgid "Problem occurred when uploading file \"{filename}\": {err}"
+msgstr "Problem occurred when uploading file \"{filename}\": {err}"
+
+#: .\include\controllers\explorer.py:273
+msgid "Retrying [{retry}/{max_retries}]: {strerr}"
+msgstr "Retrying [{retry}/{max_retries}]: {strerr}"
+
+#: .\include\controllers\explorer.py:284
+msgid "Please wait"
+msgstr "Please wait"
+
+#: .\include\controllers\explorer.py:297
+msgid "Upload completed with {total_errors} error(s)."
+msgstr "Upload completed with {total_errors} error(s)."
+
+#: .\include\controllers\login.py:63
+msgid "Password must be changed before login."
+msgstr "Password must be changed before login."
+
+#: .\include\controllers\login.py:67
+msgid "Login failed: ({code}) {message}"
+msgstr "Login failed: ({code}) {message}"
+
+#: .\include\ui\controls\buttons\upgrade.py:13
+msgid "Check for Updates"
+msgstr "Check for Updates"
+
+#: .\include\ui\controls\dialogs\dev.py:22
+msgid "Request Name"
+msgstr "Request Name"
+
+#: .\include\ui\controls\dialogs\dev.py:23
+msgid "Request Data"
+msgstr "Request Data"
+
+#: .\include\ui\controls\dialogs\dev.py:25
+msgid "Result"
+msgstr "Result"
+
+#: .\include\ui\controls\dialogs\dev.py:36
+#: .\include\ui\controls\dialogs\explorer.py:215
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:64
+#: .\include\ui\controls\rightmenu\manage\group.py:107
+#: .\include\ui\controls\rightmenu\manage\group.py:186
+#: .\include\ui\controls\rulemanager.py:53
+msgid "Submit"
+msgstr "Submit"
+
+#: .\include\ui\controls\dialogs\dev.py:37
+#: .\include\ui\controls\dialogs\explorer.py:46
+#: .\include\ui\controls\dialogs\explorer.py:108
+#: .\include\ui\controls\dialogs\explorer.py:154
+#: .\include\ui\controls\dialogs\explorer.py:218
+#: .\include\ui\controls\dialogs\manage\groups.py:47
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:68
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:140
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:281
+#: .\include\ui\controls\dialogs\upgrade.py:43
+#: .\include\ui\controls\rightmenu\manage\group.py:110
+#: .\include\ui\controls\rightmenu\manage\group.py:187
+#: .\include\ui\controls\rulemanager.py:99
+msgid "Cancel"
+msgstr "Cancel"
+
+#: .\include\ui\controls\dialogs\dev.py:51
+msgid "Request name must be specified"
+msgstr "Request name must be specified"
+
+#: .\include\ui\controls\dialogs\explorer.py:30
+msgid "Create Directory"
+msgstr "Create Directory"
+
+#: .\include\ui\controls\dialogs\explorer.py:37
+msgid "Directory Name"
+msgstr "Directory Name"
+
+#: .\include\ui\controls\dialogs\explorer.py:43
+msgid "Create"
+msgstr "Create"
+
+#: .\include\ui\controls\dialogs\explorer.py:78
+msgid "Directory name cannot be empty"
+msgstr "Directory name cannot be empty"
+
+#: .\include\ui\controls\dialogs\explorer.py:99
+msgid "Batch Upload"
+msgstr "Batch Upload"
+
+#: .\include\ui\controls\dialogs\explorer.py:105
+#: .\include\ui\controls\dialogs\explorer.py:151
+#: .\include\ui\controls\dialogs\whatsnew.py:198
+msgid "OK"
+msgstr "OK"
+
+#: .\include\ui\controls\dialogs\explorer.py:145
+msgid "Upload Directory"
+msgstr "Upload Directory"
+
+#: .\include\ui\controls\dialogs\explorer.py:202
+msgid "Jump to..."
+msgstr "Jump to..."
+
+#: .\include\ui\controls\dialogs\explorer.py:209
+msgid "Directory ID"
+msgstr "Directory ID"
+
+#: .\include\ui\controls\dialogs\explorer.py:252
+msgid "Directory id cannot be empty"
+msgstr "Directory id cannot be empty"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:37
+msgid "Reset User Password"
+msgstr "Reset User Password"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:42
+msgid "Old Password"
+msgstr "Old Password"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:49
+msgid "New Password"
+msgstr "New Password"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:101
+#: .\include\ui\controls\views\login.py:46
+msgid "Password"
+msgstr "Password"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:108
+msgid "Nickname"
+msgstr "Nickname"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:113
+#: .\include\ui\controls\views\login.py:53
+msgid "Username"
+msgstr "Username"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:172
+msgid "Rename User Nickname"
+msgstr "Rename User Nickname"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:177
+msgid "User's New Nickname"
+msgstr "User's New Nickname"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:179
+#: .\include\ui\controls\rightmenu\explorer.py:157
+#: .\include\ui\controls\rightmenu\manage\group.py:39
+msgid "Rename"
+msgstr "Rename"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:236
+msgid "Change User Group"
+msgstr "Change User Group"
+
+#: .\include\ui\controls\dialogs\manage\accounts.py:316
+msgid "User Details"
+msgstr "User Details"
+
+#: .\include\ui\controls\dialogs\manage\groups.py:30
+msgid "Create User"
+msgstr "Create User"
+
+#: .\include\ui\controls\dialogs\manage\groups.py:35
+msgid "Display Name"
+msgstr "Display Name"
+
+#: .\include\ui\controls\dialogs\manage\groups.py:38
+msgid "User Group Name"
+msgstr "User Group Name"
+
+#: .\include\ui\controls\dialogs\manage\groups.py:91
+msgid "Failed to create user group: ({code}) {message}"
+msgstr "Failed to create user group: ({code}) {message}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:41
+msgid "Document"
+msgstr "Document"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:43
+msgid "Directory"
+msgstr "Directory"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:49
+msgid "Rename {display_name}"
+msgstr "Rename {display_name}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:56
+msgid "New {display_name} name"
+msgstr "New {display_name} name"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:103
+msgid "{display_name} name cannot be empty"
+msgstr "{display_name} name cannot be empty"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:128
+msgid "Document Details"
+msgstr "Document Details"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:192
+msgid "Failed to fetch document info: ({code}) {message}"
+msgstr "Failed to fetch document info: ({code}) {message}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:199
+msgid "Document ID: {doc_id}"
+msgstr "Document ID: {doc_id}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:205
+msgid "Document title: {doc_title}"
+msgstr "Document title: {doc_title}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:211
+msgid "Document size: {doc_size}"
+msgstr "Document size: {doc_size}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:223
+msgid "Last modified: {last_modified}"
+msgstr "Last modified: {last_modified}"
+
+#: .\include\ui\controls\dialogs\rightmenu\explorer.py:269
+msgid "Directory Details"
+msgstr "Directory Details"
+
+#: .\include\ui\controls\dialogs\upgrade.py:35 .\include\ui\models\about.py:97
+msgid "Update"
+msgstr "Update"
+
+#: .\include\ui\controls\dialogs\upgrade.py:47
+msgid "Preparing download"
+msgstr "Preparing download"
+
+#: .\include\ui\controls\dialogs\upgrade.py:85
+msgid "Extracting version package"
+msgstr "Extracting version package"
+
+#: .\include\ui\controls\dialogs\upgrade.py:102
+msgid "Deleting extracted package"
+msgstr "Deleting extracted package"
+
+#: .\include\ui\controls\dialogs\upgrade.py:112
+msgid "Failed to delete temporary file: {e}"
+msgstr "Failed to delete temporary file: {e}"
+
+#: .\include\ui\controls\dialogs\upgrade.py:115
+msgid "Writing update script"
+msgstr "Writing update script"
+
+#: .\include\ui\controls\dialogs\upgrade.py:131
+msgid "Closing application"
+msgstr "Closing application"
+
+#: .\include\ui\controls\dialogs\upgrade.py:145
+msgid "Error occurred during update: {e}"
+msgstr "Error occurred during update: {e}"
+
+#: .\include\ui\controls\dialogs\upgrade.py:159
+msgid ""
+"Authorization failed, you will not be able to install updates normally. "
+"Please allow the app to install updates in settings."
+msgstr ""
+"Authorization failed, you will not be able to install updates normally. "
+"Please allow the app to install updates in settings."
+
+#: .\include\ui\controls\dialogs\upgrade.py:214
+msgid "Downloaded: {downloaded_size} bytes"
+msgstr "Downloaded: {downloaded_size} bytes"
+
+#: .\include\ui\controls\dialogs\upgrade.py:232
+msgid "Download failed, HTTP status code: {status_code}"
+msgstr "Download failed, HTTP status code: {status_code}"
+
+#: .\include\ui\controls\dialogs\upgrade.py:241
+msgid "Network error occurred during update: {strerr}"
+msgstr "Network error occurred during update: {strerr}"
+
+#: .\include\ui\controls\dialogs\upgrade.py:248
+msgid "Download timeout, please check network connection"
+msgstr "Download timeout, please check network connection"
+
+#: .\include\ui\controls\dialogs\upgrade.py:254
+msgid "Unknown error occurred during download: {strerr}"
+msgstr "Unknown error occurred during download: {strerr}"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:153
+msgid "  Released on {release_date}"
+msgstr "  Released on {release_date}"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:177
+msgid "Changelogs"
+msgstr "Changelogs"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:188
+msgid "Last updated on {last_updated}\n"
+msgstr "Last updated on {last_updated}\n"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:219
+msgid "What's new in {newest_version}"
+msgstr "What's new in {newest_version}"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:229
+msgid "View history"
+msgstr "View history"
+
+#: .\include\ui\controls\dialogs\whatsnew.py:230
+msgid "Got it!"
+msgstr "Got it!"
+
+#: .\include\ui\controls\homepage.py:86
+msgid "Welcome to Confidential Document Management System (CFMS)"
+msgstr "Welcome to Confidential Document Management System (CFMS)"
+
+#: .\include\ui\controls\homepage.py:87
+msgid ""
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
+msgstr ""
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
+
+#: .\include\ui\controls\homepage.py:106
+msgid "Favorites"
+msgstr "Favorites"
+
+#: .\include\ui\controls\homepage.py:115
+msgid "You have not favorited any documents or folders yet."
+msgstr "You have not favorited any documents or folders yet."
+
+#: .\include\ui\controls\rightmenu\explorer.py:38
+msgid "Manage Documents"
+msgstr "Manage Documents"
+
+#: .\include\ui\controls\rightmenu\explorer.py:42
+#: .\include\ui\controls\rightmenu\explorer.py:149
+#: .\include\ui\controls\rightmenu\manage\account.py:38
+#: .\include\ui\controls\rightmenu\manage\group.py:33
+msgid "Delete"
+msgstr "Delete"
+
+#: .\include\ui\controls\rightmenu\explorer.py:43
+msgid "Delete this file"
+msgstr "Delete this file"
+
+#: .\include\ui\controls\rightmenu\explorer.py:55
+msgid "Rename this file"
+msgstr "Rename this file"
+
+#: .\include\ui\controls\rightmenu\explorer.py:60
+#: .\include\ui\controls\rightmenu\explorer.py:163
+#: .\include\ui\controls\rightmenu\manage\group.py:45
+msgid "Set Permissions"
+msgstr "Set Permissions"
+
+#: .\include\ui\controls\rightmenu\explorer.py:61
+msgid "Change access rules for this file"
+msgstr "Change access rules for this file"
+
+#: .\include\ui\controls\rightmenu\explorer.py:67
+#: .\include\ui\controls\rightmenu\explorer.py:170
+#: .\include\ui\controls\rightmenu\manage\account.py:56
+msgid "Properties"
+msgstr "Properties"
+
+#: .\include\ui\controls\rightmenu\explorer.py:68
+msgid "View file details"
+msgstr "View file details"
+
+#: .\include\ui\controls\rightmenu\explorer.py:102
+#: .\include\ui\controls\rightmenu\explorer.py:206
+msgid "Deletion failed: ({code}) {message}"
+msgstr "Deletion failed: ({code}) {message}"
+
+#: .\include\ui\controls\rightmenu\explorer.py:136
+msgid "Manage Directories"
+msgstr "Manage Directories"
+
+#: .\include\ui\controls\rightmenu\explorer.py:150
+msgid "Delete this directory"
+msgstr "Delete this directory"
+
+#: .\include\ui\controls\rightmenu\explorer.py:158
+msgid "Rename this directory"
+msgstr "Rename this directory"
+
+#: .\include\ui\controls\rightmenu\explorer.py:164
+msgid "Change access rules for this directory"
+msgstr "Change access rules for this directory"
+
+#: .\include\ui\controls\rightmenu\explorer.py:171
+msgid "View directory details"
+msgstr "View directory details"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:39
+msgid "Delete this user"
+msgstr "Delete this user"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:44
+msgid "Change Nickname"
+msgstr "Change Nickname"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:45
+msgid "Change user's nickname"
+msgstr "Change user's nickname"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:50
+msgid "Edit User Group"
+msgstr "Edit User Group"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:51
+msgid "Change user's group membership"
+msgstr "Change user's group membership"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:57
+msgid "View user details"
+msgstr "View user details"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:62
+msgid "Manage Users"
+msgstr "Manage Users"
+
+#: .\include\ui\controls\rightmenu\manage\account.py:78
+msgid "Failed to delete user: ({code}) {message}"
+msgstr "Failed to delete user: ({code}) {message}"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:34
+msgid "Delete this user group"
+msgstr "Delete this user group"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:40
+msgid "Change display name for user group"
+msgstr "Change display name for user group"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:46
+msgid "Change permissions for user group"
+msgstr "Change permissions for user group"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:51
+msgid "Manage User Groups"
+msgstr "Manage User Groups"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:66
+msgid "Failed to delete user group: ({code}) {message}"
+msgstr "Failed to delete user group: ({code}) {message}"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:91
+msgid "Rename User Group"
+msgstr "Rename User Group"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:98
+msgid "New User Group Name"
+msgstr "New User Group Name"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:103
+msgid "Group name cannot be empty"
+msgstr "Group name cannot be empty"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:190
+msgid "Add Permission"
+msgstr "Add Permission"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:201
+msgid "Change User Group Permissions"
+msgstr "Change User Group Permissions"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:286
+msgid "Change user group permissions failed: ({code}) {message}"
+msgstr "Change user group permissions failed: ({code}) {message}"
+
+#: .\include\ui\controls\rightmenu\manage\group.py:320
+msgid "Failed to fetch user group info: ({code}) {message}"
+msgstr "Failed to fetch user group info: ({code}) {message}"
+
+#: .\include\ui\controls\rulemanager.py:39
+msgid "Rule Content"
+msgstr "Rule Content"
+
+#: .\include\ui\controls\rulemanager.py:142
+msgid "The submitted rule is not valid JSON"
+msgstr "The submitted rule is not valid JSON"
+
+#: .\include\ui\controls\views\connect.py:39
+msgid "Server Address"
+msgstr "Server Address"
+
+#: .\include\ui\controls\views\connect.py:55
+msgid "Disable SSL verification (Insecure)"
+msgstr "Disable SSL verification (Insecure)"
+
+#: .\include\ui\controls\views\connect.py:59
+#: .\include\ui\models\settings\overview.py:39
+msgid "Connect"
+msgstr "Connect"
+
+#: .\include\ui\controls\views\connect.py:144
+msgid "Invalid server address"
+msgstr "Invalid server address"
+
+#: .\include\ui\controls\views\explorer.py:93
+msgid "File Management"
+msgstr "File Management"
+
+#: .\include\ui\controls\views\login.py:73
+msgid "Login"
+msgstr "Login"
+
+#: .\include\ui\controls\views\login.py:138
+msgid "Username cannot be empty"
+msgstr "Username cannot be empty"
+
+#: .\include\ui\controls\views\login.py:140
+msgid "Password cannot be empty"
+msgstr "Password cannot be empty"
+
+#: .\include\ui\controls\views\manage\account.py:63
+msgid "User List"
+msgstr "User List"
+
+#: .\include\ui\controls\views\manage\account.py:111
+#: .\include\ui\controls\views\manage\group.py:113
+#: .\include\ui\util\path.py:57
+msgid "Load failed: ({code}) {message}"
+msgstr "Load failed: ({code}) {message}"
+
+#: .\include\ui\controls\views\manage\audit.py:124
+msgid "Audit Logs"
+msgstr "Audit Logs"
+
+#: .\include\ui\controls\views\manage\audit.py:215
+msgid "Load failed: ({code}) {errmsg}"
+msgstr "Load failed: ({code}) {errmsg}"
+
+#: .\include\ui\controls\views\manage\audit.py:227
+msgid "{view_start} - {view_end} of {total} items"
+msgstr "{view_start} - {view_end} of {total} items"
+
+#: .\include\ui\controls\views\manage\audit.py:248
+msgid "Load failed: {errstr}"
+msgstr "Load failed: {errstr}"
+
+#: .\include\ui\controls\views\manage\group.py:63
+msgid "User Group List"
+msgstr "User Group List"
+
+#: .\include\ui\controls\views\more.py:55
+msgid "Change Password"
+msgstr "Change Password"
+
+#: .\include\ui\controls\views\more.py:60
+msgid "Settings"
+msgstr "Settings"
+
+#: .\include\ui\controls\views\more.py:65
+msgid "About"
+msgstr "About"
+
+#: .\include\ui\models\about.py:59
+msgid "Version: {APP_VERSION}"
+msgstr "Version: {APP_VERSION}"
+
+#: .\include\ui\models\about.py:64
+msgid "Copyright (C) 2025 Creeper Team"
+msgstr "Copyright (C) 2025 Creeper Team"
+
+#: .\include\ui\models\about.py:69
+msgid "Licensed under Apache License Version 2.0."
+msgstr "Licensed under Apache License Version 2.0."
+
+#: .\include\ui\models\about.py:74
+msgid "View changelogs"
+msgstr "View changelogs"
+
+#: .\include\ui\models\about.py:90
+msgid "Checking for updates"
+msgstr "Checking for updates"
+
+#: .\include\ui\models\about.py:92
+msgid "Cannot update: Cannot check for updates when running from source code."
+msgstr ""
+"Cannot update: Cannot check for updates when running from source code."
+
+#: .\include\ui\models\about.py:111
+msgid "Software Update"
+msgstr "Software Update"
+
+#: .\include\ui\models\about.py:184
+msgid "Connection failed: {strerror}"
+msgstr "Connection failed: {strerror}"
+
+#: .\include\ui\models\about.py:188
+msgid "Failed to retrieve version information"
+msgstr "Failed to retrieve version information"
+
+#: .\include\ui\models\about.py:194
+msgid "Current version: {APP_VERSION}"
+msgstr "Current version: {APP_VERSION}"
+
+#: .\include\ui\models\about.py:199
+msgid "Latest version: {latest.version}"
+msgstr "Latest version: {latest.version}"
+
+#: .\include\ui\models\about.py:204
+msgid "Update Notes:"
+msgstr "Update Notes:"
+
+#: .\include\ui\models\about.py:217
+msgid "Already on the latest version"
+msgstr "Already on the latest version"
+
+#: .\include\ui\models\about.py:231
+msgid ""
+"No package found for the corresponding architecture in the latest version"
+msgstr ""
+"No package found for the corresponding architecture in the latest version"
+
+#: .\include\ui\models\about.py:236
+msgid "No update found: Unsupported architecture"
+msgstr "No update found: Unsupported architecture"
+
+#: .\include\ui\models\settings\overview.py:40
+msgid "Change application proxy settings"
+msgstr "Change application proxy settings"
+
+#: .\include\ui\models\settings\overview.py:45
+msgid "Security"
+msgstr "Security"
+
+#: .\include\ui\models\settings\overview.py:46
+msgid "Adjust application connection history policy"
+msgstr "Adjust application connection history policy"
+
+#: .\include\ui\util\file_controls.py:72
+msgid "Parent directory"
+msgstr "Parent directory"
+
+#: .\include\ui\util\file_controls.py:84
+msgid "Created time: {created_time}"
+msgstr "Created time: {created_time}"
+
+#: .\include\ui\util\file_controls.py:108
+msgid "Last modified: {last_modified}\n"
+msgstr "Last modified: {last_modified}\n"
+
+#: .\include\ui\util\group_controls.py:43
+msgid "Permissions: {permissions}\n"
+msgstr "Permissions: {permissions}\n"
+
+#: .\include\ui\util\group_controls.py:46
+msgid "Members: {members}"
+msgstr "Members: {members}"
+
+#: .\include\ui\util\path.py:129
+msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+msgstr "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+
+#: .\include\ui\util\path.py:137
+msgid "Deleting temporary files"
+msgstr "Deleting temporary files"
+
+#: .\include\ui\util\path.py:140
+msgid "Verifying file"
+msgstr "Verifying file"
+
+#: .\include\ui\util\path.py:144
+msgid "File hash mismatch: {exc}"
+msgstr "File hash mismatch: {exc}"
+
+#: .\include\ui\util\path.py:146
+msgid "File size mismatch: {exc}"
+msgstr "File size mismatch: {exc}"
+
+#: .\include\ui\util\quotes.py:12
+msgid ""
+"Stars hang low over the vast plain, the moon surges over the great river."
+msgstr ""
+"Stars hang low over the vast plain, the moon surges over the great river."
+
+#: .\include\ui\util\quotes.py:13
+msgid "A true hero among mortals, no need to test their cry further."
+msgstr "A true hero among mortals, no need to test their cry further."
+
+#: .\include\ui\util\quotes.py:14
+msgid ""
+"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
+"echoing with bugles."
+msgstr ""
+"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
+"echoing with bugles."
+
+#: .\include\ui\util\quotes.py:15
+msgid ""
+"Though lacking wings like the colorful phoenix to fly side by side, our "
+"hearts connect with the clarity of a rhinoceros horn."
+msgstr ""
+"Though lacking wings like the colorful phoenix to fly side by side, our "
+"hearts connect with the clarity of a rhinoceros horn."
+
+#: .\include\ui\util\quotes.py:16
+msgid ""
+"Seeking each other on dream paths, amid flying rain and falling flowers."
+msgstr ""
+"Seeking each other on dream paths, amid flying rain and falling flowers."

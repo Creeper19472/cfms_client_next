@@ -1,4 +1,5 @@
-import asyncio, gettext
+import asyncio
+import gettext
 import flet as ft
 
 from flet_model import Model, route
@@ -55,12 +56,12 @@ class AboutModel(Model):
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Text(
-                        _(f"Version: {APP_VERSION}"),
+                        _("Version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),
                     ft.Text(
-                        _("Copyright © 2025 Creeper Team"),
+                        _("Copyright (C) 2025 Creeper Team"),
                         size=16,
                         text_align=ft.TextAlign.LEFT,
                     ),
@@ -86,14 +87,14 @@ class AboutModel(Model):
             on_click=self.suc_button_click,
         )
         self.suc_progress_ring = ft.ProgressRing(visible=False)
-        self.suc_progress_text = ft.Text(_("正在检查更新"), visible=False)
+        self.suc_progress_text = ft.Text(_("Checking for updates"), visible=False)
         self.suc_environ_unavailable_text = ft.Text(
-            _("无法更新：源代码运行时不能检查更新。"), visible=False
+            _("Cannot update: Cannot check for updates when running from source code."), visible=False
         )
         self.suc_unavailable_text = ft.Text(visible=False)
 
         self.suc_upgrade_button = ft.Button(
-            _("更新"),
+            _("Update"),
             on_click=self.upgrade_button_click,
             visible=False,
         )
@@ -107,7 +108,7 @@ class AboutModel(Model):
                     ft.Row(
                         controls=[
                             ft.Text(
-                                _("软件更新"),
+                                _("Software Update"),
                                 size=22,
                                 text_align=ft.TextAlign.CENTER,
                             ),
@@ -171,36 +172,36 @@ class AboutModel(Model):
 
         async def _impl_check_for_updates():
 
-            # 设定运行架构下要查找的版本。
+            # Set the version to find for the running architecture.
             assert self.page.platform
             match_text = SUPPORTED_PLATFORM.get(self.page.platform.value)
 
             try:
-                # 使用线程池避免阻塞主事件循环
+                # Use thread pool to avoid blocking main event loop
                 loop = asyncio.get_running_loop()
                 latest = await loop.run_in_executor(None, get_latest_release)
             except requests.exceptions.ConnectionError as e:
-                send_error(self.page, _(f"连接失败：{e.strerror}"))
+                send_error(self.page, _("Connection failed: {strerror}").format(strerror=e.strerror))
                 return
 
             if not latest:
-                self.suc_unavailable_text.value = _("未获取到版本信息")
+                self.suc_unavailable_text.value = _("Failed to retrieve version information")
                 self.suc_unavailable_text.visible = True
                 return
 
             self.suc_release_info.controls = [
                 ft.Text(
-                    _(f"当前版本：{APP_VERSION}"),
+                    _("Current version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
                 ft.Text(
-                    _(f"最新版本：{latest.version}"),
+                    _("Latest version: {latest.version}").format(latest=latest.version),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
                 ft.Text(
-                    _("更新说明："),
+                    _("Update Notes:"),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
                 ),
@@ -213,26 +214,26 @@ class AboutModel(Model):
             ]
 
             if not is_new_version(False, 0, BUILD_VERSION, latest.version):
-                self.suc_unavailable_text.value = _("已是最新版本")
+                self.suc_unavailable_text.value = _("Already on the latest version")
                 self.suc_unavailable_text.visible = True
                 return
 
             if match_text:
                 for asset in latest.assets:
                     if match_text in asset.name:
-                        self.suc_upgrade_button.data = asset  # 设置下载链接
+                        self.suc_upgrade_button.data = asset  # Set download link
                         self.suc_upgrade_button.visible = True
                         self.suc_release_info.visible = True
-                        break  # releases 方面应当保证匹配结果唯一，如果唯一的话就没必要继续匹配了
+                        break  # Releases should ensure unique match, no need to continue if unique
 
-                # 判断是否有找到对应架构的包
+                # Check if package for corresponding architecture is found
                 if not self.suc_upgrade_button.visible:
                     self.suc_unavailable_text.value = _(
-                        "未在最新版本中找到对应架构的包"
+                        "No package found for the corresponding architecture in the latest version"
                     )
                     self.suc_unavailable_text.visible = True
             else:
-                self.suc_unavailable_text.value = _("没有找到更新：不支持的架构")
+                self.suc_unavailable_text.value = _("No update found: Unsupported architecture")
                 self.suc_unavailable_text.visible = True
 
         if os.environ.get("FLET_APP_CONSOLE"):

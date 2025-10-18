@@ -8,6 +8,12 @@ from include.ui.util.notifications import send_error
 from include.ui.util.group_controls import update_group_controls
 from include.util.requests import do_request
 
+import gettext
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
+
+
 if TYPE_CHECKING:
     from include.ui.models.manage import ManageModel
 
@@ -54,7 +60,7 @@ class ManageGroupsView(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                ft.Text("用户组列表", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text(_("User Group List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
                         ft.IconButton(
@@ -104,7 +110,7 @@ class ManageGroupsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, f"加载失败: ({code}) {response['message']}")
+            send_error(self.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             update_group_controls(
                 self.group_listview, response["data"]["groups"], _update_page

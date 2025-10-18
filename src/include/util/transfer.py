@@ -15,9 +15,9 @@ import shutil
 
 
 async def calculate_sha256(file_path):
-    # 使用更快的 hashlib 工具和内存映射文件
+    # Use faster hashlib tools and memory-mapped files
     with open(file_path, "rb") as f:
-        # 使用内存映射文件直接映射到内存
+        # Use memory-mapped files to map directly to memory
         mmapped_file = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
         return hashlib.sha256(mmapped_file).hexdigest()
 
@@ -122,10 +122,10 @@ async def receive_file_from_server(
     if response["action"] != "transfer_file":
         raise ValueError("Invalid action received for file transfer")
 
-    sha256 = response["data"].get("sha256")  # 原始文件的 SHA256
-    file_size = response["data"].get("file_size")  # 原始文件的大小
-    chunk_size = response["data"].get("chunk_size", 8192)  # 分片大小
-    total_chunks = response["data"].get("total_chunks")  # 分片总数
+    sha256 = response["data"].get("sha256")  # SHA256 of original file
+    file_size = response["data"].get("file_size")  # Size of original file
+    chunk_size = response["data"].get("chunk_size", 8192)  # Chunk size
+    total_chunks = response["data"].get("total_chunks")  # Total chunks
 
     await client.send("ready")
 
@@ -170,15 +170,15 @@ async def receive_file_from_server(
 
             yield 0, received_file_size, file_size
 
-        # 获得解密信息
+        # Get decryption information
         decrypted_data = await client.recv()
         decrypted_data_json: dict = json.loads(decrypted_data)
 
         aes_key = base64.b64decode(decrypted_data_json["data"].get("key"))
 
-        # 解密分块
+        # Decrypt chunks
         decrypted_chunks = 1
-        cipher = AES.new(aes_key, AES.MODE_CFB, iv=iv)  # 初始化 cipher
+        cipher = AES.new(aes_key, AES.MODE_CFB, iv=iv)  # Initialize cipher
 
         async with aiofiles.open(file_path, "wb") as out_file:
             while decrypted_chunks <= total_chunks:
@@ -196,7 +196,7 @@ async def receive_file_from_server(
                 # os.remove(chunk_file_path)
                 decrypted_chunks += 1
 
-        # 删除临时文件夹
+        # Delete temporary folder
         yield 2,
 
         await asyncio.get_event_loop().run_in_executor(
@@ -206,7 +206,7 @@ async def receive_file_from_server(
     except:
         raise
 
-    # 校验文件
+    # Verify file
 
     async def _action_verify() -> None:
 
@@ -215,7 +215,7 @@ async def receive_file_from_server(
                 file_size, await aiofiles.os.path.getsize(file_path)
             )
 
-        # 校验 SHA256
+        # Verify SHA256
         actual_sha256 = await calculate_sha256(file_path)
         if sha256 and actual_sha256 != sha256:
             raise FileHashMismatchError(sha256, actual_sha256)

@@ -150,7 +150,9 @@ class ChangelogEntryColumn(ft.Column):
                 size=21,
                 spans=[
                     ft.TextSpan(
-                        _(f"  发行于 {str(self.entry.date)}"),
+                        _("  Released on {release_date}").format(
+                            release_date=str(self.entry.date)
+                        ),
                         style=ft.TextStyle(14),
                     )
                 ],
@@ -172,7 +174,7 @@ class ChangelogHistoryDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_(f"Changelogs"))
+        self.title = ft.Text(_("Changelogs"))
 
         self.entry_columns = [
             ChangelogEntryColumn(each_entry, leave_blank=True)
@@ -182,7 +184,11 @@ class ChangelogHistoryDialog(AlertDialog):
         self.content = ft.Container(
             ft.Column(
                 [
-                    ft.Text(_(f"最后更新于 {str(changelogs[0].date)}\n")),
+                    ft.Text(
+                        _("Last updated on {last_updated}\n").format(
+                            last_updated=str(changelogs[0].date)
+                        )
+                    ),
                     *self.entry_columns,
                 ]
             ),
@@ -209,7 +215,11 @@ class WhatsNewDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text(_(f"What's new in {self.newest_changelog.version}"))
+        self.title = ft.Text(
+            _("What's new in {newest_version}").format(
+                newest_version=self.newest_changelog.version
+            )
+        )
 
         self.content = ft.Container(
             ChangelogEntryColumn(self.newest_changelog),

@@ -19,7 +19,7 @@ class HomeNavigationBar(ft.NavigationBar):
         self.parent_view = parent_view
         self.app_config = AppConfig()
 
-        self.last_selected_index = 2  # 默认值设置成初次进入时默认选中的页面在效果上较好
+        self.last_selected_index = 2  # Setting default to initially selected page works better
         self.views = views
 
         nav_destinations = [
@@ -83,8 +83,8 @@ class WelcomeInfoCard(ft.Card):
                 [
                     ft.ListTile(
                         leading=ft.Icon(ft.Icons.ACCESS_TIME_FILLED),
-                        title=ft.Text(_("欢迎访问 保密文档管理系统（CFMS）")),
-                        subtitle=ft.Text(_("落霞与孤鹜齐飞，秋水共长天一色。")),
+                        title=ft.Text(_("Welcome to Confidential Document Management System (CFMS)")),
+                        subtitle=ft.Text(_("The sunset glow and the lone wild duck fly together, autumn water shares the same color with the vast sky.")),
                     ),
                 ]
             ),
@@ -103,7 +103,7 @@ class HomeTabs(ft.Tabs):
 
         _tabbar = ft.TabBar(
             tabs=[
-                ft.Tab(label=_("收藏")),
+                ft.Tab(label=_("Favorites")),
             ],
             ref=self.tabbar_ref,  # pyright: ignore[reportArgumentType]
         )
@@ -112,7 +112,7 @@ class HomeTabs(ft.Tabs):
             controls=[
                 ft.Container(
                     ft.Column(
-                        controls=[ft.Text("您尚未收藏任何文档或文件夹。")],
+                        controls=[ft.Text(_("You have not favorited any documents or folders yet."))],
                         # alignment=ft.alignment.center,
                     ),
                     margin=15,

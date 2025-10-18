@@ -19,7 +19,12 @@ t = gettext.translation("client", "ui/locale", fallback=True)
 _ = t.gettext
 
 
-async def get_directory(id: str | None, view: "FileListView", fallback: Optional[str] = None, _raise_on_error=False,):
+async def get_directory(
+    id: str | None,
+    view: "FileListView",
+    fallback: Optional[str] = None,
+    _raise_on_error=False,
+):
     from include.ui.util.file_controls import update_file_controls
 
     view.parent_manager.current_directory_id = id
@@ -47,7 +52,12 @@ async def get_directory(id: str | None, view: "FileListView", fallback: Optional
             if fallback != None:
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
-        send_error(view.page, _(f"加载失败: ({code}) {response['message']}"))
+        send_error(
+            view.page,
+            _("Load failed: ({code}) {message}").format(
+                code=code, message=response["message"]
+            ),
+        )
     else:
         update_file_controls(
             view,
@@ -117,20 +127,23 @@ async def get_document(id: str | None, filename: str, view: "FileListView"):
                     decrypted_chunks, total_chunks = data
                     progress_bar.value = decrypted_chunks / total_chunks
                     progress_info.value = _(
-                        f"正在解密分块 [{decrypted_chunks}/{total_chunks}]"
+                        "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
+                    ).format(
+                        decrypted_chunks=decrypted_chunks,
+                        total_chunks=total_chunks,
                     )
                 case 2:
                     progress_bar.value = None
-                    progress_info.value = _("正在删除临时文件")
+                    progress_info.value = _("Deleting temporary files")
                 case 3:
                     progress_bar.value = None
-                    progress_info.value = _("正在校验文件")
+                    progress_info.value = _("Verifying file")
 
             progress_column.update()
     except FileHashMismatchError as exc:
-        send_error(view.page, _(f"File hash mismatch: {str(exc)}"))
+        send_error(view.page, _("File hash mismatch: {exc}").format(exc=str(exc)))
     except FileSizeMismatchError as exc:
-        send_error(view.page, _(f"File size mismatch: {str(exc)}"))
+        send_error(view.page, _("File size mismatch: {exc}").format(exc=str(exc)))
     finally:
         view.page.overlay.remove(progress_column)
         view.page.update()

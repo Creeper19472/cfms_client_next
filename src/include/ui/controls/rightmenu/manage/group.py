@@ -30,25 +30,25 @@ class GroupRightMenuDialog(RightMenuDialog):
         menu_items = [
             {
                 "icon": ft.Icons.GROUP_REMOVE,
-                "title": _("删除"),
-                "subtitle": _("删除此用户组"),
+                "title": _("Delete"),
+                "subtitle": _("Delete this user group"),
                 "on_click": self.remove_button_click,
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
-                "title": _("重命名"),
-                "subtitle": _("为用户组更改展示的名称"),
+                "title": _("Rename"),
+                "subtitle": _("Change display name for user group"),
                 "on_click": self.rename_button_click,
             },
             {
                 "icon": ft.Icons.SETTINGS_OUTLINED,
-                "title": _("设置权限"),
-                "subtitle": _("为用户组更改拥有的权限"),
+                "title": _("Set Permissions"),
+                "subtitle": _("Change permissions for user group"),
                 "on_click": self.settings_button_click,
             },
         ]
         super().__init__(
-            title=ft.Text(_("操作用户组")),
+            title=ft.Text(_("Manage User Groups")),
             menu_items=menu_items,
             ref=ref,
             visible=visible,
@@ -63,7 +63,7 @@ class GroupRightMenuDialog(RightMenuDialog):
             token=self.app_config.token,
         )
         if (code := response["code"]) != 200:
-            send_error(self.page, f"删除用户组失败: ({code}) {response['message']}")
+            send_error(self.page, _("Failed to delete user group: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_listview.parent_manager.refresh_group_list()
 
@@ -88,26 +88,26 @@ class RenameGroupDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.modal = False
-        self.title = ft.Text(_(f"重命名用户组"))
+        self.title = ft.Text(_("Rename User Group"))
 
         self.parent_dialog = parent_dialog
         self.app_config = AppConfig()
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.name_textfield = ft.TextField(
-            label=_(f"新用户组名称"),
+            label=_("New User Group Name"),
             on_submit=self.ok_button_click,
             expand=True,
         )
         self.textfield_empty_message = ft.Text(
-            _(f"Group name cannot be empty"), color=ft.Colors.RED, visible=False
+            _("Group name cannot be empty"), color=ft.Colors.RED, visible=False
         )
 
         self.submit_button = ft.TextButton(
-            _("提交"),
+            _("Submit"),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("取消"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
 
         self.content = ft.Column(
             controls=[self.name_textfield, self.textfield_empty_message],
@@ -157,7 +157,7 @@ class RenameGroupDialog(AlertDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _(f"重命名失败: ({code}) {response['message']}"))
+            send_error(self.page, _("Rename failed: ({code}) {message}").format(code=code, message=response['message']))
         else:
             await self.parent_dialog.parent_listview.parent_manager.refresh_group_list()
 
@@ -183,11 +183,11 @@ class EditGroupPermissionDialog(AlertDialog):
         self.add_button = ft.IconButton(
             ft.Icons.ADD, on_click=self.add_permission_submit, disabled=True
         )
-        self.submit_button = ft.TextButton("提交", on_click=self.submit_button_click)
-        self.cancel_button = ft.TextButton("取消", on_click=self.cancel_button_click)
+        self.submit_button = ft.TextButton(_("Submit"), on_click=self.submit_button_click)
+        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
 
         self.add_textfield = ft.TextField(
-            label="新增权限",
+            label=_("Add Permission"),
             on_submit=self.add_permission_submit,
             on_change=self.add_textfield_on_change,
             expand=True,
@@ -198,7 +198,7 @@ class EditGroupPermissionDialog(AlertDialog):
             controls=[
                 ft.Row(
                     controls=[
-                        ft.Text("更改用户组权限"),
+                        ft.Text(_("Change User Group Permissions")),
                         self.refresh_button,
                     ]
                 ),
@@ -243,8 +243,8 @@ class EditGroupPermissionDialog(AlertDialog):
                 ft.Checkbox(
                     label=self.add_textfield.value,
                     data=self.add_textfield.value,
-                    on_change=None,  # 提交前什么都不处理
-                    value=True,  # 默认选中
+                    on_change=None,  # Do nothing before submission
+                    value=True,  # Selected by default
                 )
             )
 
@@ -263,7 +263,7 @@ class EditGroupPermissionDialog(AlertDialog):
         yield
 
         # ... "data": {"latest": []}
-        # 提交更改后所有勾选的用户组
+        # All selected user groups after submitting changes
         to_submit_list = []
         for checkbox in self.permission_listview.controls:
             assert isinstance(checkbox, ft.Checkbox)
@@ -283,7 +283,7 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := response["code"]) != 200:
             send_error(
                 self.page,
-                f"更改用户组权限失败: ({code}) {response['message']}",
+                _("Change user group permissions failed: ({code}) {message}").format(code=code, message=response['message']),
             )
         else:
             await self.refresh_permission_list()
@@ -303,10 +303,10 @@ class EditGroupPermissionDialog(AlertDialog):
         self.refresh_button.disabled = True
         self.update()
 
-        # 重置列表
+        # Reset list
         self.permission_listview.controls = []
 
-        # 拉取用户组信息
+        # Fetch user group information
         group_info_response = await do_request(
             self.app_config.get_not_none_attribute("conn"),
             action="get_group_info",
@@ -317,7 +317,7 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := group_info_response["code"]) != 200:
             send_error(
                 self.page,
-                f"拉取用户组信息失败: ({code}) {group_info_response['message']}",
+                _("Failed to fetch user group info: ({code}) {message}").format(code=code, message=group_info_response['message']),
             )
             return
 
@@ -326,9 +326,9 @@ class EditGroupPermissionDialog(AlertDialog):
         for each_permission in all_permission_list:
             self.permission_listview.controls.append(
                 ft.Checkbox(
-                    label=each_permission,  # 后面可能改成显示名称
+                    label=each_permission,  # May change to display name later
                     data=each_permission,
-                    on_change=None,  # 提交前什么都不处理
+                    on_change=None,  # Do nothing before submission
                     value=each_permission in all_permission_list,
                 )
             )

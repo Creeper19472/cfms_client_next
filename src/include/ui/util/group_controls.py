@@ -1,11 +1,15 @@
 from typing import TYPE_CHECKING
 from datetime import datetime
 import flet as ft
+import gettext
 
 from include.ui.controls.rightmenu.manage.group import GroupRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import GroupListView
+
+t = gettext.translation("client", "ui/locale", fallback=True)
+_ = t.gettext
 
 
 def update_group_controls(view: "GroupListView", groups: list[dict], _update_page=True):
@@ -16,9 +20,7 @@ def update_group_controls(view: "GroupListView", groups: list[dict], _update_pag
         ),
     ):
         assert event.control.content
-        event.page.show_dialog(
-            GroupRightMenuDialog(event.control.content.data, view)
-        )
+        event.page.show_dialog(GroupRightMenuDialog(event.control.content.data, view))
 
     async def group_click(
         event: ft.Event[ft.ListTile],
@@ -38,8 +40,10 @@ def update_group_controls(view: "GroupListView", groups: list[dict], _update_pag
                         else group["name"]
                     ),
                     subtitle=ft.Text(
-                        f"Permissions: {group["permissions"]}\n"
-                        + f"Members: {group['members']}"
+                        _("Permissions: {permissions}\n").format(
+                            permissions=group["permissions"]
+                        )
+                        + _("Members: {members}").format(members=group["members"])
                     ),
                     is_three_line=True,
                     data=group["name"],

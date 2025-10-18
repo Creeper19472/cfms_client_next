@@ -32,15 +32,23 @@ class ConnectFormController:
             )
         except ConnectionResetError as e:
             self.view.enable_interactions()
-            if e.strerror:
-                errmsg = _(f"建立连接失败，因为连接已重置: {e.strerror}")
+            if (
+                e.strerror
+            ):  # We'll use str.format() until Python 3.14 is supported by upstream
+                errmsg = _(
+                    "Connection failed because the connection was reset: {strerror}"
+                ).format(strerror=e.strerror)
             else:
-                errmsg = _("建立连接失败，因为连接已重置。")
+                errmsg = _("Connection failed because the connection was reset.")
             self.view.send_error(errmsg)
             return
         except Exception as e:
             self.view.enable_interactions()
-            self.view.send_error(_(f"建立连接失败：({e.__class__.__name__}) {str(e)}"))
+            self.view.send_error(
+                _("Connection failed: ({exc_class_name}) {str_err}").format(
+                    exc_class_name=e.__class__.__name__, str_err=str(e)
+                )
+            )
             return
 
         server_info_response = await do_request(conn, "server_info")
@@ -50,8 +58,11 @@ class ConnectFormController:
             await conn._wrapped_connection.close()
             self.view.enable_interactions()
             self.view.send_error(
-                "您正在连接到一个使用更高版本协议的服务器"
-                f"（协议版本 {server_protocol_version}），请更新客户端。",
+                _("You are connecting to a server using a higher version protocol")
+                + " "
+                + _(
+                    "(Protocol version {server_protocol_version}), please update the client."
+                ).format(server_protocol_version=server_protocol_version),
             )
             await self.view.push_route("/connect/about")
             return
@@ -83,9 +94,10 @@ class ConnectFormController:
             else:
                 self.view.send_error(
                     _(
-                        "授权失败，您将无法正常下载文件。"
-                        "请在设置中允许应用访问您的文件。"
-                    ),
+                        "Authorization failed, you will not be able to download files normally."
+                    )
+                    + " "
+                    + _("Please allow the app to access your files in settings.")
                 )
 
         if self.view.page.platform.value == "windows" and os.environ.get(

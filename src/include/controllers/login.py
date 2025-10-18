@@ -60,8 +60,8 @@ class LoginFormController:
 
         elif code == 403:
             self.view.page.session.store.set("username", username)
-            self.view.page.show_dialog(PasswdUserDialog(_("在登录前必须修改密码。")))
+            self.view.page.show_dialog(PasswdUserDialog(_("Password must be changed before login.")))
             return
 
         else:
-            self.view.send_error(_(f"登录失败：({code}) {response['message']}"))
+            self.view.send_error(_("Login failed: ({code}) {message}").format(code=code, message=response['message']))
