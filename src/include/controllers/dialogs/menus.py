@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 import gettext
+
 import flet as ft
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.util.path import get_directory

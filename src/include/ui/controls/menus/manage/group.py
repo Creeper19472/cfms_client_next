@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Optional
-import flet as ft
 import gettext
+
+import flet as ft
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH

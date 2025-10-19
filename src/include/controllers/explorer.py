@@ -1,9 +1,11 @@
-import asyncio
-import os
 from typing import TYPE_CHECKING
+import asyncio
 import gettext
-import flet as ft
+import os
+
 from flet import FilePickerFile
+import flet as ft
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.explorer import (

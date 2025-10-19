@@ -1,12 +1,12 @@
-import flet as ft
 import gettext
+
+import flet as ft
 
 from include.constants import LOCALE_PATH
 from include.controllers.login import LoginFormController
-import include.ui.constants as const
 from include.ui.util.notifications import send_error
-
 from include.util.locale import get_translation
+import include.ui.constants as const
 t = get_translation()
 _ = t.gettext
 

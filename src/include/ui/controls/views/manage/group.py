@@ -1,17 +1,16 @@
-import asyncio
 from typing import TYPE_CHECKING
+import asyncio
+import gettext
+
 import flet as ft
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.manage.groups import AddUserGroupDialog
-from include.ui.util.notifications import send_error
 from include.ui.util.group_controls import update_group_controls
-from include.util.requests import do_request
-
-import gettext
-
+from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
+from include.util.requests import do_request
 t = get_translation()
 _ = t.gettext
 

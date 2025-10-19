@@ -1,9 +1,11 @@
-import json, gettext
 from typing import TYPE_CHECKING
+
+import flet as ft
+import json, gettext
+
 from include.constants import LOCALE_PATH
 from include.controllers.dialogs.rulemanager import RuleManagerController
 from include.ui.controls.dialogs.base import AlertDialog
-import flet as ft
 
 if TYPE_CHECKING:
     from include.ui.controls.menus.explorer import (

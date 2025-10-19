@@ -16,9 +16,9 @@ limitations under the License.
 
 import gettext
 import os
+import threading
 
 from include.constants import LOCALE_PATH
-import threading
 
 __all__ = ["create_translation"]
 

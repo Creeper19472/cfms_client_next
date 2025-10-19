@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+
 import flet as ft
 import gettext, asyncio
 

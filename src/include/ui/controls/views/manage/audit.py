@@ -1,16 +1,15 @@
-from typing import TYPE_CHECKING, Optional
 from datetime import datetime
+from typing import TYPE_CHECKING, Optional
+import gettext
+
 import flet as ft
 import flet_datatable2 as fdt
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.util.notifications import send_error
-from include.util.requests import do_request
-
-import gettext
-
 from include.util.locale import get_translation
+from include.util.requests import do_request
 t = get_translation()
 _ = t.gettext
 

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import gettext
+
 from include.classes.config import AppConfig
 from include.classes.exceptions.request import (
     CreateDirectoryFailureError,

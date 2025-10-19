@@ -1,6 +1,7 @@
-import json
 from typing import TYPE_CHECKING, Any
 import gettext
+import json
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.util.requests import do_request

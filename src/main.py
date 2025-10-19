@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import os
-import locale
 import gettext
+import locale
+import os
+
 import flet as ft
+
 from include.classes.config import AppConfig
 from include.util.locale import set_translation
 

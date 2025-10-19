@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
-import flet as ft
 import gettext
+
+import flet as ft
+
 from include.classes.client import LockableClientConnection
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog

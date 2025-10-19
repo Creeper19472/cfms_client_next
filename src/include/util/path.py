@@ -1,6 +1,7 @@
 import os
 
 
+
 async def build_directory_tree(root_path):
     def build_tree(path):
         tree = {"files": [], "dirs": {}}

@@ -1,5 +1,5 @@
-import flet as ft
 from flet_model import Model, route, Router
+import flet as ft
 
 from include.classes.config import AppConfig
 from include.ui.util.notifications import send_success

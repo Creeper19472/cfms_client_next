@@ -1,10 +1,12 @@
 from datetime import datetime
-import dis
 from os import access
 from typing import TYPE_CHECKING
-import flet as ft
-import gettext
 import asyncio
+import dis
+import gettext
+
+import flet as ft
+
 from include.classes.client import LockableClientConnection
 from include.constants import LOCALE_PATH
 from include.controllers.dialogs.menus import (

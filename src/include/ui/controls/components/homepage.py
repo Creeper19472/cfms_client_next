@@ -1,12 +1,14 @@
 from typing import TYPE_CHECKING
 import gettext
+
 import flet as ft
+
+from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
-import include.ui.constants as const
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.util.file_controls import get_directory
-from include.classes.config import AppConfig
+import include.ui.constants as const
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel

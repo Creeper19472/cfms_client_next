@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 import gettext
-from datetime import datetime
+
 import flet as ft
 
 from include.constants import LOCALE_PATH

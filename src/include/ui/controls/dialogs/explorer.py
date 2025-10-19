@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
-import flet as ft
+
 import asyncio, gettext
+import flet as ft
 
 from include.constants import LOCALE_PATH
 from include.controllers.dialogs.directory import (

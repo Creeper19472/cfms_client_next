@@ -1,11 +1,11 @@
 import flet as ft
 import json, gettext
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
-from include.util.requests import do_request
 from include.ui.util.notifications import send_error
-
 from include.util.locale import get_translation
+from include.util.requests import do_request
 t = get_translation()
 _ = t.gettext
 

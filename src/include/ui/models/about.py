@@ -1,10 +1,10 @@
 import asyncio
 import gettext
-import flet as ft
 
 from flet_model import Model, Router, route
-from include.constants import APP_VERSION, BUILD_VERSION, LOCALE_PATH
+import flet as ft
 
+from include.constants import APP_VERSION, BUILD_VERSION, LOCALE_PATH
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
 from include.ui.util.route import get_parent_route

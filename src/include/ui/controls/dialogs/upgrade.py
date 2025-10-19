@@ -1,22 +1,21 @@
-import os
-import asyncio
-import threading
 from typing import Optional
-import flet as ft
+import asyncio
+import gettext
+import os
+import threading
+
 from flet_open_file import OpenFile
 from flet_permission_handler import Permission, PermissionHandler, PermissionStatus
+import flet as ft
 import requests
 
 from include.classes.config import AppConfig
 from include.constants import FLET_APP_STORAGE_TEMP, LOCALE_PATH, RUNTIME_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
+from include.util.locale import get_translation
 from include.util.transfer import calculate_sha256
 from include.util.upgrade.updater import AssetDigest, AssetDigestType
-
-import gettext
-
-from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
 

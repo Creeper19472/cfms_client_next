@@ -1,7 +1,8 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
-import flet as ft
+from typing import TYPE_CHECKING
 import gettext
+
+import flet as ft
 
 from include.constants import LOCALE_PATH
 from include.ui.controls.menus.manage.group import GroupRightMenuDialog

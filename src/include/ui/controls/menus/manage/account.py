@@ -1,11 +1,12 @@
 from typing import TYPE_CHECKING, Optional
-import flet as ft
 import gettext
+
+import flet as ft
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
-from include.ui.controls.menus.base import RightMenuDialog
 from include.ui.controls.dialogs.manage.accounts import (
+from include.ui.controls.menus.base import RightMenuDialog
     RenameUserNicknameDialog,
     ViewUserInfoDialog,
     EditUserGroupDialog,

@@ -1,6 +1,7 @@
 from typing import Literal
-import flet as ft
+
 from flet_model import Model, Router, route
+import flet as ft
 
 from include.classes.config import AppConfig
 from include.ui.util.notifications import send_success

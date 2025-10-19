@@ -1,11 +1,11 @@
-from enum import Enum
 from typing import Optional
-import requests
-from include.constants import LOCALE_PATH
-from include.constants import GITHUB_REPO
-
 import gettext
 
+from enum import Enum
+import requests
+
+from include.constants import GITHUB_REPO
+from include.constants import LOCALE_PATH
 from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext

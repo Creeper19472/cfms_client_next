@@ -1,6 +1,7 @@
 from typing import Optional
 
 
+
 class RequestFailureError(Exception):
     def __init__(self, msg: str = "", response: Optional[dict] = None, *args) -> None:
         super().__init__(*args)

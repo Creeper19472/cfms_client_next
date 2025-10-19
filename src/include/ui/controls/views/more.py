@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import gettext
+
 import flet as ft
 
 from include.classes.config import AppConfig

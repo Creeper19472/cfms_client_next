@@ -1,6 +1,8 @@
-import ssl
 from typing import Literal
+
 from websockets.asyncio.client import connect
+import ssl
+
 from include.classes.client import LockableClientConnection
 from include.constants import INTEGRATED_CA_CERT
 

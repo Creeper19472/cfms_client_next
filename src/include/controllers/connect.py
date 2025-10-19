@@ -1,7 +1,9 @@
-import os
 from typing import TYPE_CHECKING
 import gettext
+import os
+
 import flet_permission_handler as fph
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH, PROTOCOL_VERSION
 from include.util.connect import get_connection

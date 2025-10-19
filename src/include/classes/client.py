@@ -1,6 +1,8 @@
 import asyncio
+
 from websockets import ClientProtocol
 from websockets.asyncio.client import ClientConnection
+
 
 
 class LockableClientConnection(ClientConnection):

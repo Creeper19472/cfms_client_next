@@ -1,5 +1,7 @@
 from typing import Any
+
 import flet as ft
+
 from include.ui.controls.dialogs.base import AlertDialog
 
 __all__ = ["RightMenuDialog"]

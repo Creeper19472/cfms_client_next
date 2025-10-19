@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import gettext
+
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.util.requests import do_request

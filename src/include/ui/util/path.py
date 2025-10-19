@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING, Optional
-import os
 import gettext
+import os
+
 import flet as ft
+
 from include.classes.exceptions.request import RequestFailureError
 from include.classes.exceptions.transmission import (
     FileHashMismatchError,

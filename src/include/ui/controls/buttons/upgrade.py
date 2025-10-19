@@ -1,8 +1,8 @@
-import flet as ft
 import gettext
 
-from include.constants import LOCALE_PATH
+import flet as ft
 
+from include.constants import LOCALE_PATH
 from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
