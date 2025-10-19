@@ -5,7 +5,7 @@ import flet as ft
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
-from include.ui.controls.dialogs.manage.accounts import PasswdUserDialog
+from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
 from include.ui.util.quotes import get_quote, refresh_quote
 
 if TYPE_CHECKING:

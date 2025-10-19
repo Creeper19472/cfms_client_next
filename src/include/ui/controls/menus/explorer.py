@@ -6,7 +6,7 @@ import flet as ft
 from include.classes.client import LockableClientConnection
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.controls.dialogs.menus.explorer import (
+from include.ui.controls.dialogs.contextmenu.explorer import (
     GetDirectoryInfoDialog,
     GetDocumentInfoDialog,
     RenameDialog,

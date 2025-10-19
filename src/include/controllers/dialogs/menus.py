@@ -10,7 +10,7 @@ from include.ui.util.path import get_directory
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.dialogs.menus.explorer import (
+    from include.ui.controls.dialogs.contextmenu.explorer import (
         RenameDialog,
         GetDirectoryInfoDialog,
     )

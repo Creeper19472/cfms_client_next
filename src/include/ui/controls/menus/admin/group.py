@@ -11,7 +11,7 @@ from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from ui.controls.views.manage.group import GroupListView
+    from ui.controls.views.admin.group import GroupListView
 
 from include.util.locale import get_translation
 t = get_translation()

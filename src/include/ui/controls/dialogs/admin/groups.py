@@ -12,7 +12,7 @@ from include.util.locale import get_translation
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.manage.group import ManageGroupsView
+    from include.ui.controls.views.admin.group import ManageGroupsView
 
 t = get_translation()
 _ = t.gettext
