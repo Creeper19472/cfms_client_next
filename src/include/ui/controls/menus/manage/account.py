@@ -4,7 +4,7 @@ import gettext
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
-from include.ui.controls.rightmenu.base import RightMenuDialog
+from include.ui.controls.menus.base import RightMenuDialog
 from include.ui.controls.dialogs.manage.accounts import (
     RenameUserNicknameDialog,
     ViewUserInfoDialog,

@@ -4,7 +4,7 @@ from datetime import datetime
 import flet as ft
 
 from include.constants import LOCALE_PATH
-from include.ui.controls.rightmenu.manage.account import UserRightMenuDialog
+from include.ui.controls.menus.manage.account import UserRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.account import UserListView

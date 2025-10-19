@@ -6,7 +6,7 @@ from include.constants import LOCALE_PATH
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.rulemanager import (
+    from include.ui.controls.components.rulemanager import (
         RuleManager,
     )
 

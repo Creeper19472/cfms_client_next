@@ -4,7 +4,7 @@ import gettext
 import flet as ft
 
 from include.constants import LOCALE_PATH
-from include.ui.controls.rightmenu.explorer import (
+from include.ui.controls.menus.explorer import (
     DocumentRightMenuDialog,
     DirectoryRightMenuDialog,
 )

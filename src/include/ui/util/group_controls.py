@@ -4,7 +4,7 @@ import flet as ft
 import gettext
 
 from include.constants import LOCALE_PATH
-from include.ui.controls.rightmenu.manage.group import GroupRightMenuDialog
+from include.ui.controls.menus.manage.group import GroupRightMenuDialog
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import GroupListView

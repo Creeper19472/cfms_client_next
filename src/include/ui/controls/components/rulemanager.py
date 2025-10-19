@@ -6,7 +6,7 @@ from include.ui.controls.dialogs.base import AlertDialog
 import flet as ft
 
 if TYPE_CHECKING:
-    from include.ui.controls.rightmenu.explorer import (
+    from include.ui.controls.menus.explorer import (
         DocumentRightMenuDialog,
         DirectoryRightMenuDialog,
     )

@@ -5,7 +5,7 @@ import gettext
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.controls.rightmenu.base import RightMenuDialog
+from include.ui.controls.menus.base import RightMenuDialog
 from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
