@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING
+import gettext
+import json
 
 import flet as ft
-import json, gettext
 
 from include.constants import LOCALE_PATH
 from include.controllers.dialogs.rulemanager import RuleManagerController
 from include.ui.controls.dialogs.base import AlertDialog
+from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.menus.explorer import (
@@ -13,7 +15,6 @@ if TYPE_CHECKING:
         DirectoryRightMenuDialog,
     )
 
-from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
 

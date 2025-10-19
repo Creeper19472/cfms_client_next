@@ -1,18 +1,22 @@
 import asyncio
 import base64
+import hashlib
+import json
+import mmap
+import os
 
 import aiofiles.os
+from Crypto.Cipher import AES
 import flet as ft
-import websockets, json, mmap, hashlib, os
+import websockets
 
+from include.classes.client import LockableClientConnection
 from include.classes.exceptions.transmission import (
     FileHashMismatchError,
     FileSizeMismatchError,
 )
 from include.constants import FLET_APP_STORAGE_TEMP
-from include.classes.client import LockableClientConnection
 from include.util.connect import get_connection
-from Crypto.Cipher import AES
 import shutil
 
 

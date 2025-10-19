@@ -1,8 +1,9 @@
 from typing import Optional, Any
 import os
+import threading
 
 from flet_permission_handler import PermissionHandler
-import threading, yaml
+import yaml
 
 from include.classes.client import LockableClientConnection
 from include.constants import FLET_APP_STORAGE_DATA

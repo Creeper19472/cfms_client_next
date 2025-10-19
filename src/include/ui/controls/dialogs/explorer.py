@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+import asyncio
+import gettext
 
-import asyncio, gettext
 import flet as ft
 
 from include.constants import LOCALE_PATH

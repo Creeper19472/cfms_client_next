@@ -1,5 +1,7 @@
+import gettext
+import json
+
 import flet as ft
-import json, gettext
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH

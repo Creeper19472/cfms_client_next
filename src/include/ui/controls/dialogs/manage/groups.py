@@ -1,18 +1,19 @@
 from typing import TYPE_CHECKING
+import asyncio
+import gettext
 
 import flet as ft
-import gettext, asyncio
 
 from include.classes.config import AppConfig
 from include.constants import LOCALE_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
+from include.util.locale import get_translation
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.controls.views.manage.group import ManageGroupsView
 
-from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
 

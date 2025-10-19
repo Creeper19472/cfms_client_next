@@ -1,6 +1,10 @@
+import asyncio
+import json
+import ssl
+import threading
+import time
+
 import flet as ft
-import json, time, ssl
-import threading, asyncio
 
 from include.classes.client import LockableClientConnection
 from include.ui.util.notifications import send_error

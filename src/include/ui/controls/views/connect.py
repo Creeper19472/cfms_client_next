@@ -1,6 +1,8 @@
+import gettext
+import re
+
 import flet as ft
 import flet_permission_handler as fph
-import gettext, re
 
 from include.classes.config import AppConfig
 from include.constants import DEFAULT_WINDOW_TITLE

@@ -1,13 +1,17 @@
 import asyncio
 import gettext
+import os
 
 from flet_model import Model, Router, route
 import flet as ft
+import requests
 
 from include.constants import APP_VERSION, BUILD_VERSION, LOCALE_PATH
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
+from include.ui.util.notifications import send_error
 from include.ui.util.route import get_parent_route
+from include.util.locale import get_translation
 from include.util.upgrade.updater import (
     SUPPORTED_PLATFORM,
     GithubAsset,
@@ -15,10 +19,6 @@ from include.util.upgrade.updater import (
     is_new_version,
 )
 
-from include.ui.util.notifications import send_error
-import requests, os
-
-from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
 
