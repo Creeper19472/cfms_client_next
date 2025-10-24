@@ -4,7 +4,6 @@ from websockets import ClientProtocol
 from websockets.asyncio.client import ClientConnection
 
 
-
 class LockableClientConnection(ClientConnection):
     def __init__(
         self,
