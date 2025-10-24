@@ -360,11 +360,11 @@ msgstr "目录"
 
 #: .\include\ui\controls\dialogs\rightmenu\explorer.py:49
 msgid "Rename {display_name}"
-msgstr "重命名 {display_name}"
+msgstr "重命名{display_name}"
 
 #: .\include\ui\controls\dialogs\rightmenu\explorer.py:56
 msgid "New {display_name} name"
-msgstr "新 {display_name} 名称"
+msgstr "新{display_name}名称"
 
 #: .\include\ui\controls\dialogs\rightmenu\explorer.py:103
 msgid "{display_name} name cannot be empty"
