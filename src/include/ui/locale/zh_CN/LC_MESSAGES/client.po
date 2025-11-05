@@ -215,12 +215,14 @@ msgid ""
 "Software at this stage may receive intensive updates, but many problems may "
 "also appear and disappear in a short period of time."
 msgstr ""
+"此阶段的软件可能会收到密集更新，但许多问题也可能在短时间内出现和消失。"
 
 #: .\include\ui\controls\components\about.py:33
 msgid ""
 "Any issues encountered should be reported in time, but may take a long time "
 "to get resolved."
 msgstr ""
+"遇到的任何问题都应及时报告，但可能需要很长时间才能解决。"
 
 #: .\include\ui\controls\components\explorer\bar.py:117
 msgid "Sort by:"
@@ -231,9 +233,8 @@ msgid "Name"
 msgstr "名称"
 
 #: .\include\ui\controls\components\explorer\bar.py:121
-#, fuzzy
 msgid "Created at"
-msgstr "创建"
+msgstr "创建时间"
 
 #: .\include\ui\controls\components\explorer\bar.py:122
 msgid "Last Modified"
@@ -276,9 +277,8 @@ msgid "More"
 msgstr "更多"
 
 #: .\include\ui\controls\components\homepage.py:34
-#, fuzzy
 msgid "Manage"
-msgstr "操作用户"
+msgstr "管理"
 
 #: .\include\ui\controls\components\homepage.py:91
 msgid "Welcome to Confidential Document Management System (CFMS)"
@@ -307,6 +307,8 @@ msgid ""
 "For rule format documentation, please refer to [CFMS Server Documentation]"
 "(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
 msgstr ""
+"有关规则格式文档，请参阅 [CFMS 服务器文档]"
+"(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)。"
 
 #: .\include\ui\controls\components\rulemanager.py:60
 #: .\include\ui\controls\dialogs\admin\accounts.py:60
@@ -319,9 +321,8 @@ msgid "Submit"
 msgstr "提交"
 
 #: .\include\ui\controls\components\rulemanager.py:63
-#, fuzzy
 msgid "Rule Manager"
-msgstr "文件管理"
+msgstr "规则管理器"
 
 #: .\include\ui\controls\components\rulemanager.py:72
 msgid "Visualization"
@@ -366,9 +367,8 @@ msgid "Any"
 msgstr "任意"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:70
-#, fuzzy
 msgid "Match Mode"
-msgstr "批量上传"
+msgstr "匹配模式"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:96
 #: .\include\ui\models\manage.py:28
@@ -928,9 +928,8 @@ msgid "Current version: {APP_VERSION}"
 msgstr "当前版本：{APP_VERSION}"
 
 #: .\include\ui\models\about.py:219
-#, fuzzy
 msgid "Latest version: {latest_version}"
-msgstr "最新版本：{latest.version}"
+msgstr "最新版本：{latest_version}"
 
 #: .\include\ui\models\about.py:226
 msgid "Update Notes:"
@@ -958,9 +957,8 @@ msgid "Logs"
 msgstr "日志"
 
 #: .\include\ui\models\manage.py:66
-#, fuzzy
 msgid "Management"
-msgstr "文件管理"
+msgstr "管理"
 
 #: .\include\ui\models\settings\overview.py:33
 msgid "Language"

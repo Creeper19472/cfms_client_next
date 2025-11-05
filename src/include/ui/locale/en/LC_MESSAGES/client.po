@@ -216,12 +216,16 @@ msgid ""
 "Software at this stage may receive intensive updates, but many problems may "
 "also appear and disappear in a short period of time."
 msgstr ""
+"Software at this stage may receive intensive updates, but many problems may "
+"also appear and disappear in a short period of time."
 
 #: .\include\ui\controls\components\about.py:33
 msgid ""
 "Any issues encountered should be reported in time, but may take a long time "
 "to get resolved."
 msgstr ""
+"Any issues encountered should be reported in time, but may take a long time "
+"to get resolved."
 
 #: .\include\ui\controls\components\explorer\bar.py:117
 msgid "Sort by:"
@@ -232,9 +236,8 @@ msgid "Name"
 msgstr "Name"
 
 #: .\include\ui\controls\components\explorer\bar.py:121
-#, fuzzy
 msgid "Created at"
-msgstr "Create"
+msgstr "Created at"
 
 #: .\include\ui\controls\components\explorer\bar.py:122
 msgid "Last Modified"
@@ -277,9 +280,8 @@ msgid "More"
 msgstr "More"
 
 #: .\include\ui\controls\components\homepage.py:34
-#, fuzzy
 msgid "Manage"
-msgstr "Manage Users"
+msgstr "Manage"
 
 #: .\include\ui\controls\components\homepage.py:91
 msgid "Welcome to Confidential Document Management System (CFMS)"
@@ -310,6 +312,8 @@ msgid ""
 "For rule format documentation, please refer to [CFMS Server Documentation]"
 "(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
 msgstr ""
+"For rule format documentation, please refer to [CFMS Server Documentation]"
+"(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
 
 #: .\include\ui\controls\components\rulemanager.py:60
 #: .\include\ui\controls\dialogs\admin\accounts.py:60
@@ -322,9 +326,8 @@ msgid "Submit"
 msgstr "Submit"
 
 #: .\include\ui\controls\components\rulemanager.py:63
-#, fuzzy
 msgid "Rule Manager"
-msgstr "File Management"
+msgstr "Rule Manager"
 
 #: .\include\ui\controls\components\rulemanager.py:72
 msgid "Visualization"
@@ -369,9 +372,8 @@ msgid "Any"
 msgstr "Any"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:70
-#, fuzzy
 msgid "Match Mode"
-msgstr "Batch Upload"
+msgstr "Match Mode"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:96
 #: .\include\ui\models\manage.py:28
@@ -933,9 +935,8 @@ msgid "Current version: {APP_VERSION}"
 msgstr "Current version: {APP_VERSION}"
 
 #: .\include\ui\models\about.py:219
-#, fuzzy
 msgid "Latest version: {latest_version}"
-msgstr "Latest version: {latest.version}"
+msgstr "Latest version: {latest_version}"
 
 #: .\include\ui\models\about.py:226
 msgid "Update Notes:"
@@ -964,9 +965,8 @@ msgid "Logs"
 msgstr "Logs"
 
 #: .\include\ui\models\manage.py:66
-#, fuzzy
 msgid "Management"
-msgstr "File Management"
+msgstr "Management"
 
 #: .\include\ui\models\settings\overview.py:33
 msgid "Language"
