@@ -1,16 +1,19 @@
+"""File transfer utilities for uploading and downloading files to/from the server."""
+
 import asyncio
 import base64
 import hashlib
 import json
 import mmap
 import os
-from typing import Optional
+import shutil
+from typing import AsyncIterator, Optional
 
 import aiofiles.os
 from Crypto.Cipher import AES
-
 from flet import FilePickerFile
 from websockets.asyncio.client import ClientConnection
+
 from include.classes.config import AppConfig
 from include.classes.exceptions.request import InvaildResponseError
 from include.classes.exceptions.transmission import (
@@ -18,21 +21,48 @@ from include.classes.exceptions.transmission import (
     FileSizeMismatchError,
 )
 from include.constants import FLET_APP_STORAGE_TEMP
-import shutil
-
 from include.util.connect import get_connection
 from include.util.requests import do_request_2
 
 
-async def calculate_sha256(file_path):
-    # Use faster hashlib tools and memory-mapped files
+async def calculate_sha256(file_path: str) -> str:
+    """
+    Calculate SHA256 hash of a file using memory-mapped I/O for efficiency.
+    
+    Uses memory-mapped files for faster hash calculation of large files.
+    
+    Args:
+        file_path: Path to the file to hash
+        
+    Returns:
+        Hexadecimal SHA256 hash string
+    """
     with open(file_path, "rb") as f:
         # Use memory-mapped files to map directly to memory
         mmapped_file = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
         return hashlib.sha256(mmapped_file).hexdigest()
 
 
-async def upload_file_to_server(client: ClientConnection, task_id: str, file_path: str):
+async def upload_file_to_server(
+    client: ClientConnection, task_id: str, file_path: str
+) -> AsyncIterator[tuple[int, int]]:
+    """
+    Upload a file to the server over WebSocket connection.
+    
+    Yields progress updates as (current_bytes, total_bytes) tuples.
+    
+    Args:
+        client: Active WebSocket connection
+        task_id: Server task ID for this upload
+        file_path: Local path to the file to upload
+        
+    Yields:
+        Tuples of (bytes_uploaded, total_file_size) for progress tracking
+        
+    Raises:
+        ValueError: If server response is invalid
+        RuntimeError: If upload is rejected by server
+    """
 
     await client.send(
         json.dumps(
@@ -251,7 +281,27 @@ async def batch_upload_file_to_server(
     files: list[FilePickerFile],
     max_size: int = 1024**2 * 4,
     max_retries: int = 3,
-):
+) -> AsyncIterator[tuple[int, str, int, int, Optional[Exception]]]:
+    """
+    Upload multiple files to the server with progress tracking and retry logic.
+    
+    Processes files sequentially, creating a document for each file and uploading
+    its contents. Yields progress information for each file.
+    
+    Args:
+        app_config: Application configuration containing auth and connection info
+        directory_id: Target directory ID on server, or None for root
+        files: List of files to upload
+        max_size: Maximum WebSocket message size in bytes (default: 4MB)
+        max_retries: Maximum retry attempts per file (default: 3)
+        
+    Yields:
+        Tuples of (file_index, filename, bytes_uploaded, total_size, exception)
+        where exception is None on success or an Exception object on error
+        
+    Raises:
+        AssertionError: If file path is None
+    """
     transfer_conn = None
     try:
         for index, file in enumerate(files):  # process tasks sequentially

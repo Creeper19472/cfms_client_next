@@ -1,17 +1,8 @@
 """
-Copyright 2025 Creeper19472
+CFMS Client - Main application entry point.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+This module initializes the Flet application, configures localization,
+and sets up the UI components and page settings.
 """
 
 import os
@@ -21,12 +12,26 @@ import flet as ft
 from include.classes.config import AppConfig
 from include.util.locale import set_translation
 
-# import logging
-# logging.basicConfig(level=logging.DEBUG)
+# Window configuration constants
+DEFAULT_WINDOW_WIDTH = 1024
+DEFAULT_WINDOW_HEIGHT = 768
 
 
 async def main(page: ft.Page):
-
+    """
+    Main application entry point.
+    
+    Initializes the application by:
+    1. Loading user language preferences
+    2. Setting up translation system
+    3. Importing UI models
+    4. Configuring page settings and theme
+    5. Setting up event handlers
+    6. Navigating to the connect screen
+    
+    Args:
+        page: Flet page instance
+    """
     # Load language preference and set environment variable
     try:
         app_config = AppConfig()
@@ -61,33 +66,29 @@ async def main(page: ft.Page):
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
 
-    # Page settings
+    # Configure page settings
     page.title = "CFMS Client"
     page.theme_mode = ft.ThemeMode.DARK
-    page.window.width = 1024
-    page.window.height = 768
+    page.window.width = DEFAULT_WINDOW_WIDTH
+    page.window.height = DEFAULT_WINDOW_HEIGHT
     page.window.resizable = False
     page.padding = 0
     page.spacing = 0
     page.scroll = ft.ScrollMode.AUTO
     page.bgcolor = ft.Colors.TRANSPARENT
 
+    # Configure fonts
     page.fonts = {
         "Source Han Serif SC Regular": "/fonts/SourceHanSerifSC/SourceHanSerifSC-Regular.otf",
-        # "Deng": "/fonts/Deng.ttf",
-        # "Deng Bold": "/fonts/Dengb.ttf",
-        # "Deng Light": "/fonts/Dengl.ttf"
     }
 
+    # Configure theme
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(thickness=0.0),
         snackbar_theme=ft.SnackBarTheme(
             show_close_icon=True,
             behavior=ft.SnackBarBehavior.FLOATING,
         ),
-        # dialog_theme=ft.DialogTheme(title_text_style=ft.TextStyle(size=22, font_family="Deng Bold")),
-        # text_button_theme=ft.TextButtonTheme(text_style=ft.TextStyle(font_family="Deng")),
-        # elevated_button_theme=ft.ElevatedButtonTheme(text_style=ft.TextStyle(font_family="Deng")),
         font_family="Source Han Serif SC Regular",
     )
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -102,23 +103,27 @@ async def main(page: ft.Page):
         )
     )
 
+    # Disable browser context menu in web mode
     if page.web:
         await page.browser_context_menu.disable()
 
     def on_keyboard(e: ft.KeyboardEvent):
+        """
+        Handle keyboard shortcuts.
+        
+        Ctrl+W: Toggle semantics debugger
+        Ctrl+Q: Open developer request dialog
+        """
         if e.key == "W" and e.ctrl:
             page.show_semantics_debugger = not page.show_semantics_debugger
             page.update()
         elif e.key == "Q" and e.ctrl:
             page.show_dialog(DevRequestDialog())
 
-    # def on_state_change(e: ft.AppLifecycleStateChangeEvent):
-    #     if e.data=='detach' and page.platform == ft.PagePlatform.ANDROID:
-    #         os._exit(1)
-
+    # Register event handlers
     page.on_keyboard_event = on_keyboard
-    # page.on_app_lifecycle_state_change = on_state_change
 
+    # Navigate to initial screen
     await page.push_route("/connect")
 
 
