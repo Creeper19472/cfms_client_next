@@ -1,11 +1,9 @@
 from typing import TYPE_CHECKING
 import asyncio
-import gettext
 
 import flet as ft
 
 from include.classes.config import AppConfig
-from include.constants import LOCALE_PATH
 from include.controllers.dialogs.management import (
     AddUserAccountDialogController,
     EditUserGroupDialogController,
@@ -97,7 +95,7 @@ class AddUserAccountDialog(AlertDialog):
 
         self.modal = False
         self.scrollable = True
-        self.title = ft.Text("Create User")
+        self.title = ft.Text(_("Create User"))
 
         self.progress_ring = ft.ProgressRing(visible=False)
 

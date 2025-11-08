@@ -7,7 +7,7 @@ import json
 import mmap
 import os
 import shutil
-from typing import AsyncGenerator, AsyncIterator, Optional
+from typing import AsyncGenerator, Optional
 
 import aiofiles.os
 from Crypto.Cipher import AES
@@ -45,7 +45,7 @@ async def calculate_sha256(file_path: str) -> str:
 
 async def upload_file_to_server(
     client: ClientConnection, task_id: str, file_path: str
-) -> AsyncIterator[tuple[int, int]]:
+) -> AsyncGenerator[tuple[int, int]]:
     """
     Upload a file to the server over WebSocket connection.
     

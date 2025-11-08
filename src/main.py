@@ -6,6 +6,7 @@ and sets up the UI components and page settings.
 """
 
 import os
+import warnings
 
 import flet as ft
 
@@ -20,7 +21,7 @@ DEFAULT_WINDOW_HEIGHT = 768
 async def main(page: ft.Page):
     """
     Main application entry point.
-    
+
     Initializes the application by:
     1. Loading user language preferences
     2. Setting up translation system
@@ -28,7 +29,7 @@ async def main(page: ft.Page):
     4. Configuring page settings and theme
     5. Setting up event handlers
     6. Navigating to the connect screen
-    
+
     Args:
         page: Flet page instance
     """
@@ -38,16 +39,18 @@ async def main(page: ft.Page):
         preferred_language = app_config.preferences.get("settings", {}).get(
             "language", "zh_CN"
         )
-        
+
         # Set environment variable for gettext to use
         os.environ["LANGUAGE"] = preferred_language
-        
-        # Set translation singleton 
+
+        # Set translation singleton
         set_translation(preferred_language)
-        
+
     except Exception as e:
         # If config fails, use default
-        print(f"Warning: Failed to load language preferences: {e}")
+        warnings.warn(
+            f"Warning: Failed to load language preferences: {e}", RuntimeWarning
+        )
         os.environ["LANGUAGE"] = "zh_CN"
 
     # Import UI Components
@@ -110,7 +113,7 @@ async def main(page: ft.Page):
     def on_keyboard(e: ft.KeyboardEvent):
         """
         Handle keyboard shortcuts.
-        
+
         Ctrl+W: Toggle semantics debugger
         Ctrl+Q: Open developer request dialog
         """

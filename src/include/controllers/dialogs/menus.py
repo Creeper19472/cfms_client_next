@@ -37,7 +37,7 @@ class RenameDialogController:
                 self.app_config.username,
                 self.app_config.token,
             )
-        elif self.view.object_type == "DirectoryRightMenuDialog":
+        elif self.view.object_type == "directory":
             response = await do_request(
                 "rename_directory",
                 {

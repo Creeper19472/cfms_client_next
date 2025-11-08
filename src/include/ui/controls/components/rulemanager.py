@@ -15,12 +15,6 @@ from include.ui.controls.components.visualmgr.editor import (
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
 
-if TYPE_CHECKING:
-    from include.ui.controls.menus.explorer import (
-        DocumentRightMenuDialog,
-        DirectoryRightMenuDialog,
-    )
-
 t = get_translation()
 _ = t.gettext
 

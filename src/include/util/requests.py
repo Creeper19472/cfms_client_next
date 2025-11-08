@@ -20,7 +20,7 @@ _conn_locks = weakref.WeakKeyDictionary()
 
 async def do_request(
     action: str,
-    data: dict[str, Any] | None = None,
+    data: dict[str, Any] = {},
     message: str = "",
     username: Optional[str] = None,
     token: Optional[str] = None,
@@ -47,8 +47,6 @@ async def do_request(
         AssertionError: If max_retries < 1
         ConnectionError: If all retry attempts fail
     """
-    if data is None:
-        data = {}
 
     _app_config = AppConfig()
     _conn = _app_config.get_not_none_attribute("conn")
@@ -85,7 +83,7 @@ async def do_request(
 
 async def do_request_2(
     action: str,
-    data: dict[str, Any] | None = None,
+    data: dict[str, Any] = {},
     message: str = "",
     username: Optional[str] = None,
     token: Optional[str] = None,
@@ -147,7 +145,7 @@ def _get_conn_lock(conn: ClientConnection) -> asyncio.Lock:
 async def _request(
     conn: ClientConnection,
     action: str,
-    data: dict[str, Any],
+    data: dict[str, Any] = {},
     message: str = "",
     username: Optional[str] = None,
     token: Optional[str] = None,
