@@ -1,17 +1,8 @@
 """
-Copyright 2025 Creeper19472
+Translation and localization utilities.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+This module provides a delegating translation proxy that allows runtime
+switching of language translations without restarting the application.
 """
 
 import gettext
@@ -19,14 +10,18 @@ import threading
 
 from include.constants import LOCALE_PATH
 
-__all__ = ["create_translation"]
+__all__ = ["create_translation", "set_translation", "get_translation"]
 
 
 class DelegatingTranslation(gettext.NullTranslations):
     """
     Singleton translation proxy that delegates calls to an internal real translation.
-    Subsequent constructions return the same instance. Passing `real` to the
-    constructor will replace the current internal real translation.
+    
+    This class allows for runtime switching of translations by replacing the
+    internal translation object. Subsequent constructions return the same instance.
+    
+    Thread-safe singleton implementation ensures consistent translation behavior
+    across the application.
     """
 
     _instance = None
@@ -40,7 +35,14 @@ class DelegatingTranslation(gettext.NullTranslations):
         return cls._instance
 
     def __init__(self, real=None):
-        # initialize only once; if re-initialized with a new real, update it
+        """
+        Initialize or update the translation proxy.
+        
+        Args:
+            real: Optional translation object to use. If provided on re-initialization,
+                  replaces the current translation.
+        """
+        # Initialize only once; if re-initialized with a new real, update it
         if getattr(self, "_initialized", False):
             if real is not None:
                 self.set_real(real)
@@ -52,45 +54,53 @@ class DelegatingTranslation(gettext.NullTranslations):
         self._initialized = True
 
     def set_real(self, real):
-        """Replace the internal real translation object."""
+        """
+        Replace the internal real translation object.
+        
+        Args:
+            real: New translation object to use
+        """
         with self._lock:
             self._real = real or gettext.NullTranslations()
 
     def get_real(self):
-        """Return the current internal real translation object."""
+        """
+        Return the current internal real translation object.
+        
+        Returns:
+            The current translation object
+        """
         with self._lock:
             return self._real
 
     # Delegate common gettext API methods explicitly
     def gettext(self, message):
+        """Translate message."""
         with self._lock:
             return self._real.gettext(message)
 
     def ngettext(self, msgid1, msgid2, n):
+        """Translate message with plural forms."""
         with self._lock:
             return self._real.ngettext(msgid1, msgid2, n)
 
-    # ugettext / ungettext are legacy aliases in some environments; delegate if present
+    # Legacy aliases for compatibility
     def ugettext(self, message):
+        """Legacy alias for gettext."""
         with self._lock:
             return getattr(self._real, "ugettext", self._real.gettext)(message)
 
     def ungettext(self, singular, plural, n):
+        """Legacy alias for ngettext."""
         with self._lock:
             return getattr(self._real, "ungettext", self._real.ngettext)(
                 singular, plural, n
             )
 
-    # Delegate install so using this proxy is transparent
     def install(self, names=("gettext", "_")):
+        """Install translation functions into builtins."""
         with self._lock:
             return getattr(self._real, "install", lambda *_: None)(names)
-
-    # # Fallback: forward any other attribute access to the real translation object
-    # def __getattr__(self, name):
-    #     # Called only if attribute not found on this proxy instance
-    #     real = self.get_real()
-    #     return getattr(real, name)
 
 
 def create_translation(language: str = "en", fallback: bool = True):
@@ -99,11 +109,12 @@ def create_translation(language: str = "en", fallback: bool = True):
 
     Args:
         language: Language code (e.g., 'en', 'zh_CN'). Defaults to 'en'.
+        fallback: Whether to fallback to NullTranslations if language not found.
+                  Defaults to True.
 
     Returns:
-        A gettext translation instance
+        A gettext translation instance for the specified language.
     """
-
     translation = gettext.translation(
         "client",
         localedir=LOCALE_PATH,
@@ -114,10 +125,27 @@ def create_translation(language: str = "en", fallback: bool = True):
 
 
 def set_translation(language: str = "en", fallback: bool = True):
+    """
+    Set the global translation to a specific language.
+    
+    This updates the singleton DelegatingTranslation instance with a new
+    language translation.
+    
+    Args:
+        language: Language code (e.g., 'en', 'zh_CN'). Defaults to 'en'.
+        fallback: Whether to fallback to NullTranslations if language not found.
+                  Defaults to True.
+    """
     translation = create_translation(language, fallback)
     delegating_translation = DelegatingTranslation()
     delegating_translation.set_real(translation)
 
 
 def get_translation():
+    """
+    Get the singleton translation instance.
+    
+    Returns:
+        The global DelegatingTranslation singleton instance.
+    """
     return DelegatingTranslation()
