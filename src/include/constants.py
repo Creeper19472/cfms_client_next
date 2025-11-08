@@ -1,5 +1,7 @@
-from pathlib import Path
+"""Application-wide constants and configuration values."""
+
 import os
+from pathlib import Path
 
 
 __all__ = [
@@ -9,9 +11,12 @@ __all__ = [
     "APP_VERSION",
     "BUILD_VERSION",
     "PROTOCOL_VERSION",
+    "DEFAULT_WINDOW_TITLE",
+    "GITHUB_REPO",
+    "INTEGRATED_CA_CERT",
 ]
 
-
+# Path Configuration
 CONSTANT_FILE_ABSPATH = os.path.abspath(__file__)
 ROOT_PATH = Path(CONSTANT_FILE_ABSPATH).resolve().parent.parent
 LOCALE_PATH = f"{ROOT_PATH}/include/ui/locale"
@@ -19,16 +24,20 @@ RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
 FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
 FLET_APP_STORAGE_DATA = os.environ.get("FLET_APP_STORAGE_DATA", ".")
 
+# Application Info
 DEFAULT_WINDOW_TITLE = "CFMS Client"
+GITHUB_REPO = "Creeper19472/cfms_client_next"
 
+# Version Information
 CHANNEL = "alpha"
 BUILD_VERSION = "v0.2.29"
 MODIFIED = "20251107"
 APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL} NEXT"
 
+# Protocol
 PROTOCOL_VERSION = 4
-GITHUB_REPO = "Creeper19472/cfms_client_next"
 
+# Integrated CA Certificate for SSL
 INTEGRATED_CA_CERT = """
 -----BEGIN CERTIFICATE-----
 MIICazCCAhCgAwIBAgIUMOJM76aCZ/5MXqL3fxaQbPvYJoMwCgYIKoZIzj0EAwIw

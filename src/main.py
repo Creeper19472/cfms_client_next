@@ -40,8 +40,9 @@ async def main(page: ft.Page):
         # Set translation singleton 
         set_translation(preferred_language)
         
-    except:
+    except Exception as e:
         # If config fails, use default
+        print(f"Warning: Failed to load language preferences: {e}")
         os.environ["LANGUAGE"] = "zh_CN"
 
     # Import UI Components

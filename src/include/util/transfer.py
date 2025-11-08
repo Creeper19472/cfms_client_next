@@ -86,7 +86,7 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
             # need to wait for server confirmation
             server_response = json.loads(await client.recv())
 
-        except:
+        except Exception:
             raise
 
 
@@ -219,7 +219,7 @@ async def receive_file_from_server(
             None, shutil.rmtree, downloading_path
         )
 
-    except:
+    except Exception:
         raise
 
     # Verify file
@@ -240,7 +240,7 @@ async def receive_file_from_server(
 
     try:
         await _action_verify()
-    except:
+    except Exception:
         await aiofiles.os.remove(file_path)
         raise
 
