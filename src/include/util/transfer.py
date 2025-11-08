@@ -7,7 +7,7 @@ import json
 import mmap
 import os
 import shutil
-from typing import AsyncIterator, Optional
+from typing import AsyncGenerator, AsyncIterator, Optional
 
 import aiofiles.os
 from Crypto.Cipher import AES
@@ -281,7 +281,7 @@ async def batch_upload_file_to_server(
     files: list[FilePickerFile],
     max_size: int = 1024**2 * 4,
     max_retries: int = 3,
-) -> AsyncIterator[tuple[int, str, int, int, Optional[Exception]]]:
+) -> AsyncGenerator[tuple[int, str, int, int, Optional[Exception]]]:
     """
     Upload multiple files to the server with progress tracking and retry logic.
     
@@ -313,7 +313,7 @@ async def batch_upload_file_to_server(
                     # check whether transfer_conn exists
                     if not transfer_conn:
                         transfer_conn = await get_connection(
-                            server_address=app_config.server_address,
+                            server_address=app_config.get_not_none_attribute("server_address"),
                             disable_ssl_enforcement=app_config.disable_ssl_enforcement,
                             proxy=app_config.preferences["settings"]["proxy_settings"],
                             max_size=max_size,

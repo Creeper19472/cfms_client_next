@@ -28,10 +28,10 @@ async def do_request(
 ) -> dict[str, Any]:
     """
     Execute a request to the server with automatic retry on connection failure.
-    
+
     Sends a request through the active WebSocket connection. If the connection
     is lost, automatically reconnects and retries the request.
-    
+
     Args:
         action: Action/command name to execute on server
         data: Optional data payload for the request
@@ -39,17 +39,17 @@ async def do_request(
         username: Username for authentication (uses app config if not provided)
         token: Auth token (uses app config if not provided)
         max_retries: Maximum number of retry attempts (must be >= 1)
-        
+
     Returns:
         Dictionary response from the server
-        
+
     Raises:
         AssertionError: If max_retries < 1
         ConnectionError: If all retry attempts fail
     """
     if data is None:
         data = {}
-        
+
     _app_config = AppConfig()
     _conn = _app_config.get_not_none_attribute("conn")
 
@@ -71,7 +71,7 @@ async def do_request(
                 raise
             # Reconnect and retry
             _conn = await get_connection(
-                server_address=_app_config.server_address,
+                server_address=_app_config.get_not_none_attribute("server_address"),
                 disable_ssl_enforcement=_app_config.disable_ssl_enforcement,
                 proxy=_app_config.preferences["settings"]["proxy_settings"],
             )
@@ -93,10 +93,10 @@ async def do_request_2(
 ) -> Response:
     """
     Execute a request to the server and return a Response object.
-    
+
     This is a convenience wrapper around do_request that returns a typed
     Response object instead of a raw dictionary.
-    
+
     Args:
         action: Action/command name to execute on server
         data: Optional data payload for the request
@@ -104,7 +104,7 @@ async def do_request_2(
         username: Username for authentication
         token: Auth token
         max_retries: Maximum number of retry attempts
-        
+
     Returns:
         Response object containing code, message, data, and timestamp
     """
@@ -128,12 +128,12 @@ async def do_request_2(
 def _get_conn_lock(conn: ClientConnection) -> asyncio.Lock:
     """
     Get or create a lock for a specific connection.
-    
+
     Uses weak references to avoid keeping connections alive.
-    
+
     Args:
         conn: WebSocket connection
-        
+
     Returns:
         Lock associated with the connection
     """
@@ -154,10 +154,10 @@ async def _request(
 ) -> dict[str, Any]:
     """
     Internal function to send a request and receive response.
-    
+
     Serializes the request to JSON, sends it through the connection,
     and waits for the response. Uses a lock to ensure thread-safety.
-    
+
     Args:
         conn: Active WebSocket connection
         action: Action name
@@ -165,7 +165,7 @@ async def _request(
         message: Optional message
         username: Username for auth
         token: Auth token
-        
+
     Returns:
         Dictionary response from server
     """
