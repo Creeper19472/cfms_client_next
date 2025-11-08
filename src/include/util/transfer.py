@@ -15,7 +15,7 @@ from flet import FilePickerFile
 from websockets.asyncio.client import ClientConnection
 
 from include.classes.config import AppConfig
-from include.classes.exceptions.request import InvaildResponseError
+from include.classes.exceptions.request import InvalidResponseError
 from include.classes.exceptions.transmission import (
     FileHashMismatchError,
     FileSizeMismatchError,
@@ -332,7 +332,7 @@ async def batch_upload_file_to_server(
                     )
 
                     if response.code != 200:
-                        raise InvaildResponseError(
+                        raise InvalidResponseError(
                             response,
                             f"Failed to create document '{filename}': {response.message}",
                         )
@@ -346,7 +346,7 @@ async def batch_upload_file_to_server(
 
                     break  # break the retry loop if successful
 
-                except InvaildResponseError as exc:
+                except InvalidResponseError as exc:
                     yield index, filename, -1, -1, exc
                     break
 

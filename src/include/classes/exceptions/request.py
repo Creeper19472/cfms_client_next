@@ -45,7 +45,3 @@ class InvalidResponseError(Exception):
 
     def __str__(self) -> str:
         return self.msg
-
-
-# Backward compatibility alias
-InvaildResponseError = InvalidResponseError

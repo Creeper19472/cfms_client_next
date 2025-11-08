@@ -7,7 +7,7 @@ import flet as ft
 from websockets import ConnectionClosed
 
 from include.classes.config import AppConfig
-from include.classes.exceptions.request import InvaildResponseError
+from include.classes.exceptions.request import InvalidResponseError
 from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
@@ -72,7 +72,7 @@ class FileExplorerController:
             except StopAsyncIteration:
                 break
 
-            if isinstance(exc, InvaildResponseError):
+            if isinstance(exc, InvalidResponseError):
                 if (code := exc.response.code) == 403:
                     self.view.send_error(
                         _("Upload failed: No permission to upload files")

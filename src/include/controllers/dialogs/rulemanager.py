@@ -27,7 +27,7 @@ class RuleManagerController:
                 action = "get_directory_access_rules"
                 data = {"directory_id": self.view.object_id}
             case _:
-                raise ValueError(f"Invaild object type '{self.view.object_type}'")
+                raise ValueError(f"Invalid object type '{self.view.object_type}'")
 
         self.view.content_textfield.visible = False
         self.view.lock_edit()
@@ -65,7 +65,7 @@ class RuleManagerController:
                 action = "set_directory_rules"
                 data["directory_id"] = self.view.object_id
             case _:
-                raise ValueError(f"Invaild object type '{self.view.object_type}'")
+                raise ValueError(f"Invalid object type '{self.view.object_type}'")
 
         submit_resp = await do_request(
             action,
