@@ -37,6 +37,7 @@ path = "src"
 
 [tool.flet.flutter.pubspec.dependency_overrides]
 webview_flutter_android = "4.10.1"
+flet = "0.70.0.dev6561"
 
 [tool.flet.android]
 min_sdk_version = 24
