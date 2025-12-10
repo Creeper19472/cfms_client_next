@@ -7,9 +7,9 @@ from include.ui.controls.dialogs.contextmenu.explorer import (
     GetDocumentInfoDialog,
     RenameDialog,
 )
+from include.ui.controls.dialogs.authorize import AuthorizeDialog
 from include.ui.controls.menus.base import RightMenuDialog
 from include.ui.controls.components.rulemanager import RuleManager
-from include.ui.controls.placeholder import to_be_implemented
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_directory
 from include.util.requests import do_request
@@ -59,6 +59,12 @@ class DocumentRightMenuDialog(RightMenuDialog):
                     "title": _("Rename"),
                     "subtitle": _("Rename this file"),
                     "on_click": self.rename_button_click,
+                },
+                {
+                    "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                    "title": _("Authorize"),
+                    "subtitle": _("Grant temporary access to this file"),
+                    "on_click": self.authorize_button_click,
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
@@ -118,6 +124,10 @@ class DocumentRightMenuDialog(RightMenuDialog):
         self.close()
         self.page.show_dialog(RenameDialog("document", self.document_id, self.parent_listview))
 
+    async def authorize_button_click(self, event: ft.Event[ft.ListTile]):
+        self.close()
+        self.page.show_dialog(AuthorizeDialog("document", self.document_id, self.parent_listview))
+
     async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]):
         self.close()
         self.page.show_dialog(RuleManager(self.document_id, "document"))
@@ -157,9 +167,9 @@ class DirectoryRightMenuDialog(RightMenuDialog):
                 },
                 {
                     "icon": ft.Icons.LOCK_PERSON_OUTLINED,
-                    "title": _("Grant Access"),
-                    "subtitle": _("Grant access to other users"),
-                    "on_click": to_be_implemented,  # TODO: Implement grant access dialog
+                    "title": _("Authorize"),
+                    "subtitle": _("Grant temporary access to this directory"),
+                    "on_click": self.authorize_button_click,
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
@@ -218,6 +228,10 @@ class DirectoryRightMenuDialog(RightMenuDialog):
     async def rename_button_click(self, event: ft.Event[ft.ListTile]):
         self.close()
         self.page.show_dialog(RenameDialog("directory", self.directory_id, self.parent_listview))
+
+    async def authorize_button_click(self, event: ft.Event[ft.ListTile]):
+        self.close()
+        self.page.show_dialog(AuthorizeDialog("directory", self.directory_id, self.parent_listview))
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]):
         self.close()

@@ -70,6 +70,11 @@ class FileContextMenu(ContextMenu2):
                     "on_click": self.rename_button_click,
                 },
                 {
+                    "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                    "content": _("Authorize"),
+                    "on_click": self.authorize_button_click,
+                },
+                {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
                     "content": _("Set Permissions"),
                     "on_click": self.set_access_rules_button_click,
@@ -100,6 +105,9 @@ class FileContextMenu(ContextMenu2):
 
     async def rename_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_rename_file)
+
+    async def authorize_button_click(self, event: ft.Event[ft.PopupMenuItem]):
+        self.page.run_task(self.controller.action_authorize)
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_set_access_rules)
@@ -157,8 +165,8 @@ class DirectoryContextMenu(ContextMenu2):
                 },
                 {
                     "icon": ft.Icons.LOCK_PERSON_OUTLINED,
-                    "content": _("Grant Access"),
-                    "on_click": None,
+                    "content": _("Authorize"),
+                    "on_click": self.authorize_button_click,
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
@@ -192,6 +200,9 @@ class DirectoryContextMenu(ContextMenu2):
 
     async def rename_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_rename_directory)
+
+    async def authorize_button_click(self, event: ft.Event[ft.ListTile]):
+        self.page.run_task(self.controller.action_authorize)
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_set_access_rules)
