@@ -1,0 +1,651 @@
+---
+name: CFMS Configuration & Preferences Manager
+description: Expert in application configuration, user preferences, settings management, and state persistence for CFMS Client NEXT.
+---
+
+## Configuration System Overview
+
+CFMS Client NEXT uses a dual-layer configuration system:
+1. **AppConfig**: Singleton managing runtime state and global configuration
+2. **User Preferences**: YAML-based persistent settings storage
+
+## AppConfig Singleton
+
+**Location**: `include/classes/config.py`
+
+The `AppConfig` class is a thread-safe singleton managing all global application state.
+
+### Implementation Pattern
+
+```python
+class AppConfig:
+    _instance = None
+    _instance_lock = threading.Lock()
+    
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            with cls._instance_lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+                    cls._instance._initialized = False
+        return cls._instance
+    
+    def __init__(self):
+        if getattr(self, "_initialized", False):
+            return
+        # Initialize attributes
+        self._initialized = True
+```
+
+**Thread Safety**: Uses double-checked locking pattern to ensure only one instance exists, even in multi-threaded environments.
+
+### AppConfig Attributes
+
+#### Server Configuration
+```python
+server_address: Optional[str]          # WebSocket server URL (e.g., "wss://example.com")
+_server_address_hash: Optional[str]    # Cached SHA256 hash of server address
+server_info: dict[str, Any]            # Server metadata (version, features, etc.)
+disable_ssl_enforcement: bool          # SSL validation bypass (dev only)
+```
+
+**Server Address Hash**:
+```python
+@property
+def server_address_hash(self) -> Optional[str]:
+    """Get hashed server address for cache keys."""
+    if self._server_address_hash is not None:
+        return self._server_address_hash
+    else:
+        if not self.server_address:
+            raise ValueError("Server address is not set")
+        self._server_address_hash = hashlib.sha256(
+            self.server_address.encode("utf-8")
+        ).hexdigest()
+        return self._server_address_hash
+```
+
+Used for:
+- Unique cache directories per server
+- User preference isolation by server
+
+#### Authentication State
+```python
+username: Optional[str]                # Current logged-in user
+token: Optional[str]                   # Authentication token
+token_exp: Optional[float]             # Token expiration (Unix timestamp)
+nickname: Optional[str]                # Display name
+user_permissions: list[str]            # Permission strings
+user_groups: list[str]                 # Group memberships
+```
+
+#### Services and Connections
+```python
+conn: Optional[ClientConnection]       # Active WebSocket connection
+ph_service: Optional[PermissionHandler] # Mobile permissions service
+```
+
+#### User Preferences
+```python
+preferences: dict                      # Loaded from YAML file
+user_perference: Optional[UserPreference]  # Typed preference wrapper (legacy)
+```
+
+### Helper Methods
+
+```python
+def get_not_none_attribute(self, attr_name: str) -> Any:
+    """Get attribute, raising error if None."""
+    value = getattr(self, attr_name, None)
+    if value is None:
+        raise ValueError(f"{attr_name} is not set")
+    return value
+```
+
+Usage:
+```python
+app_config = AppConfig()
+conn = app_config.get_not_none_attribute("conn")  # Raises if conn is None
+```
+
+### Usage Pattern
+
+```python
+# Always use the singleton
+app_config = AppConfig()
+
+# Access shared state
+server_url = app_config.server_address
+user_perms = app_config.user_permissions
+
+# Modify state
+app_config.username = "john_doe"
+app_config.token = "abc123..."
+
+# Check authentication
+if app_config.token and app_config.username:
+    # User is authenticated
+    pass
+```
+
+## User Preferences (YAML)
+
+**Location**: `{FLET_APP_STORAGE_DATA}/preferences.yaml`
+
+Path constant: `include/classes/config.py` - `PREFERENCES_PATH`
+
+### Preferences Structure
+
+```yaml
+settings:
+  language: "zh_CN"  # or "en", "en_US", etc.
+  
+  proxy_settings: null  # or "http://proxy:port" or true (system proxy)
+  
+  connection:
+    default_server: "wss://server.example.com"
+    remember_server: true
+    auto_connect: false
+    
+  safety:
+    verify_ssl: true
+    allow_untrusted_servers: false
+    
+  ui:
+    theme: "dark"  # or "light", "system"
+    font_size: 14
+    animations_enabled: true
+    
+  notifications:
+    enabled: true
+    sound_enabled: false
+    
+  advanced:
+    max_upload_size: 104857600  # 100MB in bytes
+    concurrent_uploads: 3
+    chunk_size: 8192
+```
+
+### Initialization
+
+**Auto-initialization** in `AppConfig.__init__()`:
+```python
+if not os.path.exists(PREFERENCES_PATH):
+    self._init_preferences()
+
+with open(PREFERENCES_PATH, "r", encoding="utf-8") as file:
+    self.preferences = yaml.safe_load(file)
+```
+
+**`_init_preferences()` method**:
+```python
+def _init_preferences(self):
+    """Create default preferences file."""
+    default_prefs = {
+        "settings": {
+            "language": "zh_CN",
+            "proxy_settings": None,
+            # ... other defaults
+        }
+    }
+    
+    os.makedirs(os.path.dirname(PREFERENCES_PATH), exist_ok=True)
+    
+    with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
+        yaml.dump(default_prefs, file, default_flow_style=False)
+```
+
+### Accessing Preferences
+
+```python
+app_config = AppConfig()
+
+# Get language
+language = app_config.preferences.get("settings", {}).get("language", "zh_CN")
+
+# Get proxy settings
+proxy = app_config.preferences["settings"]["proxy_settings"]
+
+# Get nested settings
+auto_connect = app_config.preferences.get("settings", {}).get("connection", {}).get("auto_connect", False)
+```
+
+### Modifying Preferences
+
+```python
+app_config = AppConfig()
+
+# Modify in memory
+app_config.preferences["settings"]["language"] = "en"
+
+# Persist to file
+with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
+    yaml.dump(app_config.preferences, file, default_flow_style=False)
+```
+
+**Helper function** (recommended to create):
+```python
+async def save_preferences():
+    """Save current preferences to file."""
+    app_config = AppConfig()
+    with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
+        yaml.dump(app_config.preferences, file, default_flow_style=False)
+```
+
+## Settings UI
+
+### Settings Views
+
+**Location**: `include/ui/models/settings/`
+
+Settings pages organized by category:
+- `overview.py`: Settings overview/navigation
+- `connection.py`: Connection settings (server URL, proxy, SSL)
+- `language.py`: Language/locale settings
+- `safety.py`: Security settings
+
+Each settings page:
+1. Displays current preference values
+2. Allows user to modify settings
+3. Validates inputs
+4. Saves to preferences file
+5. Applies changes immediately (if applicable)
+
+### Settings Page Pattern
+
+**Model Example** (`overview.py`):
+```python
+@route("settings")
+class SettingsModel(Model):
+    def __init__(self, page: ft.Page, router: Router):
+        super().__init__(page, router)
+        
+        self.appbar = ft.AppBar(title=ft.Text(_("Settings")))
+        
+        # Settings categories
+        self.controls = [
+            ft.ListTile(
+                title=ft.Text(_("Connection")),
+                on_click=lambda e: router.push("/settings/connection")
+            ),
+            ft.ListTile(
+                title=ft.Text(_("Language")),
+                on_click=lambda e: router.push("/settings/language")
+            ),
+            # ... more categories
+        ]
+```
+
+**Individual Setting Page** (`language.py`):
+```python
+@route("settings/language")
+class LanguageSettingsModel(Model):
+    def __init__(self, page: ft.Page, router: Router):
+        super().__init__(page, router)
+        
+        app_config = AppConfig()
+        current_lang = app_config.preferences.get("settings", {}).get("language", "zh_CN")
+        
+        self.language_dropdown = ft.Dropdown(
+            label=_("Language"),
+            value=current_lang,
+            options=[
+                ft.dropdown.Option("zh_CN", _("简体中文")),
+                ft.dropdown.Option("en", _("English")),
+            ],
+            on_change=self.language_changed
+        )
+        
+        self.controls = [self.language_dropdown]
+    
+    async def language_changed(self, e):
+        app_config = AppConfig()
+        new_language = self.language_dropdown.value
+        
+        # Update in memory
+        app_config.preferences["settings"]["language"] = new_language
+        
+        # Save to file
+        await save_preferences()
+        
+        # Apply immediately (requires restart in most cases)
+        show_info(_("Language changed. Please restart the application."))
+```
+
+### Connection Settings
+
+**Key Settings**:
+- Server address
+- SSL verification enable/disable
+- Proxy configuration
+- Auto-connect on startup
+
+**UI Example**:
+```python
+class ConnectionSettingsModel(Model):
+    def __init__(self, page, router):
+        app_config = AppConfig()
+        
+        self.server_field = ft.TextField(
+            label=_("Server Address"),
+            value=app_config.preferences["settings"]["connection"]["default_server"],
+            hint_text="wss://server.example.com"
+        )
+        
+        self.ssl_switch = ft.Switch(
+            label=_("Verify SSL Certificates"),
+            value=app_config.preferences["settings"]["safety"]["verify_ssl"],
+            on_change=self.ssl_changed
+        )
+        
+        self.proxy_field = ft.TextField(
+            label=_("Proxy Server"),
+            value=app_config.preferences["settings"]["proxy_settings"] or "",
+            hint_text="http://proxy:8080 or leave blank"
+        )
+        
+        self.save_button = ft.ElevatedButton(
+            _("Save"),
+            on_click=self.save_settings
+        )
+    
+    async def save_settings(self, e):
+        app_config = AppConfig()
+        
+        # Validate server address
+        server = self.server_field.value
+        if not server.startswith("wss://") and not server.startswith("ws://"):
+            show_error(_("Server address must start with wss:// or ws://"))
+            return
+        
+        # Update preferences
+        app_config.preferences["settings"]["connection"]["default_server"] = server
+        app_config.preferences["settings"]["proxy_settings"] = self.proxy_field.value or None
+        
+        # Save
+        await save_preferences()
+        
+        show_success(_("Settings saved"))
+```
+
+## Application Constants
+
+**Location**: `include/constants.py`
+
+### Path Configuration
+
+```python
+CONSTANT_FILE_ABSPATH = os.path.abspath(__file__)
+ROOT_PATH = Path(CONSTANT_FILE_ABSPATH).resolve().parent.parent
+LOCALE_PATH = f"{ROOT_PATH}/include/ui/locale"
+
+# Environment-based paths
+RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
+FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
+FLET_APP_STORAGE_DATA = os.environ.get("FLET_APP_STORAGE_DATA", ".")
+
+# User data paths
+USER_PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/user_preferences"
+```
+
+**Platform-Specific Paths**:
+- **Desktop**: `FLET_APP_STORAGE_DATA` typically points to user's app data directory
+- **Mobile**: Points to app's private storage directory
+- **Web**: Limited storage (consider localStorage)
+
+### Version Information
+
+```python
+CHANNEL = "alpha"  # or "beta", "stable"
+BUILD_VERSION = "v0.2.36"
+MODIFIED = "20251119"  # YYYYMMDD format
+APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL} NEXT"
+# Result: "0.2.36.20251119_alpha NEXT"
+```
+
+### Protocol Version
+
+```python
+PROTOCOL_VERSION = 4
+```
+
+Used for:
+- Server compatibility checks
+- Protocol negotiation
+- Migration handling
+
+### Application Metadata
+
+```python
+DEFAULT_WINDOW_TITLE = "CFMS Client"
+GITHUB_REPO = "Creeper19472/cfms_client_next"
+```
+
+### Integrated CA Certificate
+
+```python
+INTEGRATED_CA_CERT = """
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+"""
+```
+
+Multi-line string containing PEM-encoded certificates.
+
+## State Persistence Strategies
+
+### Session-Only Data (AppConfig)
+
+**Characteristics**:
+- Stored in memory only
+- Cleared on application exit
+- Not persisted to disk
+
+**Examples**:
+- Authentication tokens
+- Active WebSocket connection
+- Current user permissions
+
+**Why?**: Security - tokens shouldn't be saved to disk
+
+### Persistent Data (Preferences YAML)
+
+**Characteristics**:
+- Stored on disk
+- Survives application restart
+- User-editable (if careful)
+
+**Examples**:
+- Language preference
+- Server address
+- UI preferences
+- Connection settings
+
+**Why?**: User convenience - settings persist across sessions
+
+### Server-Side State
+
+**Characteristics**:
+- Stored on server
+- Synchronized across devices
+- Retrieved after login
+
+**Examples**:
+- User profile
+- File metadata
+- Access permissions
+- Audit logs
+
+**Retrieval**:
+```python
+# After login
+response = await do_request_2(action="get_user_profile")
+app_config.user_data = response.data
+```
+
+## Configuration Best Practices
+
+### 1. Default Values
+
+Always provide defaults:
+```python
+language = app_config.preferences.get("settings", {}).get("language", "zh_CN")
+```
+
+### 2. Validation
+
+Validate settings before applying:
+```python
+def validate_proxy(proxy: str) -> bool:
+    if not proxy:
+        return True  # Empty is valid (no proxy)
+    
+    # Validate URL format
+    import urllib.parse
+    try:
+        result = urllib.parse.urlparse(proxy)
+        return result.scheme in ["http", "https", "socks5"]
+    except:
+        return False
+```
+
+### 3. Migration
+
+Handle preference schema changes:
+```python
+def migrate_preferences(prefs: dict) -> dict:
+    """Migrate old preference format to new."""
+    version = prefs.get("version", 1)
+    
+    if version < 2:
+        # Migrate v1 -> v2
+        if "old_setting" in prefs:
+            prefs["new_setting"] = prefs.pop("old_setting")
+        prefs["version"] = 2
+    
+    return prefs
+```
+
+### 4. Type Safety
+
+Use typed wrappers for complex preferences:
+```python
+from dataclasses import dataclass
+
+@dataclass
+class ConnectionSettings:
+    default_server: str
+    remember_server: bool
+    auto_connect: bool
+    
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            default_server=data.get("default_server", ""),
+            remember_server=data.get("remember_server", True),
+            auto_connect=data.get("auto_connect", False),
+        )
+    
+    def to_dict(self) -> dict:
+        return {
+            "default_server": self.default_server,
+            "remember_server": self.remember_server,
+            "auto_connect": self.auto_connect,
+        }
+```
+
+### 5. Atomic Writes
+
+Ensure file writes are atomic:
+```python
+import tempfile
+import shutil
+
+async def save_preferences_atomic():
+    """Save preferences with atomic write."""
+    app_config = AppConfig()
+    
+    # Write to temp file first
+    temp_fd, temp_path = tempfile.mkstemp(suffix='.yaml')
+    try:
+        with os.fdopen(temp_fd, 'w', encoding='utf-8') as f:
+            yaml.dump(app_config.preferences, f, default_flow_style=False)
+        
+        # Atomic rename
+        shutil.move(temp_path, PREFERENCES_PATH)
+    except:
+        # Clean up temp file on error
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        raise
+```
+
+## Debugging Configuration
+
+### Logging Preferences
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+app_config = AppConfig()
+logger.info(f"Server: {app_config.server_address}")
+logger.info(f"Language: {app_config.preferences.get('settings', {}).get('language')}")
+# Don't log sensitive data like tokens!
+```
+
+### Configuration Dump
+
+For debugging, create a sanitized config dump:
+```python
+def dump_config():
+    """Dump configuration for debugging (sanitized)."""
+    app_config = AppConfig()
+    
+    config_info = {
+        "server_address": app_config.server_address,
+        "username": app_config.username,
+        "has_token": bool(app_config.token),
+        "permissions": app_config.user_permissions,
+        "preferences": {
+            "language": app_config.preferences.get("settings", {}).get("language"),
+            "has_proxy": bool(app_config.preferences.get("settings", {}).get("proxy_settings")),
+            # ... other non-sensitive settings
+        }
+    }
+    
+    return config_info
+```
+
+## Testing Configuration
+
+### Unit Tests
+
+```python
+import unittest
+from include.classes.config import AppConfig
+
+class TestAppConfig(unittest.TestCase):
+    def test_singleton(self):
+        config1 = AppConfig()
+        config2 = AppConfig()
+        self.assertIs(config1, config2)
+    
+    def test_server_hash(self):
+        config = AppConfig()
+        config.server_address = "wss://test.com"
+        hash1 = config.server_address_hash
+        hash2 = config.server_address_hash
+        self.assertEqual(hash1, hash2)  # Cached
+```
+
+### Manual Testing
+
+- [ ] Default preferences created on first run
+- [ ] Settings persist across restarts
+- [ ] Invalid preferences handled gracefully
+- [ ] Language changes apply correctly
+- [ ] Connection settings save and load
+- [ ] AppConfig singleton works in multi-threaded context
