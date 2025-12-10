@@ -306,8 +306,7 @@ class AuthorizeDialog(AlertDialog):
     async def on_start_time_change(self, event: ft.Event[ft.TimePicker]):
         """Handle start time selection."""
         if event.control.value:
-            time_str = event.control.value
-            self.start_time_text.value = time_str
+            self.start_time_text.value = event.control.value
             self.update()
 
     async def on_end_date_change(self, event: ft.Event[ft.DatePicker]):
@@ -319,8 +318,7 @@ class AuthorizeDialog(AlertDialog):
     async def on_end_time_change(self, event: ft.Event[ft.TimePicker]):
         """Handle end time selection."""
         if event.control.value:
-            time_str = event.control.value
-            self.end_time_text.value = time_str
+            self.end_time_text.value = event.control.value
             self.update()
 
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
