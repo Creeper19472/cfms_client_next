@@ -92,6 +92,7 @@ class AuthorizeDialog(AlertDialog):
         self.access_types_row = ft.SegmentedButton(
             selected_icon=ft.Icon(ft.Icons.CHECK_SHARP),
             selected=["read"],
+            allow_empty_selection=False,
             allow_multiple_selection=True,
             segments=[
                 ft.Segment(
@@ -140,7 +141,7 @@ class AuthorizeDialog(AlertDialog):
         )
         self.start_time_text = ft.Text(now.strftime("%H:%M:%S"), size=14)
         self.start_time_picker = ft.TimePicker(
-            now.time(), # fix
+            now.time(),  # fix
             on_change=self.on_start_time_change,
         )
 
@@ -352,14 +353,14 @@ class AuthorizeDialog(AlertDialog):
             self.controller.action_authorize,
             self.entity_dropdown.value,
             cast(Literal["user", "group"], self.entity_type.value),
-            cast(datetime, self.date_range_picker.start_value).timestamp()
-            + self.start_time_picker.value.hour * 3600
-            + self.start_time_picker.value.minute * 60
-            + self.start_time_picker.value.second,
-            cast(datetime, self.date_range_picker.end_value).timestamp()
-            + self.end_time_picker.value.hour * 3600
-            + self.end_time_picker.value.minute * 60
-            + self.end_time_picker.value.second,
+            datetime.combine(
+                cast(datetime, self.date_range_picker.start_value),
+                self.start_time_picker.value,
+            ).timestamp(),
+            datetime.combine(
+                cast(datetime, self.date_range_picker.end_value),
+                self.end_time_picker.value,
+            ).timestamp(),
         )
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
