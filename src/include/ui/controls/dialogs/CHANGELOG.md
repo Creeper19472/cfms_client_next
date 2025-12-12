@@ -9,7 +9,7 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 **Title:** Authorization Dialog Improvements
 
-This version improved the ui logic of the authorization dialog, allowing users  
+This version improved the UI logic of the authorization dialog, allowing users  
 without `list_users` or `list_groups` permissions to specify entity without  
 searching.
 
