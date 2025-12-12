@@ -283,7 +283,7 @@ class VersionBumper:
                     if status_result.stdout.strip():
                         # Check if there are any staged changes (marked with 'M ' or 'A ' at position 0)
                         lines = status_result.stdout.strip().split('\n')
-                        has_staged = any(line[0] in 'MA' for line in lines if len(line) > 1)
+                        has_staged = any(line[0] in 'MA' for line in lines if len(line) >= 2)
                         
                         if has_staged:
                             print("\n⚠ Warning: Some of these files have other staged changes:")
