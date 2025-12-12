@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Literal, cast
 
 import flet as ft
 
+from include.classes.config import AppConfig
 from include.controllers.dialogs.authorize import AuthorizeDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
@@ -34,6 +35,7 @@ class AuthorizeDialog(AlertDialog):
         self.object_type = object_type
         self.object_id = object_id
         self.parent_listview = parent_listview
+        self.app_config = AppConfig()
 
         match self.object_type:
             case "document":
@@ -53,28 +55,35 @@ class AuthorizeDialog(AlertDialog):
         # Progress indicator
         self.progress_ring = ft.ProgressRing(visible=False)
 
+        # Check if user has permissions to list users/groups
+        self.has_list_users = "list_users" in self.app_config.user_permissions
+        self.has_list_groups = "list_groups" in self.app_config.user_permissions
+
         # User/Group search field
+        # If user doesn't have list permissions, this becomes a direct input field
         self.entity_search = ft.TextField(
             label=_("Username or Group Name"),
             hint_text=_("Enter username or group name"),
-            on_submit=self.search_entity,
+            on_submit=self.search_entity if (self.has_list_users or self.has_list_groups) else None,
             expand=True,
         )
 
-        # Search button
+        # Search button (only visible if user has list permissions)
         self.search_button = ft.IconButton(
             icon=ft.Icons.SEARCH,
             tooltip=_("Search"),
             on_click=self.search_entity,
+            visible=False,  # Will be set based on entity type
         )
 
-        # Search results dropdown
+        # Search results dropdown (only visible if user has list permissions)
         self.entity_dropdown = ft.Dropdown(
             label=_("Select Entity"),
             hint_text=_("Search to see available options"),
             expand=True,
             disabled=True,
             width=500,
+            visible=False,  # Will be set based on entity type
         )
 
         # Subject type selector
@@ -88,6 +97,9 @@ class AuthorizeDialog(AlertDialog):
             value="user",
             on_change=self.on_target_type_change,
         )
+
+        # Set initial visibility based on permissions
+        self._update_ui_for_permissions()
 
         # Access type selector
         self.access_types_row = ft.SegmentedButton(
@@ -234,6 +246,26 @@ class AuthorizeDialog(AlertDialog):
 
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
 
+    def _update_ui_for_permissions(self):
+        """Update UI visibility based on user permissions and selected entity type."""
+        current_type = self.entity_type.value
+        
+        # Check if user has permission for current entity type
+        has_permission = (
+            (current_type == "user" and self.has_list_users) or
+            (current_type == "group" and self.has_list_groups)
+        )
+        
+        # Update search button and dropdown visibility
+        self.search_button.visible = has_permission
+        self.entity_dropdown.visible = has_permission
+        
+        # Update hint text based on permission
+        if has_permission:
+            self.entity_search.hint_text = _("Enter username or group name to search")
+        else:
+            self.entity_search.hint_text = _("Enter username or group name")
+
     def did_mount(self):
         """Called when dialog is mounted to the page."""
         super().did_mount()
@@ -292,6 +324,17 @@ class AuthorizeDialog(AlertDialog):
 
     async def search_entity(self, event):
         """Search for users or groups based on the search term."""
+        # Check if user has permission for current entity type
+        current_type = cast(Literal["user", "group"], self.entity_type.value)
+        has_permission = (
+            (current_type == "user" and self.has_list_users) or
+            (current_type == "group" and self.has_list_groups)
+        )
+        
+        if not has_permission:
+            # User doesn't have permission to search, ignore this request
+            return
+        
         if not self.entity_search.value:
             self.entity_search.error = _("Please enter a search term")
             self.update()
@@ -303,7 +346,7 @@ class AuthorizeDialog(AlertDialog):
         self.page.run_task(
             self.controller.action_search_targets,
             self.entity_search.value,
-            cast(Literal["user", "group"], self.entity_type.value),
+            current_type,
         )
 
     async def on_target_type_change(self, event: ft.Event[ft.RadioGroup]):
@@ -312,6 +355,10 @@ class AuthorizeDialog(AlertDialog):
         self.entity_dropdown.options = []
         self.entity_dropdown.value = None
         self.entity_dropdown.disabled = True
+        
+        # Update UI based on permissions for the new type
+        self._update_ui_for_permissions()
+        
         self.update()
 
     async def on_date_range_change(self, event: ft.Event[ft.DateRangePicker]):
@@ -339,10 +386,26 @@ class AuthorizeDialog(AlertDialog):
 
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle submit button click."""
+        # Determine which source to use for entity name
+        current_type = cast(Literal["user", "group"], self.entity_type.value)
+        has_permission = (
+            (current_type == "user" and self.has_list_users) or
+            (current_type == "group" and self.has_list_groups)
+        )
+        
         # Validate target selection
-        if not self.entity_dropdown.value:
-            self.entity_search.error = _("Please select a target")
-            return
+        if has_permission:
+            # When user has permission, they must select from dropdown
+            if not self.entity_dropdown.value:
+                self.entity_search.error = _("Please select a target")
+                return
+            entity_name = self.entity_dropdown.value
+        else:
+            # When user doesn't have permission, they must enter directly in text field
+            if not self.entity_search.value or not self.entity_search.value.strip():
+                self.entity_search.error = _("Please enter a username or group name")
+                return
+            entity_name = self.entity_search.value.strip()
 
         yield self.disable_interactions()
 
@@ -369,8 +432,8 @@ class AuthorizeDialog(AlertDialog):
         # Run authorization in background task
         self.page.run_task(
             self.controller.action_authorize,
-            self.entity_dropdown.value,
-            cast(Literal["user", "group"], self.entity_type.value),
+            entity_name,
+            current_type,
             start_timestamp,
             end_timestamp,
         )
