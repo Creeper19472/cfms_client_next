@@ -3,7 +3,7 @@ name = "cfms-client-next"
 version = "0.2.36"
 description = "The next generation of CFMS client based on Flet framework"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 authors = [
     { name = "Creeper19472", email = "creeper19472@crpteam.club" }
 ]

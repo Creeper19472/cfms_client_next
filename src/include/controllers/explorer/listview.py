@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
 
-class FileListViewController(BaseController):
+class FileListViewController(BaseController["FileListView"]):
     def __init__(
         self,
         control: "FileListView",

@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-import gettext
 
 import flet as ft
 
 from include.classes.config import AppConfig
-from include.constants import LOCALE_PATH
+from include.controllers.base import BaseController
 from include.ui.util.path import get_directory
 from include.util.requests import do_request
 
@@ -20,28 +19,27 @@ t = get_translation()
 _ = t.gettext
 
 
-class RenameDialogController:
-    def __init__(self, view: "RenameDialog"):
-        self.view = view
-        self.app_config = AppConfig()
+class RenameDialogController(BaseController["RenameDialog"]):
+    def __init__(self, control: "RenameDialog"):
+        super().__init__(control)
 
     async def action_rename_object(self, new_title: str):
-        if self.view.object_type == "document":
+        if self.control.object_type == "document":
             response = await do_request(
                 "rename_document",
                 {
-                    "document_id": self.view.object_id,
+                    "document_id": self.control.object_id,
                     "new_title": new_title,
                 },
                 "",
                 self.app_config.username,
                 self.app_config.token,
             )
-        elif self.view.object_type == "directory":
+        elif self.control.object_type == "directory":
             response = await do_request(
                 "rename_directory",
                 {
-                    "folder_id": self.view.object_id,
+                    "folder_id": self.control.object_id,
                     "new_name": new_title,
                 },
                 "",
@@ -52,18 +50,18 @@ class RenameDialogController:
             raise TypeError
 
         if (code := response["code"]) != 200:
-            self.view.send_error(
+            self.control.send_error(
                 _("Rename failed: ({code}) {message}").format(
                     code=code, message=response["message"]
                 )
             )
         else:
             await get_directory(
-                self.view.file_listview.parent_manager.current_directory_id,
-                self.view.file_listview,
+                self.control.file_listview.parent_manager.current_directory_id,
+                self.control.file_listview,
             )
 
-        self.view.close()
+        self.control.close()
 
 
 class GetDirectoryInfoController:

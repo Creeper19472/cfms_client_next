@@ -20,10 +20,9 @@ t = get_translation()
 _ = t.gettext
 
 
-class AddUserAccountDialogController(BaseController):
+class AddUserAccountDialogController(BaseController["AddUserAccountDialog"]):
     def __init__(self, control: "AddUserAccountDialog"):
         super().__init__(control)
-        self.control: AddUserAccountDialog
 
     async def action_add_user_account(
         self,
@@ -52,10 +51,9 @@ class AddUserAccountDialogController(BaseController):
         self.control.close()
 
 
-class RenameUserNicknameDialogController(BaseController):
+class RenameUserNicknameDialogController(BaseController["RenameUserNicknameDialog"]):
     def __init__(self, control: "RenameUserNicknameDialog"):
         super().__init__(control)
-        self.control: RenameUserNicknameDialog
 
     async def action_rename_user_nickname(
         self,
@@ -82,10 +80,9 @@ class RenameUserNicknameDialogController(BaseController):
         self.control.close()
 
 
-class EditUserGroupDialogController(BaseController):
+class EditUserGroupDialogController(BaseController["EditUserGroupDialog"]):
     def __init__(self, control: "EditUserGroupDialog"):
         super().__init__(control)
-        self.control: EditUserGroupDialog
 
     async def submit_user_group_change(self, to_submit_list):
 
@@ -163,10 +160,9 @@ class EditUserGroupDialogController(BaseController):
         self.control.enable_interactions()
 
 
-class ViewUserInfoDialogController(BaseController):
+class ViewUserInfoDialogController(BaseController["ViewUserInfoDialog"]):
     def __init__(self, control: "ViewUserInfoDialog"):
         super().__init__(control)
-        self.control: ViewUserInfoDialog
 
     async def action_refresh_user_info(self):
 

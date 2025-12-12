@@ -13,10 +13,9 @@ t = get_translation()
 _ = t.gettext
 
 
-class PasswdDialogController(BaseController):
+class PasswdDialogController(BaseController["PasswdUserDialog"]):
     def __init__(self, control: "PasswdUserDialog"):
         super().__init__(control)
-        self.control: "PasswdUserDialog"
 
     async def action_passwd_user(self):
         response = await do_request(

@@ -6,8 +6,8 @@ from flet import FilePickerFile
 import flet as ft
 from websockets import ConnectionClosed
 
-from include.classes.config import AppConfig
 from include.classes.exceptions.request import InvalidResponseError
+from include.controllers.base import BaseController
 from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
@@ -28,10 +28,9 @@ t = get_translation()
 _ = t.gettext
 
 
-class FileExplorerController:
-    def __init__(self, view: "FileManagerView"):
-        self.view = view
-        self.app_config = AppConfig()
+class FileExplorerController(BaseController["FileManagerView"]):
+    def __init__(self, control: "FileManagerView"):
+        super().__init__(control)
 
     async def action_upload(self, files: list[FilePickerFile]):
         progress_bar = ft.ProgressBar()
@@ -47,15 +46,15 @@ class FileExplorerController:
 
         batch_dialog = BatchUploadFileAlertDialog(progress_column, stop_event)
         if len(files) > 1:
-            self.view.page.show_dialog(batch_dialog)
+            self.control.page.show_dialog(batch_dialog)
         else:
-            self.view.page.overlay.append(progress_column)
-            self.view.page.update()
+            self.control.page.overlay.append(progress_column)
+            self.control.page.update()
 
         # 使用手动迭代器，这样可以在取下一个元素时捕获异常并 continue
         ait = batch_upload_file_to_server(
             self.app_config,
-            self.view.current_directory_id,
+            self.control.current_directory_id,
             files,
         )
 
@@ -74,14 +73,14 @@ class FileExplorerController:
 
             if isinstance(exc, InvalidResponseError):
                 if (code := exc.response.code) == 403:
-                    self.view.send_error(
+                    self.control.send_error(
                         _("Upload failed: No permission to upload files")
                     )
                 else:
                     errmsg = _("Upload failed: ({code}) {message}").format(
                         code=code, message=exc.response.message
                     )
-                    if progress_column not in self.view.page.overlay:
+                    if progress_column not in self.control.page.overlay:
                         _new_error_text = ft.Text(
                             errmsg,
                             text_align=ft.TextAlign.CENTER,
@@ -89,7 +88,7 @@ class FileExplorerController:
                         )
                         progress_column.controls.append(_new_error_text)
                     else:
-                        self.view.send_error(
+                        self.control.send_error(
                             errmsg,
                         )
                 continue
@@ -122,12 +121,12 @@ class FileExplorerController:
                 batch_dialog.cancel_button.disabled = True
                 batch_dialog.update()
         else:
-            self.view.page.overlay.remove(progress_column)
-            self.view.page.update()
+            self.control.page.overlay.remove(progress_column)
+            self.control.page.update()
 
         await get_directory(
-            id=self.view.current_directory_id,
-            view=self.view.file_listview,
+            id=self.control.current_directory_id,
+            view=self.control.file_listview,
         )
 
     async def action_directory_upload(self, root_path: str):
@@ -135,7 +134,7 @@ class FileExplorerController:
 
         stop_event = asyncio.Event()
         upload_dialog = UploadDirectoryAlertDialog(stop_event)
-        self.view.page.show_dialog(upload_dialog)
+        self.control.page.show_dialog(upload_dialog)
 
         # Temporarily use FTP mode to create directory tree.
         async def create_dirs_from_tree(parent_path, tree, parent_id=None):
@@ -337,13 +336,13 @@ class FileExplorerController:
         upload_dialog.progress_text.value = _("Please wait")
         upload_dialog.progress_text.update()
 
-        await create_dirs_from_tree(root_path, tree, self.view.current_directory_id)
+        await create_dirs_from_tree(root_path, tree, self.control.current_directory_id)
 
         upload_dialog.finish_upload()
 
         await get_directory(
-            id=self.view.current_directory_id,
-            view=self.view.file_listview,
+            id=self.control.current_directory_id,
+            view=self.control.file_listview,
         )
 
         if total_errors := len(upload_dialog.error_column.controls):

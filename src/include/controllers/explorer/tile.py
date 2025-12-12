@@ -23,10 +23,9 @@ t = get_translation()
 _ = t.gettext
 
 
-class FileContextMenuController(BaseController):
+class FileContextMenuController(BaseController["FileContextMenu"]):
     def __init__(self, control: "FileContextMenu") -> None:
         super().__init__(control)
-        self.control: FileContextMenu
 
     async def action_open_file(self):
         await get_document(
@@ -72,10 +71,9 @@ class FileContextMenuController(BaseController):
         self.control.page.show_dialog(GetDocumentInfoDialog(self.control.file_id))
 
 
-class DirectoryContextMenuController(BaseController):
+class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
     def __init__(self, control: "DirectoryContextMenu") -> None:
         super().__init__(control)
-        self.control: DirectoryContextMenu
 
     async def action_open_directory(self):
         self.control.parent_listview.parent_manager.indicator.go(self.control.dir_name)

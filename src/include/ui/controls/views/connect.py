@@ -33,7 +33,6 @@ class ConnectForm(ft.Container):
         self.app_config = AppConfig()
 
         # Form reference definitions
-        self.ph_ref = ft.Ref[fph.PermissionHandler]()
 
         # Form element definitions
         self.remote_address_textfield = ft.TextField(
@@ -82,16 +81,6 @@ class ConnectForm(ft.Container):
             ],
             spacing=15,
         )
-
-    def build(self):
-        # Add PermissionHandler service
-        assert type(self.page) == ft.Page
-        p = fph.PermissionHandler(
-            ref=self.ph_ref  # pyright: ignore[reportArgumentType]
-        )
-        self.page._services.append(p)
-        app_config = AppConfig()
-        app_config.ph_service = p
 
     def did_mount(self):
         super().did_mount()

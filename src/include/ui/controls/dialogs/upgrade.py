@@ -164,7 +164,6 @@ exit
 
         if await _async_request():
             self.open_file_service = OpenFile()
-            self.page._services.append(self.open_file_service)
             await self.open_file_service.open(
                 f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
             )

@@ -18,10 +18,9 @@ t = get_translation()
 _ = t.gettext
 
 
-class UserContextMenuController(BaseController):
+class UserContextMenuController(BaseController["UserContextMenu"]):
     def __init__(self, control: "UserContextMenu") -> None:
         super().__init__(control)
-        self.control: "UserContextMenu"
 
     @wait("delete_user")
     async def action_delete_user(self):

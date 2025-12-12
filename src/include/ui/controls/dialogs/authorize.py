@@ -1,7 +1,7 @@
 """Authorization dialog for granting temporary access to files and directories."""
 
-from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Literal
+from datetime import datetime
+from typing import TYPE_CHECKING, Literal, cast
 
 import flet as ft
 
@@ -53,10 +53,10 @@ class AuthorizeDialog(AlertDialog):
         self.progress_ring = ft.ProgressRing(visible=False)
 
         # User/Group search field
-        self.target_search = ft.TextField(
+        self.entity_search = ft.TextField(
             label=_("Username or Group Name"),
             hint_text=_("Enter username or group name"),
-            on_submit=self.search_target,
+            on_submit=self.search_entity,
             expand=True,
         )
 
@@ -64,19 +64,20 @@ class AuthorizeDialog(AlertDialog):
         self.search_button = ft.IconButton(
             icon=ft.Icons.SEARCH,
             tooltip=_("Search"),
-            on_click=self.search_target,
+            on_click=self.search_entity,
         )
 
         # Search results dropdown
-        self.target_dropdown = ft.Dropdown(
-            label=_("Select Target"),
+        self.entity_dropdown = ft.Dropdown(
+            label=_("Select Entity"),
             hint_text=_("Search to see available options"),
             expand=True,
             disabled=True,
+            width=500,
         )
 
-        # Target type selector
-        self.target_type = ft.RadioGroup(
+        # Subject type selector
+        self.entity_type = ft.RadioGroup(
             content=ft.Row(
                 [
                     ft.Radio(value="user", label=_("User")),
@@ -87,54 +88,79 @@ class AuthorizeDialog(AlertDialog):
             on_change=self.on_target_type_change,
         )
 
-        # Date and time pickers for start time
-        self.start_date_button = ft.ElevatedButton(
-            text=_("Start Date"),
-            icon=ft.Icons.CALENDAR_TODAY,
-            on_click=lambda _: self.page.open(self.start_date_picker),
-        )
-        self.start_date_text = ft.Text(
-            datetime.now().strftime("%Y-%m-%d"), size=14
-        )
-        self.start_date_picker = ft.DatePicker(
-            on_change=self.on_start_date_change,
+        # Access type selector
+        self.access_types_row = ft.SegmentedButton(
+            selected_icon=ft.Icon(ft.Icons.CHECK_SHARP),
+            selected=["read"],
+            allow_multiple_selection=True,
+            segments=[
+                ft.Segment(
+                    value="read",
+                    label=ft.Text(_("Read")),
+                    icon=ft.Icon(ft.Icons.SCREEN_SEARCH_DESKTOP_OUTLINED),
+                ),
+                ft.Segment(
+                    value="write",
+                    label=ft.Text(_("Write")),
+                    icon=ft.Icon(ft.Icons.EDIT_OUTLINED),
+                ),
+                ft.Segment(
+                    value="move",
+                    label=ft.Text(_("Move")),
+                    icon=ft.Icon(ft.Icons.DRIVE_FILE_MOVE_OUTLINED),
+                ),
+                ft.Segment(
+                    value="manage",
+                    label=ft.Text(_("Manage")),
+                    icon=ft.Icon(ft.Icons.MANAGE_HISTORY_ROUNDED),
+                ),
+            ],
         )
 
-        self.start_time_button = ft.ElevatedButton(
-            text=_("Start Time"),
+        now = datetime.now()
+
+        # Date and time pickers for start time
+        self.date_range_button = ft.Button(
+            _("Date Range"),
+            icon=ft.Icons.CALENDAR_TODAY,
+            on_click=lambda _: self.page.show_dialog(self.date_range_picker),
+        )
+        self.start_date_text = ft.Text(now.strftime("%Y-%m-%d"), size=14)
+        self.date_range_picker = ft.DateRangePicker(
+            first_date=now,  # temp fix: see flet-dev:flet issue #5895
+            start_value=now,
+            end_value=now,
+            on_change=self.on_date_range_change,
+        )
+
+        self.start_time_button = ft.Button(
+            _("Start Time"),
             icon=ft.Icons.ACCESS_TIME,
-            on_click=lambda _: self.page.open(self.start_time_picker),
+            on_click=lambda _: self.page.show_dialog(self.start_time_picker),
         )
-        self.start_time_text = ft.Text(
-            datetime.now().strftime("%H:%M"), size=14
-        )
+        self.start_time_text = ft.Text(now.strftime("%H:%M:%S"), size=14)
         self.start_time_picker = ft.TimePicker(
+            now.time(), # fix
             on_change=self.on_start_time_change,
         )
 
         # Date and time pickers for end time
-        self.end_date_button = ft.ElevatedButton(
-            text=_("End Date"),
-            icon=ft.Icons.CALENDAR_TODAY,
-            on_click=lambda _: self.page.open(self.end_date_picker),
-        )
-        end_date = datetime.now() + timedelta(days=7)
-        self.end_date_text = ft.Text(
-            end_date.strftime("%Y-%m-%d"), size=14
-        )
-        self.end_date_picker = ft.DatePicker(
-            on_change=self.on_end_date_change,
+        self.end_date_text = ft.Text(now.strftime("%Y-%m-%d"), size=14)
+        self.end_date_text.visible = not (
+            self.end_date_text.value == self.start_date_text.value
         )
 
-        self.end_time_button = ft.ElevatedButton(
-            text=_("End Time"),
+        self.end_time_button = ft.Button(
+            _("End Time"),
             icon=ft.Icons.ACCESS_TIME,
-            on_click=lambda _: self.page.open(self.end_time_picker),
+            on_click=lambda _: self.page.show_dialog(self.end_time_picker),
         )
         self.end_time_text = ft.Text(
-            end_date.strftime("%H:%M"), size=14
+            now.strftime("%H:%M:%S"),
+            size=14,
         )
         self.end_time_picker = ft.TimePicker(
+            now.time(),
             on_change=self.on_end_time_change,
         )
 
@@ -152,12 +178,13 @@ class AuthorizeDialog(AlertDialog):
             controls=[
                 # Target selection section
                 ft.Text(_("Select Target"), weight=ft.FontWeight.BOLD),
-                self.target_type,
+                self.entity_type,
                 ft.Row(
-                    [self.target_search, self.search_button],
+                    [self.entity_search, self.search_button],
                     spacing=5,
                 ),
-                self.target_dropdown,
+                self.entity_dropdown,
+                self.access_types_row,
                 ft.Divider(),
                 # Time range section
                 ft.Text(_("Authorization Period"), weight=ft.FontWeight.BOLD),
@@ -165,31 +192,9 @@ class AuthorizeDialog(AlertDialog):
                     [
                         ft.Column(
                             [
-                                ft.Text(_("Start:"), size=12),
-                                self.start_date_button,
+                                ft.Text(_("Date Range:"), size=12),
+                                self.date_range_button,
                                 self.start_date_text,
-                            ],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            spacing=5,
-                        ),
-                        ft.Column(
-                            [
-                                ft.Text(_("Time:"), size=12),
-                                self.start_time_button,
-                                self.start_time_text,
-                            ],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            spacing=5,
-                        ),
-                    ],
-                    spacing=20,
-                ),
-                ft.Row(
-                    [
-                        ft.Column(
-                            [
-                                ft.Text(_("End:"), size=12),
-                                self.end_date_button,
                                 self.end_date_text,
                             ],
                             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -197,7 +202,16 @@ class AuthorizeDialog(AlertDialog):
                         ),
                         ft.Column(
                             [
-                                ft.Text(_("Time:"), size=12),
+                                ft.Text(_("Start Time:"), size=12),
+                                self.start_time_button,
+                                self.start_time_text,
+                            ],
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                            spacing=5,
+                        ),
+                        ft.Column(
+                            [
+                                ft.Text(_("End Time:"), size=12),
                                 self.end_time_button,
                                 self.end_time_text,
                             ],
@@ -206,6 +220,7 @@ class AuthorizeDialog(AlertDialog):
                         ),
                     ],
                     spacing=20,
+                    alignment=ft.MainAxisAlignment.CENTER,
                 ),
             ],
             width=500,
@@ -219,21 +234,21 @@ class AuthorizeDialog(AlertDialog):
         """Called when dialog is mounted to the page."""
         super().did_mount()
         # Add date/time pickers to page overlays
-        self.page.overlay.extend([
-            self.start_date_picker,
-            self.start_time_picker,
-            self.end_date_picker,
-            self.end_time_picker,
-        ])
+        self.page.overlay.extend(
+            [
+                self.date_range_picker,
+                self.start_time_picker,
+                self.end_time_picker,
+            ]
+        )
         self.page.update()
 
     def will_unmount(self):
         """Called when dialog is about to be unmounted."""
         # Remove date/time pickers from page overlays
         for picker in [
-            self.start_date_picker,
+            self.date_range_picker,
             self.start_time_picker,
-            self.end_date_picker,
             self.end_time_picker,
         ]:
             if picker in self.page.overlay:
@@ -241,31 +256,29 @@ class AuthorizeDialog(AlertDialog):
 
     def disable_interactions(self):
         """Disable all interactive elements during processing."""
-        self.target_search.disabled = True
+        self.entity_search.disabled = True
         self.search_button.disabled = True
-        self.target_dropdown.disabled = True
-        self.target_type.disabled = True
-        self.start_date_button.disabled = True
+        self.entity_dropdown.disabled = True
+        self.entity_type.disabled = True
+        self.date_range_button.disabled = True
         self.start_time_button.disabled = True
-        self.end_date_button.disabled = True
         self.end_time_button.disabled = True
         self.cancel_button.disabled = True
         self.submit_button.visible = False
         self.progress_ring.visible = True
-        self.target_search.error = None
+        self.entity_search.error = None
         self.modal = True
         self.update()
 
     def enable_interactions(self):
         """Re-enable all interactive elements after processing."""
-        self.target_search.disabled = False
+        self.entity_search.disabled = False
         self.search_button.disabled = False
-        if self.target_dropdown.options:
-            self.target_dropdown.disabled = False
-        self.target_type.disabled = False
-        self.start_date_button.disabled = False
+        if self.entity_dropdown.options:
+            self.entity_dropdown.disabled = False
+        self.entity_type.disabled = False
+        self.date_range_button.disabled = False
         self.start_time_button.disabled = False
-        self.end_date_button.disabled = False
         self.end_time_button.disabled = False
         self.cancel_button.disabled = False
         self.submit_button.visible = True
@@ -273,10 +286,10 @@ class AuthorizeDialog(AlertDialog):
         self.modal = False
         self.update()
 
-    async def search_target(self, event):
+    async def search_entity(self, event):
         """Search for users or groups based on the search term."""
-        if not self.target_search.value:
-            self.target_search.error = _("Please enter a search term")
+        if not self.entity_search.value:
+            self.entity_search.error = _("Please enter a search term")
             self.update()
             return
 
@@ -285,63 +298,68 @@ class AuthorizeDialog(AlertDialog):
         # Run the search in a background task
         self.page.run_task(
             self.controller.action_search_targets,
-            self.target_search.value,
-            self.target_type.value,
+            self.entity_search.value,
+            cast(Literal["user", "group"], self.entity_type.value),
         )
 
     async def on_target_type_change(self, event: ft.Event[ft.RadioGroup]):
         """Handle target type change."""
         # Clear previous search results
-        self.target_dropdown.options = []
-        self.target_dropdown.value = None
-        self.target_dropdown.disabled = True
+        self.entity_dropdown.options = []
+        self.entity_dropdown.value = None
+        self.entity_dropdown.disabled = True
         self.update()
 
-    async def on_start_date_change(self, event: ft.Event[ft.DatePicker]):
-        """Handle start date selection."""
-        if event.control.value:
-            self.start_date_text.value = event.control.value.strftime("%Y-%m-%d")
-            self.update()
+    async def on_date_range_change(self, event: ft.Event[ft.DateRangePicker]):
+        """Handle date selection."""
+
+        self.start_date_text.value = cast(
+            ft.DateTimeValue, self.date_range_picker.start_value
+        ).strftime("%Y-%m-%d")
+        self.end_date_text.value = cast(
+            ft.DateTimeValue, self.date_range_picker.end_value
+        ).strftime("%Y-%m-%d")
+        self.end_date_text.visible = not (
+            self.end_date_text.value == self.start_date_text.value
+        )
 
     async def on_start_time_change(self, event: ft.Event[ft.TimePicker]):
         """Handle start time selection."""
         if event.control.value:
-            self.start_time_text.value = event.control.value
-            self.update()
-
-    async def on_end_date_change(self, event: ft.Event[ft.DatePicker]):
-        """Handle end date selection."""
-        if event.control.value:
-            self.end_date_text.value = event.control.value.strftime("%Y-%m-%d")
-            self.update()
+            self.start_time_text.value = event.control.value.strftime("%H:%M:%S")
 
     async def on_end_time_change(self, event: ft.Event[ft.TimePicker]):
         """Handle end time selection."""
         if event.control.value:
-            self.end_time_text.value = event.control.value
-            self.update()
+            self.end_time_text.value = event.control.value.strftime("%H:%M:%S")
 
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle submit button click."""
         # Validate target selection
-        if not self.target_dropdown.value:
-            self.target_search.error = _("Please select a target")
-            self.update()
+        if not self.entity_dropdown.value:
+            self.entity_search.error = _("Please select a target")
             return
 
         yield self.disable_interactions()
 
-        # Construct datetime strings
-        start_datetime = f"{self.start_date_text.value} {self.start_time_text.value}"
-        end_datetime = f"{self.end_date_text.value} {self.end_time_text.value}"
+        assert self.date_range_picker.start_value is not None
+        assert self.start_time_picker.value is not None
+        assert self.date_range_picker.end_value is not None
+        assert self.end_time_picker.value is not None
 
         # Run authorization in background task
         self.page.run_task(
             self.controller.action_authorize,
-            self.target_dropdown.value,
-            self.target_type.value,
-            start_datetime,
-            end_datetime,
+            self.entity_dropdown.value,
+            cast(Literal["user", "group"], self.entity_type.value),
+            cast(datetime, self.date_range_picker.start_value).timestamp()
+            + self.start_time_picker.value.hour * 3600
+            + self.start_time_picker.value.minute * 60
+            + self.start_time_picker.value.second,
+            cast(datetime, self.date_range_picker.end_value).timestamp()
+            + self.end_time_picker.value.hour * 3600
+            + self.end_time_picker.value.minute * 60
+            + self.end_time_picker.value.second,
         )
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):

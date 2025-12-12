@@ -9,6 +9,7 @@ import os
 import warnings
 
 import flet as ft
+import flet_permission_handler as fph
 
 from include.classes.config import AppConfig
 from include.util.locale import set_translation
@@ -35,8 +36,7 @@ async def main(page: ft.Page):
     """
     # Load language preference and set environment variable
     try:
-        app_config = AppConfig()
-        preferred_language = app_config.preferences.get("settings", {}).get(
+        preferred_language = AppConfig().preferences.get("settings", {}).get(
             "language", "zh_CN"
         )
 
@@ -125,6 +125,12 @@ async def main(page: ft.Page):
 
     # Register event handlers
     page.on_keyboard_event = on_keyboard
+
+    # Register services
+    ph_service = fph.PermissionHandler()
+    page.services.append(ph_service)
+
+    AppConfig().ph_service = ph_service
 
     # Navigate to initial screen
     await page.push_route("/connect")

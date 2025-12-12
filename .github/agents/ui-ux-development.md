@@ -366,7 +366,6 @@ if page.web:
 ### File Pickers
 ```python
 file_picker = ft.FilePicker()
-page._services.append(file_picker)  # Register as service
 
 # Use file picker
 result = await file_picker.pick_files(allow_multiple=True)

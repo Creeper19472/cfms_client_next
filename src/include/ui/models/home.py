@@ -33,7 +33,6 @@ class HomeModel(Model):
 
     def post_init(self) -> None:
         self.file_picker = ft.FilePicker()
-        self.page._services.append(self.file_picker)
 
         async def _popups_check():
             # check welcome
@@ -42,7 +41,7 @@ class HomeModel(Model):
             #     await self.page.shared_preferences.set("welcome_shown", True)
 
             # check whatsnew
-            if await self.page.shared_preferences.get("whatsnew") != changelogs[0].version:
+            if await ft.SharedPreferences().get("whatsnew") != changelogs[0].version:
                 self.page.show_dialog(WhatsNewDialog())
 
         self.page.run_task(_popups_check)

@@ -1,0 +1,5 @@
+settings:
+  custom_proxy: ''
+  enable_conn_history_logging: false
+  language: zh_CN
+  proxy_settings: null

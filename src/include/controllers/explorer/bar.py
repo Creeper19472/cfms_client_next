@@ -8,13 +8,12 @@ if TYPE_CHECKING:
     from include.ui.controls.components.explorer.bar import FileSortBar
 
 
-class FileSortBarController(BaseController):
+class FileSortBarController(BaseController["FileSortBar"]):
     def __init__(
         self,
         control: "FileSortBar",
     ):
         super().__init__(control)
-        self.control: "FileSortBar"
 
         self.sort_mode_mapping = {
             "name": SortMode.BY_NAME,

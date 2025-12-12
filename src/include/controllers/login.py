@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from include.classes.config import AppConfig
+from include.controllers.base import BaseController
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
 from include.util.requests import do_request
 from include.util.user import load_user_preference
@@ -14,18 +14,17 @@ t = get_translation()
 _ = t.gettext
 
 
-class LoginFormController:
-    def __init__(self, view: "LoginForm"):
-        self.view = view
-        self.app_config = AppConfig()
+class LoginFormController(BaseController["LoginForm"]):
+    def __init__(self, control: "LoginForm"):
+        super().__init__(control)
 
     async def action_login(self):
         await self._action_login()
-        self.view.enable_interactions()
+        self.control.enable_interactions()
 
     async def _action_login(self):
-        username = self.view.username_field.value.strip()
-        password = self.view.password_field.value
+        username = self.control.username_field.value.strip()
+        password = self.control.password_field.value
 
         response = await do_request(
             "login",
@@ -44,12 +43,12 @@ class LoginFormController:
             self.app_config.user_groups = response["data"]["groups"]
             self.app_config.user_perference = load_user_preference(username)
 
-            self.view.clear_fields()
+            self.control.clear_fields()
 
-            await self.view.page.push_route("/home")
+            await self.control.page.push_route("/home")
 
         elif code == 403:
-            self.view.page.show_dialog(
+            self.control.page.show_dialog(
                 PasswdUserDialog(
                     username, tip=_("Password must be changed before login.")
                 )
@@ -57,7 +56,7 @@ class LoginFormController:
             return
 
         else:
-            self.view.send_error(
+            self.control.send_error(
                 _("Login failed: ({code}) {message}").format(
                     code=code, message=response["message"]
                 )

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any
 import json
 
 from include.classes.config import AppConfig
+from include.controllers.base import BaseController
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -13,24 +14,23 @@ t = get_translation()
 _ = t.gettext
 
 
-class RuleManagerController:
-    def __init__(self, view: "RuleManager"):
-        self.view = view
-        self.app_config = AppConfig()
+class RuleManagerController(BaseController["RuleManager"]):
+    def __init__(self, control: "RuleManager"):
+        super().__init__(control)
 
     async def fetch_rule(self):
-        match self.view.object_type:
+        match self.control.object_type:
             case "document":
                 action = "get_document_access_rules"
-                data = {"document_id": self.view.object_id}
+                data = {"document_id": self.control.object_id}
             case "directory":
                 action = "get_directory_access_rules"
-                data = {"directory_id": self.view.object_id}
+                data = {"directory_id": self.control.object_id}
             case _:
-                raise ValueError(f"Invalid object type '{self.view.object_type}'")
+                raise ValueError(f"Invalid object type '{self.control.object_type}'")
 
-        self.view.content_textfield.visible = False
-        self.view.lock_edit()
+        self.control.content_textfield.visible = False
+        self.control.lock_edit()
 
         info_resp = await do_request(
             action,
@@ -39,33 +39,33 @@ class RuleManagerController:
             token=self.app_config.token,
         )
         if info_resp["code"] != 200:
-            self.view.content_textfield.value = (
+            self.control.content_textfield.value = (
                 f"Failed to fetch current rules: {info_resp['message']}"
             )
         else:
-            self.view.cached_access_rules = info_resp["data"]
-            self.view.content_textfield.value = json.dumps(
-                self.view.cached_access_rules, indent=4
+            self.control.cached_access_rules = info_resp["data"]
+            self.control.content_textfield.value = json.dumps(
+                self.control.cached_access_rules, indent=4
             )
-            self.view.unlock_edit()
+            self.control.unlock_edit()
 
-        self.view.content_textfield.visible = True
-        self.view.update()
+        self.control.content_textfield.visible = True
+        self.control.update()
 
-        self.view.visual_editor.set_rule_data(self.view.cached_access_rules)
-        await self.view.visual_editor.current_edit_section.load_rules()
+        self.control.visual_editor.set_rule_data(self.control.cached_access_rules)
+        await self.control.visual_editor.current_edit_section.load_rules()
 
     async def action_submit_rule(self, data: dict[str, Any]):
-        match self.view.object_type:
+        match self.control.object_type:
             case "document":
                 action = "set_document_rules"
-                data["document_id"] = self.view.object_id
+                data["document_id"] = self.control.object_id
 
             case "directory":
                 action = "set_directory_rules"
-                data["directory_id"] = self.view.object_id
+                data["directory_id"] = self.control.object_id
             case _:
-                raise ValueError(f"Invalid object type '{self.view.object_type}'")
+                raise ValueError(f"Invalid object type '{self.control.object_type}'")
 
         submit_resp = await do_request(
             action,
@@ -75,13 +75,13 @@ class RuleManagerController:
         )
 
         if submit_resp["code"] != 200:
-            self.view.send_error(
+            self.control.send_error(
                 _("Modification failed: {message}").format(
                     message=submit_resp["message"]
                 )
             )
 
-        self.view.close()
+        self.control.close()
 
 
 class VisualRuleEditorController:

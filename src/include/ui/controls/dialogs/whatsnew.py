@@ -352,7 +352,7 @@ class WhatsNewDialog(AlertDialog):
         super().did_mount()
         assert type(self.page) == ft.Page
         self.page.run_task(
-            self.page.shared_preferences.set, "whatsnew", self.newest_changelog.version
+            ft.SharedPreferences().set, "whatsnew", self.newest_changelog.version
         )
 
 

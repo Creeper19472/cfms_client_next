@@ -17,12 +17,11 @@ t = get_translation()
 _ = t.gettext
 
 
-class AuthorizeDialogController(BaseController):
+class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
     """Controller for handling authorization dialog actions."""
 
     def __init__(self, control: "AuthorizeDialog") -> None:
         super().__init__(control)
-        self.control: AuthorizeDialog
 
     async def action_search_targets(
         self, search_term: str, target_type: Literal["user", "group"]
@@ -37,7 +36,7 @@ class AuthorizeDialogController(BaseController):
                     username=self.app_config.username,
                     token=self.app_config.token,
                 )
-                
+
                 if response.code != 200:
                     send_error(
                         self.control.page,
@@ -58,7 +57,7 @@ class AuthorizeDialogController(BaseController):
                 ]
 
                 # Update dropdown with results
-                self.control.target_dropdown.options = [
+                self.control.entity_dropdown.options = [
                     ft.dropdown.Option(
                         key=user["username"],
                         text=f"{user['username']} ({user.get('nickname', '')})",
@@ -90,23 +89,23 @@ class AuthorizeDialogController(BaseController):
                 filtered = [
                     group
                     for group in groups_data
-                    if search_term.lower() in group.get("group_name", "").lower()
+                    if search_term.lower() in group.get("name", "").lower()
                 ]
 
                 # Update dropdown with results
-                self.control.target_dropdown.options = [
+                self.control.entity_dropdown.options = [
                     ft.dropdown.Option(
-                        key=group["group_name"],
-                        text=group["group_name"],
+                        key=group["name"],
+                        text=f"{group['name']} ({group.get('display_name') or group['name']})",
                     )
                     for group in filtered
                 ]
 
-            if not self.control.target_dropdown.options:
-                self.control.target_search.error = _("No results found")
+            if not self.control.entity_dropdown.options:
+                self.control.entity_search.error = _("No results found")
             else:
-                self.control.target_search.error = None
-                self.control.target_dropdown.disabled = False
+                self.control.entity_search.error = None
+                self.control.entity_dropdown.disabled = False
 
         except Exception as e:
             send_error(
@@ -118,32 +117,27 @@ class AuthorizeDialogController(BaseController):
 
     async def action_authorize(
         self,
-        target_name: str,
-        target_type: Literal["user", "group"],
-        start_datetime: str,
-        end_datetime: str,
+        entity_name: str,
+        entity_type: Literal["user", "group"],
+        start_time: int|float,
+        end_time: int|float,
     ):
         """Grant authorization to the specified target."""
         try:
             # Prepare data for the request
             data = {
-                "target_name": target_name,
-                "target_type": target_type,
-                "start_time": start_datetime,
-                "end_time": end_datetime,
+                "entity_identifier": entity_name,
+                "entity_type": entity_type,
+                "target_type": self.control.object_type,
+                "target_identifier": self.control.object_id,
+                "access_types": self.control.access_types_row.selected,
+                "start_time": start_time,
+                "end_time": end_time,
             }
-
-            # Add object-specific data
-            if self.control.object_type == "document":
-                data["document_id"] = self.control.object_id
-                action = "grant_document_access"
-            else:  # directory
-                data["folder_id"] = self.control.object_id
-                action = "grant_directory_access"
 
             # Make the request
             response = await do_request_2(
-                action,
+                "grant_access",
                 data,
                 username=self.app_config.username,
                 token=self.app_config.token,
@@ -163,7 +157,7 @@ class AuthorizeDialogController(BaseController):
             send_success(
                 self.control.page,
                 _("Access authorized successfully for {target}").format(
-                    target=target_name
+                    target=entity_name
                 ),
             )
 
