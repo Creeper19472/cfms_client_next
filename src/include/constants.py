@@ -31,8 +31,8 @@ GITHUB_REPO = "Creeper19472/cfms_client_next"
 
 # Version Information
 CHANNEL = "alpha"
-BUILD_VERSION = "v0.2.36"
-MODIFIED = "20251119"
+BUILD_VERSION = "v0.2.37"
+MODIFIED = "20251212"
 APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL} NEXT"
 
 # Protocol

@@ -4,6 +4,15 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
 
+## v0.2.37
+**Released on:** 2025-12-12
+
+**Title:** Authorize Dialogs & Improved CHANGELOG Parsing
+
+This version adds a dialog box for granting permissions to specific entities and makes adjustments to the storage and parsing of changelogs.
+
+---
+
 ## v0.2.36
 **Released on:** 2025-11-19
 
