@@ -68,8 +68,8 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
     entries = []
     
     # Split by version sections (## v...)
-    # Pattern matches: ## v0.2.36
-    version_pattern = r'^## (v[\d.]+)$'
+    # Pattern matches versions like: v0.2.36, v1.0.0, v1.0.0-beta, 0.2.36
+    version_pattern = r'^## (v?[\d.]+(?:-[\w.]+)?)$'
     
     # Split content into sections
     lines = content.split('\n')
@@ -87,6 +87,16 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
         if version_match:
             # Save previous entry if exists
             if current_version is not None:
+                # Validate that all required fields are present
+                if current_title is None:
+                    raise ValueError(
+                        f"Missing title for version {current_version} in {changelog_path}"
+                    )
+                if current_date is None:
+                    raise ValueError(
+                        f"Missing date for version {current_version} in {changelog_path}"
+                    )
+                
                 entry_content = '\n'.join(current_content_lines).strip()
                 entries.append(
                     ChangelogEntry(
@@ -110,7 +120,13 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
                 if next_line.startswith('**Released on:**'):
                     # Extract date from format: **Released on:** 2025-11-19
                     date_str = next_line.replace('**Released on:**', '').strip()
-                    current_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                    try:
+                        current_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                    except ValueError as e:
+                        raise ValueError(
+                            f"Invalid date format '{date_str}' for version {current_version} in {changelog_path}. "
+                            f"Expected format: YYYY-MM-DD"
+                        ) from e
                     i += 1
                     break
                 elif next_line:
@@ -160,6 +176,16 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
     
     # Don't forget the last entry
     if current_version is not None:
+        # Validate that all required fields are present for the last entry
+        if current_title is None:
+            raise ValueError(
+                f"Missing title for version {current_version} in {changelog_path}"
+            )
+        if current_date is None:
+            raise ValueError(
+                f"Missing date for version {current_version} in {changelog_path}"
+            )
+        
         entry_content = '\n'.join(current_content_lines).strip()
         entries.append(
             ChangelogEntry(

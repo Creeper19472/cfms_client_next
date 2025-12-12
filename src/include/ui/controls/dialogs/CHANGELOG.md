@@ -9,7 +9,7 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 **Title:** Add to Favourites Button for Documents & Directories
 
-This version adds an 'Add to Favourites' button for documents and directories. A variety of bug fixes and performance improvements have also be implemented.
+This version adds an 'Add to Favourites' button for documents and directories. A variety of bug fixes and performance improvements have also been implemented.
 
 ---
 
@@ -230,9 +230,9 @@ Starting from this version, the functionality of the management interface will b
 ## v0.2.2
 **Released on:** 2025-10-04
 
-**Title:** Introducing Whats'new Dialog
+**Title:** Introducing What's New Dialog
 
-From now on, a Whats'new dialog will be displayed when the app is upgraded from older versions or newly installed.
+From now on, a What's New dialog will be displayed when the app is upgraded from older versions or newly installed.
 
 ---
 
