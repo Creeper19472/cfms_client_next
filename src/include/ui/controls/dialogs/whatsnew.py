@@ -1,5 +1,6 @@
 import flet as ft
 
+from include.classes.changelog import ChangelogEntry
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.changelog_parser import get_changelogs_from_file
 from include.util.locale import get_translation

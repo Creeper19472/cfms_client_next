@@ -1,4 +1,43 @@
-"""Changelog parser for reading CHANGELOG.md files."""
+"""
+Changelog parser for reading CHANGELOG.md files.
+
+This module provides functionality to parse markdown-formatted changelog files
+and convert them into ChangelogEntry instances for use in the application.
+
+Expected CHANGELOG.md Format:
+----------------------------
+# CFMS Client NEXT - Changelog
+
+## v0.2.36
+**Released on:** 2025-11-19
+
+**Title:** Add to Favourites Button for Documents & Directories
+
+This version adds an 'Add to Favourites' button for documents and directories.
+A variety of bug fixes and performance improvements have also be implemented.
+
+---
+
+## v0.2.33
+**Released on:** 2025-11-12
+
+**Title:** User Management Context Menu Rewrite
+
+Content describing the changes...
+
+---
+
+Usage:
+------
+    from include.util.changelog_parser import get_changelogs_from_file
+    
+    # Get all changelog entries
+    changelogs = get_changelogs_from_file()
+    
+    # Access the latest entry
+    latest = changelogs[0]
+    print(f"{latest.version}: {latest.title}")
+"""
 
 import re
 from datetime import datetime
