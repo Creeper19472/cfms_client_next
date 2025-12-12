@@ -1,6 +1,9 @@
+from typing import TYPE_CHECKING
 import flet as ft
 
-from include.classes.changelog import ChangelogEntry
+if TYPE_CHECKING:
+    from include.classes.changelog import ChangelogEntry
+    
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.changelog_parser import get_changelogs_from_file
 from include.util.locale import get_translation
@@ -15,7 +18,7 @@ changelogs = get_changelogs_from_file()
 class ChangelogEntryColumn(ft.Column):
     def __init__(
         self,
-        entry: ChangelogEntry,
+        entry: "ChangelogEntry",
         leave_blank: bool = False,
         ref: ft.Ref | None = None,
         visible=True,
