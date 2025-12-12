@@ -7,6 +7,7 @@ import flet as ft
 
 from include.controllers.dialogs.authorize import AuthorizeDialogController
 from include.ui.controls.dialogs.base import AlertDialog
+from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
@@ -348,19 +349,28 @@ class AuthorizeDialog(AlertDialog):
         assert self.date_range_picker.end_value is not None
         assert self.end_time_picker.value is not None
 
+        start_timestamp = datetime.combine(
+            cast(datetime, self.date_range_picker.start_value),
+            self.start_time_picker.value,
+        ).timestamp()
+        end_timestamp = datetime.combine(
+            cast(datetime, self.date_range_picker.end_value),
+            self.end_time_picker.value,
+        ).timestamp()
+
+        # Validate that end time is after start time
+        if end_timestamp <= start_timestamp:
+            send_error(self.page, _("End time must be after start time"))
+            yield self.enable_interactions()
+            return
+
         # Run authorization in background task
         self.page.run_task(
             self.controller.action_authorize,
             self.entity_dropdown.value,
             cast(Literal["user", "group"], self.entity_type.value),
-            datetime.combine(
-                cast(datetime, self.date_range_picker.start_value),
-                self.start_time_picker.value,
-            ).timestamp(),
-            datetime.combine(
-                cast(datetime, self.date_range_picker.end_value),
-                self.end_time_picker.value,
-            ).timestamp(),
+            start_timestamp,
+            end_timestamp,
         )
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
