@@ -142,7 +142,7 @@ class AuthorizeDialog(AlertDialog):
         )
         self.start_time_text = ft.Text(now.strftime("%H:%M:%S"), size=14)
         self.start_time_picker = ft.TimePicker(
-            now.time(),  # fix
+            now.time(),  # fix assertion errors
             on_change=self.on_start_time_change,
         )
 
