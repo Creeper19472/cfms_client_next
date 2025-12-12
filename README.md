@@ -42,6 +42,28 @@ poetry run flet run --web
 
 For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/getting-started/).
 
+## Version Management
+
+To update the application version number, use the automated version management script:
+
+```bash
+# Bump patch version (0.2.37 -> 0.2.38)
+python scripts/bump_version.py patch
+
+# Bump minor version with auto-commit and tag
+python scripts/bump_version.py minor --title "New Features" --commit --tag
+
+# Bump major version
+python scripts/bump_version.py major --title "Breaking Changes" --commit --tag
+```
+
+This script automatically updates:
+- `src/include/constants.py` (BUILD_VERSION and MODIFIED date)
+- `pyproject.toml` (version)
+- `src/include/ui/controls/dialogs/CHANGELOG.md` (release entry)
+
+For more details, see [scripts/README.md](scripts/README.md).
+
 ## Build the app
 
 ### Android
