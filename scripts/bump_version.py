@@ -199,10 +199,15 @@ class VersionBumper:
         if not content:
             print("Enter release description (press Enter twice to finish):")
             content_lines = []
+            empty_line_count = 0
             while True:
                 line = input()
-                if not line and content_lines and not content_lines[-1]:
-                    break
+                if not line:
+                    empty_line_count += 1
+                    if empty_line_count >= 2:
+                        break
+                else:
+                    empty_line_count = 0
                 content_lines.append(line)
             content = "\n".join(content_lines).strip()
             if not content:
@@ -279,19 +284,24 @@ class VersionBumper:
         print("\n" + "=" * 60)
         print("NEXT STEPS:")
         print("=" * 60)
+        
+        # Generate file paths for instructions
+        file_paths = [
+            self.constants_file.relative_to(self.repo_root).as_posix(),
+            self.pyproject_file.relative_to(self.repo_root).as_posix(),
+            self.changelog_file.relative_to(self.repo_root).as_posix()
+        ]
+        
         if not commit:
             print("1. Review the changes")
             print("2. Commit the changes:")
-            print(f"   git add {' '.join(f.relative_to(self.repo_root).as_posix() for f in [self.constants_file, self.pyproject_file, self.changelog_file])}")
+            print(f"   git add {' '.join(file_paths)}")
             print(f"   git commit -m 'chore: bump version to v{new_version}'")
         if not create_tag:
             print(f"3. Create and push tag:")
             print(f"   git tag -a v{new_version} -m 'Release v{new_version}: {title}'")
             print(f"   git push origin v{new_version}")
-        if create_tag and not commit:
-            print(f"Push changes and tag:")
-            print(f"   git push && git push origin v{new_version}")
-        elif create_tag and commit:
+        if create_tag:
             print(f"Push changes and tag:")
             print(f"   git push && git push origin v{new_version}")
         print("=" * 60)
