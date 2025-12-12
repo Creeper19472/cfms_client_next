@@ -23,6 +23,7 @@ Examples:
 
 import argparse
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -240,8 +241,6 @@ class VersionBumper:
 
         # Git operations
         if commit or create_tag:
-            import subprocess
-
             try:
                 # Stage changes
                 files_to_commit = [
@@ -294,12 +293,11 @@ class VersionBumper:
         ]
         
         if not commit:
-            print("1. Review the changes")
-            print("2. Commit the changes:")
+            print("Review the changes:")
             print(f"   git add {' '.join(file_paths)}")
             print(f"   git commit -m 'chore: bump version to v{new_version}'")
         if not create_tag:
-            print(f"3. Create and push tag:")
+            print(f"Create and push tag:")
             print(f"   git tag -a v{new_version} -m 'Release v{new_version}: {title}'")
             print(f"   git push origin v{new_version}")
         if create_tag:
