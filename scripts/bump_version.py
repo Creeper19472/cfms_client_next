@@ -113,14 +113,24 @@ class VersionBumper:
         if not self.pyproject_file.exists():
             raise FileNotFoundError(f"pyproject.toml not found: {self.pyproject_file}")
 
-        content = self.pyproject_file.read_text(encoding="utf-8")
-
-        # Update version in [project] section
-        content = re.sub(
-            r'version\s*=\s*"[\d.]+"', f'version = "{new_version}"', content, count=1
-        )
-
-        self.pyproject_file.write_text(content, encoding="utf-8")
+        lines = self.pyproject_file.read_text(encoding="utf-8").splitlines(keepends=True)
+        in_project_section = False
+        version_updated = False
+        new_lines = []
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("[") and stripped.endswith("]"):
+                in_project_section = (stripped == "[project]")
+            if in_project_section and re.match(r'^version\s*=\s*".*"$', stripped) and not version_updated:
+                # Replace only the first version line in [project]
+                indent = line[:len(line) - len(line.lstrip())]
+                new_lines.append(f'{indent}version = "{new_version}"\n')
+                version_updated = True
+            else:
+                new_lines.append(line)
+        if not version_updated:
+            raise ValueError("Could not find version field in [project] section of pyproject.toml")
+        self.pyproject_file.write_text("".join(new_lines), encoding="utf-8")
         print(f"✓ Updated {self.pyproject_file.relative_to(self.repo_root)}")
 
     def update_changelog(self, new_version: str, release_date: date, title: str, content: str) -> None:
@@ -153,9 +163,18 @@ class VersionBumper:
                 insert_pos = i + 1
                 break
 
+        # Fallback: If no separator found, insert after the first non-empty line (usually after the title/header)
+        if insert_pos == 0:
+            # Find the first non-empty line after the first line (to skip the title)
+            for i in range(1, len(lines)):
+                if lines[i].strip() != "":
+                    insert_pos = i + 1
+                    break
+            else:
+                # If all lines are empty or only one line, insert at the end
+                insert_pos = len(lines)
         # Insert the new entry
-        lines.insert(insert_pos, "")
-        lines.insert(insert_pos + 1, new_entry.rstrip())
+        lines.insert(insert_pos, new_entry.rstrip())
 
         updated_content = "\n".join(lines)
         self.changelog_file.write_text(updated_content, encoding="utf-8")
@@ -226,7 +245,7 @@ class VersionBumper:
         print(f"\nDescription:\n{content}")
         print("=" * 60)
 
-        confirm = input("\nProceed with version bump? [y/N]: ").strip().lower()
+        confirm = input("\nProceed with version bump? Only 'y' will proceed [y/N]: ").strip().lower()
         if confirm != "y":
             print("Aborted.")
             sys.exit(0)
