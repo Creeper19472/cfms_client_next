@@ -1,6 +1,6 @@
 """Controller for the authorization dialog."""
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, Union
 
 import flet as ft
 
@@ -119,8 +119,8 @@ class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
         self,
         entity_name: str,
         entity_type: Literal["user", "group"],
-        start_time: int|float,
-        end_time: int|float,
+        start_time: Union[int, float],
+        end_time: Union[int, float],
     ):
         """Grant authorization to the specified target."""
         try:
