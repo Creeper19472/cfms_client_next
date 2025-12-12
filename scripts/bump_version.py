@@ -206,9 +206,10 @@ class VersionBumper:
                     empty_line_count += 1
                     if empty_line_count >= 2:
                         break
+                    content_lines.append(line)  # Keep single empty lines
                 else:
                     empty_line_count = 0
-                content_lines.append(line)
+                    content_lines.append(line)
             content = "\n".join(content_lines).strip()
             if not content:
                 content = f"This version includes {bump_type} updates and improvements."
