@@ -86,9 +86,9 @@ New version: 0.2.38
 SUMMARY OF CHANGES:
 ============================================================
 Version: 0.2.37 -> 0.2.38
-Modified Date: 20251212
+Modified Date: 20251213
 Release Title: Bug fixes
-Release Date: 2025-12-12
+Release Date: 2025-12-13
 
 Description:
 Fixed issues with file upload and improved error handling.
