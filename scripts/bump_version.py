@@ -270,6 +270,29 @@ class VersionBumper:
 
                 if commit:
                     print("\nCommitting changes...")
+                    
+                    # Check if files have other unstaged changes
+                    status_result = subprocess.run(
+                        ["git", "status", "--porcelain"] + files_to_commit,
+                        cwd=self.repo_root,
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                    )
+                    
+                    if status_result.stdout.strip():
+                        # Check if there are any staged changes (marked with 'M ' or 'A ' at position 0)
+                        lines = status_result.stdout.strip().split('\n')
+                        has_staged = any(line[0] in 'MA' for line in lines if len(line) > 1)
+                        
+                        if has_staged:
+                            print("\n⚠ Warning: Some of these files have other staged changes:")
+                            print(status_result.stdout)
+                            proceed = input("These will also be committed. Proceed? [y/N]: ").strip().lower()
+                            if proceed != "y":
+                                print("Commit aborted. Files have been updated but not committed.")
+                                return
+                    
                     subprocess.run(
                         ["git", "add"] + files_to_commit,
                         cwd=self.repo_root,
@@ -284,6 +307,14 @@ class VersionBumper:
                     print(f"✓ Changes committed: {commit_msg}")
 
                 if create_tag:
+                    if not commit:
+                        print("\n⚠ Warning: Creating tag without committing changes.")
+                        print("The tag will reference the current HEAD, not the version changes you just made.")
+                        proceed = input("Proceed anyway? [y/N]: ").strip().lower()
+                        if proceed != "y":
+                            print("Tag creation aborted.")
+                            return
+                    
                     print("\nCreating git tag...")
                     tag_name = f"v{new_version}"
                     tag_msg = f"Release {tag_name}: {title}"
