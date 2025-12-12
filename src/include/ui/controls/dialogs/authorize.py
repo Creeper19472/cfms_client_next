@@ -64,7 +64,7 @@ class AuthorizeDialog(AlertDialog):
         self.entity_search = ft.TextField(
             label=_("Username or Group Name"),
             hint_text=_("Enter username or group name"),
-            on_submit=self.search_entity if (self.has_list_users or self.has_list_groups) else None,
+            on_submit=None,  # Will be set based on entity type in _update_ui_for_permissions
             expand=True,
         )
 
@@ -246,19 +246,24 @@ class AuthorizeDialog(AlertDialog):
 
         self.actions = [self.progress_ring, self.submit_button, self.cancel_button]
 
-    def _update_ui_for_permissions(self):
-        """Update UI visibility based on user permissions and selected entity type."""
+    def _has_permission_for_current_type(self) -> bool:
+        """Check if user has permission for the currently selected entity type."""
         current_type = self.entity_type.value
-        
-        # Check if user has permission for current entity type
-        has_permission = (
+        return (
             (current_type == "user" and self.has_list_users) or
             (current_type == "group" and self.has_list_groups)
         )
+
+    def _update_ui_for_permissions(self):
+        """Update UI visibility based on user permissions and selected entity type."""
+        has_permission = self._has_permission_for_current_type()
         
         # Update search button and dropdown visibility
         self.search_button.visible = has_permission
         self.entity_dropdown.visible = has_permission
+        
+        # Update search field submit handler
+        self.entity_search.on_submit = self.search_entity if has_permission else None
         
         # Update hint text based on permission
         if has_permission:
@@ -325,13 +330,7 @@ class AuthorizeDialog(AlertDialog):
     async def search_entity(self, event):
         """Search for users or groups based on the search term."""
         # Check if user has permission for current entity type
-        current_type = cast(Literal["user", "group"], self.entity_type.value)
-        has_permission = (
-            (current_type == "user" and self.has_list_users) or
-            (current_type == "group" and self.has_list_groups)
-        )
-        
-        if not has_permission:
+        if not self._has_permission_for_current_type():
             # User doesn't have permission to search, ignore this request
             return
         
@@ -346,7 +345,7 @@ class AuthorizeDialog(AlertDialog):
         self.page.run_task(
             self.controller.action_search_targets,
             self.entity_search.value,
-            current_type,
+            cast(Literal["user", "group"], self.entity_type.value),
         )
 
     async def on_target_type_change(self, event: ft.Event[ft.RadioGroup]):
@@ -388,10 +387,7 @@ class AuthorizeDialog(AlertDialog):
         """Handle submit button click."""
         # Determine which source to use for entity name
         current_type = cast(Literal["user", "group"], self.entity_type.value)
-        has_permission = (
-            (current_type == "user" and self.has_list_users) or
-            (current_type == "group" and self.has_list_groups)
-        )
+        has_permission = self._has_permission_for_current_type()
         
         # Validate target selection
         if has_permission:
