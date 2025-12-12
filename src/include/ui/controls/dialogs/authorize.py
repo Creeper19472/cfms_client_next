@@ -394,12 +394,14 @@ class AuthorizeDialog(AlertDialog):
             # When user has permission, they must select from dropdown
             if not self.entity_dropdown.value:
                 self.entity_search.error = _("Please select a target")
+                self.update()
                 return
             entity_name = self.entity_dropdown.value
         else:
             # When user doesn't have permission, they must enter directly in text field
             if not self.entity_search.value or not self.entity_search.value.strip():
                 self.entity_search.error = _("Please enter a username or group name")
+                self.update()
                 return
             entity_name = self.entity_search.value.strip()
 
