@@ -163,6 +163,7 @@ exit
             return True
 
         if await _async_request():
+            # we don't add the service to page.services, hence it will be automatically cleaned up after use
             self.open_file_service = OpenFile()
             await self.open_file_service.open(
                 f"{FLET_APP_STORAGE_TEMP}/{self.save_filename}"
