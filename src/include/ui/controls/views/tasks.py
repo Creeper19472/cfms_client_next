@@ -54,7 +54,7 @@ class TaskTile(ft.Card):
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
-            visible=task.status == DownloadTaskStatus.COMPLETED,
+            visible=task.status == DownloadTaskStatus.COMPLETED and AppShared().is_mobile,
         )
         
         # Pause/Resume button (only if server supports resume)
@@ -275,7 +275,7 @@ class TaskTile(ft.Card):
         )
 
         # Update open file button visibility
-        self.open_file_button.visible = task.status == DownloadTaskStatus.COMPLETED
+        self.open_file_button.visible = task.status == DownloadTaskStatus.COMPLETED and AppShared().is_mobile
 
         # Update pause/resume button visibility and icons (only if supports_resume)
         self.pause_resume_button.visible = (
@@ -331,13 +331,13 @@ class TaskTile(ft.Card):
             
             # Open the downloaded file
             open_file_service = OpenFile()
-            await open_file_service.open(self.task.file_path)
-        except Exception as ex:
+            await open_file_service.open(self.task.file_path, 3)
+        except Exception as exc:
             # Show error if file can't be opened
             from include.ui.util.notifications import send_error
             send_error(
                 self.page,
-                _("Failed to open file: {error}").format(error=str(ex))
+                _("Failed to open file: {error}").format(error=str(exc))
             )
 
 
