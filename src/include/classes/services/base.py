@@ -7,6 +7,9 @@ from typing import Optional
 
 __all__ = ["BaseService", "ServiceStatus"]
 
+# Configuration constants
+DEFAULT_STOP_TIMEOUT = 10.0  # Seconds to wait for graceful shutdown
+
 
 class ServiceStatus:
     """Enumeration of service states."""
@@ -33,7 +36,7 @@ class BaseService(ABC):
         logger: Logger instance for this service
     """
     
-    def __init__(self, name: str, enabled: bool = True, interval: float = 60.0):
+    def __init__(self, name: str, enabled: bool = True, interval: float = 60.0, stop_timeout: float = DEFAULT_STOP_TIMEOUT):
         """
         Initialize the service.
         
@@ -41,10 +44,12 @@ class BaseService(ABC):
             name: Unique service name
             enabled: Whether service is enabled by default
             interval: Execution interval in seconds for periodic tasks
+            stop_timeout: Seconds to wait for graceful shutdown before forcing
         """
         self.name = name
         self.enabled = enabled
         self.interval = interval
+        self.stop_timeout = stop_timeout
         self.status = ServiceStatus.STOPPED
         self.logger = logging.getLogger(f"service.{name}")
         
@@ -109,7 +114,7 @@ class BaseService(ABC):
             # Wait for the task to complete with timeout
             if self._task:
                 try:
-                    await asyncio.wait_for(self._task, timeout=10.0)
+                    await asyncio.wait_for(self._task, timeout=self.stop_timeout)
                 except asyncio.TimeoutError:
                     self.logger.warning(f"Service '{self.name}' did not stop gracefully, cancelling")
                     self._task.cancel()

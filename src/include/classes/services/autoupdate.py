@@ -12,6 +12,9 @@ from include.util.upgrade.updater import GithubRelease, get_latest_release, is_n
 
 __all__ = ["AutoUpdateService"]
 
+# Constants for configuration
+SNACKBAR_DURATION_MS = 10000  # Show snackbar for 10 seconds
+
 
 class AutoUpdateService(BaseService):
     """
@@ -101,6 +104,7 @@ class AutoUpdateService(BaseService):
             self.logger.info(f"Latest version available: {latest_release.version}")
             
             # Check if this is a new version
+            # Parameters: is_preview=False (stable releases), commit_count=0 (not used for stable)
             if is_new_version(False, 0, BUILD_VERSION, latest_release.version):
                 self.logger.info(
                     f"New version detected: {latest_release.version} "
@@ -136,6 +140,13 @@ class AutoUpdateService(BaseService):
             t = get_translation()
             _ = t.gettext
             
+            async def navigate_to_about(e):
+                """Navigate to about page with proper error handling."""
+                try:
+                    await self.page.push_route("/connect/about/")
+                except Exception as nav_error:
+                    self.logger.error(f"Error navigating to about page: {nav_error}")
+            
             snackbar = ft.SnackBar(
                 content=ft.Text(
                     _("New version {version} is available! Check the About page for details.").format(
@@ -144,10 +155,8 @@ class AutoUpdateService(BaseService):
                 ),
                 action=_("Go to About"),
                 action_color=ft.Colors.BLUE,
-                duration=10000,  # Show for 10 seconds
-                on_action=lambda e: asyncio.create_task(
-                    self.page.push_route("/connect/about/")
-                ),
+                duration=SNACKBAR_DURATION_MS,
+                on_action=lambda e: asyncio.create_task(navigate_to_about(e)),
             )
             
             # Show snackbar on the UI thread
