@@ -27,6 +27,7 @@ class BackupCodesDialog(AlertDialog):
         """
         super().__init__(
             modal=True,
+            scrollable=True,
             title=ft.Text(_("Save Your Backup Codes")),
         )
         
@@ -44,6 +45,8 @@ class BackupCodesDialog(AlertDialog):
             max_lines=len(backup_codes),
             text_size=14,
             border_color=ft.Colors.SECONDARY,
+            expand=True,
+            expand_loose=True,
         )
         
         # Close button

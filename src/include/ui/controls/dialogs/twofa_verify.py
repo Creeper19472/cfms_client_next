@@ -28,6 +28,7 @@ class TwoFactorVerifyDialog(AlertDialog):
         """
         super().__init__(
             modal=True,
+            scrollable=True,
             title=ft.Text(_("Two-Factor Authentication")),
         )
 
@@ -43,6 +44,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             autofocus=True,
             on_submit=self._on_verify_click,
             expand=True,
+            expand_loose=True,
         )
 
         # Buttons

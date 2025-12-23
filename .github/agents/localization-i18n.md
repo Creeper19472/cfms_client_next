@@ -503,12 +503,12 @@ remember_checkbox = ft.Checkbox(
 ```python
 # Field validation
 if not username_field.value:
-    username_field.error_text = _("Username is required")
+    username_field.error = _("Username is required")
     username_field.update()
 
 # Invalid format
 if not is_valid_email(email):
-    email_field.error_text = _("Invalid email format")
+    email_field.error = _("Invalid email format")
 ```
 
 ## Testing Translations

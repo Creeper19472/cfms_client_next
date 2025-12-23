@@ -28,6 +28,7 @@ class PasswordConfirmDialog(AlertDialog):
         """
         super().__init__(
             modal=True,
+            scrollable=True,
             title=ft.Text(title or _("Confirm Password")),
         )
         
@@ -41,6 +42,7 @@ class PasswordConfirmDialog(AlertDialog):
             can_reveal_password=True,
             autofocus=True,
             on_submit=self._on_confirm_click,
+            expand=True,
         )
         
         # Buttons
@@ -107,7 +109,7 @@ class PasswordConfirmDialog(AlertDialog):
         password = self.password_field.value
         
         if not password:
-            self.password_field.error_text = _("Password cannot be empty")
+            self.password_field.error = _("Password cannot be empty")
             self.update()
             return
         
@@ -120,7 +122,7 @@ class PasswordConfirmDialog(AlertDialog):
             else:
                 self.enable_interactions()
                 self.password_field.value = ""
-                self.password_field.error_text = _("Invalid password")
+                self.password_field.error = _("Invalid password")
                 self.update()
         else:
             self.enable_interactions()
