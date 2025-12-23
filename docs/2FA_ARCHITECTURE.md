@@ -72,7 +72,6 @@ Settings page for managing 2FA:
 - Shows current 2FA status (enabled/disabled)
 - Button to enable 2FA (initiates setup flow)
 - Button to disable 2FA (shows password confirmation)
-- Handles both 200 and 202 responses from setup_2fa
 - Communicates with server via WebSocket requests
 
 ### 4. Login Flow Integration
@@ -82,17 +81,19 @@ Settings page for managing 2FA:
 Modified login process:
 1. User enters username and password
 2. `login` action sent to server
-3. Server response indicates if 2FA is required (`requires_2fa` flag)
+3. Server response indicates if 2FA is required via:
+   - 202 status code with `{"method": "totp"}` (primary approach), OR
+   - 200 status code with `requires_2fa: true` flag (legacy approach)
 4. If 2FA required:
    - Store partial login state
    - Show TwoFactorVerifyDialog
    - User enters TOTP code
    - `verify_2fa_login` action sent to server with code
    - On success, complete login with full credentials
-5. If 2FA not required, proceed with normal login
+5. If 2FA not required (200 response without flag), proceed with normal login
 
 Key methods:
-- `_action_login()`: Initial login request
+- `_action_login()`: Initial login request, handles both 200 and 202 responses
 - `_verify_2fa_code(code)`: Verify TOTP code
 - `_complete_login(username, data)`: Finalize login after verification
 - `_cancel_2fa_login()`: Handle 2FA cancellation
@@ -108,14 +109,13 @@ Key methods:
 
 **setup_2fa**
 - Request: `{"action": "setup_2fa", "data": {"method": "totp"}, "username": "...", "token": "..."}`
-- Response (200): `{"code": 200, "data": {"secret": "...", "qr_uri": "otpauth://..."}}`
-- Response (202): `{"code": 202, "data": {"method": "totp"}}` (verification required)
-- Purpose: Initialize 2FA setup and get secret/QR code OR request verification
+- Response: `{"code": 200, "data": {"secret": "...", "provisioning_uri": "otpauth://..."}}`
+- Purpose: Initialize 2FA setup and get secret/QR code for scanning
 
 **verify_2fa_setup** (also used as validate_2fa)
 - Request: `{"action": "validate_2fa", "data": {"token": "123456"}, "username": "...", "token": "..."}`
 - Response: `{"code": 200}` on success
-- Purpose: Verify setup code and enable 2FA (handles both 200 and 202 setup flows)
+- Purpose: Verify setup code and enable 2FA
 
 **cancel_2fa_setup**
 - Request: `{"action": "cancel_2fa_setup", "username": "...", "token": "..."}`
@@ -129,8 +129,10 @@ Key methods:
 
 **login** (modified)
 - Request: `{"action": "login", "data": {"username": "...", "password": "..."}}`
-- Response: `{"code": 200, "data": {"requires_2fa": true/false, "token": "...", ...}}`
-- Purpose: Initial login, indicates if 2FA is required
+- Response (200): `{"code": 200, "data": {"token": "...", ...}}` - Direct login (no 2FA)
+- Response (200): `{"code": 200, "data": {"requires_2fa": true, ...}}` - 2FA required (legacy flag-based)
+- Response (202): `{"code": 202, "data": {"method": "totp"}}` - 2FA verification required
+- Purpose: Initial login, may indicate 2FA is required via status code or flag
 
 **verify_2fa_login**
 - Request: `{"action": "verify_2fa_login", "data": {"username": "...", "code": "123456"}}`
@@ -156,7 +158,7 @@ Added to `pyproject.toml`:
 
 ## User Workflows
 
-### Enabling 2FA (200 Response - Legacy Flow)
+### Enabling 2FA
 
 1. User navigates to Settings → Two-Factor Authentication
 2. Clicks "Enable Two-Factor Authentication"
@@ -169,27 +171,16 @@ Added to `pyproject.toml`:
 9. Server verifies code and enables 2FA
 10. Client updates UI to show 2FA enabled
 
-### Enabling 2FA (202 Response - Verification Required Flow)
-
-1. User navigates to Settings → Two-Factor Authentication
-2. Clicks "Enable Two-Factor Authentication"
-3. Client requests setup from server (`setup_2fa`)
-4. Server returns 202 with method indicator (e.g., `{"method": "totp"}`)
-5. Client displays verification dialog (6-digit code input)
-6. User enters verification code from their already-configured authenticator app
-7. Client sends code to server (`validate_2fa`)
-8. Server verifies code and enables 2FA
-9. Client updates UI to show 2FA enabled
-
 ### Logging in with 2FA
 
 1. User enters username and password
 2. Client sends login request
-3. Server validates credentials and returns `requires_2fa: true`
+3. Server validates credentials and returns 202 status code with `{"method": "totp"}`
+   - Alternatively, server may return 200 with `requires_2fa: true` flag (legacy approach)
 4. Client shows 2FA verification dialog
 5. User enters 6-digit code from authenticator app
 6. Client sends code to server (`verify_2fa_login`)
-7. Server verifies code and returns full login credentials
+7. Server verifies code and returns full login credentials (200 response)
 8. Client completes login and navigates to home
 
 ### Disabling 2FA
