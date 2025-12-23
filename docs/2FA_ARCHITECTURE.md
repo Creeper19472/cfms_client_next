@@ -38,29 +38,41 @@ New attributes added:
 #### 3.1 2FA Verification Dialog
 **Location:** `src/include/ui/controls/dialogs/twofa_verify.py`
 
-Dialog shown during login when 2FA is enabled:
+Dialog shown during login when 2FA is enabled OR when server returns 202 during setup:
 - Input field for 6-digit TOTP code
 - Verify and Cancel buttons
 - Calls `on_verify_callback` with the entered code
 - Disables interactions while verifying
+- Used in both login flow and 202 setup flow
 
 #### 3.2 2FA Setup Dialog
 **Location:** `src/include/ui/controls/dialogs/twofa_setup.py`
 
-Dialog for initial 2FA setup:
+Dialog for initial 2FA setup (200 response flow):
 - Displays QR code for scanning with authenticator apps
 - Shows secret key for manual entry
 - Input field to verify setup with a test code
 - Uses qrcode library to generate QR code from otpauth:// URI
 - Calls `on_verify_callback` to confirm setup
 
-#### 3.3 2FA Settings Page
+#### 3.3 Password Confirmation Dialog
+**Location:** `src/include/ui/controls/dialogs/password_confirm.py`
+
+Generic password confirmation dialog:
+- Input field for password with reveal option
+- Confirm and Cancel buttons
+- Calls `on_confirm_callback` with the entered password
+- Reusable component for security-sensitive operations
+- Used when disabling 2FA
+
+#### 3.4 2FA Settings Page
 **Location:** `src/include/ui/models/settings/twofa.py`
 
 Settings page for managing 2FA:
 - Shows current 2FA status (enabled/disabled)
 - Button to enable 2FA (initiates setup flow)
-- Button to disable 2FA (with confirmation dialog)
+- Button to disable 2FA (shows password confirmation)
+- Handles both 200 and 202 responses from setup_2fa
 - Communicates with server via WebSocket requests
 
 ### 4. Login Flow Integration
@@ -96,13 +108,14 @@ Key methods:
 
 **setup_2fa**
 - Request: `{"action": "setup_2fa", "data": {"method": "totp"}, "username": "...", "token": "..."}`
-- Response: `{"code": 200, "data": {"secret": "...", "qr_uri": "otpauth://..."}}`
-- Purpose: Initialize 2FA setup and get secret/QR code
+- Response (200): `{"code": 200, "data": {"secret": "...", "qr_uri": "otpauth://..."}}`
+- Response (202): `{"code": 202, "data": {"method": "totp"}}` (verification required)
+- Purpose: Initialize 2FA setup and get secret/QR code OR request verification
 
-**verify_2fa_setup**
-- Request: `{"action": "verify_2fa_setup", "data": {"code": "123456"}, "username": "...", "token": "..."}`
+**verify_2fa_setup** (also used as validate_2fa)
+- Request: `{"action": "validate_2fa", "data": {"token": "123456"}, "username": "...", "token": "..."}`
 - Response: `{"code": 200}` on success
-- Purpose: Verify setup code and enable 2FA
+- Purpose: Verify setup code and enable 2FA (handles both 200 and 202 setup flows)
 
 **cancel_2fa_setup**
 - Request: `{"action": "cancel_2fa_setup", "username": "...", "token": "..."}`
@@ -110,9 +123,9 @@ Key methods:
 - Purpose: Cancel pending 2FA setup
 
 **disable_2fa**
-- Request: `{"action": "disable_2fa", "username": "...", "token": "..."}`
-- Response: `{"code": 200}`
-- Purpose: Disable 2FA for the user
+- Request: `{"action": "disable_2fa", "data": {"password": "user_password"}, "username": "...", "token": "..."}`
+- Response: `{"code": 200}` on success
+- Purpose: Disable 2FA for the user (requires password confirmation)
 
 **login** (modified)
 - Request: `{"action": "login", "data": {"username": "...", "password": "..."}}`
@@ -143,18 +156,30 @@ Added to `pyproject.toml`:
 
 ## User Workflows
 
-### Enabling 2FA
+### Enabling 2FA (200 Response - Legacy Flow)
 
 1. User navigates to Settings → Two-Factor Authentication
 2. Clicks "Enable Two-Factor Authentication"
 3. Client requests setup from server (`setup_2fa`)
-4. Server generates secret and returns with QR URI
+4. Server generates secret and returns with QR URI (200 response)
 5. Client displays QR code and secret in setup dialog
 6. User scans QR code with authenticator app (Google Authenticator, Authy, etc.)
 7. User enters verification code from app
-8. Client sends code to server (`verify_2fa_setup`)
+8. Client sends code to server (`validate_2fa`)
 9. Server verifies code and enables 2FA
 10. Client updates UI to show 2FA enabled
+
+### Enabling 2FA (202 Response - Verification Required Flow)
+
+1. User navigates to Settings → Two-Factor Authentication
+2. Clicks "Enable Two-Factor Authentication"
+3. Client requests setup from server (`setup_2fa`)
+4. Server returns 202 with method indicator (e.g., `{"method": "totp"}`)
+5. Client displays verification dialog (6-digit code input)
+6. User enters verification code from their already-configured authenticator app
+7. Client sends code to server (`validate_2fa`)
+8. Server verifies code and enables 2FA
+9. Client updates UI to show 2FA enabled
 
 ### Logging in with 2FA
 
@@ -171,10 +196,10 @@ Added to `pyproject.toml`:
 
 1. User navigates to Settings → Two-Factor Authentication
 2. Clicks "Disable Two-Factor Authentication"
-3. Client shows confirmation dialog
-4. User confirms
-5. Client sends disable request (`disable_2fa`)
-6. Server disables 2FA
+3. Client shows password confirmation dialog
+4. User enters their password
+5. Client sends disable request with password (`disable_2fa`)
+6. Server verifies password and disables 2FA
 7. Client updates UI to show 2FA disabled
 
 ## Security Considerations
