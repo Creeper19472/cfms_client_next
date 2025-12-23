@@ -48,6 +48,18 @@ class TaskTile(ft.Card):
         )
         
         # Create control buttons
+        self.pause_resume_button = ft.IconButton(
+            icon=ft.Icons.PAUSE if task.status == DownloadTaskStatus.DOWNLOADING else ft.Icons.PLAY_ARROW,
+            icon_size=16,
+            tooltip=_("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume"),
+            on_click=self._on_pause_resume,
+            visible=task.status in [
+                DownloadTaskStatus.DOWNLOADING,
+                DownloadTaskStatus.PAUSED,
+                DownloadTaskStatus.PENDING,
+            ],
+        )
+        
         self.cancel_button = ft.IconButton(
             icon=ft.Icons.CANCEL,
             icon_size=16,
@@ -58,7 +70,23 @@ class TaskTile(ft.Card):
                 DownloadTaskStatus.DOWNLOADING,
                 DownloadTaskStatus.DECRYPTING,
                 DownloadTaskStatus.VERIFYING,
+                DownloadTaskStatus.PAUSED,
+                DownloadTaskStatus.SCHEDULED,
             ],
+        )
+        
+        # Priority badge
+        self.priority_badge = ft.Container(
+            content=ft.Text(
+                value=f"P{task.priority}",
+                size=10,
+                weight=ft.FontWeight.BOLD,
+                color=ft.Colors.WHITE,
+            ),
+            bgcolor=ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY,
+            padding=ft.padding.symmetric(horizontal=6, vertical=2),
+            border_radius=10,
+            visible=task.priority != 0,
         )
         
         # Build the tile
@@ -74,17 +102,24 @@ class TaskTile(ft.Card):
                             ),
                             ft.Column(
                                 controls=[
-                                    ft.Text(
-                                        value=task.filename,
-                                        size=14,
-                                        weight=ft.FontWeight.BOLD,
-                                        overflow=ft.TextOverflow.ELLIPSIS,
+                                    ft.Row(
+                                        controls=[
+                                            ft.Text(
+                                                value=task.filename,
+                                                size=14,
+                                                weight=ft.FontWeight.BOLD,
+                                                overflow=ft.TextOverflow.ELLIPSIS,
+                                            ),
+                                            self.priority_badge,
+                                        ],
+                                        spacing=5,
                                     ),
                                     self.status_text,
                                 ],
                                 spacing=2,
                                 expand=True,
                             ),
+                            self.pause_resume_button,
                             self.cancel_button,
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -106,11 +141,13 @@ class TaskTile(ft.Card):
         status_icons = {
             DownloadTaskStatus.PENDING: ft.Icons.SCHEDULE,
             DownloadTaskStatus.DOWNLOADING: ft.Icons.DOWNLOAD,
+            DownloadTaskStatus.PAUSED: ft.Icons.PAUSE_CIRCLE,
             DownloadTaskStatus.DECRYPTING: ft.Icons.LOCK_OPEN,
             DownloadTaskStatus.VERIFYING: ft.Icons.VERIFIED,
             DownloadTaskStatus.COMPLETED: ft.Icons.CHECK_CIRCLE,
             DownloadTaskStatus.FAILED: ft.Icons.ERROR,
             DownloadTaskStatus.CANCELLED: ft.Icons.CANCEL,
+            DownloadTaskStatus.SCHEDULED: ft.Icons.ACCESS_TIME,
         }
         return status_icons.get(self.task.status, ft.Icons.HELP)
     
@@ -119,11 +156,13 @@ class TaskTile(ft.Card):
         status_colors = {
             DownloadTaskStatus.PENDING: ft.Colors.GREY,
             DownloadTaskStatus.DOWNLOADING: ft.Colors.BLUE,
+            DownloadTaskStatus.PAUSED: ft.Colors.YELLOW,
             DownloadTaskStatus.DECRYPTING: ft.Colors.ORANGE,
             DownloadTaskStatus.VERIFYING: ft.Colors.PURPLE,
             DownloadTaskStatus.COMPLETED: ft.Colors.GREEN,
             DownloadTaskStatus.FAILED: ft.Colors.RED,
             DownloadTaskStatus.CANCELLED: ft.Colors.GREY,
+            DownloadTaskStatus.SCHEDULED: ft.Colors.CYAN,
         }
         return status_colors.get(self.task.status, ft.Colors.WHITE)
     
@@ -132,16 +171,20 @@ class TaskTile(ft.Card):
         status_texts = {
             DownloadTaskStatus.PENDING: _("Pending"),
             DownloadTaskStatus.DOWNLOADING: _("Downloading"),
+            DownloadTaskStatus.PAUSED: _("Paused"),
             DownloadTaskStatus.DECRYPTING: _("Decrypting"),
             DownloadTaskStatus.VERIFYING: _("Verifying"),
             DownloadTaskStatus.COMPLETED: _("Completed"),
             DownloadTaskStatus.FAILED: _("Failed"),
             DownloadTaskStatus.CANCELLED: _("Cancelled"),
+            DownloadTaskStatus.SCHEDULED: _("Scheduled"),
         }
         status_text = status_texts.get(self.task.status, _("Unknown"))
         
         if self.task.status == DownloadTaskStatus.FAILED and self.task.error:
             status_text += f": {self.task.error}"
+        elif self.task.retry_count > 0 and self.task.status == DownloadTaskStatus.PENDING:
+            status_text += f" (Retry {self.task.retry_count}/{self.task.max_retries})"
         
         return status_text
     
@@ -176,16 +219,40 @@ class TaskTile(ft.Card):
         # Update progress info
         self.progress_info.value = self._get_progress_info()
         
-        # Update button visibility
+        # Update priority badge
+        self.priority_badge.visible = task.priority != 0
+        self.priority_badge.content.value = f"P{task.priority}"
+        self.priority_badge.bgcolor = ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
+        
+        # Update button visibility and icons
+        self.pause_resume_button.visible = task.status in [
+            DownloadTaskStatus.DOWNLOADING,
+            DownloadTaskStatus.PAUSED,
+            DownloadTaskStatus.PENDING,
+        ]
+        self.pause_resume_button.icon = ft.Icons.PAUSE if task.status == DownloadTaskStatus.DOWNLOADING else ft.Icons.PLAY_ARROW
+        self.pause_resume_button.tooltip = _("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume")
+        
         self.cancel_button.visible = task.status in [
             DownloadTaskStatus.PENDING,
             DownloadTaskStatus.DOWNLOADING,
             DownloadTaskStatus.DECRYPTING,
             DownloadTaskStatus.VERIFYING,
+            DownloadTaskStatus.PAUSED,
+            DownloadTaskStatus.SCHEDULED,
         ]
         
         # Update the UI
         self.update()
+    
+    async def _on_pause_resume(self, e):
+        """Handle pause/resume button click."""
+        download_service = self.parent_view.download_service
+        if download_service:
+            if self.task.status == DownloadTaskStatus.DOWNLOADING:
+                download_service.pause_task(self.task.task_id)
+            elif self.task.status == DownloadTaskStatus.PAUSED:
+                download_service.resume_task(self.task.task_id)
     
     async def _on_cancel(self, e):
         """Handle cancel button click."""
@@ -216,6 +283,8 @@ class TasksView(ft.Container):
             options=[
                 ft.dropdown.Option(key="all", text=_("All")),
                 ft.dropdown.Option(key="active", text=_("Active")),
+                ft.dropdown.Option(key="paused", text=_("Paused")),
+                ft.dropdown.Option(key="scheduled", text=_("Scheduled")),
                 ft.dropdown.Option(key="completed", text=_("Completed")),
                 ft.dropdown.Option(key="failed", text=_("Failed")),
             ],
@@ -266,10 +335,37 @@ class TasksView(ft.Container):
                             ft.Row(
                                 controls=[
                                     self.filter_dropdown,
-                                    ft.IconButton(
-                                        icon=ft.Icons.CLEAR_ALL,
-                                        tooltip=_("Clear completed"),
-                                        on_click=self._on_clear_completed,
+                                    ft.PopupMenuButton(
+                                        icon=ft.Icons.MORE_VERT,
+                                        tooltip=_("More actions"),
+                                        items=[
+                                            ft.PopupMenuItem(
+                                                text=_("Pause all active"),
+                                                icon=ft.Icons.PAUSE,
+                                                on_click=self._on_pause_all,
+                                            ),
+                                            ft.PopupMenuItem(
+                                                text=_("Resume all paused"),
+                                                icon=ft.Icons.PLAY_ARROW,
+                                                on_click=self._on_resume_all,
+                                            ),
+                                            ft.PopupMenuItem(
+                                                text=_("Cancel all pending"),
+                                                icon=ft.Icons.CANCEL,
+                                                on_click=self._on_cancel_all_pending,
+                                            ),
+                                            ft.PopupMenuItem(),  # Divider
+                                            ft.PopupMenuItem(
+                                                text=_("Clear completed"),
+                                                icon=ft.Icons.CLEAR_ALL,
+                                                on_click=self._on_clear_completed,
+                                            ),
+                                            ft.PopupMenuItem(
+                                                text=_("Clear failed"),
+                                                icon=ft.Icons.DELETE_SWEEP,
+                                                on_click=self._on_clear_failed,
+                                            ),
+                                        ],
                                     ),
                                     ft.IconButton(
                                         icon=ft.Icons.REFRESH,
@@ -361,6 +457,10 @@ class TasksView(ft.Container):
                 DownloadTaskStatus.DECRYPTING,
                 DownloadTaskStatus.VERIFYING,
             ]
+        elif filter_value == "paused":
+            return task.status == DownloadTaskStatus.PAUSED
+        elif filter_value == "scheduled":
+            return task.status == DownloadTaskStatus.SCHEDULED
         elif filter_value == "completed":
             return task.status == DownloadTaskStatus.COMPLETED
         elif filter_value == "failed":
@@ -406,10 +506,47 @@ class TasksView(ft.Container):
         """Handle filter dropdown change."""
         self._refresh_tasks()
     
+    async def _on_pause_all(self, e):
+        """Handle pause all active downloads."""
+        if self.download_service:
+            active_tasks = [
+                task.task_id for task in self.download_service.get_all_tasks()
+                if task.status == DownloadTaskStatus.DOWNLOADING
+            ]
+            count = self.download_service.batch_pause_tasks(active_tasks)
+            self.logger.info(f"Paused {count} active downloads") if hasattr(self, 'logger') else None
+            self._refresh_tasks()
+    
+    async def _on_resume_all(self, e):
+        """Handle resume all paused downloads."""
+        if self.download_service:
+            paused_tasks = [
+                task.task_id for task in self.download_service.get_all_tasks()
+                if task.status == DownloadTaskStatus.PAUSED
+            ]
+            count = self.download_service.batch_resume_tasks(paused_tasks)
+            self._refresh_tasks()
+    
+    async def _on_cancel_all_pending(self, e):
+        """Handle cancel all pending downloads."""
+        if self.download_service:
+            pending_tasks = [
+                task.task_id for task in self.download_service.get_all_tasks()
+                if task.status == DownloadTaskStatus.PENDING
+            ]
+            count = self.download_service.batch_cancel_tasks(pending_tasks)
+            self._refresh_tasks()
+    
     async def _on_clear_completed(self, e):
         """Handle clear completed button click."""
         if self.download_service:
             self.download_service.clear_completed_tasks()
+            self._refresh_tasks()
+    
+    async def _on_clear_failed(self, e):
+        """Handle clear failed button click."""
+        if self.download_service:
+            self.download_service.clear_failed_tasks()
             self._refresh_tasks()
     
     async def _on_refresh(self, e):
