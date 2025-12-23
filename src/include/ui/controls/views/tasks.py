@@ -1,6 +1,6 @@
 """Tasks view for displaying and managing download tasks."""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 import flet as ft
 
 from include.classes.config import AppShared
@@ -18,54 +18,64 @@ _ = t.gettext
 class TaskTile(ft.Card):
     """
     UI component representing a single download task.
-    
+
     Displays task information including filename, progress, status, and controls.
     """
-    
+
     def __init__(self, task: DownloadTask, parent_view: "TasksView"):
         super().__init__()
         self.task = task
         self.parent_view = parent_view
-        
+
         # Create progress bar
         self.progress_bar = ft.ProgressBar(
             value=task.progress,
             bar_height=4,
         )
-        
+
         # Create status text
         self.status_text = ft.Text(
             value=self._get_status_text(),
             size=12,
             color=self._get_status_color(),
         )
-        
+
         # Create progress info text
         self.progress_info = ft.Text(
             value=self._get_progress_info(),
             size=11,
             color=ft.Colors.GREY_400,
         )
-        
+
         # Create control buttons
         self.pause_resume_button = ft.IconButton(
-            icon=ft.Icons.PAUSE if task.status == DownloadTaskStatus.DOWNLOADING else ft.Icons.PLAY_ARROW,
+            icon=(
+                ft.Icons.PAUSE
+                if task.status == DownloadTaskStatus.DOWNLOADING
+                else ft.Icons.PLAY_ARROW
+            ),
             icon_size=16,
-            tooltip=_("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume"),
+            tooltip=(
+                _("Pause")
+                if task.status == DownloadTaskStatus.DOWNLOADING
+                else _("Resume")
+            ),
             on_click=self._on_pause_resume,
-            visible=task.status in [
+            visible=task.status
+            in [
                 DownloadTaskStatus.DOWNLOADING,
                 DownloadTaskStatus.PAUSED,
                 DownloadTaskStatus.PENDING,
             ],
         )
-        
+
         self.cancel_button = ft.IconButton(
             icon=ft.Icons.CANCEL,
             icon_size=16,
             tooltip=_("Cancel"),
             on_click=self._on_cancel,
-            visible=task.status in [
+            visible=task.status
+            in [
                 DownloadTaskStatus.PENDING,
                 DownloadTaskStatus.DOWNLOADING,
                 DownloadTaskStatus.DECRYPTING,
@@ -74,21 +84,22 @@ class TaskTile(ft.Card):
                 DownloadTaskStatus.SCHEDULED,
             ],
         )
-        
+
         # Priority badge
+        self.priority_badge_text = ft.Text(
+            value=f"P{task.priority}",
+            size=10,
+            weight=ft.FontWeight.BOLD,
+            color=ft.Colors.WHITE,
+        )
         self.priority_badge = ft.Container(
-            content=ft.Text(
-                value=f"P{task.priority}",
-                size=10,
-                weight=ft.FontWeight.BOLD,
-                color=ft.Colors.WHITE,
-            ),
+            content=self.priority_badge_text,
             bgcolor=ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY,
             padding=ft.padding.symmetric(horizontal=6, vertical=2),
             border_radius=10,
             visible=task.priority != 0,
         )
-        
+
         # Build the tile
         self.content = ft.Container(
             content=ft.Column(
@@ -96,7 +107,7 @@ class TaskTile(ft.Card):
                     ft.Row(
                         controls=[
                             ft.Icon(
-                                name=self._get_status_icon(),
+                                icon=self._get_status_icon(),
                                 size=20,
                                 color=self._get_status_color(),
                             ),
@@ -124,19 +135,24 @@ class TaskTile(ft.Card):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    self.progress_bar if task.status not in [
-                        DownloadTaskStatus.COMPLETED,
-                        DownloadTaskStatus.FAILED,
-                        DownloadTaskStatus.CANCELLED,
-                    ] else ft.Container(height=0),
+                    (
+                        self.progress_bar
+                        if task.status
+                        not in [
+                            DownloadTaskStatus.COMPLETED,
+                            DownloadTaskStatus.FAILED,
+                            DownloadTaskStatus.CANCELLED,
+                        ]
+                        else ft.Container(height=0)
+                    ),
                     self.progress_info,
                 ],
                 spacing=5,
             ),
             padding=10,
         )
-    
-    def _get_status_icon(self) -> str:
+
+    def _get_status_icon(self) -> ft.IconData:
         """Get icon based on task status."""
         status_icons = {
             DownloadTaskStatus.PENDING: ft.Icons.SCHEDULE,
@@ -150,7 +166,7 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.SCHEDULED: ft.Icons.ACCESS_TIME,
         }
         return status_icons.get(self.task.status, ft.Icons.HELP)
-    
+
     def _get_status_color(self) -> str:
         """Get color based on task status."""
         status_colors = {
@@ -165,7 +181,7 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.SCHEDULED: ft.Colors.CYAN,
         }
         return status_colors.get(self.task.status, ft.Colors.WHITE)
-    
+
     def _get_status_text(self) -> str:
         """Get status text based on task status."""
         status_texts = {
@@ -180,19 +196,24 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.SCHEDULED: _("Scheduled"),
         }
         status_text = status_texts.get(self.task.status, _("Unknown"))
-        
+
         if self.task.status == DownloadTaskStatus.FAILED and self.task.error:
             status_text += f": {self.task.error}"
-        elif self.task.retry_count > 0 and self.task.status == DownloadTaskStatus.PENDING:
+        elif (
+            self.task.retry_count > 0 and self.task.status == DownloadTaskStatus.PENDING
+        ):
             status_text += f" (Retry {self.task.retry_count}/{self.task.max_retries})"
-        
+
         return status_text
-    
+
     def _get_progress_info(self) -> str:
         """Get progress information text."""
         if self.task.status == DownloadTaskStatus.COMPLETED:
             return _("Download completed")
-        elif self.task.status in [DownloadTaskStatus.FAILED, DownloadTaskStatus.CANCELLED]:
+        elif self.task.status in [
+            DownloadTaskStatus.FAILED,
+            DownloadTaskStatus.CANCELLED,
+        ]:
             return ""
         elif self.task.total_bytes > 0:
             current_mb = self.task.current_bytes / 1024 / 1024
@@ -204,35 +225,43 @@ class TaskTile(ft.Card):
             return f"{percentage:.1f}%"
         else:
             return _("Waiting to start...")
-    
+
     def update_task(self, task: DownloadTask):
         """Update the tile with new task data."""
         self.task = task
-        
+
         # Update progress bar
         self.progress_bar.value = task.progress
-        
+
         # Update status text
         self.status_text.value = self._get_status_text()
         self.status_text.color = self._get_status_color()
-        
+
         # Update progress info
         self.progress_info.value = self._get_progress_info()
-        
+
         # Update priority badge
         self.priority_badge.visible = task.priority != 0
-        self.priority_badge.content.value = f"P{task.priority}"
-        self.priority_badge.bgcolor = ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
-        
+        self.priority_badge_text = f"P{task.priority}"
+        self.priority_badge.bgcolor = (
+            ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
+        )
+
         # Update button visibility and icons
         self.pause_resume_button.visible = task.status in [
             DownloadTaskStatus.DOWNLOADING,
             DownloadTaskStatus.PAUSED,
             DownloadTaskStatus.PENDING,
         ]
-        self.pause_resume_button.icon = ft.Icons.PAUSE if task.status == DownloadTaskStatus.DOWNLOADING else ft.Icons.PLAY_ARROW
-        self.pause_resume_button.tooltip = _("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume")
-        
+        self.pause_resume_button.icon = (
+            ft.Icons.PAUSE
+            if task.status == DownloadTaskStatus.DOWNLOADING
+            else ft.Icons.PLAY_ARROW
+        )
+        self.pause_resume_button.tooltip = (
+            _("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume")
+        )
+
         self.cancel_button.visible = task.status in [
             DownloadTaskStatus.PENDING,
             DownloadTaskStatus.DOWNLOADING,
@@ -241,10 +270,10 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.PAUSED,
             DownloadTaskStatus.SCHEDULED,
         ]
-        
+
         # Update the UI
         self.update()
-    
+
     async def _on_pause_resume(self, e):
         """Handle pause/resume button click."""
         download_service = self.parent_view.download_service
@@ -253,7 +282,7 @@ class TaskTile(ft.Card):
                 download_service.pause_task(self.task.task_id)
             elif self.task.status == DownloadTaskStatus.PAUSED:
                 download_service.resume_task(self.task.task_id)
-    
+
     async def _on_cancel(self, e):
         """Handle cancel button click."""
         download_service = self.parent_view.download_service
@@ -264,18 +293,18 @@ class TaskTile(ft.Card):
 class TasksView(ft.Container):
     """
     Main view for displaying and managing download tasks.
-    
+
     Shows a list of all download tasks with filtering and clearing options.
     """
-    
+
     def __init__(self, parent_model: "HomeModel", ref: ft.Ref | None = None):
         super().__init__(ref=ref, visible=False, expand=True)
-        
+
         self.parent_model = parent_model
         self.app_shared = AppShared()
         self.download_service: Optional[DownloadManagerService] = None
         self.task_tiles: dict[str, TaskTile] = {}
-        
+
         # Create filter dropdown
         self.filter_dropdown = ft.Dropdown(
             label=_("Filter"),
@@ -289,9 +318,9 @@ class TasksView(ft.Container):
                 ft.dropdown.Option(key="failed", text=_("Failed")),
             ],
             value="all",
-            on_change=self._on_filter_change,
+            on_select=self._on_filter_select,
         )
-        
+
         # Create task list view
         self.task_listview = ft.ListView(
             controls=[],
@@ -299,13 +328,13 @@ class TasksView(ft.Container):
             spacing=10,
             padding=10,
         )
-        
+
         # Create empty state
         self.empty_state = ft.Container(
             content=ft.Column(
                 controls=[
                     ft.Icon(
-                        name=ft.Icons.DOWNLOAD_DONE,
+                        icon=ft.Icons.DOWNLOAD_DONE,
                         size=64,
                         color=ft.Colors.GREY,
                     ),
@@ -320,7 +349,7 @@ class TasksView(ft.Container):
             ),
             expand=True,
         )
-        
+
         # Build the view
         self.content = ft.Column(
             controls=[
@@ -340,28 +369,28 @@ class TasksView(ft.Container):
                                         tooltip=_("More actions"),
                                         items=[
                                             ft.PopupMenuItem(
-                                                text=_("Pause all active"),
+                                                content=_("Pause all active"),
                                                 icon=ft.Icons.PAUSE,
                                                 on_click=self._on_pause_all,
                                             ),
                                             ft.PopupMenuItem(
-                                                text=_("Resume all paused"),
+                                                content=_("Resume all paused"),
                                                 icon=ft.Icons.PLAY_ARROW,
                                                 on_click=self._on_resume_all,
                                             ),
                                             ft.PopupMenuItem(
-                                                text=_("Cancel all pending"),
+                                                content=_("Cancel all pending"),
                                                 icon=ft.Icons.CANCEL,
                                                 on_click=self._on_cancel_all_pending,
                                             ),
                                             ft.PopupMenuItem(),  # Divider
                                             ft.PopupMenuItem(
-                                                text=_("Clear completed"),
+                                                content=_("Clear completed"),
                                                 icon=ft.Icons.CLEAR_ALL,
                                                 on_click=self._on_clear_completed,
                                             ),
                                             ft.PopupMenuItem(
-                                                text=_("Clear failed"),
+                                                content=_("Clear failed"),
                                                 icon=ft.Icons.DELETE_SWEEP,
                                                 on_click=self._on_clear_failed,
                                             ),
@@ -393,30 +422,33 @@ class TasksView(ft.Container):
             ],
             spacing=0,
         )
-    
+
     def did_mount(self):
         """Called when the view is mounted."""
         # Get download service
         if self.app_shared.service_manager:
-            self.download_service = self.app_shared.service_manager.get_service("download_manager")
-            
+            self.download_service = cast(
+                DownloadManagerService,
+                self.app_shared.service_manager.get_service("download_manager"),
+            )
+
             # Set up task update callback
             if self.download_service:
                 self.download_service.add_task_update_callback(self._on_task_update)
-        
+
         # Refresh task list
         self._refresh_tasks()
-    
+
     def will_unmount(self):
         """Called when the view is about to be unmounted."""
         # Remove callback when view is unmounted
         if self.download_service:
             self.download_service.remove_task_update_callback(self._on_task_update)
-    
+
     def _on_task_update(self, task: DownloadTask):
         """
         Callback when a task is updated.
-        
+
         Args:
             task: The updated task
         """
@@ -427,27 +459,27 @@ class TasksView(ft.Container):
         else:
             # Create new tile
             self._add_task_tile(task)
-    
+
     def _add_task_tile(self, task: DownloadTask):
         """Add a task tile to the list."""
         tile = TaskTile(task, self)
         self.task_tiles[task.task_id] = tile
-        
+
         # Apply current filter
         if self._should_show_task(task):
             self.task_listview.controls.insert(0, tile)
-        
+
         # Update empty state
         self._update_empty_state()
-        
+
         # Update UI
         if self.page:
             self.update()
-    
+
     def _should_show_task(self, task: DownloadTask) -> bool:
         """Check if task should be shown based on current filter."""
         filter_value = self.filter_dropdown.value
-        
+
         if filter_value == "all":
             return True
         elif filter_value == "active":
@@ -464,91 +496,101 @@ class TasksView(ft.Container):
         elif filter_value == "completed":
             return task.status == DownloadTaskStatus.COMPLETED
         elif filter_value == "failed":
-            return task.status in [DownloadTaskStatus.FAILED, DownloadTaskStatus.CANCELLED]
-        
+            return task.status in [
+                DownloadTaskStatus.FAILED,
+                DownloadTaskStatus.CANCELLED,
+            ]
+
         return True
-    
+
     def _refresh_tasks(self):
         """Refresh the task list from the download service."""
         if not self.download_service:
             return
-        
+
         # Clear current tiles
         self.task_tiles.clear()
         self.task_listview.controls.clear()
-        
+
         # Get all tasks
         tasks = self.download_service.get_all_tasks()
-        
+
         # Sort tasks by created time (newest first)
         tasks.sort(key=lambda t: t.created_at, reverse=True)
-        
+
         # Add task tiles
         for task in tasks:
             if self._should_show_task(task):
                 tile = TaskTile(task, self)
                 self.task_tiles[task.task_id] = tile
                 self.task_listview.controls.append(tile)
-        
+
         # Update empty state
         self._update_empty_state()
-        
+
         # Update UI
         if self.page:
             self.update()
-    
+
     def _update_empty_state(self):
         """Update the visibility of the empty state."""
         has_tasks = len(self.task_listview.controls) > 0
         self.empty_state.visible = not has_tasks
-    
-    async def _on_filter_change(self, e):
+
+    async def _on_filter_select(self, e):
         """Handle filter dropdown change."""
         self._refresh_tasks()
-    
+
     async def _on_pause_all(self, e):
         """Handle pause all active downloads."""
         if self.download_service:
             active_tasks = [
-                task.task_id for task in self.download_service.get_all_tasks()
+                task.task_id
+                for task in self.download_service.get_all_tasks()
                 if task.status == DownloadTaskStatus.DOWNLOADING
             ]
             count = self.download_service.batch_pause_tasks(active_tasks)
-            self.logger.info(f"Paused {count} active downloads") if hasattr(self, 'logger') else None
+            # (
+            #     self.logger.info(f"Paused {count} active downloads")
+            #     if hasattr(self, "logger")
+            #     else None
+            # )
             self._refresh_tasks()
-    
+
     async def _on_resume_all(self, e):
         """Handle resume all paused downloads."""
         if self.download_service:
             paused_tasks = [
-                task.task_id for task in self.download_service.get_all_tasks()
+                task.task_id
+                for task in self.download_service.get_all_tasks()
                 if task.status == DownloadTaskStatus.PAUSED
             ]
             count = self.download_service.batch_resume_tasks(paused_tasks)
             self._refresh_tasks()
-    
+
     async def _on_cancel_all_pending(self, e):
         """Handle cancel all pending downloads."""
         if self.download_service:
             pending_tasks = [
-                task.task_id for task in self.download_service.get_all_tasks()
+                task.task_id
+                for task in self.download_service.get_all_tasks()
                 if task.status == DownloadTaskStatus.PENDING
             ]
             count = self.download_service.batch_cancel_tasks(pending_tasks)
             self._refresh_tasks()
-    
+
     async def _on_clear_completed(self, e):
         """Handle clear completed button click."""
         if self.download_service:
             self.download_service.clear_completed_tasks()
             self._refresh_tasks()
-    
+
     async def _on_clear_failed(self, e):
         """Handle clear failed button click."""
         if self.download_service:
             self.download_service.clear_failed_tasks()
             self._refresh_tasks()
-    
+
     async def _on_refresh(self, e):
         """Handle refresh button click."""
         self._refresh_tasks()

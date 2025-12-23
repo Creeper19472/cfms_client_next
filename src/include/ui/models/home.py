@@ -34,6 +34,7 @@ class HomeModel(Model):
 
     def post_init(self) -> None:
         self.file_picker = ft.FilePicker()
+        self.page.services.append(self.file_picker)
 
         async def _popups_check():
             # check welcome
