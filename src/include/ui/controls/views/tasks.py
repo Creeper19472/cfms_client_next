@@ -306,10 +306,16 @@ class TasksView(ft.Container):
             
             # Set up task update callback
             if self.download_service:
-                self.download_service.on_task_update = self._on_task_update
+                self.download_service.add_task_update_callback(self._on_task_update)
         
         # Refresh task list
         self._refresh_tasks()
+    
+    def will_unmount(self):
+        """Called when the view is about to be unmounted."""
+        # Remove callback when view is unmounted
+        if self.download_service:
+            self.download_service.remove_task_update_callback(self._on_task_update)
     
     def _on_task_update(self, task: DownloadTask):
         """

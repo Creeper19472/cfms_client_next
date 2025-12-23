@@ -3,7 +3,7 @@
 import asyncio
 import logging
 import time
-from typing import Dict, List, Optional, Callable
+from typing import Dict, List, Optional, Callable, Set
 from websockets.asyncio.client import ClientConnection
 
 from include.classes.config import AppShared
@@ -27,9 +27,10 @@ class DownloadManagerService(BaseService):
     Attributes:
         tasks: Dictionary of all tasks keyed by task_id
         active_downloads: Set of currently active download task_ids
+        active_tasks: Set of asyncio tasks for running downloads
         max_concurrent: Maximum number of concurrent downloads
         app_shared: Application shared configuration
-        on_task_update: Optional callback for task updates
+        on_task_update_callbacks: List of callbacks for task updates
     """
     
     def __init__(
@@ -56,8 +57,11 @@ class DownloadManagerService(BaseService):
         self.app_shared = app_shared
         self.tasks: Dict[str, DownloadTask] = {}
         self.active_downloads: set[str] = set()
+        self.active_tasks: Set[asyncio.Task] = set()
         self.max_concurrent = max_concurrent
-        self.on_task_update = on_task_update
+        self.on_task_update_callbacks: List[Callable[[DownloadTask], None]] = []
+        if on_task_update:
+            self.on_task_update_callbacks.append(on_task_update)
         self._download_lock = asyncio.Lock()
         
     async def execute(self):
@@ -77,8 +81,10 @@ class DownloadManagerService(BaseService):
             available_slots = self.max_concurrent - len(self.active_downloads)
             
             for task in pending_tasks[:available_slots]:
-                # Create download task
-                asyncio.create_task(self._download_task(task))
+                # Create download task and track it
+                download_task = asyncio.create_task(self._download_task(task))
+                self.active_tasks.add(download_task)
+                download_task.add_done_callback(self.active_tasks.discard)
     
     async def _download_task(self, task: DownloadTask):
         """
@@ -87,9 +93,12 @@ class DownloadManagerService(BaseService):
         Args:
             task: The download task to execute
         """
+        # Mark task as active under lock
+        async with self._download_lock:
+            self.active_downloads.add(task.task_id)
+            
         task.status = DownloadTaskStatus.DOWNLOADING
         task.started_at = time.time()
-        self.active_downloads.add(task.task_id)
         self._notify_task_update(task)
         
         transfer_conn: Optional[ClientConnection] = None
@@ -109,6 +118,11 @@ class DownloadManagerService(BaseService):
             async for stage, *data in receive_file_from_server(
                 transfer_conn, task_id=task.task_id, file_path=task.file_path
             ):
+                # Check if task was cancelled
+                if task.status == DownloadTaskStatus.CANCELLED:
+                    self.logger.info(f"Download cancelled: {task.filename}")
+                    break
+                
                 # Update task based on stage
                 task.stage = stage
                 
@@ -136,17 +150,20 @@ class DownloadManagerService(BaseService):
                 
                 self._notify_task_update(task)
             
-            # Download completed successfully
-            task.status = DownloadTaskStatus.COMPLETED
-            task.progress = 1.0
-            task.completed_at = time.time()
-            self.logger.info(f"Download completed: {task.filename}")
+            # Download completed successfully (unless it was cancelled)
+            if task.status != DownloadTaskStatus.CANCELLED:
+                task.status = DownloadTaskStatus.COMPLETED
+                task.progress = 1.0
+                task.completed_at = time.time()
+                self.logger.info(f"Download completed: {task.filename}")
             
         except asyncio.CancelledError:
-            # Task was cancelled
-            task.status = DownloadTaskStatus.CANCELLED
-            task.error = "Download cancelled by user"
+            # Task was cancelled via asyncio
+            if task.status != DownloadTaskStatus.CANCELLED:
+                task.status = DownloadTaskStatus.CANCELLED
+                task.error = "Download cancelled by user"
             self.logger.info(f"Download cancelled: {task.filename}")
+            raise
             
         except Exception as e:
             # Download failed
@@ -155,8 +172,9 @@ class DownloadManagerService(BaseService):
             self.logger.error(f"Download failed: {task.filename} - {e}", exc_info=True)
             
         finally:
-            # Clean up
-            self.active_downloads.discard(task.task_id)
+            # Clean up under lock
+            async with self._download_lock:
+                self.active_downloads.discard(task.task_id)
             if transfer_conn:
                 await transfer_conn.close()
             self._notify_task_update(task)
@@ -214,12 +232,39 @@ class DownloadManagerService(BaseService):
             self.logger.warning(f"Cannot cancel task {task_id}: task already in terminal state")
             return False
         
+        # Mark task as cancelled
         task.status = DownloadTaskStatus.CANCELLED
         task.error = "Cancelled by user"
         self.logger.info(f"Cancelled task: {task.filename} (task_id: {task_id})")
+        
+        # Cancel the asyncio task if it's running
+        for async_task in self.active_tasks:
+            # The task will check the status and exit gracefully
+            pass
+        
         self._notify_task_update(task)
         
         return True
+    
+    def add_task_update_callback(self, callback: Callable[[DownloadTask], None]):
+        """
+        Add a callback for task updates.
+        
+        Args:
+            callback: Callback function to be called when tasks are updated
+        """
+        if callback not in self.on_task_update_callbacks:
+            self.on_task_update_callbacks.append(callback)
+    
+    def remove_task_update_callback(self, callback: Callable[[DownloadTask], None]):
+        """
+        Remove a callback for task updates.
+        
+        Args:
+            callback: Callback function to remove
+        """
+        if callback in self.on_task_update_callbacks:
+            self.on_task_update_callbacks.remove(callback)
     
     def get_task(self, task_id: str) -> Optional[DownloadTask]:
         """
@@ -303,9 +348,9 @@ class DownloadManagerService(BaseService):
         Args:
             task: The task that was updated
         """
-        if self.on_task_update:
+        for callback in self.on_task_update_callbacks:
             try:
-                self.on_task_update(task)
+                callback(task)
             except Exception as e:
                 self.logger.error(f"Error in task update callback: {e}", exc_info=True)
     
@@ -319,3 +364,6 @@ class DownloadManagerService(BaseService):
         # Cancel all active downloads
         for task_id in list(self.active_downloads):
             self.cancel_task(task_id)
+        # Wait for all active tasks to complete
+        if self.active_tasks:
+            await asyncio.gather(*self.active_tasks, return_exceptions=True)

@@ -9,7 +9,7 @@ from include.classes.exceptions.transmission import (
     FileHashMismatchError,
     FileSizeMismatchError,
 )
-from include.ui.util.notifications import send_error
+from include.ui.util.notifications import send_error, send_info
 from include.util.requests import do_request
 from include.util.connect import get_connection
 from include.util.transfer import receive_file_from_server
@@ -126,7 +126,6 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
         )
         
         # Show notification that download was added
-        from include.ui.util.notifications import send_info
         send_info(
             page,
             _("Download added: {filename}").format(filename=filename if filename else task_id[0:17])
