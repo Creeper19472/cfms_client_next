@@ -143,6 +143,7 @@ class AutoUpdateService(BaseService):
             async def navigate_to_about(e):
                 """Navigate to about page with proper error handling."""
                 try:
+                    assert self.page is not None
                     await self.page.push_route("/connect/about/")
                 except Exception as nav_error:
                     self.logger.error(f"Error navigating to about page: {nav_error}")
@@ -154,13 +155,13 @@ class AutoUpdateService(BaseService):
                     )
                 ),
                 action=_("Go to About"),
-                action_color=ft.Colors.BLUE,
+                bgcolor=ft.Colors.BLUE_200,
                 duration=SNACKBAR_DURATION_MS,
                 on_action=lambda e: asyncio.create_task(navigate_to_about(e)),
             )
             
             # Show snackbar on the UI thread
-            self.page.open(snackbar)
+            self.page.show_dialog(snackbar)
             self.page.update()
             
             self.logger.info(f"User notified of update: {release.version}")

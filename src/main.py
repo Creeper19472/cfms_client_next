@@ -152,7 +152,7 @@ async def main(page: ft.Page):
         page=page,
         enabled=True,
         interval=21600.0,  # 6 hours
-        check_on_start=False,
+        check_on_start=True,
         notify_user=True,
     )
     service_manager.register(autoupdate_service)
