@@ -5,6 +5,7 @@ This module initializes the Flet application, configures localization,
 and sets up the UI components and page settings.
 """
 
+import asyncio
 import os
 import warnings
 
@@ -12,6 +13,8 @@ import flet as ft
 import flet_permission_handler as fph
 
 from include.classes.config import AppConfig
+from include.classes.services.manager import ServiceManager
+from include.classes.services.autoupdate import AutoUpdateService
 from include.util.locale import set_translation
 
 # Window configuration constants
@@ -129,7 +132,7 @@ async def main(page: ft.Page):
     # Register event handlers
     page.on_keyboard_event = on_keyboard
 
-    # Register services
+    # Register Flet services
     ph_service = fph.PermissionHandler()
     page.services.append(ph_service)
 
@@ -137,6 +140,33 @@ async def main(page: ft.Page):
     
     assert page.platform
     AppConfig().is_mobile = page.platform.is_mobile()
+
+    # Initialize service manager and register services
+    service_manager = ServiceManager()
+    AppConfig().service_manager = service_manager
+    
+    # Register auto-update service
+    # Check for updates every 6 hours (21600 seconds)
+    # Don't check immediately on start to avoid slowing down app launch
+    autoupdate_service = AutoUpdateService(
+        page=page,
+        enabled=True,
+        interval=21600.0,  # 6 hours
+        check_on_start=False,
+        notify_user=True,
+    )
+    service_manager.register(autoupdate_service)
+    
+    # Start all registered services
+    await service_manager.start_all()
+    
+    # Register cleanup handler for when the page closes
+    async def on_page_close(e):
+        """Clean up services when the page closes."""
+        logging.info("Page closing, stopping all services...")
+        await service_manager.stop_all()
+    
+    page.on_close = on_page_close
 
     # Navigate to initial screen
     await page.push_route("/connect")

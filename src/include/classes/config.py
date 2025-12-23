@@ -3,7 +3,7 @@
 import os
 import threading
 import hashlib
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 import yaml
 from flet_permission_handler import PermissionHandler
@@ -11,6 +11,9 @@ from websockets.asyncio.client import ClientConnection
 
 from include.classes.preferences import UserPreference
 from include.constants import FLET_APP_STORAGE_DATA
+
+if TYPE_CHECKING:
+    from include.classes.services.manager import ServiceManager
 
 PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/preferences.yaml"
 
@@ -37,6 +40,7 @@ class AppConfig:
         user_groups: List of groups the user belongs to
         conn: Active WebSocket connection to server
         ph_service: Permission handler service instance
+        service_manager: Background service manager instance
         preferences: User preferences dictionary loaded from YAML
     """
 
@@ -75,6 +79,7 @@ class AppConfig:
         # Connection and services
         self.conn: Optional[ClientConnection] = None
         self.ph_service: Optional[PermissionHandler] = None
+        self.service_manager: Optional["ServiceManager"] = None
 
         # User preferences
         self.user_perference: Optional[UserPreference] = None
