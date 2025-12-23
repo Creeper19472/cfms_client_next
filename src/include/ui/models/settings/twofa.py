@@ -7,6 +7,7 @@ from include.classes.config import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.twofa_verify import TwoFactorVerifyDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
+from include.ui.controls.dialogs.backup_codes import BackupCodesDialog
 from include.ui.util.notifications import send_success, send_error
 from include.ui.util.route import get_parent_route
 from include.util.requests import do_request_2
@@ -34,6 +35,9 @@ class TwoFactorSettingsModel(Model):
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
         )
         self.app_shared = AppShared()
+        
+        # Store backup codes for display after verification
+        self.pending_backup_codes: list[str] = []
         
         # 2FA status text
         self.status_text = ft.Text(
@@ -149,6 +153,9 @@ class TwoFactorSettingsModel(Model):
                 provisioning_uri = response.data.get("provisioning_uri")
                 backup_codes: list[str] = response.data.get("backup_codes", [])
                 
+                # Store backup codes for display after verification
+                self.pending_backup_codes = backup_codes
+                
                 if secret and provisioning_uri:
                     # Show setup dialog
                     setup_dialog = TwoFactorSetupDialog(
@@ -186,8 +193,19 @@ class TwoFactorSettingsModel(Model):
             )
             
             if response.code == 200:
-                send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
+                # Update UI status first
                 self._update_ui_for_status(True)
+                
+                # Show backup codes if available
+                if self.pending_backup_codes:
+                    backup_codes_dialog = BackupCodesDialog(
+                        backup_codes=self.pending_backup_codes,
+                        on_close_callback=self._on_backup_codes_saved,
+                    )
+                    self.page.show_dialog(backup_codes_dialog)
+                else:
+                    send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
+                
                 return True
             else:
                 return False
@@ -196,8 +214,18 @@ class TwoFactorSettingsModel(Model):
             send_error(self.page, f"Error verifying 2FA setup: {str(e)}")
             return False
     
+    async def _on_backup_codes_saved(self):
+        """Handle when user confirms they've saved backup codes."""
+        # Clear the pending backup codes
+        self.pending_backup_codes = []
+        # Show success message after backup codes dialog is closed
+        send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
+    
     async def _cancel_2fa_setup(self):
         """Handle cancellation of 2FA setup."""
+        # Clear pending backup codes
+        self.pending_backup_codes = []
+        
         try:
             # Notify server to cancel pending setup
             await do_request_2(
