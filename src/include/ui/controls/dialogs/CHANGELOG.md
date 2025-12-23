@@ -3,6 +3,17 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.3.2
+**Released on:** 2025-12-23
+
+**Title:** Download Manager Service & UI Interface
+
+This version introduces a new download manager service to handle multiple download tasks,
+making `Tasks` view usable.
+
+A fix has also been introduced for an issue in file upload action.
+
+---
 ## v0.3.1
 **Released on:** 2025-12-23
 
