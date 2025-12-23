@@ -41,6 +41,58 @@ Concrete implementation that checks for application updates periodically.
 - User notifications via snackbar
 - Manual check triggering
 
+### DownloadManagerService (`download.py`)
+
+Centralized service for managing file downloads from the server.
+
+**Features:**
+- Concurrent download management with configurable limits (default: 3)
+- Task queue with automatic scheduling
+- Real-time progress tracking and status updates
+- Task lifecycle management (add, cancel, query)
+- Multiple callback support for UI updates
+- Automatic retry and error handling
+- Integration with existing file transfer utilities
+
+**Task States:**
+- PENDING - Task is queued, waiting to start
+- DOWNLOADING - File is being downloaded from server
+- DECRYPTING - Downloaded chunks are being decrypted
+- VERIFYING - File integrity is being verified
+- COMPLETED - Download completed successfully
+- FAILED - Download failed with error
+- CANCELLED - Download was cancelled by user
+
+**Usage:**
+```python
+# Get the download service
+download_service = AppShared().service_manager.get_service("download_manager")
+
+# Add a download task
+task = download_service.add_task(
+    task_id=server_task_id,
+    file_id=document_id,
+    filename="document.pdf",
+    file_path="/path/to/save/document.pdf"
+)
+
+# Monitor progress via callback
+def on_task_update(task: DownloadTask):
+    print(f"{task.filename}: {task.progress * 100:.1f}%")
+
+download_service.add_task_update_callback(on_task_update)
+
+# Cancel a download
+download_service.cancel_task(task_id)
+
+# Query tasks
+all_tasks = download_service.get_all_tasks()
+active_tasks = download_service.get_tasks_by_status(DownloadTaskStatus.DOWNLOADING)
+
+# Clean up completed tasks
+download_service.clear_completed_tasks()
+```
+
 ## Usage
 
 ### Creating a New Service
