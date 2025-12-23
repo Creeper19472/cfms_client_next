@@ -5,6 +5,7 @@ from include.ui.controls.components.homepage import HomeView, HomeNavigationBar
 from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
+from include.ui.controls.views.tasks import TasksView
 
 
 @route("home")
@@ -22,7 +23,7 @@ class HomeModel(Model):
         self.controls = [
             ft.SafeArea(ft.Container()),
             FileManagerView(parent_model=self),
-            ft.Container(),
+            TasksView(parent_model=self),
             self.homeview,
             MoreView(self),
         ]

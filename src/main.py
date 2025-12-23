@@ -14,6 +14,7 @@ import flet_permission_handler as fph
 from include.classes.config import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
+from include.classes.services.download import DownloadManagerService
 from include.util.locale import set_translation
 
 # Window configuration constants
@@ -168,7 +169,12 @@ async def main(page: ft.Page):
     service_manager.register(autoupdate_service)
 
     # Register download manager service
-    # TODO: Implement download manager service
+    download_manager_service = DownloadManagerService(
+        app_shared=app_shared,
+        enabled=True,
+        max_concurrent=3,
+    )
+    service_manager.register(download_manager_service)
 
     # Start all registered services
     await service_manager.start_all()
