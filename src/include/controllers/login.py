@@ -36,7 +36,7 @@ class LoginFormController(BaseController["LoginForm"]):
         )
 
         if (code := response["code"]) == 200:
-            # Check if 2FA is required
+            # Check if 2FA is required (legacy flag-based approach)
             requires_2fa = response["data"].get("requires_2fa", False)
             
             if requires_2fa:
@@ -54,6 +54,26 @@ class LoginFormController(BaseController["LoginForm"]):
             
             # Regular login without 2FA
             self._complete_login(username, response["data"])
+
+        elif code == 202:
+            # Server indicates 2FA verification is required
+            # Store partial login state
+            self.app_shared.username = username
+            self.app_shared.pending_2fa_verification = True
+            
+            # Get the verification method from response
+            method = response["data"].get("method", "totp")
+            
+            if method == "totp":
+                # Show 2FA verification dialog for TOTP
+                twofa_dialog = TwoFactorVerifyDialog(
+                    on_verify_callback=self._verify_2fa_code,
+                    on_cancel_callback=self._cancel_2fa_login,
+                )
+                self.control.page.show_dialog(twofa_dialog)
+            else:
+                self.control.send_error(f"Unsupported 2FA method: {method}")
+            return
 
         elif code == 403:
             self.control.page.show_dialog(

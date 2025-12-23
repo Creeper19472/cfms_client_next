@@ -144,7 +144,7 @@ class TwoFactorSettingsModel(Model):
             )
             
             if response.code == 200:
-                # Server returned complete setup data (legacy flow)
+                # Server returned complete setup data
                 secret = response.data.get("secret")
                 provisioning_uri = response.data.get("provisioning_uri")
                 backup_codes: list[str] = response.data.get("backup_codes", [])
@@ -160,19 +160,6 @@ class TwoFactorSettingsModel(Model):
                     self.page.show_dialog(setup_dialog)
                 else:
                     send_error(self.page, "Invalid setup data received from server")
-            elif response.code == 202:
-                # Server indicates verification is required
-                method = response.data.get("method", "totp")
-                
-                if method == "totp":
-                    # Show verification dialog for TOTP
-                    verify_dialog = TwoFactorVerifyDialog(
-                        on_verify_callback=self._verify_2fa_setup_with_code,
-                        on_cancel_callback=self._cancel_2fa_setup,
-                    )
-                    self.page.show_dialog(verify_dialog)
-                else:
-                    send_error(self.page, f"Unsupported 2FA method: {method}")
             else:
                 send_error(self.page, f"Failed to initiate 2FA setup: {response.message}")
                 
@@ -194,35 +181,6 @@ class TwoFactorSettingsModel(Model):
             response = await do_request_2(
                 "validate_2fa",
                 data={"token": code},  # token is actually code.
-                username=self.app_shared.username,
-                token=self.app_shared.token,
-            )
-            
-            if response.code == 200:
-                send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
-                self._update_ui_for_status(True)
-                return True
-            else:
-                return False
-                
-        except Exception as e:
-            send_error(self.page, f"Error verifying 2FA setup: {str(e)}")
-            return False
-    
-    async def _verify_2fa_setup_with_code(self, code: str) -> bool:
-        """
-        Verify 2FA setup when server returns 202 (requires verification).
-        
-        Args:
-            code: The 6-digit verification code
-            
-        Returns:
-            True if verification successful, False otherwise
-        """
-        try:
-            response = await do_request_2(
-                "validate_2fa",
-                data={"token": code},
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
