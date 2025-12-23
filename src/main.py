@@ -168,14 +168,7 @@ async def main(page: ft.Page):
     )
     service_manager.register(autoupdate_service)
 
-    # Register download manager service with enhanced features
-    # - Pause/Resume: Can pause and resume downloads
-    # - Priority Queue: Downloads sorted by priority
-    # - Task Persistence: Tasks saved across app restarts
-    # - Bandwidth Limiting: Can limit download speed per task
-    # - Download Scheduling: Can schedule downloads for later
-    # - Auto Retry: Failed downloads automatically retry up to 3 times
-    # - Batch Operations: Pause/resume/cancel multiple tasks at once
+    # Register download manager service
     download_manager_service = DownloadManagerService(
         app_shared=app_shared,
         enabled=True,
