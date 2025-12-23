@@ -3,6 +3,14 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.3.3
+**Released on:** 2025-12-24
+
+**Title:** Introducing 2FA
+
+This version adds 2FA support (only TOTP for now) for the client.
+
+---
 ## v0.3.2
 **Released on:** 2025-12-23
 

@@ -344,7 +344,7 @@ class ConnectionSettingsModel(Model):
             hint_text="http://proxy:8080 or leave blank"
         )
         
-        self.save_button = ft.ElevatedButton(
+        self.save_button = ft.Button(
             _("Save"),
             on_click=self.save_settings
         )

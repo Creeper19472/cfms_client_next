@@ -54,7 +54,7 @@ class TwoFactorSettingsModel(Model):
         )
         
         # Enable/Disable button
-        self.toggle_button = ft.ElevatedButton(
+        self.toggle_button = ft.Button(
             _("Enable Two-Factor Authentication"),
             icon=ft.Icons.SECURITY,
             on_click=self._on_toggle_2fa,
@@ -62,7 +62,7 @@ class TwoFactorSettingsModel(Model):
         )
         
         # Disable button (shown when 2FA is enabled)
-        self.disable_button = ft.ElevatedButton(
+        self.disable_button = ft.Button(
             _("Disable Two-Factor Authentication"),
             icon=ft.Icons.SECURITY_UPDATE_WARNING,
             on_click=self._on_disable_2fa,
