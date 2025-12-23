@@ -20,6 +20,9 @@ dependencies = [
   "aiofiles",
   "pyyaml",
   "python-socks",
+  "pyotp",
+  "qrcode",
+  "pillow",
 ]
 
 [tool.flet]

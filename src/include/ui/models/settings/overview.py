@@ -46,6 +46,12 @@ class SettingsModel(Model):
                 subtitle=ft.Text(_("Adjust application connection history policy")),
                 on_click=self.configure_safety_listtile_click,
             ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.LOCK),
+                title=ft.Text(_("Two-Factor Authentication")),
+                subtitle=ft.Text(_("Manage two-factor authentication settings")),
+                on_click=self.configure_twofa_listtile_click,
+            ),
             # ft.ListTile(
             #     leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
             #     title=ft.Text(_("Updates")),
@@ -74,3 +80,6 @@ class SettingsModel(Model):
 
     async def configure_safety_listtile_click(self, event: ft.Event[ft.ListTile]):
         await self.page.push_route(self.page.route + "/safety_settings")
+    
+    async def configure_twofa_listtile_click(self, event: ft.Event[ft.ListTile]):
+        await self.page.push_route(self.page.route + "/twofa_settings")

@@ -10,6 +10,7 @@ from flet_permission_handler import PermissionHandler
 from websockets.asyncio.client import ClientConnection
 
 from include.classes.preferences import UserPreference
+from include.classes.twofa import TwoFactorConfig, TwoFactorStatus, TwoFactorMethod
 from include.constants import FLET_APP_STORAGE_DATA
 
 if TYPE_CHECKING:
@@ -38,6 +39,8 @@ class AppShared:
         nickname (Optional[str]): The user's nickname.
         user_permissions (list[str]): List of permissions assigned to the user.
         user_groups (list[str]): List of groups the user belongs to.
+        user_2fa_enabled (bool): Whether the user has 2FA enabled.
+        pending_2fa_verification (bool): Whether 2FA verification is pending for login.
         conn (Optional[ClientConnection]): The client connection object.
         ph_service (Optional[PermissionHandler]): The permission handler service.
         service_manager (Optional["ServiceManager"]): The service manager instance.
@@ -81,6 +84,8 @@ class AppShared:
         self.nickname: Optional[str] = None
         self.user_permissions: list[str] = []
         self.user_groups: list[str] = []
+        self.user_2fa_enabled: bool = False
+        self.pending_2fa_verification: bool = False
 
         # Connection and services
         self.conn: Optional[ClientConnection] = None
