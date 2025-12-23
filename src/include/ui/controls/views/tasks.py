@@ -95,10 +95,24 @@ class TaskTile(ft.Card):
         self.priority_badge = ft.Container(
             content=self.priority_badge_text,
             bgcolor=ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY,
-            padding=ft.padding.symmetric(horizontal=6, vertical=2),
+            padding=ft.Padding.symmetric(horizontal=6, vertical=2),
             border_radius=10,
             visible=task.priority != 0,
         )
+
+        # Status icon and color
+        self.status_icon = ft.Icon(
+            icon=self._get_status_icondata(),
+            size=20,
+            color=self._get_status_color(),
+        )
+
+        # Set progress bar visibility
+        self.progress_bar.visible = task.status not in [
+            DownloadTaskStatus.COMPLETED,
+            DownloadTaskStatus.FAILED,
+            DownloadTaskStatus.CANCELLED,
+        ]
 
         # Build the tile
         self.content = ft.Container(
@@ -106,11 +120,7 @@ class TaskTile(ft.Card):
                 controls=[
                     ft.Row(
                         controls=[
-                            ft.Icon(
-                                icon=self._get_status_icon(),
-                                size=20,
-                                color=self._get_status_color(),
-                            ),
+                            self.status_icon,
                             ft.Column(
                                 controls=[
                                     ft.Row(
@@ -135,16 +145,7 @@ class TaskTile(ft.Card):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    (
-                        self.progress_bar
-                        if task.status
-                        not in [
-                            DownloadTaskStatus.COMPLETED,
-                            DownloadTaskStatus.FAILED,
-                            DownloadTaskStatus.CANCELLED,
-                        ]
-                        else ft.Container(height=0)
-                    ),
+                    self.progress_bar,
                     self.progress_info,
                 ],
                 spacing=5,
@@ -152,7 +153,7 @@ class TaskTile(ft.Card):
             padding=10,
         )
 
-    def _get_status_icon(self) -> ft.IconData:
+    def _get_status_icondata(self) -> ft.IconData:
         """Get icon based on task status."""
         status_icons = {
             DownloadTaskStatus.PENDING: ft.Icons.SCHEDULE,
@@ -230,8 +231,17 @@ class TaskTile(ft.Card):
         """Update the tile with new task data."""
         self.task = task
 
+        # Update status icon
+        self.status_icon.icon = self._get_status_icondata()
+        self.status_icon.color = self._get_status_color()
+
         # Update progress bar
         self.progress_bar.value = task.progress
+        self.progress_bar.visible = task.status not in [
+            DownloadTaskStatus.COMPLETED,
+            DownloadTaskStatus.FAILED,
+            DownloadTaskStatus.CANCELLED,
+        ]
 
         # Update status text
         self.status_text.value = self._get_status_text()
@@ -348,6 +358,7 @@ class TasksView(ft.Container):
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             expand=True,
+            alignment=ft.Alignment.CENTER,
         )
 
         # Build the view

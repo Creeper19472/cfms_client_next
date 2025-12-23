@@ -25,11 +25,11 @@ TASKS_PERSISTENCE_FILE = f"{FLET_APP_STORAGE_DATA}/download_tasks.json"
 class DownloadManagerService(BaseService):
     """
     Download manager service for centrally managing file download tasks.
-    
+
     This service manages a queue of download tasks, handles concurrent downloads,
     tracks progress, and provides an interface for the UI to monitor and control
     download operations.
-    
+
     Features:
     - Concurrent download management with configurable limits
     - Pause/Resume functionality
@@ -39,7 +39,7 @@ class DownloadManagerService(BaseService):
     - Download scheduling
     - Automatic retry on failures
     - Batch operations
-    
+
     Attributes:
         tasks: Dictionary of all tasks keyed by task_id
         active_downloads: Set of currently active download task_ids
@@ -49,7 +49,7 @@ class DownloadManagerService(BaseService):
         on_task_update_callbacks: List of callbacks for task updates
         enable_persistence: Whether to save/load tasks across restarts
     """
-    
+
     def __init__(
         self,
         app_shared: AppShared,
@@ -60,7 +60,7 @@ class DownloadManagerService(BaseService):
     ):
         """
         Initialize the download manager service.
-        
+
         Args:
             app_shared: Application shared configuration
             enabled: Whether service is enabled
@@ -83,68 +83,75 @@ class DownloadManagerService(BaseService):
         if on_task_update:
             self.on_task_update_callbacks.append(on_task_update)
         self._download_lock = asyncio.Lock()
-        
+
     async def execute(self):
         """
         Main service execution loop.
-        
+
         Processes pending/scheduled downloads from the queue if capacity is available.
         Handles scheduled downloads and priority-based queue.
         """
         current_time = time.time()
-        
+
         # Check for scheduled tasks that are ready
         scheduled_tasks = [
-            task for task in self.tasks.values()
-            if task.status == DownloadTaskStatus.SCHEDULED 
+            task
+            for task in self.tasks.values()
+            if task.status == DownloadTaskStatus.SCHEDULED
             and task.scheduled_time is not None
             and task.scheduled_time <= current_time
         ]
-        
+
         # Move scheduled tasks to pending
         for task in scheduled_tasks:
             task.status = DownloadTaskStatus.PENDING
             task.scheduled_time = None
             self._notify_task_update(task)
             self.logger.info(f"Scheduled task {task.filename} is now pending")
-        
+
         # Get pending tasks sorted by priority (higher priority first)
         pending_tasks = sorted(
-            [task for task in self.tasks.values() if task.status == DownloadTaskStatus.PENDING],
+            [
+                task
+                for task in self.tasks.values()
+                if task.status == DownloadTaskStatus.PENDING
+            ],
             key=lambda t: t.priority,
-            reverse=True
+            reverse=True,
         )
-        
+
         # Start downloads up to max_concurrent limit
         async with self._download_lock:
             available_slots = self.max_concurrent - len(self.active_downloads)
-            
+
             for task in pending_tasks[:available_slots]:
                 # Create download task and track it
                 download_task = asyncio.create_task(self._download_task(task))
                 self.active_tasks.add(download_task)
                 download_task.add_done_callback(self.active_tasks.discard)
-    
+
     async def _download_task(self, task: DownloadTask):
         """
         Execute a single download task with retry logic.
-        
+
         Args:
             task: The download task to execute
         """
         # Mark task as active under lock
         async with self._download_lock:
             self.active_downloads.add(task.task_id)
-            
+
         task.status = DownloadTaskStatus.DOWNLOADING
         task.started_at = time.time()
         self._notify_task_update(task)
-        
+
         transfer_conn: Optional[ClientConnection] = None
-        
+
         try:
-            self.logger.info(f"Starting download: {task.filename} (task_id: {task.task_id}, attempt {task.retry_count + 1})")
-            
+            self.logger.info(
+                f"Starting download: {task.filename} (task_id: {task.task_id}, attempt {task.retry_count + 1})"
+            )
+
             # Establish connection
             transfer_conn = await get_connection(
                 server_address=self.app_shared.get_not_none_attribute("server_address"),
@@ -152,7 +159,7 @@ class DownloadManagerService(BaseService):
                 proxy=self.app_shared.preferences["settings"]["proxy_settings"],
                 max_size=1024**2 * 4,
             )
-            
+
             # Start file transfer
             async for stage, *data in receive_file_from_server(
                 transfer_conn, task_id=task.task_id, file_path=task.file_path
@@ -165,10 +172,10 @@ class DownloadManagerService(BaseService):
                     self.logger.info(f"Download paused: {task.filename}")
                     task.pause_position = task.current_bytes
                     break
-                
+
                 # Update task based on stage
                 task.stage = stage
-                
+
                 match stage:
                     case 0:  # Downloading
                         task.status = DownloadTaskStatus.DOWNLOADING
@@ -190,21 +197,24 @@ class DownloadManagerService(BaseService):
                     case 3:  # Verifying
                         task.status = DownloadTaskStatus.VERIFYING
                         task.progress = 1.0
-                
+
                 self._notify_task_update(task)
-                
+
                 # Apply bandwidth limiting if set
                 if task.bandwidth_limit and stage == 0:
                     # Simple bandwidth throttling
                     await asyncio.sleep(0.1)
-            
+
             # Download completed successfully (unless it was cancelled/paused)
-            if task.status not in [DownloadTaskStatus.CANCELLED, DownloadTaskStatus.PAUSED]:
+            if task.status not in [
+                DownloadTaskStatus.CANCELLED,
+                DownloadTaskStatus.PAUSED,
+            ]:
                 task.status = DownloadTaskStatus.COMPLETED
                 task.progress = 1.0
                 task.completed_at = time.time()
                 self.logger.info(f"Download completed: {task.filename}")
-            
+
         except asyncio.CancelledError:
             # Task was cancelled via asyncio
             if task.status != DownloadTaskStatus.CANCELLED:
@@ -212,22 +222,27 @@ class DownloadManagerService(BaseService):
                 task.error = "Download cancelled by user"
             self.logger.info(f"Download cancelled: {task.filename}")
             raise
-            
+
         except Exception as e:
             # Download failed - check if we should retry
             task.retry_count += 1
-            
+
             if task.retry_count < task.max_retries:
                 # Retry the download
                 task.status = DownloadTaskStatus.PENDING
                 task.error = f"Attempt {task.retry_count} failed: {str(e)}. Retrying..."
-                self.logger.warning(f"Download failed, will retry: {task.filename} - {e}")
+                self.logger.warning(
+                    f"Download failed, will retry: {task.filename} - {e}"
+                )
             else:
                 # Max retries reached, mark as failed
                 task.status = DownloadTaskStatus.FAILED
                 task.error = f"Failed after {task.retry_count} attempts: {str(e)}"
-                self.logger.error(f"Download failed after {task.retry_count} attempts: {task.filename} - {e}", exc_info=True)
-            
+                self.logger.error(
+                    f"Download failed after {task.retry_count} attempts: {task.filename} - {e}",
+                    exc_info=True,
+                )
+
         finally:
             # Clean up under lock
             async with self._download_lock:
@@ -235,20 +250,20 @@ class DownloadManagerService(BaseService):
             if transfer_conn:
                 await transfer_conn.close()
             self._notify_task_update(task)
-            
+
             # Save tasks if persistence is enabled
             if self.enable_persistence:
                 await self._save_tasks()
-    
+
     # (removed duplicate add_task with extended parameters)
-    
+
     def pause_task(self, task_id: str) -> bool:
         """
         Pause a download task.
-        
+
         Args:
             task_id: ID of the task to pause
-            
+
         Returns:
             True if task was paused, False if task not found or not pausable
         """
@@ -256,28 +271,33 @@ class DownloadManagerService(BaseService):
         if not task:
             self.logger.warning(f"Cannot pause task {task_id}: task not found")
             return False
-        
-        if task.status not in [DownloadTaskStatus.DOWNLOADING, DownloadTaskStatus.PENDING]:
-            self.logger.warning(f"Cannot pause task {task_id}: task not in pausable state")
+
+        if task.status not in [
+            DownloadTaskStatus.DOWNLOADING,
+            DownloadTaskStatus.PENDING,
+        ]:
+            self.logger.warning(
+                f"Cannot pause task {task_id}: task not in pausable state"
+            )
             return False
-        
+
         task.status = DownloadTaskStatus.PAUSED
         self.logger.info(f"Paused task: {task.filename} (task_id: {task_id})")
         self._notify_task_update(task)
-        
+
         # Save tasks if persistence is enabled
         if self.enable_persistence:
             asyncio.create_task(self._save_tasks())
-        
+
         return True
-    
+
     def resume_task(self, task_id: str) -> bool:
         """
         Resume a paused download task.
-        
+
         Args:
             task_id: ID of the task to resume
-            
+
         Returns:
             True if task was resumed, False if task not found or not paused
         """
@@ -285,56 +305,63 @@ class DownloadManagerService(BaseService):
         if not task:
             self.logger.warning(f"Cannot resume task {task_id}: task not found")
             return False
-        
+
         if task.status != DownloadTaskStatus.PAUSED:
             self.logger.warning(f"Cannot resume task {task_id}: task not paused")
             return False
-        
+
         task.status = DownloadTaskStatus.PENDING
         self.logger.info(f"Resumed task: {task.filename} (task_id: {task_id})")
         self._notify_task_update(task)
-        
+
         # Save tasks if persistence is enabled
         if self.enable_persistence:
             asyncio.create_task(self._save_tasks())
-        
+
         return True
-    
+
     # (removed duplicate cancel_task)
-    
+
     def set_task_priority(self, task_id: str, priority: int) -> bool:
         """
         Set the priority of a pending task.
-        
+
         Args:
             task_id: ID of the task
             priority: New priority value (higher = processed first)
-            
+
         Returns:
             True if priority was set, False if task not found or not pending
         """
         task = self.tasks.get(task_id)
         if not task:
-            self.logger.warning(f"Cannot set priority for task {task_id}: task not found")
+            self.logger.warning(
+                f"Cannot set priority for task {task_id}: task not found"
+            )
             return False
-        
-        if task.status not in [DownloadTaskStatus.PENDING, DownloadTaskStatus.SCHEDULED]:
-            self.logger.warning(f"Cannot set priority for task {task_id}: task not pending/scheduled")
+
+        if task.status not in [
+            DownloadTaskStatus.PENDING,
+            DownloadTaskStatus.SCHEDULED,
+        ]:
+            self.logger.warning(
+                f"Cannot set priority for task {task_id}: task not pending/scheduled"
+            )
             return False
-        
+
         task.priority = priority
         self.logger.info(f"Set priority {priority} for task: {task.filename}")
         self._notify_task_update(task)
-        
+
         return True
-    
+
     def batch_cancel_tasks(self, task_ids: List[str]) -> int:
         """
         Cancel multiple tasks at once.
-        
+
         Args:
             task_ids: List of task IDs to cancel
-            
+
         Returns:
             Number of tasks successfully cancelled
         """
@@ -342,17 +369,17 @@ class DownloadManagerService(BaseService):
         for task_id in task_ids:
             if self.cancel_task(task_id):
                 count += 1
-        
+
         self.logger.info(f"Batch cancelled {count} tasks")
         return count
-    
+
     def batch_pause_tasks(self, task_ids: List[str]) -> int:
         """
         Pause multiple tasks at once.
-        
+
         Args:
             task_ids: List of task IDs to pause
-            
+
         Returns:
             Number of tasks successfully paused
         """
@@ -360,17 +387,17 @@ class DownloadManagerService(BaseService):
         for task_id in task_ids:
             if self.pause_task(task_id):
                 count += 1
-        
+
         self.logger.info(f"Batch paused {count} tasks")
         return count
-    
+
     def batch_resume_tasks(self, task_ids: List[str]) -> int:
         """
         Resume multiple paused tasks at once.
-        
+
         Args:
             task_ids: List of task IDs to resume
-            
+
         Returns:
             Number of tasks successfully resumed
         """
@@ -378,15 +405,15 @@ class DownloadManagerService(BaseService):
         for task_id in task_ids:
             if self.resume_task(task_id):
                 count += 1
-        
+
         self.logger.info(f"Batch resumed {count} tasks")
         return count
-    
+
     async def _save_tasks(self):
         """Save tasks to disk for persistence."""
         if not self.enable_persistence:
             return
-        
+
         try:
             # Only save non-completed tasks
             tasks_to_save = {
@@ -414,35 +441,38 @@ class DownloadManagerService(BaseService):
                 for task_id, task in self.tasks.items()
                 if task.status not in [DownloadTaskStatus.COMPLETED]
             }
-            
+
             # Ensure directory exists
             os.makedirs(os.path.dirname(TASKS_PERSISTENCE_FILE), exist_ok=True)
-            
-            with open(TASKS_PERSISTENCE_FILE, 'w') as f:
+
+            with open(TASKS_PERSISTENCE_FILE, "w") as f:
                 json.dump(tasks_to_save, f, indent=2)
-            
+
             self.logger.debug(f"Saved {len(tasks_to_save)} tasks to disk")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to save tasks: {e}", exc_info=True)
-    
+
     async def _load_tasks(self):
         """Load tasks from disk."""
         if not self.enable_persistence or not os.path.exists(TASKS_PERSISTENCE_FILE):
             return
-        
+
         try:
-            with open(TASKS_PERSISTENCE_FILE, 'r') as f:
+            with open(TASKS_PERSISTENCE_FILE, "r") as f:
                 tasks_data = json.load(f)
-            
+
             for task_id, task_dict in tasks_data.items():
                 # Convert status string back to enum
                 status = DownloadTaskStatus(task_dict["status"])
-                
+
                 # Reset downloading/decrypting tasks to pending
-                if status in [DownloadTaskStatus.DOWNLOADING, DownloadTaskStatus.DECRYPTING]:
+                if status in [
+                    DownloadTaskStatus.DOWNLOADING,
+                    DownloadTaskStatus.DECRYPTING,
+                ]:
                     status = DownloadTaskStatus.PENDING
-                
+
                 task = DownloadTask(
                     task_id=task_dict["task_id"],
                     file_id=task_dict["file_id"],
@@ -464,121 +494,124 @@ class DownloadManagerService(BaseService):
                     bandwidth_limit=task_dict["bandwidth_limit"],
                     pause_position=task_dict["pause_position"],
                 )
-                
+
                 self.tasks[task_id] = task
-            
+
             self.logger.info(f"Loaded {len(self.tasks)} tasks from disk")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to load tasks: {e}", exc_info=True)
-    
+
     def add_task_update_callback(self, callback: Callable[[DownloadTask], None]):
         """
         Add a callback for task updates.
-        
+
         Args:
             callback: Callback function to be called when tasks are updated
         """
         if callback not in self.on_task_update_callbacks:
             self.on_task_update_callbacks.append(callback)
-    
+
     def remove_task_update_callback(self, callback: Callable[[DownloadTask], None]):
         """
         Remove a callback for task updates.
-        
+
         Args:
             callback: Callback function to remove
         """
         if callback in self.on_task_update_callbacks:
             self.on_task_update_callbacks.remove(callback)
-    
+
     def get_task(self, task_id: str) -> Optional[DownloadTask]:
         """
         Get a task by its ID.
-        
+
         Args:
             task_id: ID of the task to retrieve
-            
+
         Returns:
             The DownloadTask if found, None otherwise
         """
         return self.tasks.get(task_id)
-    
+
     def get_all_tasks(self) -> List[DownloadTask]:
         """
         Get all download tasks.
-        
+
         Returns:
             List of all DownloadTask instances
         """
         return list(self.tasks.values())
-    
+
     def get_tasks_by_status(self, status: DownloadTaskStatus) -> List[DownloadTask]:
         """
         Get all tasks with a specific status.
-        
+
         Args:
             status: Status to filter by
-            
+
         Returns:
             List of DownloadTask instances with the specified status
         """
         return [task for task in self.tasks.values() if task.status == status]
-    
+
     def clear_completed_tasks(self) -> int:
         """
-        Remove all completed tasks from the task list.
-        
+        Remove all completed tasks (including cancelled tasks) from the task list.
+
         Returns:
             Number of tasks removed
         """
         completed_tasks = [
-            task_id for task_id, task in self.tasks.items()
-            if task.status == DownloadTaskStatus.COMPLETED
+            task_id
+            for task_id, task in self.tasks.items()
+            if task.status
+            in [DownloadTaskStatus.COMPLETED, DownloadTaskStatus.CANCELLED]
         ]
-        
+
         for task_id in completed_tasks:
             del self.tasks[task_id]
-        
+
         count = len(completed_tasks)
         if count > 0:
             self.logger.info(f"Cleared {count} completed tasks")
-            
+
             # Save after clearing
             if self.enable_persistence:
                 asyncio.create_task(self._save_tasks())
-        
+
         return count
-    
+
     def clear_failed_tasks(self) -> int:
         """
         Remove all failed tasks from the task list.
-        
+
         Returns:
             Number of tasks removed
         """
         failed_tasks = [
-            task_id for task_id, task in self.tasks.items()
+            task_id
+            for task_id, task in self.tasks.items()
             if task.status == DownloadTaskStatus.FAILED
         ]
-        
+
         for task_id in failed_tasks:
             del self.tasks[task_id]
-        
+
         count = len(failed_tasks)
         if count > 0:
             self.logger.info(f"Cleared {count} failed tasks")
-            
+
             # Save after clearing
             if self.enable_persistence:
                 asyncio.create_task(self._save_tasks())
-        
+
         return count
-    
+
     def _notify_task_update(self, task: DownloadTask):
         """
         Notify listeners about task updates.
-        
+
         Args:
             task: The task that was updated
         """
@@ -587,31 +620,31 @@ class DownloadManagerService(BaseService):
                 callback(task)
             except Exception as e:
                 self.logger.error(f"Error in task update callback: {e}", exc_info=True)
-    
+
     async def on_start(self):
         """Called when the service starts."""
         self.logger.info("Download manager service starting")
-        
+
         # Load tasks from disk if persistence is enabled
         if self.enable_persistence:
             await self._load_tasks()
-        
+
     async def on_stop(self):
         """Called when the service stops."""
         self.logger.info("Download manager service stopping")
-        
+
         # Save tasks before stopping
         if self.enable_persistence:
             await self._save_tasks()
-        
+
         # Cancel all active downloads
         for task_id in list(self.active_downloads):
             self.cancel_task(task_id)
-        
+
         # Wait for all active tasks to complete
         if self.active_tasks:
             await asyncio.gather(*self.active_tasks, return_exceptions=True)
-    
+
     def add_task(
         self,
         task_id: str,
@@ -621,13 +654,13 @@ class DownloadManagerService(BaseService):
     ) -> DownloadTask:
         """
         Add a new download task to the queue.
-        
+
         Args:
             task_id: Server task ID for the download
             file_id: Document/file ID being downloaded
             filename: Name of the file
             file_path: Local path where file will be saved
-            
+
         Returns:
             The created DownloadTask instance
         """
@@ -639,20 +672,20 @@ class DownloadManagerService(BaseService):
             status=DownloadTaskStatus.PENDING,
             created_at=time.time(),
         )
-        
+
         self.tasks[task_id] = task
         self.logger.info(f"Added download task: {filename} (task_id: {task_id})")
         self._notify_task_update(task)
-        
+
         return task
-    
+
     def cancel_task(self, task_id: str) -> bool:
         """
         Cancel a download task.
-        
+
         Args:
             task_id: ID of the task to cancel
-            
+
         Returns:
             True if task was cancelled, False if task not found or not cancellable
         """
@@ -660,21 +693,27 @@ class DownloadManagerService(BaseService):
         if not task:
             self.logger.warning(f"Cannot cancel task {task_id}: task not found")
             return False
-        
-        if task.status in [DownloadTaskStatus.COMPLETED, DownloadTaskStatus.FAILED, DownloadTaskStatus.CANCELLED]:
-            self.logger.warning(f"Cannot cancel task {task_id}: task already in terminal state")
+
+        if task.status in [
+            DownloadTaskStatus.COMPLETED,
+            DownloadTaskStatus.FAILED,
+            DownloadTaskStatus.CANCELLED,
+        ]:
+            self.logger.warning(
+                f"Cannot cancel task {task_id}: task already in terminal state"
+            )
             return False
-        
+
         # Mark task as cancelled
         task.status = DownloadTaskStatus.CANCELLED
         task.error = "Cancelled by user"
         self.logger.info(f"Cancelled task: {task.filename} (task_id: {task_id})")
-        
+
         # Cancel the asyncio task if it's running
         for async_task in self.active_tasks:
             # The task will check the status and exit gracefully
             pass
-        
+
         self._notify_task_update(task)
-        
+
         return True
