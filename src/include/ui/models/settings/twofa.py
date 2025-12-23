@@ -5,6 +5,8 @@ import flet as ft
 
 from include.classes.config import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
+from include.ui.controls.dialogs.twofa_verify import TwoFactorVerifyDialog
+from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
 from include.ui.util.notifications import send_success, send_error
 from include.ui.util.route import get_parent_route
 from include.util.requests import do_request_2
@@ -142,6 +144,7 @@ class TwoFactorSettingsModel(Model):
             )
             
             if response.code == 200:
+                # Server returned complete setup data (legacy flow)
                 secret = response.data.get("secret")
                 provisioning_uri = response.data.get("provisioning_uri")
                 backup_codes: list[str] = response.data.get("backup_codes", [])
@@ -157,6 +160,19 @@ class TwoFactorSettingsModel(Model):
                     self.page.show_dialog(setup_dialog)
                 else:
                     send_error(self.page, "Invalid setup data received from server")
+            elif response.code == 202:
+                # Server indicates verification is required
+                method = response.data.get("method", "totp")
+                
+                if method == "totp":
+                    # Show verification dialog for TOTP
+                    verify_dialog = TwoFactorVerifyDialog(
+                        on_verify_callback=self._verify_2fa_setup_with_code,
+                        on_cancel_callback=self._cancel_2fa_setup,
+                    )
+                    self.page.show_dialog(verify_dialog)
+                else:
+                    send_error(self.page, f"Unsupported 2FA method: {method}")
             else:
                 send_error(self.page, f"Failed to initiate 2FA setup: {response.message}")
                 
@@ -193,6 +209,35 @@ class TwoFactorSettingsModel(Model):
             send_error(self.page, f"Error verifying 2FA setup: {str(e)}")
             return False
     
+    async def _verify_2fa_setup_with_code(self, code: str) -> bool:
+        """
+        Verify 2FA setup when server returns 202 (requires verification).
+        
+        Args:
+            code: The 6-digit verification code
+            
+        Returns:
+            True if verification successful, False otherwise
+        """
+        try:
+            response = await do_request_2(
+                "validate_2fa",
+                data={"token": code},
+                username=self.app_shared.username,
+                token=self.app_shared.token,
+            )
+            
+            if response.code == 200:
+                send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
+                self._update_ui_for_status(True)
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            send_error(self.page, f"Error verifying 2FA setup: {str(e)}")
+            return False
+    
     async def _cancel_2fa_setup(self):
         """Handle cancellation of 2FA setup."""
         try:
@@ -207,38 +252,28 @@ class TwoFactorSettingsModel(Model):
     
     async def _on_disable_2fa(self, e):
         """Handle disabling 2FA."""
-        # Show confirmation dialog
-        async def confirm_disable(e):
-            confirm_dialog.open = False
-            await self._perform_disable_2fa()
-        
-        async def cancel_disable(e):
-            confirm_dialog.open = False
-        
-        confirm_dialog = ft.AlertDialog(
-            modal=True,
-            title=ft.Text(_("Disable Two-Factor Authentication?")),
-            content=ft.Text(
-                _("Are you sure you want to disable two-factor authentication? "
-                  "This will make your account less secure.")
-            ),
-            actions=[
-                ft.TextButton(_("Cancel"), on_click=cancel_disable),
-                ft.TextButton(_("Disable"), on_click=confirm_disable),
-            ],
+        # Show password confirmation dialog
+        password_dialog = PasswordConfirmDialog(
+            on_confirm_callback=self._confirm_disable_with_password,
+            title=_("Disable Two-Factor Authentication"),
+            message=_("Please enter your password to disable two-factor authentication."),
         )
-        
-        self.page.show_dialog(confirm_dialog)
+        self.page.show_dialog(password_dialog)
     
-    async def _perform_disable_2fa(self):
-        """Perform the actual 2FA disable operation."""
-        self.disable_button.disabled = True
-        self.loading_ring.visible = True
-        self.update()
+    async def _confirm_disable_with_password(self, password: str) -> bool:
+        """
+        Confirm disabling 2FA with password verification.
         
+        Args:
+            password: The user's password
+            
+        Returns:
+            True if successful, False otherwise
+        """
         try:
             response = await do_request_2(
                 "disable_2fa",
+                data={"password": password},
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
@@ -246,12 +281,11 @@ class TwoFactorSettingsModel(Model):
             if response.code == 200:
                 send_success(self.page, _("Two-Factor Authentication disabled"))
                 self._update_ui_for_status(False)
+                return True
             else:
                 send_error(self.page, f"Failed to disable 2FA: {response.message}")
+                return False
                 
         except Exception as e:
             send_error(self.page, f"Error disabling 2FA: {str(e)}")
-        finally:
-            self.loading_ring.visible = False
-            self.disable_button.disabled = False
-            self.update()
+            return False
