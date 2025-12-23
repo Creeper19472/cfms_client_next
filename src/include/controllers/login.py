@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from include.controllers.base import BaseController
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
@@ -36,22 +36,6 @@ class LoginFormController(BaseController["LoginForm"]):
         )
 
         if (code := response["code"]) == 200:
-            # Check if 2FA is required (legacy flag-based approach)
-            requires_2fa = response["data"].get("requires_2fa", False)
-            
-            if requires_2fa:
-                # Store partial login state
-                self.app_shared.username = username
-                self.app_shared.pending_2fa_verification = True
-                
-                # Show 2FA verification dialog
-                twofa_dialog = TwoFactorVerifyDialog(
-                    on_verify_callback=self._verify_2fa_code,
-                    on_cancel_callback=self._cancel_2fa_login,
-                )
-                self.control.page.show_dialog(twofa_dialog)
-                return
-            
             # Regular login without 2FA
             self._complete_login(username, response["data"])
 
@@ -115,16 +99,22 @@ class LoginFormController(BaseController["LoginForm"]):
         Returns:
             True if verification successful, False otherwise
         """
+
+        username = self.control.username_field.value.strip()
+        password = self.control.password_field.value
+
         try:
             response = await do_request(
-                "verify_2fa_login",
+                "login",
                 {
-                    "username": self.app_shared.username,
-                    "code": code,
+                    "username": username,
+                    "password": password,
+                    "2fa_token": code,
                 },
             )
             
             if response["code"] == 200:
+                assert self.app_shared.username
                 self._complete_login(self.app_shared.username, response["data"])
                 return True
             else:

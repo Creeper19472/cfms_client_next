@@ -1,6 +1,6 @@
 """Two-Factor Authentication data structures."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
@@ -32,7 +32,7 @@ class TwoFactorConfig:
     method: TwoFactorMethod
     status: TwoFactorStatus
     secret: Optional[str] = None
-    backup_codes: list[str] = None  # type: ignore
+    backup_codes: list[str] = field(default_factory=list)
     qr_code_uri: Optional[str] = None
     
     def __post_init__(self):

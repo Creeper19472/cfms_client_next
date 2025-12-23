@@ -65,6 +65,7 @@ class TwoFactorSetupDialog(AlertDialog):
             read_only=True,
             label=_("Secret Key (manual entry)"),
             text_size=12,
+            expand=True,
         )
         
         # Code verification field
@@ -74,6 +75,7 @@ class TwoFactorSetupDialog(AlertDialog):
             max_length=6,
             keyboard_type=ft.KeyboardType.NUMBER,
             on_submit=self._on_verify_click,
+            expand=True,
         )
         
         # Buttons
