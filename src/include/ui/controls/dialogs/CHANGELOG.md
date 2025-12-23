@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.3.1
+**Released on:** 2025-12-23
+
+**Title:** Add Auto-Update Service
+
+This version adds an new architecture for background services and an auto-update service, 
+enabling the software to automatically check for new updates and notify users.
+
+---
 ## v0.3.0
 **Released on:** 2025-12-22
 
