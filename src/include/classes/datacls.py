@@ -38,6 +38,7 @@ class DownloadTask:
     scheduled_time: Optional[float] = None  # Unix timestamp for scheduled downloads
     bandwidth_limit: Optional[int] = None  # Bytes per second limit (None = unlimited)
     pause_position: Optional[int] = None  # Bytes downloaded before pause
+    supports_resume: bool = False  # Whether server supports resume/pause (from server metadata)
 
 
 @dataclass

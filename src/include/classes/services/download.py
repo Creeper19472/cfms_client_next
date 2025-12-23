@@ -271,6 +271,13 @@ class DownloadManagerService(BaseService):
         if not task:
             self.logger.warning(f"Cannot pause task {task_id}: task not found")
             return False
+        
+        # Check if task supports resume
+        if not task.supports_resume:
+            self.logger.warning(
+                f"Cannot pause task {task_id}: server does not support resume"
+            )
+            return False
 
         if task.status not in [
             DownloadTaskStatus.DOWNLOADING,
@@ -437,6 +444,7 @@ class DownloadManagerService(BaseService):
                     "scheduled_time": task.scheduled_time,
                     "bandwidth_limit": task.bandwidth_limit,
                     "pause_position": task.pause_position,
+                    "supports_resume": task.supports_resume,
                 }
                 for task_id, task in self.tasks.items()
                 if task.status not in [DownloadTaskStatus.COMPLETED]
@@ -493,6 +501,7 @@ class DownloadManagerService(BaseService):
                     scheduled_time=task_dict["scheduled_time"],
                     bandwidth_limit=task_dict["bandwidth_limit"],
                     pause_position=task_dict["pause_position"],
+                    supports_resume=task_dict.get("supports_resume", False),  # Default to False for backward compatibility
                 )
 
                 self.tasks[task_id] = task
@@ -651,6 +660,11 @@ class DownloadManagerService(BaseService):
         file_id: str,
         filename: str,
         file_path: str,
+        priority: int = 0,
+        max_retries: int = 3,
+        scheduled_time: Optional[float] = None,
+        bandwidth_limit: Optional[int] = None,
+        supports_resume: bool = False,
     ) -> DownloadTask:
         """
         Add a new download task to the queue.
@@ -660,22 +674,45 @@ class DownloadManagerService(BaseService):
             file_id: Document/file ID being downloaded
             filename: Name of the file
             file_path: Local path where file will be saved
+            priority: Task priority (higher = processed first, default 0)
+            max_retries: Maximum retry attempts (default 3)
+            scheduled_time: Unix timestamp to start download (None = start immediately)
+            bandwidth_limit: Download speed limit in bytes/second (None = unlimited)
+            supports_resume: Whether server supports pause/resume (default False)
 
         Returns:
             The created DownloadTask instance
         """
+        # Determine initial status
+        if scheduled_time and scheduled_time > time.time():
+            status = DownloadTaskStatus.SCHEDULED
+        else:
+            status = DownloadTaskStatus.PENDING
+            scheduled_time = None
+        
         task = DownloadTask(
             task_id=task_id,
             file_id=file_id,
             filename=filename,
             file_path=file_path,
-            status=DownloadTaskStatus.PENDING,
+            status=status,
             created_at=time.time(),
+            priority=priority,
+            max_retries=max_retries,
+            scheduled_time=scheduled_time,
+            bandwidth_limit=bandwidth_limit,
+            supports_resume=supports_resume,
         )
 
         self.tasks[task_id] = task
-        self.logger.info(f"Added download task: {filename} (task_id: {task_id})")
+        self.logger.info(
+            f"Added download task: {filename} (task_id: {task_id}, priority: {priority}, supports_resume: {supports_resume})"
+        )
         self._notify_task_update(task)
+        
+        # Save tasks if persistence is enabled
+        if self.enable_persistence:
+            asyncio.create_task(self._save_tasks())
 
         return task
 

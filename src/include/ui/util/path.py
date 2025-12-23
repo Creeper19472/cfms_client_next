@@ -104,6 +104,12 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     task_id = task_data["task_id"]
     task_start_time = task_data["start_time"]
     task_end_time = task_data["end_time"]
+    
+    # Check if server supports resume (placeholder logic)
+    # This flag would typically be obtained from the server response
+    # For now, check if task_data contains a 'supports_resume' key
+    supports_resume = task_data.get("supports_resume", False)
+    # Future: Server can set this based on its capabilities
 
     assert page.platform
     if page.platform.value in ["android"]:
@@ -123,6 +129,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
             file_id=id if id else "",
             filename=filename if filename else task_id[0:17],
             file_path=file_path,
+            supports_resume=supports_resume,
         )
         
         # Show notification that download was added

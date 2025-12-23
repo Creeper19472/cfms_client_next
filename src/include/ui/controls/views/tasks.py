@@ -48,6 +48,17 @@ class TaskTile(ft.Card):
         )
 
         # Create control buttons
+        # Open file button (only visible for completed tasks)
+        self.open_file_button = ft.IconButton(
+            icon=ft.Icons.OPEN_IN_NEW,
+            icon_size=16,
+            tooltip=_("Open file"),
+            on_click=self._on_open_file,
+            visible=task.status == DownloadTaskStatus.COMPLETED,
+        )
+        
+        # Pause/Resume button (only if server supports resume)
+        # If resume not supported, only show cancel button
         self.pause_resume_button = ft.IconButton(
             icon=(
                 ft.Icons.PAUSE
@@ -61,14 +72,19 @@ class TaskTile(ft.Card):
                 else _("Resume")
             ),
             on_click=self._on_pause_resume,
-            visible=task.status
-            in [
-                DownloadTaskStatus.DOWNLOADING,
-                DownloadTaskStatus.PAUSED,
-                DownloadTaskStatus.PENDING,
-            ],
+            visible=(
+                task.supports_resume
+                and task.status
+                in [
+                    DownloadTaskStatus.DOWNLOADING,
+                    DownloadTaskStatus.PAUSED,
+                    DownloadTaskStatus.PENDING,
+                ]
+            ),
         )
 
+        # Cancel button
+        # If resume not supported, show for downloading tasks too
         self.cancel_button = ft.IconButton(
             icon=ft.Icons.CANCEL,
             icon_size=16,
@@ -140,6 +156,7 @@ class TaskTile(ft.Card):
                                 spacing=2,
                                 expand=True,
                             ),
+                            self.open_file_button,
                             self.pause_resume_button,
                             self.cancel_button,
                         ],
@@ -257,12 +274,19 @@ class TaskTile(ft.Card):
             ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
         )
 
-        # Update button visibility and icons
-        self.pause_resume_button.visible = task.status in [
-            DownloadTaskStatus.DOWNLOADING,
-            DownloadTaskStatus.PAUSED,
-            DownloadTaskStatus.PENDING,
-        ]
+        # Update open file button visibility
+        self.open_file_button.visible = task.status == DownloadTaskStatus.COMPLETED
+
+        # Update pause/resume button visibility and icons (only if supports_resume)
+        self.pause_resume_button.visible = (
+            task.supports_resume
+            and task.status
+            in [
+                DownloadTaskStatus.DOWNLOADING,
+                DownloadTaskStatus.PAUSED,
+                DownloadTaskStatus.PENDING,
+            ]
+        )
         self.pause_resume_button.icon = (
             ft.Icons.PAUSE
             if task.status == DownloadTaskStatus.DOWNLOADING
@@ -298,6 +322,23 @@ class TaskTile(ft.Card):
         download_service = self.parent_view.download_service
         if download_service:
             download_service.cancel_task(self.task.task_id)
+    
+    async def _on_open_file(self, e):
+        """Handle open file button click."""
+        try:
+            # Import OpenFile service
+            from flet_open_file import OpenFile
+            
+            # Open the downloaded file
+            open_file_service = OpenFile()
+            await open_file_service.open(self.task.file_path)
+        except Exception as ex:
+            # Show error if file can't be opened
+            from include.ui.util.notifications import send_error
+            send_error(
+                self.page,
+                _("Failed to open file: {error}").format(error=str(ex))
+            )
 
 
 class TasksView(ft.Container):
