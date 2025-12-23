@@ -143,13 +143,14 @@ class TwoFactorSettingsModel(Model):
             
             if response.code == 200:
                 secret = response.data.get("secret")
-                qr_uri = response.data.get("qr_uri")
+                provisioning_uri = response.data.get("provisioning_uri")
+                backup_codes: list[str] = response.data.get("backup_codes", [])
                 
-                if secret and qr_uri:
+                if secret and provisioning_uri:
                     # Show setup dialog
                     setup_dialog = TwoFactorSetupDialog(
                         secret=secret,
-                        qr_uri=qr_uri,
+                        qr_uri=provisioning_uri,
                         on_verify_callback=self._verify_and_enable_2fa,
                         on_cancel_callback=self._cancel_2fa_setup,
                     )
@@ -175,8 +176,8 @@ class TwoFactorSettingsModel(Model):
         """
         try:
             response = await do_request_2(
-                "verify_2fa_setup",
-                data={"code": code},
+                "validate_2fa",
+                data={"token": code},  # token is actually code.
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
@@ -208,11 +209,11 @@ class TwoFactorSettingsModel(Model):
         """Handle disabling 2FA."""
         # Show confirmation dialog
         async def confirm_disable(e):
-            confirm_dialog.close()
+            confirm_dialog.open = False
             await self._perform_disable_2fa()
         
         async def cancel_disable(e):
-            confirm_dialog.close()
+            confirm_dialog.open = False
         
         confirm_dialog = ft.AlertDialog(
             modal=True,

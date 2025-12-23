@@ -53,10 +53,10 @@ class TwoFactorSetupDialog(AlertDialog):
         
         # QR code image
         self.qr_image = ft.Image(
-            src_base64=qr_image_base64,
+            src=qr_image_base64,
             width=200,
             height=200,
-            fit=ft.ImageFit.CONTAIN,
+            fit=ft.BoxFit.CONTAIN,
         )
         
         # Secret key display (for manual entry)
@@ -98,7 +98,7 @@ class TwoFactorSetupDialog(AlertDialog):
                 ),
                 ft.Container(
                     content=self.qr_image,
-                    alignment=ft.alignment.center,
+                    alignment=ft.Alignment.CENTER,
                     padding=10,
                 ),
                 ft.Divider(),
@@ -137,7 +137,7 @@ class TwoFactorSetupDialog(AlertDialog):
         """
         qr = qrcode.QRCode(
             version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            error_correction=qrcode.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
@@ -148,7 +148,7 @@ class TwoFactorSetupDialog(AlertDialog):
         
         # Convert to base64
         buffer = io.BytesIO()
-        img.save(buffer, format="PNG")
+        img.save(buffer, "PNG")
         img_base64 = base64.b64encode(buffer.getvalue()).decode()
         
         return img_base64
@@ -174,7 +174,7 @@ class TwoFactorSetupDialog(AlertDialog):
         code = self.code_field.value
         
         if not code or len(code) != 6:
-            self.code_field.error_text = _("Please enter a 6-digit code")
+            self.code_field.error = _("Please enter a 6-digit code")
             self.update()
             return
         
@@ -187,7 +187,7 @@ class TwoFactorSetupDialog(AlertDialog):
             else:
                 self.enable_interactions()
                 self.code_field.value = ""
-                self.code_field.error_text = _("Invalid code. Please try again.")
+                self.code_field.error = _("Invalid code. Please try again.")
                 self.update()
         else:
             self.enable_interactions()

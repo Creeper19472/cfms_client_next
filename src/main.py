@@ -81,6 +81,7 @@ async def main(page: ft.Page):
     from include.ui.models.home import HomeModel
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
+    from include.ui.models.settings.twofa import TwoFactorSettingsModel
 
     # Configure page settings
     page.title = "CFMS Client"
