@@ -263,7 +263,19 @@ class FileExplorerController(BaseController["FileManagerView"]):
                             )
                             
                             if upload_response.get("code") == 200:
-                                task_id = upload_response["data"]["task_data"]["task_id"]
+                                # Get task_id with defensive checks
+                                task_data = upload_response.get("data", {}).get("task_data", {})
+                                task_id = task_data.get("task_id")
+                                if not task_id:
+                                    upload_dialog.error_column.controls.append(
+                                        ft.Text(
+                                            _('Internal error: Missing task_id for file "{filename}"').format(
+                                                filename=filename
+                                            )
+                                        )
+                                    )
+                                    upload_dialog.error_column.update()
+                                    continue
                             else:
                                 upload_dialog.error_column.controls.append(
                                     ft.Text(
@@ -316,8 +328,9 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     continue
                 
                 else:
-                    # Success - get task_id
-                    task_id = create_document_response["data"]["task_data"]["task_id"]
+                    # Success - get task_id with defensive checks
+                    task_data = create_document_response.get("data", {}).get("task_data", {})
+                    task_id = task_data.get("task_id")
                 
                 # Verify we have a valid task_id before proceeding
                 if not task_id:

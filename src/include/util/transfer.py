@@ -392,7 +392,13 @@ async def batch_upload_file_to_server(
                                         f"Failed to upload document '{filename}': {upload_response.message}",
                                     )
                                 
-                                task_id = upload_response.data["task_data"]["task_id"]
+                                # Get task_id with defensive checks
+                                task_id = upload_response.data.get("task_data", {}).get("task_id")
+                                if not task_id:
+                                    raise InvalidResponseError(
+                                        upload_response,
+                                        f"Server response missing task_id for '{filename}'",
+                                    )
                                 
                                 async for current_size, total_size in upload_file_to_server(
                                     transfer_conn, task_id, file_path
@@ -426,7 +432,12 @@ async def batch_upload_file_to_server(
                     
                     else:
                         # Success - normal flow
-                        task_id = response.data["task_data"]["task_id"]
+                        task_id = response.data.get("task_data", {}).get("task_id")
+                        if not task_id:
+                            raise InvalidResponseError(
+                                response,
+                                f"Server response missing task_id for '{filename}'",
+                            )
 
                         async for current_size, total_size in upload_file_to_server(
                             transfer_conn, task_id, file_path
