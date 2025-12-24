@@ -55,6 +55,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             hint_text=_("Enter recovery code"),
             max_length=20,
             keyboard_type=ft.KeyboardType.TEXT,
+            autofocus=False,
             on_submit=self._on_verify_click,
             expand=True,
             expand_loose=True,
