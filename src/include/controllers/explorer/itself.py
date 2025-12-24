@@ -255,7 +255,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
                             upload_response = await do_request(
                                 action="upload_document",
                                 data={
-                                    "id": conflict_id,
+                                    "document_id": conflict_id,
                                 },
                                 username=self.app_shared.username,
                                 token=self.app_shared.token,

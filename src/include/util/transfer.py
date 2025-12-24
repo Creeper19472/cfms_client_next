@@ -379,7 +379,7 @@ async def batch_upload_file_to_server(
                                 upload_response = await do_request_2(
                                     action="upload_document",
                                     data={
-                                        "id": conflict_id,
+                                        "document_id": conflict_id,
                                     },
                                     username=app_shared.username,
                                     token=app_shared.token,
