@@ -7,7 +7,7 @@ import json
 import mmap
 import os
 import shutil
-from typing import Optional
+from typing import Awaitable, Callable, Optional
 
 import aiofiles.os
 from Crypto.Cipher import AES
@@ -307,7 +307,7 @@ async def batch_upload_file_to_server(
     files: list[FilePickerFile],
     max_size: int = 1024**2 * 4,
     max_retries: int = 3,
-    on_conflict_callback=None,
+    on_conflict_callback: Optional[Callable[[str, str, str], Awaitable[Optional[str]]]] = None,
 ):
     """
     Upload multiple files to the server with progress tracking and retry logic.
