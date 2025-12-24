@@ -17,7 +17,7 @@ from include.util.upgrade.updater import (
 __all__ = ["AutoUpdateService"]
 
 # Constants for configuration
-SNACKBAR_DURATION_MS = 7000  # Show snackbar for 10 seconds
+SNACKBAR_DURATION_MS = 7000  # Show snackbar for 7 seconds
 
 
 class AutoUpdateService(BaseService):
