@@ -93,6 +93,40 @@ active_tasks = download_service.get_tasks_by_status(DownloadTaskStatus.DOWNLOADI
 download_service.clear_completed_tasks()
 ```
 
+### TokenRefreshService (`token_refresh.py`)
+
+Automatic token refresh service that monitors authentication token expiration and renews tokens before they expire.
+
+**Features:**
+- Periodic checking of token expiration time
+- Automatic token refresh before expiration
+- Configurable refresh threshold (default: 5 minutes)
+- Seamless token renewal without user interaction
+- Detailed logging of token lifecycle
+
+**Configuration:**
+- `interval`: Check interval in seconds (default: 60 seconds)
+- `refresh_threshold`: Time before expiration to trigger refresh (default: 300 seconds/5 minutes)
+
+**How it works:**
+1. Service checks token expiration every minute (configurable)
+2. When remaining time falls below threshold, sends `refresh_token` request to server
+3. Server responds with new token and expiration time in response data
+4. Service updates `AppShared` with new credentials automatically
+
+**Usage:**
+The service is automatically registered and started when the application launches. No manual interaction is required.
+
+```python
+# Service is registered in main.py
+token_refresh_service = TokenRefreshService(
+    enabled=True,
+    interval=60.0,  # Check every minute
+    refresh_threshold=300.0,  # Refresh when < 5 minutes remaining
+)
+service_manager.register(token_refresh_service)
+```
+
 ## Usage
 
 ### Creating a New Service
