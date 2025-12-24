@@ -1287,6 +1287,34 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr "相寻梦里路，飞雨落花中。"
 
+#: .\include\ui\controls\dialogs\twofa_verify.py:53
+msgid "Recovery Code"
+msgstr "恢复代码"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:54
+msgid "Enter recovery code"
+msgstr "输入恢复代码"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:77
+msgid "Use recovery code instead"
+msgstr "改用恢复代码"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:138
+msgid "Enter one of your recovery codes"
+msgstr "输入您的恢复代码之一"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:139
+msgid "Use authenticator code instead"
+msgstr "改用验证器代码"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:160
+msgid "Please enter a recovery code"
+msgstr "请输入恢复代码"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:181
+msgid "Invalid recovery code"
+msgstr "无效的恢复代码"
+
 #~ msgid "Uploading file [{current}/{total}]"
 #~ msgstr "正在上传文件 [{current}/{total}]"
 

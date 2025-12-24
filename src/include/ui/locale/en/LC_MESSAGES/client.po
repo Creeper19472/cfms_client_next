@@ -1312,6 +1312,34 @@ msgid ""
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 
+#: .\include\ui\controls\dialogs\twofa_verify.py:53
+msgid "Recovery Code"
+msgstr "Recovery Code"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:54
+msgid "Enter recovery code"
+msgstr "Enter recovery code"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:77
+msgid "Use recovery code instead"
+msgstr "Use recovery code instead"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:138
+msgid "Enter one of your recovery codes"
+msgstr "Enter one of your recovery codes"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:139
+msgid "Use authenticator code instead"
+msgstr "Use authenticator code instead"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:160
+msgid "Please enter a recovery code"
+msgstr "Please enter a recovery code"
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:181
+msgid "Invalid recovery code"
+msgstr "Invalid recovery code"
+
 #~ msgid "Uploading file [{current}/{total}]"
 #~ msgstr "Uploading file [{current}/{total}]"
 
