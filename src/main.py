@@ -15,6 +15,7 @@ from include.classes.config import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
 from include.classes.services.download import DownloadManagerService
+from include.classes.services.token_refresh import TokenRefreshService
 from include.util.locale import set_translation
 
 # Window configuration constants
@@ -177,6 +178,15 @@ async def main(page: ft.Page):
         enable_persistence=True,  # Save tasks across restarts
     )
     service_manager.register(download_manager_service)
+
+    # Register token refresh service
+    # Check every minute and refresh when token expires in 5 minutes
+    token_refresh_service = TokenRefreshService(
+        enabled=True,
+        interval=60.0,  # Check every minute
+        refresh_threshold=300.0,  # Refresh when < 5 minutes remaining
+    )
+    service_manager.register(token_refresh_service)
 
     # Start all registered services
     await service_manager.start_all()

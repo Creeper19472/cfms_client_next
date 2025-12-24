@@ -2,5 +2,6 @@
 
 from include.classes.services.base import BaseService, ServiceStatus
 from include.classes.services.manager import ServiceManager
+from include.classes.services.token_refresh import TokenRefreshService
 
-__all__ = ["BaseService", "ServiceStatus", "ServiceManager"]
+__all__ = ["BaseService", "ServiceStatus", "ServiceManager", "TokenRefreshService"]
