@@ -14,8 +14,9 @@ class TwoFactorVerifyDialog(AlertDialog):
     """
     Dialog for verifying 2FA code during login.
 
-    This dialog prompts the user to enter their TOTP code
-    when logging in with 2FA enabled.
+    This dialog prompts the user to enter their TOTP code or recovery code
+    when logging in with 2FA enabled. Users can toggle between entering
+    a 6-digit authenticator code or a recovery code.
     """
 
     def __init__(self, on_verify_callback=None, on_cancel_callback=None):
@@ -54,7 +55,6 @@ class TwoFactorVerifyDialog(AlertDialog):
             hint_text=_("Enter recovery code"),
             max_length=20,
             keyboard_type=ft.KeyboardType.TEXT,
-            autofocus=True,
             on_submit=self._on_verify_click,
             expand=True,
             expand_loose=True,
