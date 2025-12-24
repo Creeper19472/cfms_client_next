@@ -89,12 +89,13 @@ class LoginFormController(BaseController["LoginForm"]):
         self.control.clear_fields()
         self.control.page.run_task(self.control.page.push_route, "/home")
     
-    async def _verify_2fa_code(self, code: str) -> bool:
+    async def _verify_2fa_code(self, code: str, is_recovery_code: bool = False) -> bool:
         """
         Verify 2FA code and complete login.
         
         Args:
-            code: The 6-digit verification code
+            code: The 6-digit verification code or recovery code
+            is_recovery_code: True if using recovery code, False if using TOTP
             
         Returns:
             True if verification successful, False otherwise
@@ -104,14 +105,18 @@ class LoginFormController(BaseController["LoginForm"]):
         password = self.control.password_field.value
 
         try:
-            response = await do_request(
-                "login",
-                {
-                    "username": username,
-                    "password": password,
-                    "2fa_token": code,
-                },
-            )
+            request_data = {
+                "username": username,
+                "password": password,
+            }
+            
+            # Add appropriate field based on code type
+            if is_recovery_code:
+                request_data["recovery_code"] = code
+            else:
+                request_data["2fa_token"] = code
+            
+            response = await do_request("login", request_data)
             
             if response["code"] == 200:
                 assert self.app_shared.username
