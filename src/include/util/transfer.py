@@ -369,7 +369,7 @@ async def batch_upload_file_to_server(
                         
                         # Check if we can handle this conflict
                         # conflict_id must be a non-empty string for overwrite to work
-                        if (conflict_type == "document" and conflict_id not in (None, "") and on_conflict_callback):
+                        if (conflict_type == "document" and conflict_id and on_conflict_callback):
                             # Ask user what to do
                             user_choice = await on_conflict_callback(
                                 filename, conflict_type, conflict_id

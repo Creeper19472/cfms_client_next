@@ -242,7 +242,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     conflict_id = create_document_response.get("data", {}).get("id")
                     
                     # conflict_id must be a non-empty string for overwrite to work
-                    if conflict_type == "document" and conflict_id not in (None, ""):
+                    if conflict_type == "document" and conflict_id:
                         # Show overwrite confirmation dialog
                         confirm_dialog = FileOverwriteConfirmDialog(
                             filename=filename,
