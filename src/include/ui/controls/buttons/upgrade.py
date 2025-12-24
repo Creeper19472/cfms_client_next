@@ -18,7 +18,6 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
     def show_update_badge(self):
         """Show a badge indicating an update is available."""
         if self.badge is None:
-            # Create a small badge with an exclamation mark
             self.badge = ft.Badge(
                 bgcolor=ft.Colors.RED_400,
                 small_size=10,
