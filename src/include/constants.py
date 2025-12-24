@@ -32,7 +32,7 @@ GITHUB_REPO = "Creeper19472/cfms_client_next"
 
 # Version Information
 CHANNEL = ChannelType.ALPHA
-BUILD_VERSION = "v0.3.3"
+BUILD_VERSION = "v0.3.4"
 MODIFIED = "20251224"
 
 if CHANNEL == ChannelType.STABLE:

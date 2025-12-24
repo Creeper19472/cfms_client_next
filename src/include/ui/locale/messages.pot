@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-23 20:18+0800\n"
+"POT-Creation-Date: 2025-12-24 17:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,11 +245,11 @@ msgstr ""
 msgid "Deletion failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\login.py:53
+#: .\include\controllers\login.py:65
 msgid "Password must be changed before login."
 msgstr ""
 
-#: .\include\controllers\login.py:60
+#: .\include\controllers\login.py:72
 msgid "Login failed: ({code}) {message}"
 msgstr ""
 
@@ -414,6 +414,9 @@ msgstr ""
 #: .\include\ui\controls\dialogs\explorer.py:113
 #: .\include\ui\controls\dialogs\explorer.py:159
 #: .\include\ui\controls\dialogs\explorer.py:225
+#: .\include\ui\controls\dialogs\password_confirm.py:55
+#: .\include\ui\controls\dialogs\twofa_setup.py:90
+#: .\include\ui\controls\dialogs\twofa_verify.py:80
 #: .\include\ui\controls\dialogs\upgrade.py:41
 #: .\include\ui\controls\menus\admin\group.py:112
 #: .\include\ui\controls\menus\admin\group.py:188
@@ -581,6 +584,7 @@ msgid "Create User"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:141
+#: .\include\ui\controls\dialogs\password_confirm.py:40
 #: .\include\ui\controls\views\login.py:47
 msgid "Password"
 msgstr ""
@@ -733,6 +737,30 @@ msgstr ""
 msgid "End time must be after start time"
 msgstr ""
 
+#: .\include\ui\controls\dialogs\backup_codes.py:31
+msgid "Save Your Backup Codes"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\backup_codes.py:54
+msgid "I Have Saved My Codes"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\backup_codes.py:62
+msgid "Two-Factor Authentication has been enabled successfully!"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\backup_codes.py:69
+msgid "Save these backup codes in a secure location. You can use them to access your account if you lose access to your authenticator app."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\backup_codes.py:74
+msgid "Each code can only be used once."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\backup_codes.py:86
+msgid "Store these codes safely - they won't be shown again!"
+msgstr ""
+
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:42
 msgid "Document"
 msgstr ""
@@ -835,8 +863,116 @@ msgstr ""
 msgid "Directory id cannot be empty"
 msgstr ""
 
+#: .\include\ui\controls\dialogs\password_confirm.py:32
+msgid "Confirm Password"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\password_confirm.py:50
+msgid "Confirm"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\password_confirm.py:112
+#: .\include\ui\controls\views\login.py:138
+msgid "Password cannot be empty"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\password_confirm.py:125
+msgid "Invalid password"
+msgstr ""
+
 #: .\include\ui\controls\dialogs\selection\userpicker.py:26
 msgid "Select User"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:43
+msgid "Set Up Two-Factor Authentication"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:66
+msgid "Secret Key (manual entry)"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:74
+msgid "Enter verification code to confirm"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:75
+msgid "6-digit code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:85
+msgid "Verify and Enable"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:100
+msgid "Scan this QR code with your authenticator app (e.g., Google Authenticator, Authy, Microsoft Authenticator)"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:110
+msgid "Or enter this key manually:"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:181
+#: .\include\ui\controls\dialogs\twofa_verify.py:186
+msgid "Please enter a 6-digit code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_setup.py:194
+msgid "Invalid code. Please try again."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:12
+msgid "Enter the 6-digit code from your authenticator app"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:13
+msgid "Enter one of your recovery codes"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:14
+msgid "Use authenticator code instead"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:15
+msgid "Use recovery code instead"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:38
+#: .\include\ui\models\settings\overview.py:51
+#: .\include\ui\models\settings\twofa.py:34
+msgid "Two-Factor Authentication"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:48
+msgid "Verification Code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:49
+msgid "Enter 6-digit code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:61
+msgid "Recovery Code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:62
+msgid "Enter recovery code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:75
+msgid "Verify"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:179
+msgid "Please enter a recovery code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:200
+msgid "Invalid recovery code"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\twofa_verify.py:203
+msgid "Invalid verification code"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\upgrade.py:33
@@ -1107,10 +1243,6 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr ""
 
-#: .\include\ui\controls\views\login.py:138
-msgid "Password cannot be empty"
-msgstr ""
-
 #: .\include\ui\controls\views\more.py:62
 msgid "Change Password"
 msgstr ""
@@ -1331,6 +1463,48 @@ msgstr ""
 
 #: .\include\ui\models\settings\overview.py:46
 msgid "Adjust application connection history policy"
+msgstr ""
+
+#: .\include\ui\models\settings\overview.py:52
+msgid "Manage two-factor authentication settings"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:44
+msgid "Two-Factor Authentication Status: Checking..."
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:51
+msgid "Two-factor authentication adds an extra layer of security to your account. You'll need to enter a code from your authenticator app in addition to your password when logging in."
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:58
+msgid "Enable Two-Factor Authentication"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:66
+#: .\include\ui\models\settings\twofa.py:244
+msgid "Disable Two-Factor Authentication"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:122
+msgid "Two-Factor Authentication Status: Enabled"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:127
+msgid "Two-Factor Authentication Status: Disabled"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:207
+#: .\include\ui\models\settings\twofa.py:222
+msgid "Two-Factor Authentication enabled successfully!"
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:245
+msgid "Please enter your password to disable two-factor authentication."
+msgstr ""
+
+#: .\include\ui\models\settings\twofa.py:268
+msgid "Two-Factor Authentication disabled"
 msgstr ""
 
 #: .\include\ui\models\wizards\welcome.py:24

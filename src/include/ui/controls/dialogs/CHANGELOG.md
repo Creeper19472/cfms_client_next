@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.3.4
+**Released on:** 2025-12-24
+
+**Title:** 2FA UI Improvements
+
+This version adds extra user interface to allow users to use recovery codes 
+(backup codes) instead.
+
+---
 ## v0.3.3
 **Released on:** 2025-12-24
 
@@ -16,8 +25,8 @@ This version adds 2FA support (only TOTP for now) for the client.
 
 **Title:** Download Manager Service & UI Interface
 
-This version introduces a new download manager service to handle multiple download tasks,
-making `Tasks` view usable.
+This version introduces a new download manager service to handle multiple 
+download tasks, making `Tasks` view usable.
 
 A fix has also been introduced for an issue in file upload action.
 
@@ -27,8 +36,9 @@ A fix has also been introduced for an issue in file upload action.
 
 **Title:** Add Auto-Update Service
 
-This version adds an new architecture for background services and an auto-update service, 
-enabling the software to automatically check for new updates and notify users.
+This version adds an new architecture for background services and an 
+auto-update service, enabling the software to automatically check for new 
+updates and notify users.
 
 ---
 ## v0.3.0

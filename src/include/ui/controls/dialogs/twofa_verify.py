@@ -9,6 +9,11 @@ from include.util.locale import get_translation
 t = get_translation()
 _ = t.gettext
 
+DESCRIPTION_ENTER_CODE = _("Enter the 6-digit code from your authenticator app")
+DESCRIPTION_ENTER_RECOVERY = _("Enter one of your recovery codes")
+DESCRIPTION_USE_CODE_INSTEAD = _("Use authenticator code instead")
+DESCRIPTION_USE_RECOVERY_INSTEAD = _("Use recovery code instead")
+
 
 class TwoFactorVerifyDialog(AlertDialog):
     """
@@ -31,6 +36,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             modal=True,
             scrollable=True,
             title=ft.Text(_("Two-Factor Authentication")),
+            actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
 
         self.on_verify_callback = on_verify_callback
@@ -47,8 +53,9 @@ class TwoFactorVerifyDialog(AlertDialog):
             on_submit=self._on_verify_click,
             expand=True,
             expand_loose=True,
+            width=450,
         )
-        
+
         # Recovery code input field
         self.recovery_code_field = ft.TextField(
             label=_("Recovery Code"),
@@ -60,6 +67,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             expand=True,
             expand_loose=True,
             visible=False,
+            width=450,
         )
 
         # Buttons
@@ -72,10 +80,11 @@ class TwoFactorVerifyDialog(AlertDialog):
             _("Cancel"),
             on_click=self._on_cancel_click,
         )
-        
+
         # Toggle link to switch between code and recovery code
         self.toggle_link = ft.TextButton(
-            _("Use recovery code instead"),
+            DESCRIPTION_USE_RECOVERY_INSTEAD,
+            icon=ft.Icons.SETTINGS_BACKUP_RESTORE_OUTLINED,
             on_click=self._on_toggle_input,
         )
 
@@ -83,17 +92,16 @@ class TwoFactorVerifyDialog(AlertDialog):
 
         # Dialog content with description text
         self.description_text = ft.Text(
-            _("Enter the 6-digit code from your authenticator app"),
+            DESCRIPTION_ENTER_CODE,
             size=14,
         )
-        
+
         # Dialog content
         self.content = ft.Column(
             [
                 self.description_text,
                 self.code_field,
                 self.recovery_code_field,
-                self.toggle_link,
                 ft.Row(
                     [self.loading_ring],
                     alignment=ft.MainAxisAlignment.CENTER,
@@ -104,8 +112,14 @@ class TwoFactorVerifyDialog(AlertDialog):
         )
 
         self.actions = [
-            self.cancel_button,
-            self.verify_button,
+            self.toggle_link,
+            ft.Row(
+                [
+                    self.cancel_button,
+                    self.verify_button,
+                ],
+                tight=True,  # The only property that matters
+            ),
         ]
 
     def disable_interactions(self):
@@ -127,32 +141,36 @@ class TwoFactorVerifyDialog(AlertDialog):
         self.toggle_link.disabled = False
         self.loading_ring.visible = False
         self.update()
-    
-    async def _on_toggle_input(self, e):
+
+    async def _on_toggle_input(self, event: ft.Event[ft.TextButton]):
         """Toggle between verification code and recovery code input."""
+        assert type(self.page) == ft.Page
         self.use_recovery_code = not self.use_recovery_code
-        
+
         if self.use_recovery_code:
             # Switch to recovery code mode
             self.code_field.visible = False
             self.recovery_code_field.visible = True
-            self.description_text.value = _("Enter one of your recovery codes")
-            self.toggle_link.text = _("Use authenticator code instead")
-            self.recovery_code_field.focus()
+            self.description_text.value = DESCRIPTION_ENTER_RECOVERY
+            self.toggle_link.content = DESCRIPTION_USE_CODE_INSTEAD
+            self.toggle_link.icon = ft.Icons.PASSWORD_OUTLINED
+            self.page.run_task(self.recovery_code_field.focus)
         else:
             # Switch to verification code mode
             self.code_field.visible = True
             self.recovery_code_field.visible = False
-            self.description_text.value = _("Enter the 6-digit code from your authenticator app")
-            self.toggle_link.text = _("Use recovery code instead")
-            self.code_field.focus()
-        
+            self.description_text.value = DESCRIPTION_ENTER_CODE
+            self.toggle_link.content = DESCRIPTION_USE_RECOVERY_INSTEAD
+            self.toggle_link.icon = ft.Icons.SETTINGS_BACKUP_RESTORE_OUTLINED
+            self.page.run_task(self.code_field.focus)
+
         # Clear any previous errors
         self.code_field.error = None
         self.recovery_code_field.error = None
-        self.update()
 
-    async def _on_verify_click(self, e):
+    async def _on_verify_click(
+        self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
+    ):
         """Handle verify button click."""
         if self.use_recovery_code:
             # Validate recovery code
@@ -187,7 +205,7 @@ class TwoFactorVerifyDialog(AlertDialog):
         else:
             self.enable_interactions()
 
-    async def _on_cancel_click(self, e):
+    async def _on_cancel_click(self, event: ft.Event[ft.TextButton]):
         """Handle cancel button click."""
         if self.on_cancel_callback:
             await self.on_cancel_callback()

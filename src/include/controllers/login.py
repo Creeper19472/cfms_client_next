@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from include.controllers.base import BaseController
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
@@ -108,13 +108,8 @@ class LoginFormController(BaseController["LoginForm"]):
             request_data = {
                 "username": username,
                 "password": password,
+                "2fa_token": code,  # Recovery code and TOTP use the same key
             }
-            
-            # Add appropriate field based on code type
-            if is_recovery_code:
-                request_data["recovery_code"] = code
-            else:
-                request_data["2fa_token"] = code
             
             response = await do_request("login", request_data)
             
