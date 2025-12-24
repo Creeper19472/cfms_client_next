@@ -18,11 +18,10 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
     def show_update_badge(self):
         """Show a badge indicating an update is available."""
         if self.badge is None:
-            # Create a small badge with an exclamation mark or dot
+            # Create a small badge with an exclamation mark
             self.badge = ft.Badge(
-                content=ft.Text("!", size=10, weight=ft.FontWeight.BOLD),
+                content=ft.Text("!", size=8, weight=ft.FontWeight.BOLD),
                 bgcolor=ft.Colors.RED_400,
-                small_size=8,
             )
             if self.page:
                 self.update()
