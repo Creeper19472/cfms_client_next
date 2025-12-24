@@ -10,10 +10,32 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
         self.icon = ft.Icons.BROWSER_UPDATED_OUTLINED
-        self.badge = None  # Badge can be added later when needed
         self.on_click = self.button_click
         self.tooltip = _("Check for Updates")
+        # Initialize badge to None (no badge shown)
+        self.badge = None
+
+    def show_update_badge(self):
+        """Show a badge indicating an update is available."""
+        if self.badge is None:
+            # Create a small badge with an exclamation mark or dot
+            self.badge = ft.Badge(
+                content=ft.Text("!", size=10, weight=ft.FontWeight.BOLD),
+                bgcolor=ft.Colors.RED_400,
+                small_size=8,
+            )
+            if self.page:
+                self.update()
+
+    def hide_update_badge(self):
+        """Hide the update badge."""
+        if self.badge is not None:
+            self.badge = None
+            if self.page:
+                self.update()
 
     async def button_click(self, event: ft.Event[ft.FloatingActionButton]):
         assert type(self.page) == ft.Page
+        # Hide badge when user clicks to check updates
+        self.hide_update_badge()
         await self.page.push_route("/connect/about/")

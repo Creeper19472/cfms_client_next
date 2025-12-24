@@ -15,6 +15,7 @@ from include.constants import FLET_APP_STORAGE_DATA
 
 if TYPE_CHECKING:
     from include.classes.services.manager import ServiceManager
+    from include.ui.controls.buttons.upgrade import FloatingUpgradeButton
 
 PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/preferences.yaml"
 
@@ -44,6 +45,7 @@ class AppShared:
         conn (Optional[ClientConnection]): The client connection object.
         ph_service (Optional[PermissionHandler]): The permission handler service.
         service_manager (Optional["ServiceManager"]): The service manager instance.
+        floating_upgrade_button (Optional["FloatingUpgradeButton"]): Reference to the upgrade button.
         user_perference (Optional[UserPreference]): The user's preferences.
         preferences (dict): Loaded user preferences from disk.
     Methods:
@@ -91,6 +93,7 @@ class AppShared:
         self.conn: Optional[ClientConnection] = None
         self.ph_service: Optional[PermissionHandler] = None
         self.service_manager: Optional["ServiceManager"] = None
+        self.floating_upgrade_button: Optional["FloatingUpgradeButton"] = None
 
         # User preferences
         self.user_perference: Optional[UserPreference] = None

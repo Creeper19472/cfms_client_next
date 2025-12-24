@@ -164,10 +164,11 @@ class AutoUpdateService(BaseService):
             self.page.show_dialog(snackbar)
             self.page.update()
 
-            # If user is still at the connect page, add indicator badge
-            # TODO
-            # To add a badge, we need to have a reference to the FloatingUpgradeButton instance.
-            # This requires restructuring how the button and service interact.
+            # If user is on the connect page, add indicator badge to FloatingUpgradeButton
+            app_shared = AppShared()
+            if app_shared.floating_upgrade_button is not None:
+                app_shared.floating_upgrade_button.show_update_badge()
+                self.logger.info("Update badge shown on FloatingUpgradeButton")
             
             self.logger.info(f"User notified of update: {release.version}")
             
