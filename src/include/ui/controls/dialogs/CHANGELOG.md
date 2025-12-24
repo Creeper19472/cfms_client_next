@@ -36,7 +36,7 @@ A fix has also been introduced for an issue in file upload action.
 
 **Title:** Add Auto-Update Service
 
-This version adds an new architecture for background services and an 
+This version adds a new architecture for background services and an 
 auto-update service, enabling the software to automatically check for new 
 updates and notify users.
 

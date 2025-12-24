@@ -118,7 +118,7 @@ class TwoFactorVerifyDialog(AlertDialog):
                     self.cancel_button,
                     self.verify_button,
                 ],
-                tight=True,  # The only property that matters
+                tight=True,  # Keep the action buttons as a compact group so the dialog's actions_alignment controls their overall placement
             ),
         ]
 
