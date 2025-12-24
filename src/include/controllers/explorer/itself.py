@@ -241,7 +241,8 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     conflict_type = create_document_response.get("data", {}).get("type")
                     conflict_id = create_document_response.get("data", {}).get("id")
                     
-                    if conflict_type == "document" and conflict_id:
+                    # conflict_id must be a non-empty string for overwrite to work
+                    if conflict_type == "document" and conflict_id not in (None, ""):
                         # Show overwrite confirmation dialog
                         confirm_dialog = FileOverwriteConfirmDialog(
                             filename=filename,
@@ -318,8 +319,17 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     # Success - get task_id
                     task_id = create_document_response["data"]["task_data"]["task_id"]
                 
+                # Verify we have a valid task_id before proceeding
                 if not task_id:
-                    # Should not reach here, but just in case
+                    # This should not happen in normal operation
+                    upload_dialog.error_column.controls.append(
+                        ft.Text(
+                            _('Internal error: Missing task_id for file "{filename}"').format(
+                                filename=filename
+                            )
+                        )
+                    )
+                    upload_dialog.error_column.update()
                     continue
 
                 max_retries = 2
