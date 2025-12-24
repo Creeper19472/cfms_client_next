@@ -265,3 +265,78 @@ class OpenDirectoryDialog(AlertDialog):
 
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         self.close()
+
+
+class FileOverwriteConfirmDialog(AlertDialog):
+    """Dialog to confirm overwriting an existing file on the server."""
+    
+    def __init__(
+        self,
+        filename: str,
+        existing_id: str,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        
+        self.modal = True
+        self.title = ft.Text(_("File Already Exists"))
+        
+        self.filename = filename
+        self.existing_id = existing_id
+        self.user_choice = None  # Will be 'overwrite', 'skip', or None
+        self.choice_event = asyncio.Event()
+        
+        # Dialog content
+        self.content = ft.Column(
+            controls=[
+                ft.Text(
+                    _('A file named "{filename}" already exists. Do you want to overwrite it?').format(
+                        filename=filename
+                    ),
+                    width=400,
+                ),
+            ],
+            width=400,
+            spacing=10,
+        )
+        
+        # Buttons
+        self.overwrite_button = ft.TextButton(
+            _("Overwrite"),
+            on_click=self.overwrite_button_click,
+        )
+        self.skip_button = ft.TextButton(
+            _("Skip"),
+            on_click=self.skip_button_click,
+        )
+        self.cancel_button = ft.TextButton(
+            _("Cancel"),
+            on_click=self.cancel_button_click,
+        )
+        
+        self.actions = [
+            self.overwrite_button,
+            self.skip_button,
+            self.cancel_button,
+        ]
+    
+    async def overwrite_button_click(self, event: ft.Event[ft.TextButton]):
+        self.user_choice = 'overwrite'
+        self.choice_event.set()
+        self.close()
+    
+    async def skip_button_click(self, event: ft.Event[ft.TextButton]):
+        self.user_choice = 'skip'
+        self.choice_event.set()
+        self.close()
+    
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        self.user_choice = None
+        self.choice_event.set()
+        self.close()
+    
+    async def wait_for_choice(self) -> str | None:
+        """Wait for the user to make a choice and return it."""
+        await self.choice_event.wait()
+        return self.user_choice

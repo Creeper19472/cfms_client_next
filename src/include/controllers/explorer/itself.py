@@ -11,6 +11,7 @@ from include.controllers.base import BaseController
 from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
+    FileOverwriteConfirmDialog,
 )
 from include.ui.util.path import get_directory
 from include.util.connect import get_connection
@@ -51,11 +52,23 @@ class FileExplorerController(BaseController["FileManagerView"]):
             self.control.page.overlay.append(progress_column)
             self.control.page.update()
 
+        # Callback for handling file conflicts
+        async def on_conflict(filename: str, conflict_type: str, conflict_id: str) -> str | None:
+            """Handle file conflict by showing a dialog to the user."""
+            confirm_dialog = FileOverwriteConfirmDialog(
+                filename=filename,
+                existing_id=conflict_id,
+            )
+            self.control.page.show_dialog(confirm_dialog)
+            choice = await confirm_dialog.wait_for_choice()
+            return choice
+
         # 使用手动迭代器，这样可以在取下一个元素时捕获异常并 continue
         ait = batch_upload_file_to_server(
             self.app_shared,
             self.control.current_directory_id,
             files,
+            on_conflict_callback=on_conflict,
         )
 
         # set default vars
@@ -221,7 +234,73 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     token=self.app_shared.token,
                 )
 
-                if create_document_response.get("code") != 200:
+                task_id = None
+                
+                if create_document_response.get("code") == 409:
+                    # Handle conflict (file already exists)
+                    conflict_type = create_document_response.get("data", {}).get("type")
+                    conflict_id = create_document_response.get("data", {}).get("id")
+                    
+                    if conflict_type == "document" and conflict_id:
+                        # Show overwrite confirmation dialog
+                        confirm_dialog = FileOverwriteConfirmDialog(
+                            filename=filename,
+                            existing_id=conflict_id,
+                        )
+                        self.control.page.show_dialog(confirm_dialog)
+                        user_choice = await confirm_dialog.wait_for_choice()
+                        
+                        if user_choice == 'overwrite':
+                            # Upload as a new version of existing document
+                            upload_response = await do_request(
+                                action="upload_document",
+                                data={
+                                    "id": conflict_id,
+                                },
+                                username=self.app_shared.username,
+                                token=self.app_shared.token,
+                            )
+                            
+                            if upload_response.get("code") == 200:
+                                task_id = upload_response["data"]["task_data"]["task_id"]
+                            else:
+                                upload_dialog.error_column.controls.append(
+                                    ft.Text(
+                                        _('Upload file "{filename}" failed: {errmsg}').format(
+                                            filename=filename,
+                                            errmsg=upload_response.get(
+                                                "message", "Unknown error"
+                                            ),
+                                        )
+                                    )
+                                )
+                                upload_dialog.error_column.update()
+                                continue
+                        
+                        elif user_choice == 'skip':
+                            # Skip this file
+                            continue
+                        
+                        else:
+                            # User cancelled, stop upload
+                            await _close_transfer_conn()
+                            return
+                    else:
+                        # Can't handle this conflict
+                        upload_dialog.error_column.controls.append(
+                            ft.Text(
+                                _('Create file "{filename}" failed: {errmsg}').format(
+                                    filename=filename,
+                                    errmsg=create_document_response.get(
+                                        "message", "Unknown error"
+                                    ),
+                                )
+                            )
+                        )
+                        upload_dialog.error_column.update()
+                        continue
+                
+                elif create_document_response.get("code") != 200:
                     upload_dialog.error_column.controls.append(
                         ft.Text(
                             _('Create file "{filename}" failed: {errmsg}').format(
@@ -233,6 +312,14 @@ class FileExplorerController(BaseController["FileManagerView"]):
                         )
                     )
                     upload_dialog.error_column.update()
+                    continue
+                
+                else:
+                    # Success - get task_id
+                    task_id = create_document_response["data"]["task_data"]["task_id"]
+                
+                if not task_id:
+                    # Should not reach here, but just in case
                     continue
 
                 max_retries = 2
@@ -261,7 +348,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
 
                         gen = upload_file_to_server(
                             transfer_conn,
-                            create_document_response["data"]["task_data"]["task_id"],
+                            task_id,
                             abs_path,
                         )
                         async for current_size, file_size in gen:

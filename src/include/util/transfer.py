@@ -307,12 +307,14 @@ async def batch_upload_file_to_server(
     files: list[FilePickerFile],
     max_size: int = 1024**2 * 4,
     max_retries: int = 3,
+    on_conflict_callback=None,
 ):
     """
     Upload multiple files to the server with progress tracking and retry logic.
     
     Processes files sequentially, creating a document for each file and uploading
-    its contents. Yields progress information for each file.
+    its contents. Yields progress information for each file. Handles file conflicts
+    (409 responses) by calling the optional callback function.
     
     Args:
         app_shared: Application configuration containing auth and connection info
@@ -320,6 +322,9 @@ async def batch_upload_file_to_server(
         files: List of files to upload
         max_size: Maximum WebSocket message size in bytes (default: 4MB)
         max_retries: Maximum retry attempts per file (default: 3)
+        on_conflict_callback: Optional async callback function that receives
+            (filename, conflict_type, conflict_id) and returns 'overwrite', 'skip',
+            or None. If None, 409 errors are treated as regular errors.
         
     Yields:
         Tuples of (file_index, filename, bytes_uploaded, total_size, exception)
@@ -357,20 +362,77 @@ async def batch_upload_file_to_server(
                         token=app_shared.token,
                     )
 
-                    if response.code != 200:
+                    if response.code == 409:
+                        # Handle conflict (file already exists)
+                        conflict_type = response.data.get("type")
+                        conflict_id = response.data.get("id")
+                        
+                        # Check if we can handle this conflict
+                        if (conflict_type == "document" and conflict_id and on_conflict_callback):
+                            # Ask user what to do
+                            user_choice = await on_conflict_callback(
+                                filename, conflict_type, conflict_id
+                            )
+                            
+                            if user_choice == 'overwrite':
+                                # Upload as a new version of the existing document
+                                upload_response = await do_request_2(
+                                    action="upload_document",
+                                    data={
+                                        "id": conflict_id,
+                                    },
+                                    username=app_shared.username,
+                                    token=app_shared.token,
+                                )
+                                
+                                if upload_response.code != 200:
+                                    raise InvalidResponseError(
+                                        upload_response,
+                                        f"Failed to upload document '{filename}': {upload_response.message}",
+                                    )
+                                
+                                task_id = upload_response.data["task_data"]["task_id"]
+                                
+                                async for current_size, total_size in upload_file_to_server(
+                                    transfer_conn, task_id, file_path
+                                ):
+                                    yield index, filename, current_size, total_size, None
+                                
+                                break  # break the retry loop if successful
+                            
+                            elif user_choice == 'skip':
+                                # Skip this file
+                                break
+                            
+                            else:
+                                # User cancelled, stop all uploads
+                                raise InvalidResponseError(
+                                    response,
+                                    f"Upload cancelled by user",
+                                )
+                        else:
+                            # Can't handle this conflict (no ID, wrong type, or no callback)
+                            raise InvalidResponseError(
+                                response,
+                                f"Failed to create document '{filename}': {response.message}",
+                            )
+                    
+                    elif response.code != 200:
                         raise InvalidResponseError(
                             response,
                             f"Failed to create document '{filename}': {response.message}",
                         )
                     
-                    task_id = response.data["task_data"]["task_id"]
+                    else:
+                        # Success - normal flow
+                        task_id = response.data["task_data"]["task_id"]
 
-                    async for current_size, total_size in upload_file_to_server(
-                        transfer_conn, task_id, file_path
-                    ):
-                        yield index, filename, current_size, total_size, None
+                        async for current_size, total_size in upload_file_to_server(
+                            transfer_conn, task_id, file_path
+                        ):
+                            yield index, filename, current_size, total_size, None
 
-                    break  # break the retry loop if successful
+                        break  # break the retry loop if successful
 
                 except InvalidResponseError as exc:
                     yield index, filename, -1, -1, exc
