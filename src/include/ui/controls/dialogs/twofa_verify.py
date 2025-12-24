@@ -186,6 +186,10 @@ class TwoFactorVerifyDialog(AlertDialog):
                 self.code_field.error = _("Please enter a 6-digit code")
                 self.update()
                 return
+            
+        # Clear errors
+        self.code_field.error = None
+        self.recovery_code_field.error = None
 
         self.disable_interactions()
 
