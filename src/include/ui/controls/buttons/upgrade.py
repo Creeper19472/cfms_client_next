@@ -20,8 +20,8 @@ class FloatingUpgradeButton(ft.FloatingActionButton):
         if self.badge is None:
             # Create a small badge with an exclamation mark
             self.badge = ft.Badge(
-                content=ft.Text("!", size=8, weight=ft.FontWeight.BOLD),
                 bgcolor=ft.Colors.RED_400,
+                small_size=10,
             )
             if self.page:
                 self.update()
