@@ -408,7 +408,9 @@ async def batch_upload_file_to_server(
                                 break  # break the retry loop if successful
                             
                             elif user_choice == 'skip':
-                                # Skip this file
+                                # Skip this file, but still yield a progress update so callers
+                                # can account for this file in their progress tracking.
+                                yield index, filename, 0, 0, None
                                 break
                             
                             else:
