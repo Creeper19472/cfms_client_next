@@ -277,7 +277,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
         ref: ft.Ref | None = None,
         visible=True,
     ):
-        super().__init__(ref=ref, visible=visible)
+        super().__init__(ref=ref, visible=visible, scrollable=True)
         
         self.modal = True
         self.title = ft.Text(_("File Already Exists"))
