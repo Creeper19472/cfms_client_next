@@ -1,7 +1,6 @@
 """Token refresh service for automatic token renewal."""
 
 import time
-from typing import Optional
 
 from include.classes.config import AppShared
 from include.classes.services.base import BaseService
@@ -79,8 +78,17 @@ class TokenRefreshService(BaseService):
             f"(threshold: {self.refresh_threshold}s)"
         )
         
-        # Check if token needs refresh
-        if time_until_expiry <= self.refresh_threshold:
+        # Check if token needs refresh or is already expired
+        if time_until_expiry <= 0:
+            self.logger.warning(
+                f"Token has already expired ({time_until_expiry:.1f}s ago), "
+                "clearing session and skipping refresh"
+            )
+            # Clear session so subsequent checks do not try to refresh with invalid credentials
+            self.app_shared.token = None
+            self.app_shared.token_exp = None
+            return
+        elif time_until_expiry <= self.refresh_threshold:
             self.logger.info(
                 f"Token expiring soon ({time_until_expiry:.1f}s remaining), "
                 "requesting refresh"
@@ -133,6 +141,19 @@ class TokenRefreshService(BaseService):
                 self.logger.error(
                     f"Token refresh failed: ({response.code}) {response.message}"
                 )
+
+                # If the failure is due to authentication issues, invalidate the session
+                if response.code in (401, 403):
+                    self.logger.warning(
+                        "Token refresh failed due to authentication error "
+                        "(session may have expired or token is invalid). "
+                        "Clearing session and stopping further refresh attempts "
+                        "until re-authentication."
+                    )
+                    # Clear token-related state so execute() will skip future refreshes
+                    self.app_shared.token = None
+                    self.app_shared.token_exp = None
+                    self.app_shared.username = None
                 
         except Exception as e:
             self.logger.error(f"Error refreshing token: {e}", exc_info=True)
