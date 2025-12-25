@@ -19,13 +19,13 @@ class HomeModel(Model):
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
-        self.homeview = HomeView()
+        self.homeview = HomeView(visible=True)
         self.controls = [
             ft.SafeArea(ft.Container()),
-            FileManagerView(parent_model=self),
-            TasksView(parent_model=self),
+            FileManagerView(parent_model=self, visible=False),
+            TasksView(parent_model=self, visible=False),
             self.homeview,
-            MoreView(self),
+            MoreView(self, visible=False),
         ]
         self.navigation_bar = HomeNavigationBar(
             parent_view=self, views=self.controls[1:]

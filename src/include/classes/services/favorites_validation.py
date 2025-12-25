@@ -7,6 +7,7 @@ from typing import Set, Callable, List
 from include.classes.services.base import BaseService
 from include.classes.config import AppShared
 from include.util.requests import do_request_2
+import threading
 
 __all__ = ["FavoritesValidationService"]
 
@@ -276,23 +277,48 @@ class FavoritesValidationService(BaseService):
     def trigger_validation_async(self) -> None:
         """
         Trigger validation to run in the background without blocking.
-        
-        This starts validation as a background task that doesn't block
-        the calling code. UI will be updated via callbacks when complete.
         """
-        if self.app_shared.username and self.app_shared.token:
-            # Create a task to run validation without blocking
+        if not (self.app_shared.username and self.app_shared.token):
+            return
+
+        if self.validation_in_progress:
+            self.logger.debug("Validation already in progress, skipping async trigger")
+            return
+
+        coro = self._perform_validation()
+
+        # If there's a running event loop in this thread, schedule as a task
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
             try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(self._perform_validation())
-            except RuntimeError:
-                # If no event loop is running, try to get the event loop
+                loop.create_task(coro)
+                return
+            except Exception as e:
+                self.logger.warning(f"Failed to create task on running loop: {e}")
+
+        # Fallback: try the default event loop (for older code patterns)
+        try:
+            loop2 = asyncio.get_event_loop()
+            if loop2.is_running():
                 try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        loop.create_task(self._perform_validation())
-                    else:
-                        self.logger.warning("Cannot trigger async validation - event loop not running")
-                except RuntimeError:
-                    self.logger.warning("Cannot trigger async validation - no event loop")
+                    loop2.create_task(coro)
+                    return
+                except Exception as e:
+                    self.logger.warning(f"Failed to create task on default loop: {e}")
+        except RuntimeError:
+            pass
+
+        # Final fallback: run the coroutine in a dedicated background thread
+
+        def _thread_runner():
+            try:
+                asyncio.run(coro)
+            except Exception as e:
+                self.logger.error(f"Async validation failed in thread: {e}", exc_info=True)
+
+        threading.Thread(target=_thread_runner, daemon=True).start()
 

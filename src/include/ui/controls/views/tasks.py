@@ -54,9 +54,10 @@ class TaskTile(ft.Card):
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
-            visible=task.status == DownloadTaskStatus.COMPLETED and AppShared().is_mobile,
+            visible=task.status == DownloadTaskStatus.COMPLETED
+            and AppShared().is_mobile,
         )
-        
+
         # Pause/Resume button (only if server supports resume)
         # If resume not supported, only show cancel button
         self.pause_resume_button = ft.IconButton(
@@ -277,18 +278,16 @@ class TaskTile(ft.Card):
         )
 
         # Update open file button visibility
-        self.open_file_button.visible = task.status == DownloadTaskStatus.COMPLETED and AppShared().is_mobile
+        self.open_file_button.visible = (
+            task.status == DownloadTaskStatus.COMPLETED and AppShared().is_mobile
+        )
 
         # Update pause/resume button visibility and icons (only if supports_resume)
-        self.pause_resume_button.visible = (
-            task.supports_resume
-            and task.status
-            in [
-                DownloadTaskStatus.DOWNLOADING,
-                DownloadTaskStatus.PAUSED,
-                DownloadTaskStatus.PENDING,
-            ]
-        )
+        self.pause_resume_button.visible = task.supports_resume and task.status in [
+            DownloadTaskStatus.DOWNLOADING,
+            DownloadTaskStatus.PAUSED,
+            DownloadTaskStatus.PENDING,
+        ]
         self.pause_resume_button.icon = (
             ft.Icons.PAUSE
             if task.status == DownloadTaskStatus.DOWNLOADING
@@ -324,22 +323,22 @@ class TaskTile(ft.Card):
         download_service = self.parent_view.download_service
         if download_service:
             download_service.cancel_task(self.task.task_id)
-    
+
     async def _on_open_file(self, e):
         """Handle open file button click."""
         try:
             # Import OpenFile service
             from flet_open_file import OpenFile
-            
+
             # Open the downloaded file
             open_file_service = OpenFile()
             await open_file_service.open(self.task.file_path, 3)
         except Exception as exc:
             # Show error if file can't be opened
             from include.ui.util.notifications import send_error
+
             send_error(
-                self.page,
-                _("Failed to open file: {error}").format(error=str(exc))
+                self.page, _("Failed to open file: {error}").format(error=str(exc))
             )
 
 
@@ -350,8 +349,13 @@ class TasksView(ft.Container):
     Shows a list of all download tasks with filtering and clearing options.
     """
 
-    def __init__(self, parent_model: "HomeModel", ref: ft.Ref | None = None):
-        super().__init__(ref=ref, visible=False, expand=True)
+    def __init__(
+        self,
+        parent_model: "HomeModel",
+        visible: bool = True,
+        ref: ft.Ref | None = None,
+    ):
+        super().__init__(ref=ref, visible=visible, expand=True)
 
         self.parent_model = parent_model
         self.app_shared = AppShared()

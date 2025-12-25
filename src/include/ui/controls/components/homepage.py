@@ -7,9 +7,8 @@ from include.classes.services.favorites_validation import FavoritesValidationSer
 from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.util.file_controls import get_directory
-from include.ui.util.notifications import send_error, send_info
+from include.ui.util.notifications import send_error
 from include.ui.util.path import get_document
-from include.util.userpref import register_favorites_change_callback, unregister_favorites_change_callback
 
 
 if TYPE_CHECKING:
@@ -90,7 +89,7 @@ class HomeNavigationBar(ft.NavigationBar):
 
 class WelcomeInfoCard(ft.Card):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
-        super().__init__(ref=ref, visible=visible, expand=True, expand_loose=True)
+        super().__init__(ref=ref, visible=visible)
         self.content = ft.Container(
             content=ft.Column(
                 [
@@ -107,9 +106,8 @@ class WelcomeInfoCard(ft.Card):
                             )
                         ),
                     ),
-                ]
+                ],
             ),
-            # width=400,
             padding=10,
         )
 
@@ -119,24 +117,11 @@ class HomeFavoritesContainer(ft.Container):
         super().__init__(ref=ref, visible=visible, margin=15)
         self.page: ft.Page
         self.app_shared = AppShared()
+        self.expand = True
+        self.expand_loose = True
 
-        self.listview = ft.ListView(controls=[])
+        self.listview = ft.ListView(controls=[], scroll=ft.ScrollMode.AUTO, expand=True)
         self.content = self.listview
-        
-        # Register callback for when favorites change
-        def on_favorites_changed():
-            # Re-render the entire favorites list when favorites change
-            # Use run_task to avoid blocking the event handler
-            if hasattr(self, 'page') and self.page:
-                self.page.run_task(self.update_favorites, from_validation_callback=False)
-        
-        self._favorites_change_callback = on_favorites_changed
-        register_favorites_change_callback(on_favorites_changed)
-    
-    def will_unmount(self):
-        """Clean up callback when control is removed."""
-        if hasattr(self, '_favorites_change_callback'):
-            unregister_favorites_change_callback(self._favorites_change_callback)
 
     def _mark_item_invalid(self, control, item_id: str, item_name: str, id_label: str):
         """Helper method to mark a control as invalid with consistent styling."""
@@ -191,7 +176,7 @@ class HomeFavoritesContainer(ft.Container):
         if validation_service and not hasattr(self, '_validation_callback_registered'):
             async def on_validation_complete():
                 # Just update styling of existing controls, don't re-render
-                await self.update_favorites(from_validation_callback=True)
+                self.page.run_task(self.update_favorites, from_validation_callback=True)
             
             validation_service.register_on_validation_complete(on_validation_complete)
             self._validation_callback_registered = True
@@ -309,6 +294,11 @@ class HomeFavoritesContainer(ft.Container):
                 ft.Text(_("You have not favorited any documents or folders yet."))
             )
 
+        # Update the UI
+        # Why here needs a `self.update()` is because this method is async and called via `run_task`,
+        # not directly called by event hooks, so it won't auto-update UI after completion.
+        self.update()
+
 
 class HomeTabs(ft.Tabs):
     def __init__(
@@ -350,7 +340,7 @@ class HomeTabs(ft.Tabs):
 
 class HomeView(ft.Container):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
-        super().__init__(ref=ref, visible=visible)
+        super().__init__(ref=ref, visible=visible, expand=True, expand_loose=True)
 
         self.margin = 10
         self.padding = 10
