@@ -173,6 +173,10 @@ jobs:
         mkdir -p ./build/flutter/android/app
         echo ${{ secrets.ENCODED_KEYSTORE }} | base64 -di > ./build/flutter/android/app/keystore.jks
 
+    - name: Remove pillow dependency for mobile build
+      run: |
+        python scripts/remove_pillow_dependency.py
+
     - name: Flet Build APK
       run: |
         uv run flet build apk --yes -v --no-rich-output --android-signing-key-store keystore.jks --android-signing-key-alias key0 --android-signing-key-store-password ${{ secrets.FLET_ANDROID_SIGNING_KEY_STORE_PASSWORD }} --android-signing-key-password ${{ secrets.FLET_ANDROID_SIGNING_KEY_PASSWORD }}
