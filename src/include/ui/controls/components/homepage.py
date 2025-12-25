@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Union, cast
 
 import flet as ft
 
@@ -123,9 +123,14 @@ class HomeFavoritesContainer(ft.Container):
         self.listview = ft.ListView(controls=[], scroll=ft.ScrollMode.AUTO, expand=True)
         self.content = self.listview
 
-    def _mark_item_invalid(self, control, item_id: str, item_name: str, id_label: str):
+    def _mark_item_invalid(
+        self,
+        control: Union[FileTile, DirectoryTile],
+        item_id: str,
+        item_name: str,
+    ):
         """Helper method to mark a control as invalid with consistent styling."""
-        control.disabled = True
+        cast(ft.Icon, control.leading).color = ft.Colors.GREY_500
         control.title = ft.Text(
             item_name,
             color=ft.Colors.GREY_500,
@@ -148,8 +153,11 @@ class HomeFavoritesContainer(ft.Container):
         # Get validation service
         validation_service = None
         if self.app_shared.service_manager:
-            validation_service = cast(FavoritesValidationService, self.app_shared.service_manager.get_service("favorites_validation"))
-        
+            validation_service = cast(
+                FavoritesValidationService,
+                self.app_shared.service_manager.get_service("favorites_validation"),
+            )
+
         # If this is called from validation callback, only update the styling of existing controls
         # Don't clear and recreate everything
         if from_validation_callback and validation_service:
@@ -158,45 +166,57 @@ class HomeFavoritesContainer(ft.Container):
                 if isinstance(control, FileTile):
                     is_valid = validation_service.is_file_valid(control.file_id)
                     if not is_valid:
-                        self._mark_item_invalid(control, control.file_id, control.filename, "file_id")
+                        self._mark_item_invalid(
+                            control, control.file_id, control.filename
+                        )
                 elif isinstance(control, DirectoryTile):
-                    is_valid = validation_service.is_directory_valid(control.directory_id)
+                    is_valid = validation_service.is_directory_valid(
+                        control.directory_id
+                    )
                     if not is_valid:
-                        self._mark_item_invalid(control, control.directory_id, control.dir_name, "dir_id")
-            
+                        self._mark_item_invalid(
+                            control, control.directory_id, control.dir_name
+                        )
+
             # Update the UI
             self.update()
             return
 
         # Normal rendering: clear existing controls and recreate
         self.listview.controls.clear()
-        
+
         # Register callback to update UI after validation completes
         # But only register once
-        if validation_service and not hasattr(self, '_validation_callback_registered'):
+        if validation_service and not hasattr(self, "_validation_callback_registered"):
+
             async def on_validation_complete():
                 # Just update styling of existing controls, don't re-render
                 self.page.run_task(self.update_favorites, from_validation_callback=True)
-            
+
             validation_service.register_on_validation_complete(on_validation_complete)
             self._validation_callback_registered = True
-        
+
         # Trigger validation in background (non-blocking) on first view
         # Only trigger if validation hasn't started yet and not in progress
-        if validation_service and not validation_service._first_validation_done and not validation_service.validation_in_progress:
+        if (
+            validation_service
+            and not validation_service._first_validation_done
+            and not validation_service.validation_in_progress
+        ):
             validation_service.trigger_validation_async()
 
         async def on_filetile_click(event: ft.Event[ft.ListTile]):
             assert type(event.control) == FileTile
-            
+
             # Check if file is marked as invalid
-            if validation_service and not validation_service.is_file_valid(event.control.file_id):
+            if validation_service and not validation_service.is_file_valid(
+                event.control.file_id
+            ):
                 send_error(
-                    self.page,
-                    _("This document no longer exists on the server.")
+                    self.page, _("This document no longer exists on the server.")
                 )
                 return
-            
+
             try:
                 await get_document(
                     event.control.file_id,
@@ -236,7 +256,7 @@ class HomeFavoritesContainer(ft.Container):
             is_valid = True
             if validation_service:
                 is_valid = validation_service.is_directory_valid(dir_id)
-            
+
             directory = DirectoryTile(
                 dir_name=favorite_directories[dir_id],
                 directory_id=dir_id,
@@ -244,20 +264,11 @@ class HomeFavoritesContainer(ft.Container):
                 show_id=True,
                 on_click=on_dirtile_click if is_valid else None,
             )
-            
+
             # Apply visual styling for invalid items
             if not is_valid:
-                directory.disabled = True
-                directory.title = ft.Text(
-                    favorite_directories[dir_id],
-                    color=ft.Colors.GREY_500,
-                    style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
-                )
-                directory.subtitle = ft.Text(
-                    _("ID: {dir_id} (No longer exists)").format(dir_id=dir_id),
-                    color=ft.Colors.RED_300,
-                )
-            
+                self._mark_item_invalid(directory, dir_id, favorite_directories[dir_id])
+
             self.listview.controls.append(directory)
 
         for file_id in favorite_files:
@@ -265,7 +276,7 @@ class HomeFavoritesContainer(ft.Container):
             is_valid = True
             if validation_service:
                 is_valid = validation_service.is_file_valid(file_id)
-            
+
             file = FileTile(
                 filename=favorite_files[file_id],
                 file_id=file_id,
@@ -273,20 +284,11 @@ class HomeFavoritesContainer(ft.Container):
                 show_id=True,
                 on_click=on_filetile_click if is_valid else None,
             )
-            
+
             # Apply visual styling for invalid items
             if not is_valid:
-                file.disabled = True
-                file.title = ft.Text(
-                    favorite_files[file_id],
-                    color=ft.Colors.GREY_500,
-                    style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
-                )
-                file.subtitle = ft.Text(
-                    _("ID: {file_id} (No longer exists)").format(file_id=file_id),
-                    color=ft.Colors.RED_300,
-                )
-            
+                self._mark_item_invalid(file, file_id, favorite_files[file_id])
+
             self.listview.controls.append(file)
 
         if not self.listview.controls:
