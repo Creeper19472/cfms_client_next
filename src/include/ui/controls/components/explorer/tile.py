@@ -11,6 +11,18 @@ t = get_translation()
 _ = t.gettext
 
 
+def _save_user_preference_async(page: ft.Page, app_shared: AppShared):
+    """Helper to save user preferences asynchronously using page.run_task."""
+    async def save_preferences():
+        save_user_preference(
+            app_shared.get_not_none_attribute("username"),
+            app_shared.user_perference,
+        )
+    
+    if page:
+        page.run_task(save_preferences)
+
+
 class FileTile(ft.ListTile):
     def __init__(
         self,
@@ -86,15 +98,7 @@ class FileTile(ft.ListTile):
         self.update_state()
         
         # Save preferences asynchronously to avoid blocking UI
-        async def save_preferences_async():
-            save_user_preference(
-                self.app_shared.get_not_none_attribute("username"),
-                self.app_shared.user_perference,
-            )
-        
-        # Use page.run_task to save asynchronously
-        if hasattr(self, 'page') and self.page:
-            self.page.run_task(save_preferences_async)
+        _save_user_preference_async(self.page, self.app_shared)
 
     def post_init(self):
         self.update_state()
@@ -175,15 +179,7 @@ class DirectoryTile(ft.ListTile):
         self.update_state()
         
         # Save preferences asynchronously to avoid blocking UI
-        async def save_preferences_async():
-            save_user_preference(
-                self.app_shared.get_not_none_attribute("username"),
-                self.app_shared.user_perference,
-            )
-        
-        # Use page.run_task to save asynchronously
-        if hasattr(self, 'page') and self.page:
-            self.page.run_task(save_preferences_async)
+        _save_user_preference_async(self.page, self.app_shared)
 
     def post_init(self):
         self.update_state()
