@@ -54,6 +54,9 @@ class FavoritesValidationService(BaseService):
         self.validation_in_progress = False
         self._validation_requested = asyncio.Event()
         self._first_validation_done = False
+        
+        # Callbacks to be called after validation completes
+        self._on_validation_complete_callbacks: list = []
     
     async def execute(self):
         """
@@ -78,15 +81,11 @@ class FavoritesValidationService(BaseService):
         """
         Request an immediate validation check (non-blocking).
         
-        This can be called when the user navigates to the homepage
-        to ensure favorites are validated before display.
+        This triggers validation in the background without blocking.
+        The UI will be updated after validation completes.
         """
-        if not self._first_validation_done:
-            # For first validation, we want it to complete before returning
-            await self._perform_validation()
-        else:
-            # For subsequent validations, just trigger the event
-            self._validation_requested.set()
+        # Always trigger validation without blocking, even on first run
+        self._validation_requested.set()
     
     async def _perform_validation(self) -> None:
         """
@@ -127,6 +126,16 @@ class FavoritesValidationService(BaseService):
                 f"Validation complete. Invalid items - Files: {len(self.invalid_files)}, "
                 f"Directories: {len(self.invalid_directories)}"
             )
+            
+            # Call all registered callbacks
+            for callback in self._on_validation_complete_callbacks:
+                try:
+                    if asyncio.iscoroutinefunction(callback):
+                        await callback()
+                    else:
+                        callback()
+                except Exception as e:
+                    self.logger.error(f"Error in validation callback: {e}", exc_info=True)
             
         except Exception as e:
             self.logger.error(f"Error during validation: {e}", exc_info=True)
@@ -240,3 +249,44 @@ class FavoritesValidationService(BaseService):
         """
         self.invalid_directories.add(dir_id)
         self.logger.info(f"Directory {dir_id} marked as invalid")
+    
+    def register_on_validation_complete(self, callback) -> None:
+        """
+        Register a callback to be called when validation completes.
+        
+        The callback will be called after each validation run.
+        Callback can be sync or async function.
+        
+        Args:
+            callback: Function to call after validation completes
+        """
+        if callback not in self._on_validation_complete_callbacks:
+            self._on_validation_complete_callbacks.append(callback)
+    
+    def unregister_on_validation_complete(self, callback) -> None:
+        """
+        Unregister a callback.
+        
+        Args:
+            callback: Function to remove from callbacks
+        """
+        if callback in self._on_validation_complete_callbacks:
+            self._on_validation_complete_callbacks.remove(callback)
+    
+    def trigger_validation_async(self) -> None:
+        """
+        Trigger validation to run in the background without blocking.
+        
+        This starts validation as a background task that doesn't block
+        the calling code. UI will be updated via callbacks when complete.
+        """
+        if self.app_shared.username and self.app_shared.token:
+            # Create a task to run validation without blocking
+            import asyncio
+            try:
+                loop = asyncio.get_event_loop()
+                loop.create_task(self._perform_validation())
+            except RuntimeError:
+                # If no event loop, just log and skip
+                self.logger.warning("Cannot trigger async validation - no event loop")
+

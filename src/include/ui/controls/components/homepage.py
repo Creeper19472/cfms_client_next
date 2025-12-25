@@ -138,9 +138,22 @@ class HomeFavoritesContainer(ft.Container):
         if self.app_shared.service_manager:
             validation_service = self.app_shared.service_manager.get_service("favorites_validation")
             
-            # Request immediate validation if this is the first time
+            # Register callback to update UI after validation completes
+            # But only register once
+            if validation_service and not hasattr(self, '_validation_callback_registered'):
+                async def on_validation_complete():
+                    # Re-render the favorites list with validation results
+                    await self.update_favorites()
+                    # Update the page to reflect changes
+                    if hasattr(self, 'page') and self.page:
+                        self.update()
+                
+                validation_service.register_on_validation_complete(on_validation_complete)
+                self._validation_callback_registered = True
+            
+            # Trigger validation in background (non-blocking) on first view
             if validation_service and not validation_service._first_validation_done:
-                await validation_service.request_validation()
+                validation_service.trigger_validation_async()
 
         async def on_filetile_click(event: ft.Event[ft.ListTile]):
             assert type(event.control) == FileTile
@@ -181,6 +194,7 @@ class HomeFavoritesContainer(ft.Container):
                 
                 # Update the display to show item as invalid
                 await self.update_favorites()
+                self.update()
 
         async def on_dirtile_click(event: ft.Event[ft.ListTile]):
             pass
