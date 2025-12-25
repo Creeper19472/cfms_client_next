@@ -135,7 +135,20 @@ class HomeFavoritesContainer(ft.Container):
         """Clean up callback when control is removed."""
         if hasattr(self, '_favorites_change_callback'):
             unregister_favorites_change_callback(self._favorites_change_callback)
-        super().will_unmount()
+
+    def _mark_item_invalid(self, control, item_id: str, item_name: str, id_label: str):
+        """Helper method to mark a control as invalid with consistent styling."""
+        control.disabled = True
+        control.title = ft.Text(
+            item_name,
+            color=ft.Colors.GREY_500,
+            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+        )
+        control.subtitle = ft.Text(
+            _("ID: {id} (No longer exists)").format(id=item_id),
+            color=ft.Colors.RED_300,
+        )
+        control.on_click = None
 
     async def update_favorites(self, from_validation_callback: bool = False):
         # add favorite files and directories
@@ -158,31 +171,11 @@ class HomeFavoritesContainer(ft.Container):
                 if isinstance(control, FileTile):
                     is_valid = validation_service.is_file_valid(control.file_id)
                     if not is_valid:
-                        control.disabled = True
-                        control.title = ft.Text(
-                            control.filename,
-                            color=ft.Colors.GREY_500,
-                            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
-                        )
-                        control.subtitle = ft.Text(
-                            _("ID: {file_id} (No longer exists)").format(file_id=control.file_id),
-                            color=ft.Colors.RED_300,
-                        )
-                        control.on_click = None
+                        self._mark_item_invalid(control, control.file_id, control.filename, "file_id")
                 elif isinstance(control, DirectoryTile):
                     is_valid = validation_service.is_directory_valid(control.directory_id)
                     if not is_valid:
-                        control.disabled = True
-                        control.title = ft.Text(
-                            control.dir_name,
-                            color=ft.Colors.GREY_500,
-                            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
-                        )
-                        control.subtitle = ft.Text(
-                            _("ID: {dir_id} (No longer exists)").format(dir_id=control.directory_id),
-                            color=ft.Colors.RED_300,
-                        )
-                        control.on_click = None
+                        self._mark_item_invalid(control, control.directory_id, control.dir_name, "dir_id")
             
             # Update the UI
             self.update()
