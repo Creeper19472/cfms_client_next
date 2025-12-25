@@ -194,7 +194,6 @@ async def main(page: ft.Page):
         app_shared=app_shared,
         enabled=True,
         interval=300.0,  # Check every 5 minutes
-        check_on_mount=True,
     )
     service_manager.register(favorites_validation_service)
 

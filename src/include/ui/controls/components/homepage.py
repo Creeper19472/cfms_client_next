@@ -200,7 +200,7 @@ class HomeFavoritesContainer(ft.Container):
         # Only trigger if validation hasn't started yet and not in progress
         if (
             validation_service
-            and not validation_service._first_validation_done
+            and not validation_service.first_validation_done
             and not validation_service.validation_in_progress
         ):
             validation_service.trigger_validation_async()
@@ -223,17 +223,13 @@ class HomeFavoritesContainer(ft.Container):
                     filename=event.control.filename,
                     page=self.page,
                 )
-                
+
             except FileNotFoundError:
                 if validation_service:
                     validation_service.mark_file_invalid(event.control.file_id)
                 self.page.run_task(self.update_favorites, from_validation_callback=True)
 
             except Exception as e:
-                # If download fails, mark as invalid and notify user
-                if validation_service:
-                    validation_service.mark_file_invalid(event.control.file_id)
-
                 # Safely access potential 'response' attribute without relying on Exception having it
                 err_obj = cast(object, e)
                 resp = getattr(err_obj, "response", None)
@@ -251,7 +247,6 @@ class HomeFavoritesContainer(ft.Container):
                         _("Failed to download document: {error}").format(error=str(e)),
                     )
 
-                # Update the display to show item as invalid (use callback path to avoid clearing)
                 self.page.run_task(self.update_favorites, from_validation_callback=True)
 
         async def on_dirtile_click(event: ft.Event[ft.ListTile]):

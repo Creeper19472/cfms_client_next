@@ -32,7 +32,6 @@ class FavoritesValidationService(BaseService):
         app_shared: AppShared,
         enabled: bool = True,
         interval: float = 300.0,  # Check every 5 minutes by default
-        check_on_mount: bool = True,
     ):
         """
         Initialize the favorites validation service.
@@ -45,7 +44,6 @@ class FavoritesValidationService(BaseService):
         """
         super().__init__(name="favorites_validation", enabled=enabled, interval=interval)
         self.app_shared = app_shared
-        self.check_on_mount = check_on_mount
         
         # Track invalid items
         self.invalid_files: Set[str] = set()
@@ -53,11 +51,14 @@ class FavoritesValidationService(BaseService):
         
         # Track validation state
         self.validation_in_progress = False
-        self._validation_requested = asyncio.Event()
         self._first_validation_done = False
         
         # Callbacks to be called after validation completes
         self._on_validation_complete_callbacks: List[Callable] = []
+
+    @property
+    def first_validation_done(self) -> bool:
+        return self._first_validation_done
     
     async def execute(self):
         """
@@ -77,16 +78,6 @@ class FavoritesValidationService(BaseService):
             return
         
         await self._perform_validation()
-    
-    async def request_validation(self) -> None:
-        """
-        Request an immediate validation check (non-blocking).
-        
-        This triggers validation in the background without blocking.
-        The UI will be updated after validation completes.
-        """
-        # Always trigger validation without blocking, even on first run
-        self._validation_requested.set()
     
     async def _perform_validation(self) -> None:
         """
