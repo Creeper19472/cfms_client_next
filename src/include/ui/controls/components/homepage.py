@@ -3,9 +3,11 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from include.classes.config import AppShared
+from include.classes.services.favorites_validation import FavoritesValidationService
 from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.util.file_controls import get_directory
+from include.ui.util.notifications import send_error, send_info
 from include.ui.util.path import get_document
 
 
@@ -134,7 +136,6 @@ class HomeFavoritesContainer(ft.Container):
         # Get validation service
         validation_service = None
         if self.app_shared.service_manager:
-            from include.classes.services.favorites_validation import FavoritesValidationService
             validation_service = self.app_shared.service_manager.get_service("favorites_validation")
             
             # Request immediate validation if this is the first time
@@ -146,7 +147,6 @@ class HomeFavoritesContainer(ft.Container):
             
             # Check if file is marked as invalid
             if validation_service and not validation_service.is_file_valid(event.control.file_id):
-                from include.ui.util.notifications import send_error
                 send_error(
                     self.page,
                     _("This document no longer exists on the server.")
@@ -164,9 +164,8 @@ class HomeFavoritesContainer(ft.Container):
                 if validation_service:
                     validation_service.mark_file_invalid(event.control.file_id)
                 
-                from include.ui.util.notifications import send_error
-                # Check if it's a known error type
-                if hasattr(e, 'response') and e.response:
+                # Check if it's a known error type with response dict
+                if hasattr(e, 'response') and isinstance(e.response, dict):
                     send_error(
                         self.page,
                         _("Failed to download document: ({code}) {message}").format(
