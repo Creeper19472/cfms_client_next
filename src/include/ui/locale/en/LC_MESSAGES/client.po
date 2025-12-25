@@ -372,6 +372,26 @@ msgstr ""
 msgid "You have not favorited any documents or folders yet."
 msgstr "You have not favorited any documents or folders yet."
 
+#: .\include\ui\controls\components\homepage.py:145
+msgid "This document no longer exists on the server."
+msgstr "This document no longer exists on the server."
+
+#: .\include\ui\controls\components\homepage.py:164
+msgid "Failed to download document: ({code}) {message}"
+msgstr "Failed to download document: ({code}) {message}"
+
+#: .\include\ui\controls\components\homepage.py:172
+msgid "Failed to download document: {error}"
+msgstr "Failed to download document: {error}"
+
+#: .\include\ui\controls\components\homepage.py:212
+msgid "ID: {dir_id} (No longer exists)"
+msgstr "ID: {dir_id} (No longer exists)"
+
+#: .\include\ui\controls\components\homepage.py:238
+msgid "ID: {file_id} (No longer exists)"
+msgstr "ID: {file_id} (No longer exists)"
+
 #: .\include\ui\controls\components\homepage.py:182
 msgid "Favorites"
 msgstr "Favorites"

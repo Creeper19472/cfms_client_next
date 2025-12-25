@@ -281,9 +281,10 @@ class HomeTabs(ft.Tabs):
             ref=ref,
         )
 
-    async def did_mount(self):
+    def did_mount(self):
         super().did_mount()
-        await self.home_favorites_container.update_favorites()
+        # Schedule the async update_favorites as a task
+        self.page.run_task(self.home_favorites_container.update_favorites)
 
 
 class HomeView(ft.Container):
@@ -309,6 +310,7 @@ class HomeView(ft.Container):
 
         # Form element definitions
 
-    async def did_mount(self):
+    def did_mount(self):
         super().did_mount()
-        await self.home_tabs.home_favorites_container.update_favorites()
+        # Schedule the async update_favorites as a task
+        self.page.run_task(self.home_tabs.home_favorites_container.update_favorites)

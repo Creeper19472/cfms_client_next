@@ -361,6 +361,26 @@ msgstr "落霞与孤鹜齐飞，秋水共长天一色。"
 msgid "You have not favorited any documents or folders yet."
 msgstr "您尚未收藏任何文档或文件夹。"
 
+#: .\include\ui\controls\components\homepage.py:145
+msgid "This document no longer exists on the server."
+msgstr "此文档在服务器上不再存在。"
+
+#: .\include\ui\controls\components\homepage.py:164
+msgid "Failed to download document: ({code}) {message}"
+msgstr "文档下载失败：({code}) {message}"
+
+#: .\include\ui\controls\components\homepage.py:172
+msgid "Failed to download document: {error}"
+msgstr "文档下载失败：{error}"
+
+#: .\include\ui\controls\components\homepage.py:212
+msgid "ID: {dir_id} (No longer exists)"
+msgstr "ID：{dir_id}（不再存在）"
+
+#: .\include\ui\controls\components\homepage.py:238
+msgid "ID: {file_id} (No longer exists)"
+msgstr "ID：{file_id}（不再存在）"
+
 #: .\include\ui\controls\components\homepage.py:182
 msgid "Favorites"
 msgstr "收藏"
