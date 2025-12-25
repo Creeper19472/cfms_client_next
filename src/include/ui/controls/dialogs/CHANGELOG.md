@@ -3,6 +3,17 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.0
+**Released on:** 2025-12-25
+
+**Title:** Minor release
+
+This version adds various features for the client, including file overwriting 
+logic, new group management context menus and so on.
+
+A series of fixes has also been introduced.
+
+---
 ## v0.3.4
 **Released on:** 2025-12-24
 
