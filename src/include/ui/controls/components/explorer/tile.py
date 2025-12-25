@@ -11,18 +11,6 @@ t = get_translation()
 _ = t.gettext
 
 
-def _save_user_preference_async(page: ft.Page, app_shared: AppShared):
-    """Helper to save user preferences asynchronously using page.run_task."""
-    async def save_preferences():
-        save_user_preference(
-            app_shared.get_not_none_attribute("username"),
-            app_shared.user_perference,
-        )
-    
-    if page:
-        page.run_task(save_preferences)
-
-
 class FileTile(ft.ListTile):
     def __init__(
         self,
@@ -78,7 +66,7 @@ class FileTile(ft.ListTile):
             ref=ref,
         )
 
-    def on_star_click(self, event: ft.Event[ft.IconButton]):
+    async def on_star_click(self, event: ft.Event[ft.IconButton]):
         self.starred = not self.starred
 
         assert self.app_shared.user_perference
@@ -94,11 +82,12 @@ class FileTile(ft.ListTile):
             except KeyError:
                 pass
 
-        # Update the star icon immediately (synchronous)
+        save_user_preference(
+            self.app_shared.get_not_none_attribute("username"),
+            self.app_shared.user_perference,
+        )
+
         self.update_state()
-        
-        # Save preferences asynchronously to avoid blocking UI
-        _save_user_preference_async(self.page, self.app_shared)
 
     def post_init(self):
         self.update_state()
@@ -157,7 +146,7 @@ class DirectoryTile(ft.ListTile):
             ref=ref,
         )
 
-    def on_star_click(self, event: ft.Event[ft.IconButton]):
+    async def on_star_click(self, event: ft.Event[ft.IconButton]):
         self.starred = not self.starred
 
         assert self.app_shared.user_perference
@@ -175,11 +164,12 @@ class DirectoryTile(ft.ListTile):
             except KeyError:
                 pass
 
-        # Update the star icon immediately (synchronous)
+        save_user_preference(
+            self.app_shared.get_not_none_attribute("username"),
+            self.app_shared.user_perference,
+        )
+
         self.update_state()
-        
-        # Save preferences asynchronously to avoid blocking UI
-        _save_user_preference_async(self.page, self.app_shared)
 
     def post_init(self):
         self.update_state()
