@@ -239,7 +239,7 @@ class HomeFavoritesContainer(ft.Container):
                     )
 
                 # Update the display to show item as invalid (use callback path to avoid clearing)
-                await self.update_favorites(from_validation_callback=True)
+                self.page.run_task(self.update_favorites, from_validation_callback=True)
 
         async def on_dirtile_click(event: ft.Event[ft.ListTile]):
             pass
