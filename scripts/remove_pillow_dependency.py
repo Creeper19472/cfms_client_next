@@ -39,7 +39,8 @@ def remove_pillow_from_pyproject(pyproject_path: Path) -> bool:
         stripped = line.strip()
         
         # Track if we're in the dependencies section
-        if stripped == "dependencies = [":
+        # Handle both "dependencies = [" and "dependencies=[" formats
+        if "dependencies" in stripped and "[" in stripped and "=" in stripped:
             in_dependencies = True
             new_lines.append(line)
             continue
@@ -49,10 +50,17 @@ def remove_pillow_from_pyproject(pyproject_path: Path) -> bool:
             continue
         
         # Remove pillow dependency line
-        if in_dependencies and (stripped == '"pillow",' or stripped == '"pillow",'):
-            pillow_removed = True
-            print(f"Removing line: {stripped}")
-            continue
+        # Handle different quote styles and with/without trailing comma
+        if in_dependencies:
+            # Check if line contains pillow (case-insensitive, flexible quotes)
+            lower_stripped = stripped.lower()
+            if (lower_stripped == '"pillow",' or 
+                lower_stripped == '"pillow"' or
+                lower_stripped == "'pillow'," or
+                lower_stripped == "'pillow'"):
+                pillow_removed = True
+                print(f"Removing line: {stripped}")
+                continue
         
         new_lines.append(line)
     
