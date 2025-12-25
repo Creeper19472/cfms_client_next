@@ -373,17 +373,17 @@ class FileOverwriteConfirmDialog(AlertDialog):
     def did_mount(self):
         """Called when dialog is mounted to the page. Starts lazy loading."""
         super().did_mount()
-        
-        async def run():
-            async for _ in self.load_document_details():
-                pass
-        
-        asyncio.create_task(run())
+        asyncio.create_task(self._load_document_details_task())
+    
+    async def _load_document_details_task(self):
+        """Task wrapper for loading document details."""
+        async for _ in self.load_document_details():
+            pass
     
     def format_file_size(self, size_bytes: int) -> str:
         """Format file size in human-readable format."""
         if size_bytes == 0:
-            return "0 Byte"
+            return "0 Bytes"
         elif size_bytes < 1024:
             return f"{size_bytes} Bytes"
         elif size_bytes < 1024 * 1024:
@@ -416,7 +416,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
                 details_controls = []
                 
                 # File size
-                if doc_size is not None:
+                if doc_size is not None and doc_size >= 0:
                     details_controls.append(
                         ft.Row(
                             controls=[
