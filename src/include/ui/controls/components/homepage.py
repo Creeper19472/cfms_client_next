@@ -120,7 +120,7 @@ class HomeFavoritesContainer(ft.Container):
         self.listview = ft.ListView(controls=[])
         self.content = self.listview
 
-    def update_favorites(self):
+    async def update_favorites(self):
         # add favorite files and directories
         assert self.app_shared.user_perference
         favorite_files = self.app_shared.user_perference.favourites.get("files", {})
@@ -130,36 +130,118 @@ class HomeFavoritesContainer(ft.Container):
 
         # clear existing controls
         self.listview.controls.clear()
+        
+        # Get validation service
+        validation_service = None
+        if self.app_shared.service_manager:
+            from include.classes.services.favorites_validation import FavoritesValidationService
+            validation_service = self.app_shared.service_manager.get_service("favorites_validation")
+            
+            # Request immediate validation if this is the first time
+            if validation_service and not validation_service._first_validation_done:
+                await validation_service.request_validation()
 
         async def on_filetile_click(event: ft.Event[ft.ListTile]):
             assert type(event.control) == FileTile
-            await get_document(
-                event.control.file_id,
-                filename=event.control.filename,
-                page=self.page,
-            )
+            
+            # Check if file is marked as invalid
+            if validation_service and not validation_service.is_file_valid(event.control.file_id):
+                from include.ui.util.notifications import send_error
+                send_error(
+                    self.page,
+                    _("This document no longer exists on the server.")
+                )
+                return
+            
+            try:
+                await get_document(
+                    event.control.file_id,
+                    filename=event.control.filename,
+                    page=self.page,
+                )
+            except Exception as e:
+                # If download fails, mark as invalid and notify user
+                if validation_service:
+                    validation_service.mark_file_invalid(event.control.file_id)
+                
+                from include.ui.util.notifications import send_error
+                # Check if it's a known error type
+                if hasattr(e, 'response') and e.response:
+                    send_error(
+                        self.page,
+                        _("Failed to download document: ({code}) {message}").format(
+                            code=e.response.get("code", "Unknown"),
+                            message=e.response.get("message", str(e))
+                        )
+                    )
+                else:
+                    send_error(
+                        self.page,
+                        _("Failed to download document: {error}").format(error=str(e))
+                    )
+                
+                # Update the display to show item as invalid
+                await self.update_favorites()
 
         async def on_dirtile_click(event: ft.Event[ft.ListTile]):
             pass
 
         for dir_id in favorite_directories:
+            # Check if directory is valid
+            is_valid = True
+            if validation_service:
+                is_valid = validation_service.is_directory_valid(dir_id)
+            
             directory = DirectoryTile(
                 dir_name=favorite_directories[dir_id],
                 directory_id=dir_id,
                 starred=True,
                 show_id=True,
-                on_click=on_dirtile_click,
+                on_click=on_dirtile_click if is_valid else None,
             )
+            
+            # Apply visual styling for invalid items
+            if not is_valid:
+                directory.disabled = True
+                directory.title = ft.Text(
+                    favorite_directories[dir_id],
+                    color=ft.Colors.GREY_500,
+                    style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+                )
+                directory.subtitle = ft.Text(
+                    _("ID: {dir_id} (No longer exists)").format(dir_id=dir_id),
+                    color=ft.Colors.RED_300,
+                )
+            
             self.listview.controls.append(directory)
 
         for file_id in favorite_files:
+            # Check if file is valid
+            is_valid = True
+            if validation_service:
+                is_valid = validation_service.is_file_valid(file_id)
+            
             file = FileTile(
                 filename=favorite_files[file_id],
                 file_id=file_id,
                 starred=True,
                 show_id=True,
-                on_click=on_filetile_click,
+                on_click=on_filetile_click if is_valid else None,
             )
+            
+            # Apply visual styling for invalid items
+            if not is_valid:
+                file.disabled = True
+                file.title = ft.Text(
+                    favorite_files[file_id],
+                    color=ft.Colors.GREY_500,
+                    style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+                )
+                file.subtitle = ft.Text(
+                    _("ID: {file_id} (No longer exists)").format(file_id=file_id),
+                    color=ft.Colors.RED_300,
+                )
+            
             self.listview.controls.append(file)
 
         if not self.listview.controls:
@@ -199,9 +281,9 @@ class HomeTabs(ft.Tabs):
             ref=ref,
         )
 
-    def did_mount(self):
+    async def did_mount(self):
         super().did_mount()
-        self.home_favorites_container.update_favorites()
+        await self.home_favorites_container.update_favorites()
 
 
 class HomeView(ft.Container):
@@ -227,6 +309,6 @@ class HomeView(ft.Container):
 
         # Form element definitions
 
-    def did_mount(self):
+    async def did_mount(self):
         super().did_mount()
-        self.home_tabs.home_favorites_container.update_favorites()
+        await self.home_tabs.home_favorites_container.update_favorites()

@@ -16,6 +16,7 @@ from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
+from include.classes.services.favorites_validation import FavoritesValidationService
 from include.util.locale import set_translation
 
 # Window configuration constants
@@ -186,6 +187,16 @@ async def main(page: ft.Page):
         refresh_threshold=300.0,  # Refresh when < 5 minutes remaining
     )
     service_manager.register(token_refresh_service)
+
+    # Register favorites validation service
+    # Check every 5 minutes to ensure favorited items still exist
+    favorites_validation_service = FavoritesValidationService(
+        app_shared=app_shared,
+        enabled=True,
+        interval=300.0,  # Check every 5 minutes
+        check_on_mount=True,
+    )
+    service_manager.register(favorites_validation_service)
 
     # Start all registered services
     await service_manager.start_all()
