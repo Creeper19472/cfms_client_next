@@ -116,6 +116,10 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 progress_column.controls.append(_new_error_text)
                 return
 
+            # Skip progress bar update if file was skipped (file_size == 0)
+            if file_size == 0:
+                continue
+
             # 正常更新进度条
             progress_bar.value = current_size / file_size
             progress_info.value = f"[{index+1}/{len(files)}] {current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
