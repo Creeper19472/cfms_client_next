@@ -25,10 +25,22 @@ When a file with duplicate name is detected, the dialog shows:
 
 ## User Actions
 
-The dialog provides three options:
+The dialog provides different options depending on the context:
+
+### Single File Upload
 1. **Overwrite** - Replace the existing file with the new one
-2. **Skip** - Skip uploading this file and continue
-3. **Cancel** - Cancel the entire upload operation
+2. **Skip** - Skip uploading this file
+3. **Cancel** - Cancel the upload operation
+
+### Batch File Upload (Multiple Files)
+When uploading multiple files that may have conflicts:
+1. **Overwrite** - Replace this existing file with the new one
+2. **Always Overwrite** - Automatically overwrite all remaining files with conflicts
+3. **Skip** - Skip uploading this file and continue to the next
+4. **Always Skip** - Automatically skip all remaining files with conflicts
+5. **Cancel** - Cancel the entire upload operation
+
+The "Always" options appear only when multiple files are being uploaded, allowing users to make a decision once and apply it to all remaining conflicts. This significantly improves the user experience when uploading large batches of files.
 
 ## Technical Implementation
 
@@ -53,9 +65,11 @@ Automatically formats file sizes for readability:
 ## Usage
 
 The dialog is automatically shown when uploading files that conflict with existing files. Users will see it during:
-- Single file uploads
-- Batch file uploads
-- Directory uploads
+- Single file uploads (3 action buttons)
+- Batch file uploads (5 action buttons with "Always" options)
+- Directory uploads (with "Always" options if multiple files exist)
+
+When a user selects "Always Overwrite" or "Always Skip" during a batch operation, the choice is remembered and automatically applied to all subsequent file conflicts without showing additional dialogs, streamlining the upload process.
 
 ## Code Location
 

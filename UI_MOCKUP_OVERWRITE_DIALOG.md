@@ -14,6 +14,46 @@
 └─────────────────────────────────────────┘
 ```
 
+## Single File Upload (Details Loaded)
+```
+┌─────────────────────────────────────────┐
+│ File Already Exists                     │
+├─────────────────────────────────────────┤
+│                                         │
+│ A file named "document.pdf" already     │
+│ exists.                                 │
+│                                         │
+│ 📄 File size: 2.45 MB                   │
+│ 🔄 Last modified: 2025-12-20 14:30:22   │
+│ 🕐 Created: 2025-12-15 09:15:10         │
+│                                         │
+│ Do you want to overwrite it?            │
+│                                         │
+├─────────────────────────────────────────┤
+│         [Overwrite] [Skip] [Cancel]     │
+└─────────────────────────────────────────┘
+```
+
+## Batch Upload (Multiple Files - Details Loaded)
+```
+┌──────────────────────────────────────────────────┐
+│ File Already Exists                              │
+├──────────────────────────────────────────────────┤
+│                                                  │
+│ A file named "document.pdf" already exists.      │
+│                                                  │
+│ 📄 File size: 2.45 MB                            │
+│ 🔄 Last modified: 2025-12-20 14:30:22            │
+│ 🕐 Created: 2025-12-15 09:15:10                  │
+│                                                  │
+│ Do you want to overwrite it?                     │
+│                                                  │
+├──────────────────────────────────────────────────┤
+│ [Overwrite] [Always Overwrite] [Skip]           │
+│             [Always Skip] [Cancel]               │
+└──────────────────────────────────────────────────┘
+```
+
 ## After Enhancement (Loading State)
 ```
 ┌─────────────────────────────────────────┐
