@@ -1,6 +1,7 @@
+import asyncio
 import os
 import json
-import asyncio
+import inspect
 from include.classes.config import AppShared
 from include.classes.preferences import UserPreference
 from include.constants import USER_PREFERENCES_PATH
@@ -54,11 +55,11 @@ def save_user_preference(username: str, preferences: UserPreference) -> None:
             file,
             # indent=4,
         )
-    
+
     # Notify all registered callbacks that favorites have changed
     for callback in _favorites_change_callbacks:
         try:
-            if asyncio.iscoroutinefunction(callback):
+            if inspect.iscoroutinefunction(callback):
                 # Schedule async callbacks
                 try:
                     loop = asyncio.get_running_loop()
@@ -69,4 +70,3 @@ def save_user_preference(username: str, preferences: UserPreference) -> None:
                 callback()
         except Exception:
             pass  # Silently ignore callback errors
-

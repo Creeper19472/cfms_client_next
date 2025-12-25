@@ -126,7 +126,7 @@ class HomeFavoritesContainer(ft.Container):
         # Register callback for when favorites change
         async def on_favorites_changed():
             # Re-render the entire favorites list when favorites change
-            await self.update_favorites(from_validation_callback=False)
+            self.page.run_task(self.update_favorites, from_validation_callback=False)
         
         self._favorites_change_callback = on_favorites_changed
         register_favorites_change_callback(on_favorites_changed)

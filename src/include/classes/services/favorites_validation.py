@@ -1,8 +1,8 @@
 """Service for validating favorites (documents and folders) still exist on the server."""
 
 import asyncio
-import logging
-from typing import Dict, Set, Optional, Callable, List
+import inspect
+from typing import Set, Callable, List
 
 from include.classes.services.base import BaseService
 from include.classes.config import AppShared
@@ -130,7 +130,7 @@ class FavoritesValidationService(BaseService):
             # Call all registered callbacks
             for callback in self._on_validation_complete_callbacks:
                 try:
-                    if asyncio.iscoroutinefunction(callback):
+                    if inspect.iscoroutinefunction(callback):
                         await callback()
                     else:
                         callback()
