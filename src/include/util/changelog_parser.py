@@ -47,6 +47,45 @@ from typing import List
 from include.classes.changelog import ChangelogEntry
 
 
+def _process_content_lines(lines: List[str]) -> str:
+    """
+    Process content lines to correctly handle paragraph breaks in Markdown.
+    
+    In Markdown, paragraph breaks require double newlines (blank lines).
+    This function converts blank lines in the source to proper Markdown paragraph breaks.
+    
+    Args:
+        lines: List of content lines from the changelog
+        
+    Returns:
+        Processed content string with proper Markdown formatting
+    """
+    if not lines:
+        return ""
+    
+    result = []
+    i = 0
+    
+    while i < len(lines):
+        line = lines[i]
+        
+        # Check if this is a blank line
+        if not line.strip():
+            # Blank line indicates paragraph break
+            # Add the blank line to create double newline in output
+            result.append('')
+        else:
+            # Regular line with content
+            result.append(line)
+        
+        i += 1
+    
+    # Join with single newlines (blank lines will naturally create double newlines)
+    content = '\n'.join(result).strip()
+    
+    return content
+
+
 def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
     """
     Parse a CHANGELOG.md file and convert it to a list of ChangelogEntry instances.
@@ -97,7 +136,9 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
                         f"Missing date for version {current_version} in {changelog_path}"
                     )
                 
-                entry_content = '\n'.join(current_content_lines).strip()
+                # Process content lines to handle paragraph breaks correctly
+                # Blank lines in markdown should become double newlines
+                entry_content = _process_content_lines(current_content_lines)
                 entries.append(
                     ChangelogEntry(
                         version=current_version,
@@ -164,11 +205,18 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
             i += 1
             continue
         
-        if not line or line.startswith('This document contains'):
+        # Skip intro text only before we find any version
+        if current_version is None and line.startswith('This document contains'):
             i += 1
             continue
         
-        # Collect content lines for current version
+        # Skip blank lines only before we find any version
+        # Once we're in a version, blank lines are significant for paragraph breaks
+        if current_version is None and not line:
+            i += 1
+            continue
+        
+        # Collect content lines for current version (including blank lines)
         if current_version is not None:
             current_content_lines.append(lines[i])
         
@@ -186,7 +234,9 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
                 f"Missing date for version {current_version} in {changelog_path}"
             )
         
-        entry_content = '\n'.join(current_content_lines).strip()
+        # Process content lines to handle paragraph breaks correctly
+        # Blank lines in markdown should become double newlines
+        entry_content = _process_content_lines(current_content_lines)
         entries.append(
             ChangelogEntry(
                 version=current_version,
