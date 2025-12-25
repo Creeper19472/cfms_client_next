@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cfms-client-next 0.2.16\n"
+"Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-25 18:37+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
