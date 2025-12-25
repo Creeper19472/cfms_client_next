@@ -119,16 +119,20 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 progress_column.controls.append(_new_error_text)
                 return
 
-            # Skip progress bar update if file was skipped (file_size == 0)
-            if file_size == 0:
-                # Mark as processed even if skipped so cleanup knows we iterated
-                files_processed = True
-                continue
-
-            # 正常更新进度条
+            # Mark file as processed
             files_processed = True
-            progress_bar.value = current_size / file_size
-            progress_info.value = f"[{index+1}/{len(files)}] {current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
+            
+            # Update progress bar
+            # For empty files (size 0) or skipped files, show as complete
+            if file_size == 0:
+                # Empty file uploaded successfully or file was skipped
+                progress_bar.value = 1.0
+                progress_info.value = f"[{index+1}/{len(files)}] 0.00 MB/0.00 MB"
+            else:
+                # Normal file with size
+                progress_bar.value = current_size / file_size
+                progress_info.value = f"[{index+1}/{len(files)}] {current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
+            
             progress_column.update()
 
             if stop_event.is_set():
