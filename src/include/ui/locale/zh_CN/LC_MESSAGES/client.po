@@ -14,12 +14,11 @@ msgstr ""
 
 #: .\include\classes\services\autoupdate.py:158
 msgid "New version {version} is available! Check the About page for details."
-msgstr ""
+msgstr "新版本 {version} 已发布！请前往关于页面查看详情。"
 
 #: .\include\classes\services\autoupdate.py:162
-#, fuzzy
 msgid "Go to About"
-msgstr "关于"
+msgstr "前往关于"
 
 #: .\include\controllers\connect.py:39
 msgid "Connection failed because the connection was reset: {strerror}"
@@ -38,7 +37,8 @@ msgid "You are connecting to a server using a higher version protocol"
 msgstr "您正在连接到一个使用更高版本协议的服务器"
 
 #: .\include\controllers\connect.py:64
-msgid "(Protocol version {server_protocol_version}), please update the client."
+msgid ""
+"(Protocol version {server_protocol_version}), please update the client."
 msgstr "（协议版本 {server_protocol_version}），请更新客户端。"
 
 #: .\include\controllers\connect.py:93
@@ -222,12 +222,11 @@ msgstr "[{_current_number}/{_total_number}] 正在上传文件 \"{abs_path}\""
 #: .\include\controllers\explorer\itself.py:318
 #: .\include\controllers\explorer\itself.py:386
 msgid "Internal error: Missing task_id for file \"{filename}\""
-msgstr ""
+msgstr "内部错误：文件 \"{filename}\" 缺少 task_id"
 
 #: .\include\controllers\explorer\itself.py:328
-#, fuzzy
 msgid "Upload file \"{filename}\" failed: {errmsg}"
-msgstr "创建文件 \"{filename}\" 失败：{errmsg}"
+msgstr "上传文件 \"{filename}\" 失败：{errmsg}"
 
 #: .\include\controllers\explorer\itself.py:351
 #: .\include\controllers\explorer\itself.py:365
@@ -300,9 +299,7 @@ msgid ""
 "Although the application at this stage is still in testing, it has become "
 "relatively stable and is more suitable for general users to try. After one "
 "or more versions are released, the application may enter a stable version."
-msgstr ""
-"虽然此阶段的应用程序仍在测试中，但已经变得相对稳定，更适合普通用户尝试。在发"
-"布一个或多个版本后，应用程序可能会进入稳定版本。"
+msgstr "虽然此阶段的应用程序仍在测试中，但已经变得相对稳定，更适合普通用户尝试。在发布一个或多个版本后，应用程序可能会进入稳定版本。"
 
 #: .\include\ui\controls\components\explorer\bar.py:117
 msgid "Sort by:"
@@ -375,14 +372,13 @@ msgstr "欢迎访问 保密文档管理系统（CFMS）"
 
 #: .\include\ui\controls\components\homepage.py:104
 msgid ""
-"The sunset glow and the lone wild duck fly together, autumn water shares the "
-"same color with the vast sky."
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
 msgstr "落霞与孤鹜齐飞，秋水共长天一色。"
 
 #: .\include\ui\controls\components\homepage.py:140
-#, fuzzy
 msgid "ID: {id} (No longer exists)"
-msgstr "ID：{dir_id}（不再存在）"
+msgstr "ID：{id}（不再存在）"
 
 #: .\include\ui\controls\components\homepage.py:216
 msgid "This document no longer exists on the server."
@@ -410,11 +406,12 @@ msgstr "规则内容"
 
 #: .\include\ui\controls\components\rulemanager.py:44
 msgid ""
-"For rule format documentation, please refer to [CFMS Server Documentation]"
-"(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
+"For rule format documentation, please refer to [CFMS Server "
+"Documentation](https://cfms-server-doc.readthedocs.io/zh-"
+"cn/latest/access_control.html)."
 msgstr ""
-"有关规则格式文档，请参阅 [CFMS 服务器文档](https://cfms-server-doc."
-"readthedocs.io/zh-cn/latest/access_control.html)。"
+"有关规则格式文档，请参阅 [CFMS 服务器文档](https://cfms-server-doc.readthedocs.io/zh-"
+"cn/latest/access_control.html)。"
 
 #: .\include\ui\controls\components\rulemanager.py:52
 #: .\include\ui\controls\dialogs\admin\accounts.py:79
@@ -531,9 +528,7 @@ msgid ""
 "This is a management system specifically designed for the secure "
 "transmission and confidentiality of confidential information over the "
 "internet, aiming to ensure process compliance through a procedural approach."
-msgstr ""
-"这是一个专为互联网上机密信息的安全传输和保密而设计的管理系统，旨在通过程序化"
-"方法确保流程合规性。"
+msgstr "这是一个专为互联网上机密信息的安全传输和保密而设计的管理系统，旨在通过程序化方法确保流程合规性。"
 
 #: .\include\ui\controls\contextmenus\explorer.py:64
 #: .\include\ui\controls\contextmenus\explorer.py:154
@@ -808,31 +803,30 @@ msgid "End time must be after start time"
 msgstr "结束时间必须晚于开始时间"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:31
-#, fuzzy
 msgid "Save Your Backup Codes"
-msgstr "源代码"
+msgstr "保存您的备份代码"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:54
 msgid "I Have Saved My Codes"
-msgstr ""
+msgstr "我已保存我的代码"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:62
 msgid "Two-Factor Authentication has been enabled successfully!"
-msgstr ""
+msgstr "双因素认证已成功启用！"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:69
 msgid ""
 "Save these backup codes in a secure location. You can use them to access "
 "your account if you lose access to your authenticator app."
-msgstr ""
+msgstr "请将这些备份代码保存在安全的位置。如果您无法访问验证器应用，可以使用这些代码访问您的账户。"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:74
 msgid "Each code can only be used once."
-msgstr ""
+msgstr "每个代码只能使用一次。"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:86
 msgid "Store these codes safely - they won't be shown again!"
-msgstr ""
+msgstr "请安全保存这些代码 - 它们不会再次显示！"
 
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:42
 msgid "Document"
@@ -938,74 +932,67 @@ msgstr "目录ID不能为空"
 
 #: .\include\ui\controls\dialogs\explorer.py:295
 msgid "File Already Exists"
-msgstr ""
+msgstr "文件已存在"
 
 #: .\include\ui\controls\dialogs\explorer.py:325
-#, fuzzy
 msgid "A file named \"{filename}\" already exists."
-msgstr "创建文件 \"{filename}\" 失败：{errmsg}"
+msgstr "名为 \"{filename}\" 的文件已存在。"
 
 #: .\include\ui\controls\dialogs\explorer.py:334
-#, fuzzy
 msgid "Loading file details..."
-msgstr "查看该文件的详细信息"
+msgstr "正在加载文件详情..."
 
 #: .\include\ui\controls\dialogs\explorer.py:348
 msgid "Do you want to overwrite it?"
-msgstr ""
+msgstr "您要覆盖它吗？"
 
 #: .\include\ui\controls\dialogs\explorer.py:358
 msgid "Overwrite"
-msgstr ""
+msgstr "覆盖"
 
 #: .\include\ui\controls\dialogs\explorer.py:362
 msgid "Skip"
-msgstr ""
+msgstr "跳过"
 
 #: .\include\ui\controls\dialogs\explorer.py:372
 msgid "Always Overwrite"
-msgstr ""
+msgstr "始终覆盖"
 
 #: .\include\ui\controls\dialogs\explorer.py:377
 msgid "Always Skip"
-msgstr ""
+msgstr "始终跳过"
 
 #: .\include\ui\controls\dialogs\explorer.py:448
 msgid "Could not load file details"
-msgstr ""
+msgstr "无法加载文件详情"
 
 #: .\include\ui\controls\dialogs\explorer.py:463
-#, fuzzy
 msgid "File size: {size}"
-msgstr "文档大小：{doc_size}"
+msgstr "文件大小：{size}"
 
 #: .\include\ui\controls\dialogs\explorer.py:481
-#, fuzzy
 msgid "Last modified: {date}"
-msgstr "最后更改时间：{last_modified}"
+msgstr "最后修改时间：{date}"
 
 #: .\include\ui\controls\dialogs\explorer.py:490
-#, fuzzy
 msgid "Created: {date}"
-msgstr "创建时间"
+msgstr "创建时间：{date}"
 
 #: .\include\ui\controls\dialogs\explorer.py:496
 msgid "No details available"
-msgstr ""
+msgstr "无详细信息"
 
 #: .\include\ui\controls\dialogs\explorer.py:512
-#, fuzzy
 msgid "Error loading file details"
-msgstr "查看该文件的详细信息"
+msgstr "加载文件详情时出错"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:32
-#, fuzzy
 msgid "Confirm Password"
-msgstr "修改密码"
+msgstr "确认密码"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:50
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:112
 #: .\include\ui\controls\views\login.py:138
@@ -1013,9 +1000,8 @@ msgid "Password cannot be empty"
 msgstr "密码不能为空"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:125
-#, fuzzy
 msgid "Invalid password"
-msgstr "旧密码"
+msgstr "密码无效"
 
 #: .\include\ui\controls\dialogs\selection\userpicker.py:26
 msgid "Select User"
@@ -1023,48 +1009,47 @@ msgstr "选择用户"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:43
 msgid "Set Up Two-Factor Authentication"
-msgstr ""
+msgstr "设置双因素认证"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:66
 msgid "Secret Key (manual entry)"
-msgstr ""
+msgstr "密钥（手动输入）"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:74
 msgid "Enter verification code to confirm"
-msgstr ""
+msgstr "输入验证码以确认"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:75
 msgid "6-digit code"
-msgstr ""
+msgstr "6位数字代码"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:85
-#, fuzzy
 msgid "Verify and Enable"
-msgstr "正在校验文件"
+msgstr "验证并启用"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:100
 msgid ""
 "Scan this QR code with your authenticator app (e.g., Google Authenticator, "
 "Authy, Microsoft Authenticator)"
 msgstr ""
+"使用您的验证器应用扫描此二维码（例如：Google Authenticator、Authy、Microsoft Authenticator）"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:110
 msgid "Or enter this key manually:"
-msgstr ""
+msgstr "或手动输入此密钥："
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:181
 #: .\include\ui\controls\dialogs\twofa_verify.py:186
-#, fuzzy
 msgid "Please enter a 6-digit code"
-msgstr "请输入恢复代码"
+msgstr "请输入6位数字代码"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:194
 msgid "Invalid code. Please try again."
-msgstr ""
+msgstr "代码无效。请重试。"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:12
 msgid "Enter the 6-digit code from your authenticator app"
-msgstr ""
+msgstr "输入验证器应用中的6位数字代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:13
 msgid "Enter one of your recovery codes"
@@ -1082,15 +1067,15 @@ msgstr "改用恢复代码"
 #: .\include\ui\models\settings\overview.py:51
 #: .\include\ui\models\settings\twofa.py:34
 msgid "Two-Factor Authentication"
-msgstr ""
+msgstr "双因素认证"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:48
 msgid "Verification Code"
-msgstr ""
+msgstr "验证码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:49
 msgid "Enter 6-digit code"
-msgstr ""
+msgstr "输入6位数字代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:61
 msgid "Recovery Code"
@@ -1101,9 +1086,8 @@ msgid "Enter recovery code"
 msgstr "输入恢复代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:75
-#, fuzzy
 msgid "Verify"
-msgstr "正在校验文件"
+msgstr "验证"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:179
 msgid "Please enter a recovery code"
@@ -1114,11 +1098,11 @@ msgid "Invalid recovery code"
 msgstr "无效的恢复代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:207
-#, fuzzy
 msgid "Invalid verification code"
-msgstr "无效的恢复代码"
+msgstr "验证码无效"
 
-#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:107
+#: .\include\ui\controls\dialogs\upgrade.py:33
+#: .\include\ui\models\about.py:107
 msgid "Update"
 msgstr "更新"
 
@@ -1283,125 +1267,118 @@ msgid "About"
 msgstr "关于"
 
 #: .\include\ui\controls\views\tasks.py:55
-#, fuzzy
 msgid "Open file"
-msgstr "正在校验文件"
+msgstr "打开文件"
 
 #: .\include\ui\controls\views\tasks.py:71
 #: .\include\ui\controls\views\tasks.py:297
 msgid "Pause"
-msgstr ""
+msgstr "暂停"
 
 #: .\include\ui\controls\views\tasks.py:73
 #: .\include\ui\controls\views\tasks.py:297
-#, fuzzy
 msgid "Resume"
-msgstr "结果"
+msgstr "恢复"
 
 #: .\include\ui\controls\views\tasks.py:209
 msgid "Pending"
-msgstr ""
+msgstr "等待中"
 
 #: .\include\ui\controls\views\tasks.py:210
 msgid "Downloading"
-msgstr ""
+msgstr "下载中"
 
 #: .\include\ui\controls\views\tasks.py:211
 #: .\include\ui\controls\views\tasks.py:372
 msgid "Paused"
-msgstr ""
+msgstr "已暂停"
 
 #: .\include\ui\controls\views\tasks.py:212
 msgid "Decrypting"
-msgstr ""
+msgstr "解密中"
 
 #: .\include\ui\controls\views\tasks.py:213
-#, fuzzy
 msgid "Verifying"
-msgstr "正在校验文件"
+msgstr "验证中"
 
 #: .\include\ui\controls\views\tasks.py:214
 #: .\include\ui\controls\views\tasks.py:374
 msgid "Completed"
-msgstr ""
+msgstr "已完成"
 
 #: .\include\ui\controls\views\tasks.py:215
 #: .\include\ui\controls\views\tasks.py:375
 msgid "Failed"
-msgstr ""
+msgstr "失败"
 
 #: .\include\ui\controls\views\tasks.py:216
-#, fuzzy
 msgid "Cancelled"
-msgstr "取消"
+msgstr "已取消"
 
 #: .\include\ui\controls\views\tasks.py:217
 #: .\include\ui\controls\views\tasks.py:373
 msgid "Scheduled"
-msgstr ""
+msgstr "已计划"
 
 #: .\include\ui\controls\views\tasks.py:219
-#, fuzzy
 msgid "Unknown"
-msgstr "（未知）"
+msgstr "未知"
 
 #: .\include\ui\controls\views\tasks.py:233
 msgid "Download completed"
-msgstr ""
+msgstr "下载完成"
 
 #: .\include\ui\controls\views\tasks.py:248
-#, fuzzy
 msgid "Waiting to start..."
-msgstr "正在写入更新脚本"
+msgstr "等待开始..."
 
 #: .\include\ui\controls\views\tasks.py:341
-#, fuzzy
 msgid "Failed to open file: {error}"
-msgstr "文档下载失败：{error}"
+msgstr "打开文件失败：{error}"
 
 #: .\include\ui\controls\views\tasks.py:367
 msgid "Filter"
-msgstr ""
+msgstr "筛选"
 
 #: .\include\ui\controls\views\tasks.py:371
 msgid "Active"
-msgstr ""
+msgstr "活动"
 
 #: .\include\ui\controls\views\tasks.py:399
 msgid "No download tasks"
-msgstr ""
+msgstr "无下载任务"
 
 #: .\include\ui\controls\views\tasks.py:418
 msgid "Download Tasks"
-msgstr ""
+msgstr "下载任务"
 
 #: .\include\ui\controls\views\tasks.py:427
 msgid "More actions"
-msgstr ""
+msgstr "更多操作"
 
 #: .\include\ui\controls\views\tasks.py:430
 msgid "Pause all active"
-msgstr ""
+msgstr "暂停所有活动任务"
 
 #: .\include\ui\controls\views\tasks.py:435
 msgid "Resume all paused"
-msgstr ""
+msgstr "恢复所有已暂停任务"
 
 #: .\include\ui\controls\views\tasks.py:440
 msgid "Cancel all pending"
-msgstr ""
+msgstr "取消所有等待任务"
 
 #: .\include\ui\controls\views\tasks.py:446
 msgid "Clear completed"
-msgstr ""
+msgstr "清除已完成"
 
 #: .\include\ui\controls\views\tasks.py:451
 msgid "Clear failed"
-msgstr ""
+msgstr "清除失败"
 
 #: .\include\ui\controls\views\tasks.py:459
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
 #: .\include\ui\models\about.py:52
 msgid "Debugging..."
@@ -1502,48 +1479,48 @@ msgstr "调整应用记住连接历史的策略"
 
 #: .\include\ui\models\settings\overview.py:52
 msgid "Manage two-factor authentication settings"
-msgstr ""
+msgstr "管理双因素认证设置"
 
 #: .\include\ui\models\settings\twofa.py:44
 msgid "Two-Factor Authentication Status: Checking..."
-msgstr ""
+msgstr "双因素认证状态：检查中..."
 
 #: .\include\ui\models\settings\twofa.py:51
 msgid ""
 "Two-factor authentication adds an extra layer of security to your account. "
 "You'll need to enter a code from your authenticator app in addition to your "
 "password when logging in."
-msgstr ""
+msgstr "双因素认证为您的账户增加了额外的安全层。登录时，除了密码外，您还需要输入验证器应用中的代码。"
 
 #: .\include\ui\models\settings\twofa.py:58
 msgid "Enable Two-Factor Authentication"
-msgstr ""
+msgstr "启用双因素认证"
 
 #: .\include\ui\models\settings\twofa.py:66
 #: .\include\ui\models\settings\twofa.py:244
 msgid "Disable Two-Factor Authentication"
-msgstr ""
+msgstr "禁用双因素认证"
 
 #: .\include\ui\models\settings\twofa.py:122
 msgid "Two-Factor Authentication Status: Enabled"
-msgstr ""
+msgstr "双因素认证状态：已启用"
 
 #: .\include\ui\models\settings\twofa.py:127
 msgid "Two-Factor Authentication Status: Disabled"
-msgstr ""
+msgstr "双因素认证状态：已禁用"
 
 #: .\include\ui\models\settings\twofa.py:207
 #: .\include\ui\models\settings\twofa.py:222
 msgid "Two-Factor Authentication enabled successfully!"
-msgstr ""
+msgstr "双因素认证已成功启用！"
 
 #: .\include\ui\models\settings\twofa.py:245
 msgid "Please enter your password to disable two-factor authentication."
-msgstr ""
+msgstr "请输入您的密码以禁用双因素认证。"
 
 #: .\include\ui\models\settings\twofa.py:268
 msgid "Two-Factor Authentication disabled"
-msgstr ""
+msgstr "双因素认证已禁用"
 
 #: .\include\ui\models\wizards\welcome.py:24
 msgid "Intro Wizard"
@@ -1555,7 +1532,7 @@ msgstr "上级目录"
 
 #: .\include\ui\util\path.py:145
 msgid "Download added: {filename}"
-msgstr ""
+msgstr "已添加下载：{filename}"
 
 #: .\include\ui\util\path.py:189
 msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"

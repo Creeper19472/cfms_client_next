@@ -14,12 +14,11 @@ msgstr ""
 
 #: .\include\classes\services\autoupdate.py:158
 msgid "New version {version} is available! Check the About page for details."
-msgstr ""
+msgstr "New version {version} is available! Check the About page for details."
 
 #: .\include\classes\services\autoupdate.py:162
-#, fuzzy
 msgid "Go to About"
-msgstr "About"
+msgstr "Go to About"
 
 #: .\include\controllers\connect.py:39
 msgid "Connection failed because the connection was reset: {strerror}"
@@ -38,13 +37,15 @@ msgid "You are connecting to a server using a higher version protocol"
 msgstr "You are connecting to a server using a higher version protocol"
 
 #: .\include\controllers\connect.py:64
-msgid "(Protocol version {server_protocol_version}), please update the client."
+msgid ""
+"(Protocol version {server_protocol_version}), please update the client."
 msgstr ""
 "(Protocol version {server_protocol_version}), please update the client."
 
 #: .\include\controllers\connect.py:93
 msgid "Authorization failed, you will not be able to download files normally."
-msgstr "Authorization failed, you will not be able to download files normally."
+msgstr ""
+"Authorization failed, you will not be able to download files normally."
 
 #: .\include\controllers\connect.py:97
 msgid "Please allow the app to access your files in settings."
@@ -223,12 +224,11 @@ msgstr "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
 #: .\include\controllers\explorer\itself.py:318
 #: .\include\controllers\explorer\itself.py:386
 msgid "Internal error: Missing task_id for file \"{filename}\""
-msgstr ""
+msgstr "Internal error: Missing task_id for file \"{filename}\""
 
 #: .\include\controllers\explorer\itself.py:328
-#, fuzzy
 msgid "Upload file \"{filename}\" failed: {errmsg}"
-msgstr "Create file \"{filename}\" failed: {errmsg}"
+msgstr "Upload file \"{filename}\" failed: {errmsg}"
 
 #: .\include\controllers\explorer\itself.py:351
 #: .\include\controllers\explorer\itself.py:365
@@ -381,16 +381,15 @@ msgstr "Welcome to Confidential Document Management System (CFMS)"
 
 #: .\include\ui\controls\components\homepage.py:104
 msgid ""
-"The sunset glow and the lone wild duck fly together, autumn water shares the "
-"same color with the vast sky."
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
 msgstr ""
-"The sunset glow and the lone wild duck fly together, autumn water shares the "
-"same color with the vast sky."
+"The sunset glow and the lone wild duck fly together, autumn water shares the"
+" same color with the vast sky."
 
 #: .\include\ui\controls\components\homepage.py:140
-#, fuzzy
 msgid "ID: {id} (No longer exists)"
-msgstr "ID: {dir_id} (No longer exists)"
+msgstr "ID: {id} (No longer exists)"
 
 #: .\include\ui\controls\components\homepage.py:216
 msgid "This document no longer exists on the server."
@@ -418,11 +417,13 @@ msgstr "Rule Content"
 
 #: .\include\ui\controls\components\rulemanager.py:44
 msgid ""
-"For rule format documentation, please refer to [CFMS Server Documentation]"
-"(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
+"For rule format documentation, please refer to [CFMS Server "
+"Documentation](https://cfms-server-doc.readthedocs.io/zh-"
+"cn/latest/access_control.html)."
 msgstr ""
-"For rule format documentation, please refer to [CFMS Server Documentation]"
-"(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
+"For rule format documentation, please refer to [CFMS Server "
+"Documentation](https://cfms-server-doc.readthedocs.io/zh-"
+"cn/latest/access_control.html)."
 
 #: .\include\ui\controls\components\rulemanager.py:52
 #: .\include\ui\controls\dialogs\admin\accounts.py:79
@@ -817,31 +818,32 @@ msgid "End time must be after start time"
 msgstr "End time must be after start time"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:31
-#, fuzzy
 msgid "Save Your Backup Codes"
-msgstr "Source Code"
+msgstr "Save Your Backup Codes"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:54
 msgid "I Have Saved My Codes"
-msgstr ""
+msgstr "I Have Saved My Codes"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:62
 msgid "Two-Factor Authentication has been enabled successfully!"
-msgstr ""
+msgstr "Two-Factor Authentication has been enabled successfully!"
 
 #: .\include\ui\controls\dialogs\backup_codes.py:69
 msgid ""
 "Save these backup codes in a secure location. You can use them to access "
 "your account if you lose access to your authenticator app."
 msgstr ""
+"Save these backup codes in a secure location. You can use them to access "
+"your account if you lose access to your authenticator app."
 
 #: .\include\ui\controls\dialogs\backup_codes.py:74
 msgid "Each code can only be used once."
-msgstr ""
+msgstr "Each code can only be used once."
 
 #: .\include\ui\controls\dialogs\backup_codes.py:86
 msgid "Store these codes safely - they won't be shown again!"
-msgstr ""
+msgstr "Store these codes safely - they won't be shown again!"
 
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:42
 msgid "Document"
@@ -947,74 +949,67 @@ msgstr "Directory id cannot be empty"
 
 #: .\include\ui\controls\dialogs\explorer.py:295
 msgid "File Already Exists"
-msgstr ""
+msgstr "File Already Exists"
 
 #: .\include\ui\controls\dialogs\explorer.py:325
-#, fuzzy
 msgid "A file named \"{filename}\" already exists."
-msgstr "Create file \"{filename}\" failed: {errmsg}"
+msgstr "A file named \"{filename}\" already exists."
 
 #: .\include\ui\controls\dialogs\explorer.py:334
-#, fuzzy
 msgid "Loading file details..."
-msgstr "View file details"
+msgstr "Loading file details..."
 
 #: .\include\ui\controls\dialogs\explorer.py:348
 msgid "Do you want to overwrite it?"
-msgstr ""
+msgstr "Do you want to overwrite it?"
 
 #: .\include\ui\controls\dialogs\explorer.py:358
 msgid "Overwrite"
-msgstr ""
+msgstr "Overwrite"
 
 #: .\include\ui\controls\dialogs\explorer.py:362
 msgid "Skip"
-msgstr ""
+msgstr "Skip"
 
 #: .\include\ui\controls\dialogs\explorer.py:372
 msgid "Always Overwrite"
-msgstr ""
+msgstr "Always Overwrite"
 
 #: .\include\ui\controls\dialogs\explorer.py:377
 msgid "Always Skip"
-msgstr ""
+msgstr "Always Skip"
 
 #: .\include\ui\controls\dialogs\explorer.py:448
 msgid "Could not load file details"
-msgstr ""
+msgstr "Could not load file details"
 
 #: .\include\ui\controls\dialogs\explorer.py:463
-#, fuzzy
 msgid "File size: {size}"
-msgstr "Document size: {doc_size}"
+msgstr "File size: {size}"
 
 #: .\include\ui\controls\dialogs\explorer.py:481
-#, fuzzy
 msgid "Last modified: {date}"
-msgstr "Last modified: {last_modified}"
+msgstr "Last modified: {date}"
 
 #: .\include\ui\controls\dialogs\explorer.py:490
-#, fuzzy
 msgid "Created: {date}"
-msgstr "Created at"
+msgstr "Created: {date}"
 
 #: .\include\ui\controls\dialogs\explorer.py:496
 msgid "No details available"
-msgstr ""
+msgstr "No details available"
 
 #: .\include\ui\controls\dialogs\explorer.py:512
-#, fuzzy
 msgid "Error loading file details"
-msgstr "View file details"
+msgstr "Error loading file details"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:32
-#, fuzzy
 msgid "Confirm Password"
-msgstr "Change Password"
+msgstr "Confirm Password"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:50
 msgid "Confirm"
-msgstr ""
+msgstr "Confirm"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:112
 #: .\include\ui\controls\views\login.py:138
@@ -1022,9 +1017,8 @@ msgid "Password cannot be empty"
 msgstr "Password cannot be empty"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:125
-#, fuzzy
 msgid "Invalid password"
-msgstr "Old Password"
+msgstr "Invalid password"
 
 #: .\include\ui\controls\dialogs\selection\userpicker.py:26
 msgid "Select User"
@@ -1032,48 +1026,48 @@ msgstr "Select User"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:43
 msgid "Set Up Two-Factor Authentication"
-msgstr ""
+msgstr "Set Up Two-Factor Authentication"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:66
 msgid "Secret Key (manual entry)"
-msgstr ""
+msgstr "Secret Key (manual entry)"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:74
 msgid "Enter verification code to confirm"
-msgstr ""
+msgstr "Enter verification code to confirm"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:75
 msgid "6-digit code"
-msgstr ""
+msgstr "6-digit code"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:85
-#, fuzzy
 msgid "Verify and Enable"
-msgstr "Verifying file"
+msgstr "Verify and Enable"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:100
 msgid ""
 "Scan this QR code with your authenticator app (e.g., Google Authenticator, "
 "Authy, Microsoft Authenticator)"
 msgstr ""
+"Scan this QR code with your authenticator app (e.g., Google Authenticator, "
+"Authy, Microsoft Authenticator)"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:110
 msgid "Or enter this key manually:"
-msgstr ""
+msgstr "Or enter this key manually:"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:181
 #: .\include\ui\controls\dialogs\twofa_verify.py:186
-#, fuzzy
 msgid "Please enter a 6-digit code"
-msgstr "Please enter a recovery code"
+msgstr "Please enter a 6-digit code"
 
 #: .\include\ui\controls\dialogs\twofa_setup.py:194
 msgid "Invalid code. Please try again."
-msgstr ""
+msgstr "Invalid code. Please try again."
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:12
 msgid "Enter the 6-digit code from your authenticator app"
-msgstr ""
+msgstr "Enter the 6-digit code from your authenticator app"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:13
 msgid "Enter one of your recovery codes"
@@ -1091,15 +1085,15 @@ msgstr "Use recovery code instead"
 #: .\include\ui\models\settings\overview.py:51
 #: .\include\ui\models\settings\twofa.py:34
 msgid "Two-Factor Authentication"
-msgstr ""
+msgstr "Two-Factor Authentication"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:48
 msgid "Verification Code"
-msgstr ""
+msgstr "Verification Code"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:49
 msgid "Enter 6-digit code"
-msgstr ""
+msgstr "Enter 6-digit code"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:61
 msgid "Recovery Code"
@@ -1110,9 +1104,8 @@ msgid "Enter recovery code"
 msgstr "Enter recovery code"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:75
-#, fuzzy
 msgid "Verify"
-msgstr "Verifying file"
+msgstr "Verify"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:179
 msgid "Please enter a recovery code"
@@ -1123,11 +1116,11 @@ msgid "Invalid recovery code"
 msgstr "Invalid recovery code"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:207
-#, fuzzy
 msgid "Invalid verification code"
-msgstr "Invalid recovery code"
+msgstr "Invalid verification code"
 
-#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:107
+#: .\include\ui\controls\dialogs\upgrade.py:33
+#: .\include\ui\models\about.py:107
 msgid "Update"
 msgstr "Update"
 
@@ -1294,125 +1287,118 @@ msgid "About"
 msgstr "About"
 
 #: .\include\ui\controls\views\tasks.py:55
-#, fuzzy
 msgid "Open file"
-msgstr "Verifying file"
+msgstr "Open file"
 
 #: .\include\ui\controls\views\tasks.py:71
 #: .\include\ui\controls\views\tasks.py:297
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #: .\include\ui\controls\views\tasks.py:73
 #: .\include\ui\controls\views\tasks.py:297
-#, fuzzy
 msgid "Resume"
-msgstr "Result"
+msgstr "Resume"
 
 #: .\include\ui\controls\views\tasks.py:209
 msgid "Pending"
-msgstr ""
+msgstr "Pending"
 
 #: .\include\ui\controls\views\tasks.py:210
 msgid "Downloading"
-msgstr ""
+msgstr "Downloading"
 
 #: .\include\ui\controls\views\tasks.py:211
 #: .\include\ui\controls\views\tasks.py:372
 msgid "Paused"
-msgstr ""
+msgstr "Paused"
 
 #: .\include\ui\controls\views\tasks.py:212
 msgid "Decrypting"
-msgstr ""
+msgstr "Decrypting"
 
 #: .\include\ui\controls\views\tasks.py:213
-#, fuzzy
 msgid "Verifying"
-msgstr "Verifying file"
+msgstr "Verifying"
 
 #: .\include\ui\controls\views\tasks.py:214
 #: .\include\ui\controls\views\tasks.py:374
 msgid "Completed"
-msgstr ""
+msgstr "Completed"
 
 #: .\include\ui\controls\views\tasks.py:215
 #: .\include\ui\controls\views\tasks.py:375
 msgid "Failed"
-msgstr ""
+msgstr "Failed"
 
 #: .\include\ui\controls\views\tasks.py:216
-#, fuzzy
 msgid "Cancelled"
-msgstr "Cancel"
+msgstr "Cancelled"
 
 #: .\include\ui\controls\views\tasks.py:217
 #: .\include\ui\controls\views\tasks.py:373
 msgid "Scheduled"
-msgstr ""
+msgstr "Scheduled"
 
 #: .\include\ui\controls\views\tasks.py:219
-#, fuzzy
 msgid "Unknown"
-msgstr "(Unknown)"
+msgstr "Unknown"
 
 #: .\include\ui\controls\views\tasks.py:233
 msgid "Download completed"
-msgstr ""
+msgstr "Download completed"
 
 #: .\include\ui\controls\views\tasks.py:248
-#, fuzzy
 msgid "Waiting to start..."
-msgstr "Writing update script"
+msgstr "Waiting to start..."
 
 #: .\include\ui\controls\views\tasks.py:341
-#, fuzzy
 msgid "Failed to open file: {error}"
-msgstr "Failed to download document: {error}"
+msgstr "Failed to open file: {error}"
 
 #: .\include\ui\controls\views\tasks.py:367
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 #: .\include\ui\controls\views\tasks.py:371
 msgid "Active"
-msgstr ""
+msgstr "Active"
 
 #: .\include\ui\controls\views\tasks.py:399
 msgid "No download tasks"
-msgstr ""
+msgstr "No download tasks"
 
 #: .\include\ui\controls\views\tasks.py:418
 msgid "Download Tasks"
-msgstr ""
+msgstr "Download Tasks"
 
 #: .\include\ui\controls\views\tasks.py:427
 msgid "More actions"
-msgstr ""
+msgstr "More actions"
 
 #: .\include\ui\controls\views\tasks.py:430
 msgid "Pause all active"
-msgstr ""
+msgstr "Pause all active"
 
 #: .\include\ui\controls\views\tasks.py:435
 msgid "Resume all paused"
-msgstr ""
+msgstr "Resume all paused"
 
 #: .\include\ui\controls\views\tasks.py:440
 msgid "Cancel all pending"
-msgstr ""
+msgstr "Cancel all pending"
 
 #: .\include\ui\controls\views\tasks.py:446
 msgid "Clear completed"
-msgstr ""
+msgstr "Clear completed"
 
 #: .\include\ui\controls\views\tasks.py:451
 msgid "Clear failed"
-msgstr ""
+msgstr "Clear failed"
 
 #: .\include\ui\controls\views\tasks.py:459
 msgid "Refresh"
-msgstr ""
+msgstr "Refresh"
 
 #: .\include\ui\models\about.py:52
 msgid "Debugging..."
@@ -1440,7 +1426,8 @@ msgstr "Checking for updates"
 
 #: .\include\ui\models\about.py:101
 msgid "Cannot update: Cannot check for updates when running from source code."
-msgstr "Cannot update: Cannot check for updates when running from source code."
+msgstr ""
+"Cannot update: Cannot check for updates when running from source code."
 
 #: .\include\ui\models\about.py:121
 msgid "Software Update"
@@ -1514,11 +1501,11 @@ msgstr "Adjust application connection history policy"
 
 #: .\include\ui\models\settings\overview.py:52
 msgid "Manage two-factor authentication settings"
-msgstr ""
+msgstr "Manage two-factor authentication settings"
 
 #: .\include\ui\models\settings\twofa.py:44
 msgid "Two-Factor Authentication Status: Checking..."
-msgstr ""
+msgstr "Two-Factor Authentication Status: Checking..."
 
 #: .\include\ui\models\settings\twofa.py:51
 msgid ""
@@ -1526,36 +1513,39 @@ msgid ""
 "You'll need to enter a code from your authenticator app in addition to your "
 "password when logging in."
 msgstr ""
+"Two-factor authentication adds an extra layer of security to your account. "
+"You'll need to enter a code from your authenticator app in addition to your "
+"password when logging in."
 
 #: .\include\ui\models\settings\twofa.py:58
 msgid "Enable Two-Factor Authentication"
-msgstr ""
+msgstr "Enable Two-Factor Authentication"
 
 #: .\include\ui\models\settings\twofa.py:66
 #: .\include\ui\models\settings\twofa.py:244
 msgid "Disable Two-Factor Authentication"
-msgstr ""
+msgstr "Disable Two-Factor Authentication"
 
 #: .\include\ui\models\settings\twofa.py:122
 msgid "Two-Factor Authentication Status: Enabled"
-msgstr ""
+msgstr "Two-Factor Authentication Status: Enabled"
 
 #: .\include\ui\models\settings\twofa.py:127
 msgid "Two-Factor Authentication Status: Disabled"
-msgstr ""
+msgstr "Two-Factor Authentication Status: Disabled"
 
 #: .\include\ui\models\settings\twofa.py:207
 #: .\include\ui\models\settings\twofa.py:222
 msgid "Two-Factor Authentication enabled successfully!"
-msgstr ""
+msgstr "Two-Factor Authentication enabled successfully!"
 
 #: .\include\ui\models\settings\twofa.py:245
 msgid "Please enter your password to disable two-factor authentication."
-msgstr ""
+msgstr "Please enter your password to disable two-factor authentication."
 
 #: .\include\ui\models\settings\twofa.py:268
 msgid "Two-Factor Authentication disabled"
-msgstr ""
+msgstr "Two-Factor Authentication disabled"
 
 #: .\include\ui\models\wizards\welcome.py:24
 msgid "Intro Wizard"
@@ -1567,7 +1557,7 @@ msgstr "Parent directory"
 
 #: .\include\ui\util\path.py:145
 msgid "Download added: {filename}"
-msgstr ""
+msgstr "Download added: {filename}"
 
 #: .\include\ui\util\path.py:189
 msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
