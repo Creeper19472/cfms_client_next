@@ -223,6 +223,12 @@ class HomeFavoritesContainer(ft.Container):
                     filename=event.control.filename,
                     page=self.page,
                 )
+                
+            except FileNotFoundError:
+                if validation_service:
+                    validation_service.mark_file_invalid(event.control.file_id)
+                self.page.run_task(self.update_favorites, from_validation_callback=True)
+
             except Exception as e:
                 # If download fails, mark as invalid and notify user
                 if validation_service:

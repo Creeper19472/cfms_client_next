@@ -101,6 +101,9 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
         token=_app_shared.token,
     )
 
+    if response["code"] == 404:
+        raise FileNotFoundError("Document not found on server")
+
     task_data = response["data"]["task_data"]
     task_id = task_data["task_id"]
     task_start_time = task_data["start_time"]
