@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-24 21:10+0800\n"
+"POT-Creation-Date: 2025-12-25 13:32+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,47 +197,57 @@ msgstr ""
 msgid "Modification failed: {message}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:38
+#: .\include\controllers\explorer\itself.py:39
 msgid "Preparing upload"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:77
+#: .\include\controllers\explorer\itself.py:91
 msgid "Upload failed: No permission to upload files"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:80
+#: .\include\controllers\explorer\itself.py:94
 msgid "Upload failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:98
+#: .\include\controllers\explorer\itself.py:112
 msgid "Problem occurred when uploading \"{each_file_name}\": {exc}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:166
+#: .\include\controllers\explorer\itself.py:188
 msgid "Creating directory \"{parent_path}\""
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:202
+#: .\include\controllers\explorer\itself.py:224
 msgid "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:227
-msgid "Create file \"{filename}\" failed: {errmsg}"
+#: .\include\controllers\explorer\itself.py:294
+#: .\include\controllers\explorer\itself.py:362
+msgid "Internal error: Missing task_id for file \"{filename}\""
 msgstr ""
 
 #: .\include\controllers\explorer\itself.py:304
+msgid "Upload file \"{filename}\" failed: {errmsg}"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:327
+#: .\include\controllers\explorer\itself.py:341
+msgid "Create file \"{filename}\" failed: {errmsg}"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:436
 msgid "Problem occurred when uploading file \"{filename}\": {err}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:311
+#: .\include\controllers\explorer\itself.py:443
 msgid "Retrying [{retry}/{max_retries}]: {strerr}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:336
+#: .\include\controllers\explorer\itself.py:468
 msgid "Please wait"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:349
+#: .\include\controllers\explorer\itself.py:481
 msgid "Upload completed with {total_errors} error(s)."
 msgstr ""
 
@@ -383,7 +393,7 @@ msgstr ""
 #: .\include\ui\controls\dialogs\admin\groups.py:208
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:63
 #: .\include\ui\controls\dialogs\dev.py:40
-#: .\include\ui\controls\dialogs\explorer.py:221
+#: .\include\ui\controls\dialogs\explorer.py:224
 msgid "Submit"
 msgstr ""
 
@@ -413,10 +423,11 @@ msgstr ""
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:139
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:275
 #: .\include\ui\controls\dialogs\dev.py:41
-#: .\include\ui\controls\dialogs\explorer.py:50
-#: .\include\ui\controls\dialogs\explorer.py:113
-#: .\include\ui\controls\dialogs\explorer.py:159
-#: .\include\ui\controls\dialogs\explorer.py:225
+#: .\include\ui\controls\dialogs\explorer.py:53
+#: .\include\ui\controls\dialogs\explorer.py:116
+#: .\include\ui\controls\dialogs\explorer.py:162
+#: .\include\ui\controls\dialogs\explorer.py:228
+#: .\include\ui\controls\dialogs\explorer.py:363
 #: .\include\ui\controls\dialogs\password_confirm.py:55
 #: .\include\ui\controls\dialogs\twofa_setup.py:90
 #: .\include\ui\controls\dialogs\twofa_verify.py:80
@@ -435,7 +446,7 @@ msgid "Add..."
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:61
-#: .\include\ui\controls\views\tasks.py:364
+#: .\include\ui\controls\views\tasks.py:366
 msgid "All"
 msgstr ""
 
@@ -596,7 +607,7 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:158
 #: .\include\ui\controls\dialogs\admin\groups.py:48
-#: .\include\ui\controls\dialogs\explorer.py:46
+#: .\include\ui\controls\dialogs\explorer.py:49
 msgid "Create"
 msgstr ""
 
@@ -846,46 +857,102 @@ msgstr ""
 msgid "Request name must be specified"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:33
+#: .\include\ui\controls\dialogs\explorer.py:36
 msgid "Create Directory"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:40
+#: .\include\ui\controls\dialogs\explorer.py:43
 msgid "Directory Name"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:83
+#: .\include\ui\controls\dialogs\explorer.py:86
 msgid "Directory name cannot be empty"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:104
+#: .\include\ui\controls\dialogs\explorer.py:107
 msgid "Batch Upload"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:110
-#: .\include\ui\controls\dialogs\explorer.py:156
+#: .\include\ui\controls\dialogs\explorer.py:113
+#: .\include\ui\controls\dialogs\explorer.py:159
 #: .\include\ui\controls\dialogs\whatsnew.py:79
 msgid "OK"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:150
+#: .\include\ui\controls\dialogs\explorer.py:153
 msgid "Upload Directory"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:207
+#: .\include\ui\controls\dialogs\explorer.py:210
 msgid "Jump to..."
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:214
+#: .\include\ui\controls\dialogs\explorer.py:217
 msgid "Directory ID"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:215
+#: .\include\ui\controls\dialogs\explorer.py:218
 msgid "If you want to go back to the root directory, enter '/'."
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:260
+#: .\include\ui\controls\dialogs\explorer.py:263
 msgid "Directory id cannot be empty"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:292
+msgid "File Already Exists"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:322
+msgid "A file named \"{filename}\" already exists."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:331
+msgid "Loading file details..."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:345
+msgid "Do you want to overwrite it?"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:355
+msgid "Overwrite"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:359
+msgid "Skip"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:369
+msgid "Always Overwrite"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:374
+msgid "Always Skip"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:444
+msgid "Could not load file details"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:459
+msgid "File size: {size}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:477
+msgid "Last modified: {date}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:486
+msgid "Created: {date}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:492
+msgid "No details available"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:507
+msgid "Error loading file details"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\password_confirm.py:32
@@ -1169,112 +1236,112 @@ msgid "Open file"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:70
-#: .\include\ui\controls\views\tasks.py:296
+#: .\include\ui\controls\views\tasks.py:298
 msgid "Pause"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:72
-#: .\include\ui\controls\views\tasks.py:296
+#: .\include\ui\controls\views\tasks.py:298
 msgid "Resume"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:206
+#: .\include\ui\controls\views\tasks.py:208
 msgid "Pending"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:207
+#: .\include\ui\controls\views\tasks.py:209
 msgid "Downloading"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:208
-#: .\include\ui\controls\views\tasks.py:366
+#: .\include\ui\controls\views\tasks.py:210
+#: .\include\ui\controls\views\tasks.py:368
 msgid "Paused"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:209
+#: .\include\ui\controls\views\tasks.py:211
 msgid "Decrypting"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:210
+#: .\include\ui\controls\views\tasks.py:212
 msgid "Verifying"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:211
-#: .\include\ui\controls\views\tasks.py:368
+#: .\include\ui\controls\views\tasks.py:213
+#: .\include\ui\controls\views\tasks.py:370
 msgid "Completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:212
-#: .\include\ui\controls\views\tasks.py:369
+#: .\include\ui\controls\views\tasks.py:214
+#: .\include\ui\controls\views\tasks.py:371
 msgid "Failed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:213
+#: .\include\ui\controls\views\tasks.py:215
 msgid "Cancelled"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:214
-#: .\include\ui\controls\views\tasks.py:367
+#: .\include\ui\controls\views\tasks.py:216
+#: .\include\ui\controls\views\tasks.py:369
 msgid "Scheduled"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:216
+#: .\include\ui\controls\views\tasks.py:218
 msgid "Unknown"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:230
+#: .\include\ui\controls\views\tasks.py:232
 msgid "Download completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:245
+#: .\include\ui\controls\views\tasks.py:247
 msgid "Waiting to start..."
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:340
+#: .\include\ui\controls\views\tasks.py:342
 msgid "Failed to open file: {error}"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:361
+#: .\include\ui\controls\views\tasks.py:363
 msgid "Filter"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:365
+#: .\include\ui\controls\views\tasks.py:367
 msgid "Active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:393
+#: .\include\ui\controls\views\tasks.py:395
 msgid "No download tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:412
+#: .\include\ui\controls\views\tasks.py:414
 msgid "Download Tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:421
+#: .\include\ui\controls\views\tasks.py:423
 msgid "More actions"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:424
+#: .\include\ui\controls\views\tasks.py:426
 msgid "Pause all active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:429
+#: .\include\ui\controls\views\tasks.py:431
 msgid "Resume all paused"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:434
+#: .\include\ui\controls\views\tasks.py:436
 msgid "Cancel all pending"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:440
+#: .\include\ui\controls\views\tasks.py:442
 msgid "Clear completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:445
+#: .\include\ui\controls\views\tasks.py:447
 msgid "Clear failed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:453
+#: .\include\ui\controls\views\tasks.py:455
 msgid "Refresh"
 msgstr ""
 
