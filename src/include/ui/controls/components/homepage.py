@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import flet as ft
 
@@ -136,7 +136,7 @@ class HomeFavoritesContainer(ft.Container):
         # Get validation service
         validation_service = None
         if self.app_shared.service_manager:
-            validation_service = self.app_shared.service_manager.get_service("favorites_validation")
+            validation_service = cast(FavoritesValidationService, self.app_shared.service_manager.get_service("favorites_validation"))
             
             # Register callback to update UI after validation completes
             # But only register once
@@ -176,22 +176,24 @@ class HomeFavoritesContainer(ft.Container):
                 # If download fails, mark as invalid and notify user
                 if validation_service:
                     validation_service.mark_file_invalid(event.control.file_id)
-                
-                # Check if it's a known error type with response dict
-                if hasattr(e, 'response') and isinstance(e.response, dict):
+
+                # Safely access potential 'response' attribute without relying on Exception having it
+                err_obj = cast(object, e)
+                resp = getattr(err_obj, "response", None)
+                if isinstance(resp, dict):
                     send_error(
                         self.page,
                         _("Failed to download document: ({code}) {message}").format(
-                            code=e.response.get("code", "Unknown"),
-                            message=e.response.get("message", str(e))
-                        )
+                            code=resp.get("code", "Unknown"),
+                            message=resp.get("message", str(e)),
+                        ),
                     )
                 else:
                     send_error(
                         self.page,
-                        _("Failed to download document: {error}").format(error=str(e))
+                        _("Failed to download document: {error}").format(error=str(e)),
                     )
-                
+
                 # Update the display to show item as invalid
                 await self.update_favorites()
                 self.update()
@@ -297,6 +299,7 @@ class HomeTabs(ft.Tabs):
     def did_mount(self):
         super().did_mount()
         # Schedule the async update_favorites as a task
+        assert type(self.page) is ft.Page
         self.page.run_task(self.home_favorites_container.update_favorites)
 
 
@@ -326,4 +329,5 @@ class HomeView(ft.Container):
     def did_mount(self):
         super().did_mount()
         # Schedule the async update_favorites as a task
+        assert type(self.page) is ft.Page
         self.page.run_task(self.home_tabs.home_favorites_container.update_favorites)
