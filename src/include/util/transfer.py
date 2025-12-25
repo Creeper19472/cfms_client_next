@@ -21,6 +21,7 @@ from include.classes.exceptions.transmission import (
     FileSizeMismatchError,
 )
 from include.constants import FLET_APP_STORAGE_TEMP
+from include.ui.controls.dialogs.explorer import normalize_always_choice
 from include.util.connect import get_connection
 from include.util.requests import do_request_2
 
@@ -374,7 +375,7 @@ async def batch_upload_file_to_server(
                         if (conflict_type == "document" and conflict_id and on_conflict_callback):
                             # Use always choice if set, otherwise ask user
                             if always_choice in ('always_overwrite', 'always_skip'):
-                                user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                                user_choice = normalize_always_choice(always_choice)
                             else:
                                 # Ask user what to do
                                 user_choice = await on_conflict_callback(
@@ -384,7 +385,7 @@ async def batch_upload_file_to_server(
                                 # Store "always" choices for subsequent files
                                 if user_choice in ('always_overwrite', 'always_skip'):
                                     always_choice = user_choice
-                                    user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                                    user_choice = normalize_always_choice(user_choice)
                             
                             if user_choice == 'overwrite':
                                 # Upload as a new version of the existing document

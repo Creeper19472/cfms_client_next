@@ -12,6 +12,7 @@ from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
     FileOverwriteConfirmDialog,
+    normalize_always_choice,
 )
 from include.ui.util.path import get_directory
 from include.util.connect import get_connection
@@ -77,6 +78,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
         filename = ""
         current_size = 0
         file_size = 0
+        files_processed = False  # Track if any files were actually processed
 
         while True:
             try:
@@ -119,9 +121,12 @@ class FileExplorerController(BaseController["FileManagerView"]):
 
             # Skip progress bar update if file was skipped (file_size == 0)
             if file_size == 0:
+                # Mark as processed even if skipped so cleanup knows we iterated
+                files_processed = True
                 continue
 
             # 正常更新进度条
+            files_processed = True
             progress_bar.value = current_size / file_size
             progress_info.value = f"[{index+1}/{len(files)}] {current_size / 1024 / 1024:.2f} MB/{file_size / 1024 / 1024:.2f} MB"
             progress_column.update()
@@ -130,6 +135,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 await ait.aclose()
                 break
 
+        # Cleanup: always remove progress UI for single file uploads if any files were processed
         if len(files) > 1:
             if len(progress_column.controls) <= 2:
                 batch_dialog.open = False
@@ -139,8 +145,10 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 batch_dialog.cancel_button.disabled = True
                 batch_dialog.update()
         else:
-            self.control.page.overlay.remove(progress_column)
-            self.control.page.update()
+            # For single file upload, always clean up if we processed the file
+            if files_processed and progress_column in self.control.page.overlay:
+                self.control.page.overlay.remove(progress_column)
+                self.control.page.update()
 
         await get_directory(
             id=self.control.current_directory_id,
@@ -254,12 +262,20 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     if conflict_type == "document" and conflict_id:
                         # Use always choice if set, otherwise ask user
                         if always_choice in ('always_overwrite', 'always_skip'):
-                            user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                            user_choice = normalize_always_choice(always_choice)
                         else:
                             # Show overwrite confirmation dialog
-                            # Check if there are multiple files in the tree
-                            total_files = sum(len(files) for files in [tree["files"]] + 
-                                            [subtree.get("files", []) for subtree in tree.get("dirs", {}).values()])
+                            # Check if there are multiple files in the tree (including nested directories)
+                            def _count_files(node: dict) -> int:
+                                """Recursively count all files in a directory tree."""
+                                files = node.get("files", [])
+                                total = len(files)
+                                for subtree in node.get("dirs", {}).values():
+                                    if isinstance(subtree, dict):
+                                        total += _count_files(subtree)
+                                return total
+
+                            total_files = _count_files(tree)
                             confirm_dialog = FileOverwriteConfirmDialog(
                                 filename=filename,
                                 existing_id=conflict_id,
@@ -271,7 +287,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
                             # Store "always" choices for subsequent files
                             if user_choice in ('always_overwrite', 'always_skip'):
                                 always_choice = user_choice
-                                user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                                user_choice = normalize_always_choice(user_choice)
                         
                         if user_choice == 'overwrite':
                             # Upload as a new version of existing document

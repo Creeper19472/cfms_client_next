@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 import asyncio
 from datetime import datetime
+import logging
 
 import flet as ft
 
@@ -19,6 +20,25 @@ from include.util.locale import get_translation
 
 t = get_translation()
 _ = t.gettext
+
+logger = logging.getLogger(__name__)
+
+
+def normalize_always_choice(choice: str | None) -> str | None:
+    """Convert 'always_*' choices to their single-action equivalents.
+    
+    Args:
+        choice: User choice which may be 'overwrite', 'skip', 'always_overwrite', 
+                'always_skip', or None
+    
+    Returns:
+        Normalized choice: 'overwrite', 'skip', or None
+    """
+    if choice == 'always_overwrite':
+        return 'overwrite'
+    elif choice == 'always_skip':
+        return 'skip'
+    return choice
 
 
 class CreateDirectoryDialog(AlertDialog):
@@ -431,6 +451,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
             ]
             self.details_container.visible = True
             self.details_container.opacity = 1.0
+            self.update()
 
         try:
             response = await do_request(
@@ -503,7 +524,8 @@ class FileOverwriteConfirmDialog(AlertDialog):
             self.update()
             yield  # allow animation to play
 
-        except Exception:
+        except Exception as e:
+            logger.exception("Error loading document details for document_id=%s", self.existing_id)
             _show_error(_("Error loading file details"))
             yield
 
