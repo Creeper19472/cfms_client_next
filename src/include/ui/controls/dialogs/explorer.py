@@ -10,7 +10,6 @@ from include.controllers.dialogs.directory import (
     OpenDirectoryDialogController,
 )
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -312,10 +311,9 @@ class FileOverwriteConfirmDialog(AlertDialog):
         self.details_container = ft.Container(
             visible=False,
             opacity=0,
-            animate_opacity=ft.Animation(300, ft.AnimationCurve.EASE_IN_OUT),
+            animate_opacity=300,
             content=self.details_container_content,
         )
-        
 
         # Main message
         self.message_text = ft.Text(
@@ -393,151 +391,96 @@ class FileOverwriteConfirmDialog(AlertDialog):
 
     async def load_document_details(self):
         """Load document details from server and update the UI."""
+        def _row(icon, text, color=None, italic=False):
+            return ft.Row(
+                controls=[
+                    ft.Icon(icon, size=16, color=color) if icon else ft.Container(),
+                    ft.Text(text, size=14, italic=italic),
+                ],
+                spacing=8,
+            )
+
+        def _show_error(message):
+            self.loading_row.visible = False
+            self.details_container_content.controls = [
+                _row(ft.Icons.ERROR_OUTLINE, message, color=ft.Colors.RED_400, italic=True)
+            ]
+            self.details_container.visible = True
+            self.details_container.opacity = 1.0
+
         try:
-            # Request document info from server
             response = await do_request(
                 action="get_document_info",
-                data={
-                    "document_id": self.existing_id,
-                },
+                data={"document_id": self.existing_id},
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
 
-            if response.get("code") == 200:
-                data = response.get("data", {})
-
-                # Extract document details
-                doc_size = data.get("size", 0)
-                last_modified = data.get("last_modified")
-                created_time = data.get("created_time")
-
-                # Build details controls
-                details_controls = []
-
-                # File size
-                if doc_size is not None and doc_size >= 0:
-                    details_controls.append(
-                        ft.Row(
-                            controls=[
-                                ft.Icon(
-                                    ft.Icons.DESCRIPTION,
-                                    size=16,
-                                    color=ft.Colors.BLUE_400,
-                                ),
-                                ft.Text(
-                                    _("File size: {size}").format(
-                                        size=self.format_file_size(doc_size)
-                                    ),
-                                    size=14,
-                                ),
-                            ],
-                            spacing=8,
-                        )
-                    )
-
-                # Last modified date
-                if last_modified is not None:
-                    modified_str = datetime.fromtimestamp(last_modified).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    details_controls.append(
-                        ft.Row(
-                            controls=[
-                                ft.Icon(
-                                    ft.Icons.UPDATE, size=16, color=ft.Colors.ORANGE_400
-                                ),
-                                ft.Text(
-                                    _("Last modified: {date}").format(
-                                        date=modified_str
-                                    ),
-                                    size=14,
-                                ),
-                            ],
-                            spacing=8,
-                        )
-                    )
-
-                # Created date
-                if created_time is not None:
-                    created_str = datetime.fromtimestamp(created_time).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    details_controls.append(
-                        ft.Row(
-                            controls=[
-                                ft.Icon(
-                                    ft.Icons.ACCESS_TIME,
-                                    size=16,
-                                    color=ft.Colors.GREEN_400,
-                                ),
-                                ft.Text(
-                                    _("Created: {date}").format(date=created_str),
-                                    size=14,
-                                ),
-                            ],
-                            spacing=8,
-                        )
-                    )
-
-                # Update the details container
-                self.details_container_content.controls = details_controls
-
-                # Hide loading indicator
-                self.loading_row.visible = False
-
-                # Show details with fade-in animation
-                self.details_container.visible = True
+            if response.get("code") != 200:
+                _show_error(_("Could not load file details"))
                 yield
+                return
 
-                # Trigger animation by changing opacity
-                self.details_container.opacity = 1
-                yield
+            data = response.get("data", {})
+            doc_size = data.get("size")
+            last_modified = data.get("last_modified")
+            created_time = data.get("created_time")
 
-            else:
-                # Failed to fetch details, show error message
-                self.loading_row.visible = False
-                self.details_container_content.controls = [
-                    ft.Row(
-                        controls=[
-                            ft.Icon(
-                                ft.Icons.ERROR_OUTLINE, size=16, color=ft.Colors.RED_400
-                            ),
-                            ft.Text(
-                                _("Could not load file details"),
-                                size=14,
-                                italic=True,
-                                color=ft.Colors.RED_400,
-                            ),
-                        ],
-                        spacing=8,
+            details_controls = []
+
+            if doc_size is not None and isinstance(doc_size, (int, float)) and doc_size >= 0:
+                details_controls.append(
+                    _row(
+                        ft.Icons.DESCRIPTION,
+                        _("File size: {size}").format(size=self.format_file_size(int(doc_size))),
+                        color=ft.Colors.BLUE_400,
                     )
-                ]
-                self.details_container.visible = True
-                self.details_container.opacity = 1
-                yield
-
-        except Exception as e:
-            # Handle any errors during loading
-            self.loading_row.visible = False
-            self.details_container_content.controls = [
-                ft.Row(
-                    controls=[
-                        ft.Icon(
-                            ft.Icons.ERROR_OUTLINE, size=16, color=ft.Colors.RED_400
-                        ),
-                        ft.Text(
-                            _("Error loading file details"),
-                            size=14,
-                            italic=True,
-                            color=ft.Colors.RED_400,
-                        ),
-                    ],
-                    spacing=8,
                 )
-            ]
+
+            def _format_timestamp(ts):
+                if ts is None:
+                    return None
+                try:
+                    ts_float = float(ts)
+                except Exception:
+                    return None
+                return datetime.fromtimestamp(ts_float).strftime("%Y-%m-%d %H:%M:%S")
+
+            if (modified_str := _format_timestamp(last_modified)) is not None:
+                details_controls.append(
+                    _row(
+                        ft.Icons.UPDATE,
+                        _("Last modified: {date}").format(date=modified_str),
+                        color=ft.Colors.ORANGE_400,
+                    )
+                )
+
+            if (created_str := _format_timestamp(created_time)) is not None:
+                details_controls.append(
+                    _row(
+                        ft.Icons.ACCESS_TIME,
+                        _("Created: {date}").format(date=created_str),
+                        color=ft.Colors.GREEN_400,
+                    )
+                )
+
+            if not details_controls:
+                _show_error(_("No details available"))
+                yield
+                return
+
+            # Update UI: hide loader, set details, show container with fade-in
+            self.details_container_content.controls = details_controls
+            self.loading_row.visible = False
             self.details_container.visible = True
-            self.details_container.opacity = 1
+            yield  # allow UI to render the container visible state
+
+            self.details_container.opacity = 1.0
+            self.update()
+            yield  # allow animation to play
+
+        except Exception:
+            _show_error(_("Error loading file details"))
             yield
 
     async def overwrite_button_click(self, event: ft.Event[ft.TextButton]):
