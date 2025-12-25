@@ -282,6 +282,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
         self,
         filename: str,
         existing_id: str,
+        is_batch: bool = False,
         ref: ft.Ref | None = None,
         visible=True,
     ):
@@ -292,7 +293,8 @@ class FileOverwriteConfirmDialog(AlertDialog):
 
         self.filename = filename
         self.existing_id = existing_id
-        self.user_choice = None  # Will be 'overwrite', 'skip', or None
+        self.is_batch = is_batch
+        self.user_choice = None  # Will be 'overwrite', 'skip', 'always_overwrite', 'always_skip', or None
         self.choice_event = asyncio.Event()
         self.app_shared = AppShared()
 
@@ -361,12 +363,34 @@ class FileOverwriteConfirmDialog(AlertDialog):
             _("Cancel"),
             on_click=self.cancel_button_click,
         )
+        
+        # Additional buttons for batch uploads
+        self.always_overwrite_button = ft.TextButton(
+            _("Always Overwrite"),
+            on_click=self.always_overwrite_button_click,
+            visible=is_batch,
+        )
+        self.always_skip_button = ft.TextButton(
+            _("Always Skip"),
+            on_click=self.always_skip_button_click,
+            visible=is_batch,
+        )
 
-        self.actions = [
-            self.overwrite_button,
-            self.skip_button,
-            self.cancel_button,
-        ]
+        # Build actions list based on batch mode
+        if is_batch:
+            self.actions = [
+                self.overwrite_button,
+                self.always_overwrite_button,
+                self.skip_button,
+                self.always_skip_button,
+                self.cancel_button,
+            ]
+        else:
+            self.actions = [
+                self.overwrite_button,
+                self.skip_button,
+                self.cancel_button,
+            ]
 
     def did_mount(self):
         """Called when dialog is mounted to the page. Starts lazy loading."""
@@ -490,6 +514,16 @@ class FileOverwriteConfirmDialog(AlertDialog):
 
     async def skip_button_click(self, event: ft.Event[ft.TextButton]):
         self.user_choice = "skip"
+        self.choice_event.set()
+        self.close()
+    
+    async def always_overwrite_button_click(self, event: ft.Event[ft.TextButton]):
+        self.user_choice = "always_overwrite"
+        self.choice_event.set()
+        self.close()
+    
+    async def always_skip_button_click(self, event: ft.Event[ft.TextButton]):
+        self.user_choice = "always_skip"
         self.choice_event.set()
         self.close()
 

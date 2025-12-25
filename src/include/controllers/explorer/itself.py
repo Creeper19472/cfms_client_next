@@ -58,6 +58,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
             confirm_dialog = FileOverwriteConfirmDialog(
                 filename=filename,
                 existing_id=conflict_id,
+                is_batch=len(files) > 1,
             )
             self.control.page.show_dialog(confirm_dialog)
             choice = await confirm_dialog.wait_for_choice()
@@ -152,9 +153,13 @@ class FileExplorerController(BaseController["FileManagerView"]):
         stop_event = asyncio.Event()
         upload_dialog = UploadDirectoryAlertDialog(stop_event)
         self.control.page.show_dialog(upload_dialog)
+        
+        # Track "always" choice across all files in directory tree
+        always_choice = None
 
         # Temporarily use FTP mode to create directory tree.
         async def create_dirs_from_tree(parent_path, tree, parent_id=None):
+            nonlocal always_choice  # Access the outer variable
 
             # helper to ensure persistent transfer connection is closed and removed
             async def _close_transfer_conn():
@@ -247,13 +252,26 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     
                     # conflict_id must be a non-empty string for overwrite to work
                     if conflict_type == "document" and conflict_id:
-                        # Show overwrite confirmation dialog
-                        confirm_dialog = FileOverwriteConfirmDialog(
-                            filename=filename,
-                            existing_id=conflict_id,
-                        )
-                        self.control.page.show_dialog(confirm_dialog)
-                        user_choice = await confirm_dialog.wait_for_choice()
+                        # Use always choice if set, otherwise ask user
+                        if always_choice in ('always_overwrite', 'always_skip'):
+                            user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                        else:
+                            # Show overwrite confirmation dialog
+                            # Check if there are multiple files in the tree
+                            total_files = sum(len(files) for files in [tree["files"]] + 
+                                            [subtree.get("files", []) for subtree in tree.get("dirs", {}).values()])
+                            confirm_dialog = FileOverwriteConfirmDialog(
+                                filename=filename,
+                                existing_id=conflict_id,
+                                is_batch=total_files > 1,
+                            )
+                            self.control.page.show_dialog(confirm_dialog)
+                            user_choice = await confirm_dialog.wait_for_choice()
+                            
+                            # Store "always" choices for subsequent files
+                            if user_choice in ('always_overwrite', 'always_skip'):
+                                always_choice = user_choice
+                                user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
                         
                         if user_choice == 'overwrite':
                             # Upload as a new version of existing document

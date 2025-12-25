@@ -324,7 +324,8 @@ async def batch_upload_file_to_server(
         max_retries: Maximum retry attempts per file (default: 3)
         on_conflict_callback: Optional async callback function that receives
             (filename, conflict_type, conflict_id) and returns 'overwrite', 'skip',
-            or None. If None, 409 errors are treated as regular errors.
+            'always_overwrite', 'always_skip', or None. If None, 409 errors are 
+            treated as regular errors.
         
     Yields:
         Tuples of (file_index, filename, bytes_uploaded, total_size, exception)
@@ -334,6 +335,7 @@ async def batch_upload_file_to_server(
         AssertionError: If file path is None
     """
     transfer_conn = None
+    always_choice = None  # Track "always" choice for batch operations
     try:
         for index, file in enumerate(files):  # process tasks sequentially
             filename, file_path = file.name, file.path
@@ -370,10 +372,19 @@ async def batch_upload_file_to_server(
                         # Check if we can handle this conflict
                         # conflict_id must be a non-empty string for overwrite to work
                         if (conflict_type == "document" and conflict_id and on_conflict_callback):
-                            # Ask user what to do
-                            user_choice = await on_conflict_callback(
-                                filename, conflict_type, conflict_id
-                            )
+                            # Use always choice if set, otherwise ask user
+                            if always_choice in ('always_overwrite', 'always_skip'):
+                                user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
+                            else:
+                                # Ask user what to do
+                                user_choice = await on_conflict_callback(
+                                    filename, conflict_type, conflict_id
+                                )
+                                
+                                # Store "always" choices for subsequent files
+                                if user_choice in ('always_overwrite', 'always_skip'):
+                                    always_choice = user_choice
+                                    user_choice = 'overwrite' if always_choice == 'always_overwrite' else 'skip'
                             
                             if user_choice == 'overwrite':
                                 # Upload as a new version of the existing document
