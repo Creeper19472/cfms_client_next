@@ -104,6 +104,8 @@ class FavoritesValidationService(BaseService):
                 f"Starting validation of {len(favorite_files)} files and "
                 f"{len(favorite_directories)} directories"
             )
+
+            # TODO: Consider batching requests for efficiency
             
             # Validate files
             for file_id in favorite_files:
