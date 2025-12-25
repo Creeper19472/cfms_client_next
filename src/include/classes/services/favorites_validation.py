@@ -2,7 +2,7 @@
 
 import asyncio
 import logging
-from typing import Dict, Set, Optional
+from typing import Dict, Set, Optional, Callable, List
 
 from include.classes.services.base import BaseService
 from include.classes.config import AppShared
@@ -56,7 +56,7 @@ class FavoritesValidationService(BaseService):
         self._first_validation_done = False
         
         # Callbacks to be called after validation completes
-        self._on_validation_complete_callbacks: list = []
+        self._on_validation_complete_callbacks: List[Callable] = []
     
     async def execute(self):
         """
@@ -282,11 +282,17 @@ class FavoritesValidationService(BaseService):
         """
         if self.app_shared.username and self.app_shared.token:
             # Create a task to run validation without blocking
-            import asyncio
             try:
-                loop = asyncio.get_event_loop()
+                loop = asyncio.get_running_loop()
                 loop.create_task(self._perform_validation())
             except RuntimeError:
-                # If no event loop, just log and skip
-                self.logger.warning("Cannot trigger async validation - no event loop")
+                # If no event loop is running, try to get the event loop
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        loop.create_task(self._perform_validation())
+                    else:
+                        self.logger.warning("Cannot trigger async validation - event loop not running")
+                except RuntimeError:
+                    self.logger.warning("Cannot trigger async validation - no event loop")
 

@@ -152,7 +152,8 @@ class HomeFavoritesContainer(ft.Container):
                 self._validation_callback_registered = True
             
             # Trigger validation in background (non-blocking) on first view
-            if validation_service and not validation_service._first_validation_done:
+            # Only trigger if validation hasn't started yet and not in progress
+            if validation_service and not validation_service._first_validation_done and not validation_service.validation_in_progress:
                 validation_service.trigger_validation_async()
 
         async def on_filetile_click(event: ft.Event[ft.ListTile]):
