@@ -422,7 +422,8 @@ async def batch_upload_file_to_server(
                             elif user_choice == 'skip':
                                 # Skip this file, but still yield a progress update so callers
                                 # can account for this file in their progress tracking.
-                                yield index, filename, 0, 0, None
+                                # Use -1, -1 to distinguish from empty files (0, 0)
+                                yield index, filename, -1, -1, None
                                 break
                             
                             else:

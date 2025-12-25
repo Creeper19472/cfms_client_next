@@ -119,13 +119,19 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 progress_column.controls.append(_new_error_text)
                 return
 
+            # Check if file was skipped (indicated by -1, -1)
+            if current_size == -1 and file_size == -1:
+                # File was skipped, mark as processed but don't update progress bar
+                files_processed = True
+                continue
+            
             # Mark file as processed
             files_processed = True
             
             # Update progress bar
-            # For empty files (size 0) or skipped files, show as complete
+            # For empty files (size 0), show as complete
             if file_size == 0:
-                # Empty file uploaded successfully or file was skipped
+                # Empty file uploaded successfully
                 progress_bar.value = 1.0
                 progress_info.value = f"[{index+1}/{len(files)}] 0.00 MB/0.00 MB"
             else:
