@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 import os
 
 import flet as ft
@@ -13,6 +13,7 @@ from include.ui.util.notifications import send_error, send_info
 from include.util.requests import do_request
 from include.util.connect import get_connection
 from include.util.transfer import receive_file_from_server
+from main import DownloadManagerService
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
@@ -84,10 +85,10 @@ async def get_directory(
 async def get_document(id: str | None, filename: str, page: ft.Page):
     """
     Request a document download from the server.
-    
+
     This function submits the download to the download manager service,
     which will handle the actual download in the background.
-    
+
     Args:
         id: Document ID to download
         filename: Name of the file
@@ -104,7 +105,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     task_id = task_data["task_id"]
     task_start_time = task_data["start_time"]
     task_end_time = task_data["end_time"]
-    
+
     # Check if server supports resume (placeholder logic)
     # This flag would typically be obtained from the server response
     # For now, check if task_data contains a 'supports_resume' key
@@ -120,8 +121,11 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Get the download manager service
     download_service = None
     if _app_shared.service_manager:
-        download_service = _app_shared.service_manager.get_service("download_manager")
-    
+        download_service = cast(
+            DownloadManagerService,
+            _app_shared.service_manager.get_service("download_manager"),
+        )
+
     if download_service:
         # Use download manager service
         download_service.add_task(
@@ -131,11 +135,13 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
             file_path=file_path,
             supports_resume=supports_resume,
         )
-        
+
         # Show notification that download was added
         send_info(
             page,
-            _("Download added: {filename}").format(filename=filename if filename else task_id[0:17])
+            _("Download added: {filename}").format(
+                filename=filename if filename else task_id[0:17]
+            ),
         )
     else:
         # Fallback to direct download if service not available
@@ -153,7 +159,9 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
         progress_column = ft.Column(
             controls=[progress_bar, progress_info],
             alignment=(
-                ft.MainAxisAlignment.START if os.name == "nt" else ft.MainAxisAlignment.END
+                ft.MainAxisAlignment.START
+                if os.name == "nt"
+                else ft.MainAxisAlignment.END
             ),
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         )

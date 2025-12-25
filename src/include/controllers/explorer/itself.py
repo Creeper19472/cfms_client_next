@@ -12,8 +12,8 @@ from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
     FileOverwriteConfirmDialog,
-    normalize_always_choice,
 )
+from include.ui.util.choice import normalize_always_choice
 from include.ui.util.path import get_directory
 from include.util.connect import get_connection
 from include.util.create import create_directory

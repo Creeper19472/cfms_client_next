@@ -21,7 +21,7 @@ from include.classes.exceptions.transmission import (
     FileSizeMismatchError,
 )
 from include.constants import FLET_APP_STORAGE_TEMP
-from include.ui.controls.dialogs.explorer import normalize_always_choice
+from include.ui.util.choice import normalize_always_choice
 from include.util.connect import get_connection
 from include.util.requests import do_request_2
 
