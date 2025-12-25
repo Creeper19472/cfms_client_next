@@ -52,7 +52,8 @@ def _process_content_lines(lines: List[str]) -> str:
     Process content lines to correctly handle paragraph breaks in Markdown.
     
     In Markdown, paragraph breaks require double newlines (blank lines).
-    This function converts blank lines in the source to proper Markdown paragraph breaks.
+    This function preserves blank lines as empty strings so they create
+    proper paragraph breaks when joined.
     
     Args:
         lines: List of content lines from the changelog
@@ -63,25 +64,9 @@ def _process_content_lines(lines: List[str]) -> str:
     if not lines:
         return ""
     
-    result = []
-    i = 0
-    
-    while i < len(lines):
-        line = lines[i]
-        
-        # Check if this is a blank line
-        if not line.strip():
-            # Blank line indicates paragraph break
-            # Add the blank line to create double newline in output
-            result.append('')
-        else:
-            # Regular line with content
-            result.append(line)
-        
-        i += 1
-    
-    # Join with single newlines (blank lines will naturally create double newlines)
-    content = '\n'.join(result).strip()
+    # Simply join all lines (including blank ones) with newlines
+    # Blank lines will naturally create double newlines for paragraph breaks
+    content = '\n'.join(lines).strip()
     
     return content
 
@@ -170,11 +155,7 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
                         ) from e
                     i += 1
                     break
-                elif next_line:
-                    # Skip any other lines until we find the date
-                    i += 1
-                else:
-                    i += 1
+                i += 1
             
             # Look for the title line
             while i < len(lines):
@@ -184,10 +165,7 @@ def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
                     current_title = next_line.replace('**Title:**', '').strip()
                     i += 1
                     break
-                elif next_line:
-                    i += 1
-                else:
-                    i += 1
+                i += 1
             
             # Skip empty line after title
             if i < len(lines) and not lines[i].strip():
