@@ -155,10 +155,8 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 batch_dialog.cancel_button.disabled = True
                 batch_dialog.update()
         else:
-            # For single file upload, always clean up if we processed the file
-            if files_processed and progress_column in self.control.page.overlay:
-                self.control.page.overlay.remove(progress_column)
-                self.control.page.update()
+            self.control.page.overlay.remove(progress_column)
+            self.control.page.update()
 
         await get_directory(
             id=self.control.current_directory_id,
