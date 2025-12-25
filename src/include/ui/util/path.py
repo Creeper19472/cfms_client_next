@@ -13,7 +13,7 @@ from include.ui.util.notifications import send_error, send_info
 from include.util.requests import do_request
 from include.util.connect import get_connection
 from include.util.transfer import receive_file_from_server
-from main import DownloadManagerService
+from include.classes.services.download import DownloadManagerService
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
