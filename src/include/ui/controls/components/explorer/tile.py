@@ -66,7 +66,7 @@ class FileTile(ft.ListTile):
             ref=ref,
         )
 
-    async def on_star_click(self, event: ft.Event[ft.IconButton]):
+    def on_star_click(self, event: ft.Event[ft.IconButton]):
         self.starred = not self.starred
 
         assert self.app_shared.user_perference
@@ -82,12 +82,19 @@ class FileTile(ft.ListTile):
             except KeyError:
                 pass
 
-        save_user_preference(
-            self.app_shared.get_not_none_attribute("username"),
-            self.app_shared.user_perference,
-        )
-
+        # Update the star icon immediately (synchronous)
         self.update_state()
+        
+        # Save preferences asynchronously to avoid blocking UI
+        async def save_preferences_async():
+            save_user_preference(
+                self.app_shared.get_not_none_attribute("username"),
+                self.app_shared.user_perference,
+            )
+        
+        # Use page.run_task to save asynchronously
+        if hasattr(self, 'page') and self.page:
+            self.page.run_task(save_preferences_async)
 
     def post_init(self):
         self.update_state()
@@ -146,7 +153,7 @@ class DirectoryTile(ft.ListTile):
             ref=ref,
         )
 
-    async def on_star_click(self, event: ft.Event[ft.IconButton]):
+    def on_star_click(self, event: ft.Event[ft.IconButton]):
         self.starred = not self.starred
 
         assert self.app_shared.user_perference
@@ -164,12 +171,19 @@ class DirectoryTile(ft.ListTile):
             except KeyError:
                 pass
 
-        save_user_preference(
-            self.app_shared.get_not_none_attribute("username"),
-            self.app_shared.user_perference,
-        )
-
+        # Update the star icon immediately (synchronous)
         self.update_state()
+        
+        # Save preferences asynchronously to avoid blocking UI
+        async def save_preferences_async():
+            save_user_preference(
+                self.app_shared.get_not_none_attribute("username"),
+                self.app_shared.user_perference,
+            )
+        
+        # Use page.run_task to save asynchronously
+        if hasattr(self, 'page') and self.page:
+            self.page.run_task(save_preferences_async)
 
     def post_init(self):
         self.update_state()
