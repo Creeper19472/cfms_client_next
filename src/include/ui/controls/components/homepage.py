@@ -9,6 +9,7 @@ from include.ui.controls.views.explorer import FileManagerView
 from include.ui.util.file_controls import get_directory
 from include.ui.util.notifications import send_error, send_info
 from include.ui.util.path import get_document
+from include.util.userpref import register_favorites_change_callback, unregister_favorites_change_callback
 
 
 if TYPE_CHECKING:
@@ -121,8 +122,22 @@ class HomeFavoritesContainer(ft.Container):
 
         self.listview = ft.ListView(controls=[])
         self.content = self.listview
+        
+        # Register callback for when favorites change
+        async def on_favorites_changed():
+            # Re-render the entire favorites list when favorites change
+            await self.update_favorites(from_validation_callback=False)
+        
+        self._favorites_change_callback = on_favorites_changed
+        register_favorites_change_callback(on_favorites_changed)
+    
+    def will_unmount(self):
+        """Clean up callback when control is removed."""
+        if hasattr(self, '_favorites_change_callback'):
+            unregister_favorites_change_callback(self._favorites_change_callback)
+        super().will_unmount()
 
-    async def update_favorites(self):
+    async def update_favorites(self, from_validation_callback: bool = False):
         # add favorite files and directories
         assert self.app_shared.user_perference
         favorite_files = self.app_shared.user_perference.favourites.get("files", {})
@@ -130,31 +145,66 @@ class HomeFavoritesContainer(ft.Container):
             "directories", {}
         )
 
-        # clear existing controls
-        self.listview.controls.clear()
-        
         # Get validation service
         validation_service = None
         if self.app_shared.service_manager:
             validation_service = cast(FavoritesValidationService, self.app_shared.service_manager.get_service("favorites_validation"))
+        
+        # If this is called from validation callback, only update the styling of existing controls
+        # Don't clear and recreate everything
+        if from_validation_callback and validation_service:
+            # Update existing controls to mark invalid items
+            for control in self.listview.controls:
+                if isinstance(control, FileTile):
+                    is_valid = validation_service.is_file_valid(control.file_id)
+                    if not is_valid:
+                        control.disabled = True
+                        control.title = ft.Text(
+                            control.filename,
+                            color=ft.Colors.GREY_500,
+                            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+                        )
+                        control.subtitle = ft.Text(
+                            _("ID: {file_id} (No longer exists)").format(file_id=control.file_id),
+                            color=ft.Colors.RED_300,
+                        )
+                        control.on_click = None
+                elif isinstance(control, DirectoryTile):
+                    is_valid = validation_service.is_directory_valid(control.directory_id)
+                    if not is_valid:
+                        control.disabled = True
+                        control.title = ft.Text(
+                            control.dir_name,
+                            color=ft.Colors.GREY_500,
+                            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+                        )
+                        control.subtitle = ft.Text(
+                            _("ID: {dir_id} (No longer exists)").format(dir_id=control.directory_id),
+                            color=ft.Colors.RED_300,
+                        )
+                        control.on_click = None
             
-            # Register callback to update UI after validation completes
-            # But only register once
-            if validation_service and not hasattr(self, '_validation_callback_registered'):
-                async def on_validation_complete():
-                    # Re-render the favorites list with validation results
-                    await self.update_favorites()
-                    # Update the page to reflect changes
-                    if hasattr(self, 'page') and self.page:
-                        self.update()
-                
-                validation_service.register_on_validation_complete(on_validation_complete)
-                self._validation_callback_registered = True
+            # Update the UI
+            self.update()
+            return
+
+        # Normal rendering: clear existing controls and recreate
+        self.listview.controls.clear()
+        
+        # Register callback to update UI after validation completes
+        # But only register once
+        if validation_service and not hasattr(self, '_validation_callback_registered'):
+            async def on_validation_complete():
+                # Just update styling of existing controls, don't re-render
+                await self.update_favorites(from_validation_callback=True)
             
-            # Trigger validation in background (non-blocking) on first view
-            # Only trigger if validation hasn't started yet and not in progress
-            if validation_service and not validation_service._first_validation_done and not validation_service.validation_in_progress:
-                validation_service.trigger_validation_async()
+            validation_service.register_on_validation_complete(on_validation_complete)
+            self._validation_callback_registered = True
+        
+        # Trigger validation in background (non-blocking) on first view
+        # Only trigger if validation hasn't started yet and not in progress
+        if validation_service and not validation_service._first_validation_done and not validation_service.validation_in_progress:
+            validation_service.trigger_validation_async()
 
         async def on_filetile_click(event: ft.Event[ft.ListTile]):
             assert type(event.control) == FileTile
@@ -195,9 +245,8 @@ class HomeFavoritesContainer(ft.Container):
                         _("Failed to download document: {error}").format(error=str(e)),
                     )
 
-                # Update the display to show item as invalid
-                await self.update_favorites()
-                self.update()
+                # Update the display to show item as invalid (use callback path to avoid clearing)
+                await self.update_favorites(from_validation_callback=True)
 
         async def on_dirtile_click(event: ft.Event[ft.ListTile]):
             pass
