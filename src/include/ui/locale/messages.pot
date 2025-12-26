@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-25 18:37+0800\n"
+"POT-Creation-Date: 2025-12-26 13:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,31 +23,31 @@ msgstr ""
 msgid "Go to About"
 msgstr ""
 
-#: .\include\controllers\connect.py:39
+#: .\include\controllers\connect.py:40
 msgid "Connection failed because the connection was reset: {strerror}"
 msgstr ""
 
-#: .\include\controllers\connect.py:43
+#: .\include\controllers\connect.py:44
 msgid "Connection failed because the connection was reset."
 msgstr ""
 
-#: .\include\controllers\connect.py:49
+#: .\include\controllers\connect.py:50
 msgid "Connection failed: ({exc_class_name}) {str_err}"
 msgstr ""
 
-#: .\include\controllers\connect.py:62
+#: .\include\controllers\connect.py:63
 msgid "You are connecting to a server using a higher version protocol"
 msgstr ""
 
-#: .\include\controllers\connect.py:64
+#: .\include\controllers\connect.py:65
 msgid "(Protocol version {server_protocol_version}), please update the client."
 msgstr ""
 
-#: .\include\controllers\connect.py:93
+#: .\include\controllers\connect.py:94
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr ""
 
-#: .\include\controllers\connect.py:97
+#: .\include\controllers\connect.py:98
 msgid "Please allow the app to access your files in settings."
 msgstr ""
 
@@ -235,19 +235,19 @@ msgstr ""
 msgid "Create file \"{filename}\" failed: {errmsg}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:460
+#: .\include\controllers\explorer\itself.py:461
 msgid "Problem occurred when uploading file \"{filename}\": {err}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:467
+#: .\include\controllers\explorer\itself.py:468
 msgid "Retrying [{retry}/{max_retries}]: {strerr}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:492
+#: .\include\controllers\explorer\itself.py:493
 msgid "Please wait"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:505
+#: .\include\controllers\explorer\itself.py:506
 msgid "Upload completed with {total_errors} error(s)."
 msgstr ""
 
@@ -378,19 +378,19 @@ msgstr ""
 msgid "This document no longer exists on the server."
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:243
+#: .\include\ui\controls\components\homepage.py:239
 msgid "Failed to download document: ({code}) {message}"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:251
+#: .\include\ui\controls\components\homepage.py:247
 msgid "Failed to download document: {error}"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:302
+#: .\include\ui\controls\components\homepage.py:297
 msgid "You have not favorited any documents or folders yet."
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:322
+#: .\include\ui\controls\components\homepage.py:317
 msgid "Favorites"
 msgstr ""
 
@@ -1046,7 +1046,7 @@ msgid "Use recovery code instead"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:38
-#: .\include\ui\models\settings\overview.py:51
+#: .\include\ui\models\settings\overview.py:61
 #: .\include\ui\models\settings\twofa.py:34
 msgid "Two-Factor Authentication"
 msgstr ""
@@ -1215,7 +1215,7 @@ msgid "Disable SSL verification (Insecure)"
 msgstr ""
 
 #: .\include\ui\controls\views\connect.py:59
-#: .\include\ui\models\settings\overview.py:39
+#: .\include\ui\models\settings\overview.py:38
 msgid "Connect"
 msgstr ""
 
@@ -1437,27 +1437,51 @@ msgstr ""
 msgid "Management"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:33
+#: .\include\ui\models\settings\connection.py:27
+msgid "Connection"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:37
+msgid "Enable proxy"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:40
+msgid "Follow system proxy settings"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:43
+msgid "Custom Proxy"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:49
+msgid "Force IPv4"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:85
+msgid "Settings Saved."
+msgstr ""
+
+#: .\include\ui\models\settings\overview.py:32
 msgid "Language"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:34
+#: .\include\ui\models\settings\overview.py:33
 msgid "Select your preferred language"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:40
+#: .\include\ui\models\settings\overview.py:39
 msgid "Change application proxy settings"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:45
+#: .\include\ui\models\settings\overview.py:44
 msgid "Security"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:46
+#: .\include\ui\models\settings\overview.py:45
 msgid "Adjust application connection history policy"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:52
+#: .\include\ui\models\settings\overview.py:62
 msgid "Manage two-factor authentication settings"
 msgstr ""
 
@@ -1511,23 +1535,23 @@ msgstr ""
 msgid "Download added: {filename}"
 msgstr ""
 
-#: .\include\ui\util\path.py:189
+#: .\include\ui\util\path.py:190
 msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
 msgstr ""
 
-#: .\include\ui\util\path.py:197
+#: .\include\ui\util\path.py:198
 msgid "Deleting temporary files"
 msgstr ""
 
-#: .\include\ui\util\path.py:200
+#: .\include\ui\util\path.py:201
 msgid "Verifying file"
 msgstr ""
 
-#: .\include\ui\util\path.py:204
+#: .\include\ui\util\path.py:205
 msgid "File hash mismatch: {exc}"
 msgstr ""
 
-#: .\include\ui\util\path.py:206
+#: .\include\ui\util\path.py:207
 msgid "File size mismatch: {exc}"
 msgstr ""
 

@@ -1654,27 +1654,3 @@ msgstr "相寻梦里路，飞雨落花中。"
 
 #~ msgid "Grant access to other users"
 #~ msgstr "授予其他用户访问权限"
-
-#: .\include\ui\models\settings\connection.py:34
-msgid "Enable proxy"
-msgstr "启用代理"
-
-#: .\include\ui\models\settings\connection.py:37
-msgid "Follow system proxy settings"
-msgstr "遵循系统代理设置"
-
-#: .\include\ui\models\settings\connection.py:40
-msgid "Custom Proxy"
-msgstr "自定义代理"
-
-#: .\include\ui\models\settings\connection.py:46
-msgid "Force IPv4"
-msgstr "强制使用 IPv4"
-
-#: .\include\ui\models\settings\connection.py:23
-msgid "Connection"
-msgstr "连接"
-
-#: .\include\ui\models\settings\connection.py:78
-msgid "Settings Saved."
-msgstr "设置已保存。"
