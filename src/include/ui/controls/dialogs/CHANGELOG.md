@@ -3,6 +3,18 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.1
+**Released on:** 2025-12-26
+
+**Title:** Force-IPv4 Options
+
+This version allows users to force a connection to a remote address using the 
+IPv4 protocol to bypass IPv6 blocking issues.
+
+This version also fixes an issue with changelog parsing, ensuring that a 
+paragraph of text is correctly treated as a single line.
+
+---
 ## v0.4.0
 **Released on:** 2025-12-25
 

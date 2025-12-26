@@ -42,38 +42,115 @@ Usage:
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from include.classes.changelog import ChangelogEntry
 
 
 def _format_content_for_markdown(lines: List[str]) -> str:
     """
-    Format content lines to preserve Markdown paragraph breaks.
-    
-    In Markdown, paragraph breaks require double newlines (blank lines).
-    This function preserves blank lines from the source by joining all lines
-    (including empty ones) with single newlines. When joined, a blank line
-    (empty string) naturally creates a double newline sequence (\n\n).
-    
-    Example:
-        Input: ['Para 1', '', 'Para 2']
-        Output: 'Para 1\n\nPara 2'  (double newline for paragraph break)
-    
-    Args:
-        lines: List of content lines from the changelog (may include blank lines)
-        
-    Returns:
-        Formatted content string with proper Markdown paragraph breaks
+    Format content lines to preserve Markdown paragraph breaks and collapse
+    "soft" line wraps (lines broken only for width) into single logical lines.
+
+    Rules implemented:
+    - Paragraphs are separated by one or more blank lines -> output paragraphs
+      separated by a double newline ("\n\n").
+    - Within a paragraph, consecutive non-empty lines are treated as the same
+      paragraph and joined with single spaces (soft wraps collapsed).
+    - Fenced code blocks (``` ... ```) and indented code blocks (lines starting
+      with 4 spaces or a tab) are preserved verbatim (no collapsing).
+    - Each list item (lines starting with -, *, + or digit.) is treated as its
+      own paragraph so items remain on separate lines; wrapped lines that
+      follow a list item and are not new list items are treated as continuation
+      of that item and collapsed into it.
     """
     if not lines:
         return ""
-    
-    # Join all lines with single newlines
-    # Blank lines (empty strings) create double newlines: "text\n" + "\n" + "text"
-    content = '\n'.join(lines).strip()
-    
-    return content
+
+    def is_fence(line: str) -> bool:
+        return line.strip().startswith("```")
+
+    def is_indented_code(line: str) -> bool:
+        return line.startswith("    ") or line.startswith("\t")
+
+    def is_list_item(line: str) -> bool:
+        return re.match(r'^\s*([-*+]|[0-9]+[.])\s+', line) is not None
+
+    paragraphs: List[Tuple[str, List[str]]] = []  # (type, lines) type: 'text'|'code'|'list'
+    i = 0
+    n = len(lines)
+    while i < n:
+        line = lines[i]
+        # Blank line -> paragraph separator
+        if line.strip() == "":
+            i += 1
+            # Ensure we don't add multiple adjacent separators: just continue to next
+            # flushing happens when we encounter content
+            # Represent separators by leaving a gap between appended paragraphs
+            # (no action needed)
+            continue
+
+        # Fenced code block
+        if is_fence(line):
+            fence_lines = [line.rstrip('\n')]
+            i += 1
+            # collect until closing fence or EOF (include closing fence)
+            while i < n:
+                fence_lines.append(lines[i].rstrip('\n'))
+                if is_fence(lines[i]):
+                    i += 1
+                    break
+                i += 1
+            paragraphs.append(('code', fence_lines))
+            continue
+
+        # Indented code block: collect consecutive indented lines
+        if is_indented_code(line):
+            code_lines = []
+            while i < n and is_indented_code(lines[i]):
+                code_lines.append(lines[i].rstrip('\n'))
+                i += 1
+            paragraphs.append(('code', code_lines))
+            continue
+
+        # List item handling: each list item becomes its own paragraph
+        if is_list_item(line):
+            item_lines = [line.strip()]
+            i += 1
+            # collect continuation lines that belong to this list item (non-empty,
+            # non-list-item, non-fence, non-indented)
+            while i < n and lines[i].strip() != "" and not is_list_item(lines[i]) and not is_fence(lines[i]) and not is_indented_code(lines[i]):
+                item_lines.append(lines[i].strip())
+                i += 1
+            paragraphs.append(('list', item_lines))
+            continue
+
+        # Regular text paragraph: collect until blank line or special block
+        text_lines = [line.strip()]
+        i += 1
+        while i < n and lines[i].strip() != "" and not is_fence(lines[i]) and not is_indented_code(lines[i]) and not is_list_item(lines[i]):
+            text_lines.append(lines[i].strip())
+            i += 1
+        paragraphs.append(('text', text_lines))
+
+    # Now build output: join paragraphs with double newlines.
+    out_parts: List[str] = []
+    for p_type, p_lines in paragraphs:
+        if p_type == 'code':
+            # Preserve exact lines and their newlines
+            out_parts.append("\n".join(p_lines).rstrip())
+        elif p_type == 'list':
+            # Keep each list item on its own line; collapse soft wraps within the item
+            # Items were collected per item, but p_lines may include surrounding content if needed
+            # Join the collected lines for this single item with a single space
+            out_parts.append(" ".join(p_lines).strip())
+        else:  # 'text'
+            # Collapse soft wraps into single lines: join with spaces, preserve paragraph text
+            joined = " ".join(p_lines).strip()
+            out_parts.append(joined)
+
+    # Join paragraphs with blank line (Markdown paragraph separator)
+    return "\n\n".join(out_parts).strip()
 
 
 def parse_changelog(changelog_path: Path) -> List[ChangelogEntry]:
