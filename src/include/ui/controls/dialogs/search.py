@@ -8,7 +8,6 @@ import flet as ft
 from include.classes.config import AppShared
 from include.controllers.dialogs.search import SearchDialogController
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.util.notifications import send_error
 
 if TYPE_CHECKING:
@@ -18,6 +17,93 @@ from include.util.locale import get_translation
 
 t = get_translation()
 _ = t.gettext
+
+
+class SearchResultDirectoryTile(ft.ListTile):
+    """Custom directory tile for search results that navigates to the directory."""
+    
+    def __init__(
+        self,
+        directory_id: str,
+        directory_name: str,
+        created_time: float,
+        parent_manager: "FileManagerView",
+        dialog,
+    ):
+        self.directory_id = directory_id
+        self.directory_name = directory_name
+        self.parent_manager = parent_manager
+        self.dialog = dialog
+        
+        # Format subtitle with creation time
+        subtitle_text = _("Created: {created_time}").format(
+            created_time=datetime.fromtimestamp(created_time).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+        )
+        
+        super().__init__(
+            leading=ft.Icon(ft.Icons.FOLDER),
+            title=ft.Text(directory_name),
+            subtitle=ft.Text(subtitle_text),
+            on_click=self.handle_click,
+        )
+    
+    async def handle_click(self, e):
+        """Navigate to this directory."""
+        # Close the search dialog
+        self.dialog.close()
+        # Navigate to the directory
+        from include.ui.util.file_controls import get_directory
+        await get_directory(
+            id=self.directory_id,
+            view=self.parent_manager.file_listview,
+        )
+
+
+class SearchResultFileTile(ft.ListTile):
+    """Custom file tile for search results that navigates to the parent directory."""
+    
+    def __init__(
+        self,
+        file_id: str,
+        filename: str,
+        parent_id: str | None,
+        size: int,
+        last_modified: float,
+        parent_manager: "FileManagerView",
+        dialog,
+    ):
+        self.file_id = file_id
+        self.filename = filename
+        self.parent_id = parent_id
+        self.parent_manager = parent_manager
+        self.dialog = dialog
+        
+        # Format subtitle with size and last modified
+        size_text = f"{size / 1024 / 1024:.2f} MB" if size > 0 else "0 KB"
+        modified_text = datetime.fromtimestamp(last_modified).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        subtitle_text = f"{size_text} | {_('Last modified')}: {modified_text}"
+        
+        super().__init__(
+            leading=ft.Icon(ft.Icons.INSERT_DRIVE_FILE),
+            title=ft.Text(filename),
+            subtitle=ft.Text(subtitle_text),
+            on_click=self.handle_click,
+        )
+    
+    async def handle_click(self, e):
+        """Navigate to the parent directory of this file."""
+        # Close the search dialog
+        self.dialog.close()
+        # Navigate to the parent directory (or root if parent_id is None)
+        from include.ui.util.file_controls import get_directory
+        await get_directory(
+            id=self.parent_id,
+            view=self.parent_manager.file_listview,
+        )
 
 
 class SearchDialog(AlertDialog):
@@ -200,37 +286,33 @@ class SearchDialog(AlertDialog):
         # Clear previous results
         self.results_listview.controls.clear()
 
-        # Add directory results
+        # Add directory results - clicking navigates to the directory itself
         for directory in directories:
-            tile = DirectoryTile(
+            tile = SearchResultDirectoryTile(
                 directory_id=directory["id"],
-                dir_name=directory["name"],
+                directory_name=directory["name"],
+                created_time=directory.get("created_time", 0),
+                parent_manager=self.parent_manager,
+                dialog=self,
             )
-            # Make clickable to navigate
-            def make_nav_handler(dir_id):
-                async def handler(e):
-                    # Close dialog
-                    self.close()
-                    # Navigate to directory
-                    from include.ui.util.file_controls import get_directory
-                    await get_directory(
-                        id=dir_id,
-                        view=self.parent_manager.file_listview,
-                    )
-                return handler
-            tile.on_click = make_nav_handler(directory["id"])
             self.results_listview.controls.append(tile)
 
-        # Add document results
+        # Add document results - clicking navigates to the parent directory
         for document in documents:
-            tile = FileTile(
+            tile = SearchResultFileTile(
                 file_id=document["id"],
                 filename=document["name"],
-                last_modified=document.get("last_modified", 0),
+                parent_id=document.get("parent_id"),
                 size=document.get("size", 0),
-                show_id=True,
+                last_modified=document.get("last_modified", 0),
+                parent_manager=self.parent_manager,
+                dialog=self,
             )
             self.results_listview.controls.append(tile)
 
         self.results_listview.visible = True if total_count > 0 else False
         self.update()
+
+    def send_error(self, msg: str):
+        """Send error notification."""
+        send_error(self.page, msg)
