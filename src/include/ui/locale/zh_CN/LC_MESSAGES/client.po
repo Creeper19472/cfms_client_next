@@ -1580,6 +1580,52 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr "相寻梦里路，飞雨落花中。"
 
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search query"
+msgstr "搜索关键词"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Enter search term"
+msgstr "输入搜索词"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search Options"
+msgstr "搜索选项"
+
+
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Results limit"
+msgstr "结果限制"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search Results"
+msgstr "搜索结果"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "No results found for \"{query}\""
+msgstr "未找到与\"{query}\"匹配的结果"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Found {count} result(s) for \"{query}\""
+msgstr "找到 {count} 个与\"{query}\"匹配的结果"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Searching..."
+msgstr "搜索中..."
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "Search query cannot be empty"
+msgstr "搜索关键词不能为空"
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "Search failed: ({code}) {message}"
+msgstr "搜索失败：({code}) {message}"
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "At least one search type must be selected"
+msgstr "至少需要选择一种搜索类型"
+
 #~ msgid "ID: {file_id} (No longer exists)"
 #~ msgstr "ID：{file_id}（不再存在）"
 

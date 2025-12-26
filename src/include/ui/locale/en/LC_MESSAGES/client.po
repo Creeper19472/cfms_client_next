@@ -1611,6 +1611,52 @@ msgid ""
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search query"
+msgstr "Search query"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Enter search term"
+msgstr "Enter search term"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search Options"
+msgstr "Search Options"
+
+
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Results limit"
+msgstr "Results limit"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Search Results"
+msgstr "Search Results"
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "No results found for \"{query}\""
+msgstr "No results found for \"{query}\""
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Found {count} result(s) for \"{query}\""
+msgstr "Found {count} result(s) for \"{query}\""
+
+#: .\include\ui\controls\dialogs\search.py
+msgid "Searching..."
+msgstr "Searching..."
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "Search query cannot be empty"
+msgstr "Search query cannot be empty"
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "Search failed: ({code}) {message}"
+msgstr "Search failed: ({code}) {message}"
+
+#: .\include\ui\controllers\dialogs\search.py
+msgid "At least one search type must be selected"
+msgstr "At least one search type must be selected"
+
 #~ msgid "ID: {file_id} (No longer exists)"
 #~ msgstr "ID: {file_id} (No longer exists)"
 
