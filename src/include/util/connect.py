@@ -49,7 +49,7 @@ async def get_connection(
         ssl_context.verify_mode = ssl.CERT_NONE
 
     # Set address family if IPv4 is forced
-    family = socket.AF_INET if force_ipv4 else 0
+    family = socket.AF_INET if force_ipv4 else socket.AF_UNSPEC
 
     return await connect(
         server_address, ssl=ssl_context, max_size=max_size, proxy=proxy, family=family
