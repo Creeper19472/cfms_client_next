@@ -156,6 +156,7 @@ class DownloadManagerService(BaseService):
                 disable_ssl_enforcement=self.app_shared.disable_ssl_enforcement,
                 proxy=self.app_shared.preferences["settings"]["proxy_settings"],
                 max_size=1024**2 * 4,
+                force_ipv4=self.app_shared.preferences["settings"].get("force_ipv4", False),
             )
 
             # Start file transfer

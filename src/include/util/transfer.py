@@ -351,6 +351,7 @@ async def batch_upload_file_to_server(
                             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
                             proxy=app_shared.preferences["settings"]["proxy_settings"],
                             max_size=max_size,
+                            force_ipv4=app_shared.preferences["settings"].get("force_ipv4", False),
                         )
 
                     # create a new task on the server

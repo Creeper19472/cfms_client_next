@@ -153,6 +153,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
             max_size=1024**2 * 4,
             disable_ssl_enforcement=_app_shared.disable_ssl_enforcement,
             proxy=_app_shared.preferences["settings"]["proxy_settings"],
+            force_ipv4=_app_shared.preferences["settings"].get("force_ipv4", False),
         )
 
         # build progress bar

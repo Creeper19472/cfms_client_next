@@ -1,5 +1,6 @@
 """Utilities for establishing WebSocket connections to the server."""
 
+import socket
 import ssl
 from typing import Literal
 
@@ -13,6 +14,7 @@ async def get_connection(
     disable_ssl_enforcement: bool = False,
     max_size: int = 2**20,
     proxy: str | Literal[True] | None = True,
+    force_ipv4: bool = False,
 ) -> ClientConnection:
     """
     Establish a WebSocket connection to the server.
@@ -26,6 +28,7 @@ async def get_connection(
         max_size: Maximum message size in bytes (default: 1MB)
         proxy: Proxy configuration - True for system proxy, string for custom proxy,
                None to disable proxy
+        force_ipv4: If True, force the use of IPv4 addresses only
         
     Returns:
         Established WebSocket client connection
@@ -45,6 +48,9 @@ async def get_connection(
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
 
+    # Set address family if IPv4 is forced
+    family = socket.AF_INET if force_ipv4 else 0
+
     return await connect(
-        server_address, ssl=ssl_context, max_size=max_size, proxy=proxy
+        server_address, ssl=ssl_context, max_size=max_size, proxy=proxy, family=family
     )

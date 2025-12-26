@@ -145,6 +145,7 @@ class AppShared:
                 "proxy_settings": None,
                 "custom_proxy": "",
                 "enable_conn_history_logging": False,
+                "force_ipv4": False,
             }
         }
 

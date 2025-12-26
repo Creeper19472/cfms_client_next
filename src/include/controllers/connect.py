@@ -30,6 +30,7 @@ class ConnectFormController(BaseController["ConnectForm"]):
                 server_address,
                 self.control.disable_ssl_enforcement_switch.value,
                 proxy=self.app_shared.preferences["settings"]["proxy_settings"],
+                force_ipv4=self.app_shared.preferences["settings"].get("force_ipv4", False),
             )
         except ConnectionResetError as e:
             self.control.enable_interactions()

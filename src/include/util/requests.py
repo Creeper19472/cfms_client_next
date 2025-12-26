@@ -72,6 +72,7 @@ async def do_request(
                 server_address=_app_shared.get_not_none_attribute("server_address"),
                 disable_ssl_enforcement=_app_shared.disable_ssl_enforcement,
                 proxy=_app_shared.preferences["settings"]["proxy_settings"],
+                force_ipv4=_app_shared.preferences["settings"].get("force_ipv4", False),
             )
             _app_shared.conn = _conn
             continue

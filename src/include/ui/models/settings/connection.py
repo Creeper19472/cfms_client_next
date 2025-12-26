@@ -6,6 +6,10 @@ import flet as ft
 from include.classes.config import AppShared
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
+from include.util.locale import get_translation
+
+t = get_translation()
+_ = t.gettext
 
 
 @route("conn_settings")
@@ -20,7 +24,7 @@ class ConnectionSettingsModel(Model):
         super().__init__(page, router)
 
         self.appbar = ft.AppBar(
-            title=ft.Text("Connection"),
+            title=ft.Text(_("Connection")),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
             actions=[
                 ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self.save_button_click)
@@ -30,22 +34,26 @@ class ConnectionSettingsModel(Model):
         self.app_shared = AppShared()
 
         self.enable_proxy_switch = ft.Switch(
-            label="Enable proxy", on_change=self.switch_click
+            label=_("Enable proxy"), on_change=self.switch_click
         )
         self.follow_system_proxy_switch = ft.Switch(
-            label="Follow system proxy settings", on_change=self.switch_click
+            label=_("Follow system proxy settings"), on_change=self.switch_click
         )
         self.custom_proxy_textfield = ft.TextField(
-            label="Custom Proxy",
+            label=_("Custom Proxy"),
             hint_text="e.g. socks5h://proxy:1080/",
             expand=True,
             expand_loose=True,
+        )
+        self.force_ipv4_switch = ft.Switch(
+            label=_("Force IPv4"), on_change=self.switch_click
         )
 
         self.controls = [
             self.enable_proxy_switch,
             self.follow_system_proxy_switch,
             self.custom_proxy_textfield,
+            self.force_ipv4_switch,
         ]
 
     def did_mount(self) -> None:
@@ -72,8 +80,9 @@ class ConnectionSettingsModel(Model):
             proxy_settings_value = None
 
         self.app_shared.preferences["settings"]["proxy_settings"] = proxy_settings_value
+        self.app_shared.preferences["settings"]["force_ipv4"] = self.force_ipv4_switch.value
         self.app_shared.dump_preferences()
-        send_success(self.page, "Settings Saved.")
+        send_success(self.page, _("Settings Saved."))
 
     async def switch_click(self, event: ft.Event[ft.Switch]):
         await self.flush_switch()
@@ -86,6 +95,9 @@ class ConnectionSettingsModel(Model):
         self.follow_system_proxy_switch.value = proxy_settings == True
         self.custom_proxy_textfield.value = self.app_shared.preferences["settings"].get(
             "custom_proxy", ""
+        )
+        self.force_ipv4_switch.value = self.app_shared.preferences["settings"].get(
+            "force_ipv4", False
         )
         await self.flush_switch()
 

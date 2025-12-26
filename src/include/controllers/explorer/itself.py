@@ -410,6 +410,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
                                     "proxy_settings"
                                 ],
                                 max_size=1024**2 * 4,
+                                force_ipv4=self.app_shared.preferences["settings"].get("force_ipv4", False),
                             )
                             setattr(
                                 create_dirs_from_tree, "_transfer_conn", transfer_conn
