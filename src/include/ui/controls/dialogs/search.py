@@ -203,11 +203,8 @@ class SearchDialog(AlertDialog):
         # Add directory results
         for directory in directories:
             tile = DirectoryTile(
-                id=directory["id"],
-                name=directory["name"],
-                parent_id=directory.get("parent_id"),
-                created_time=directory.get("created_time", 0),
-                view=self.parent_manager.file_listview,
+                directory_id=directory["id"],
+                dir_name=directory["name"],
             )
             # Make clickable to navigate
             def make_nav_handler(dir_id):
@@ -227,19 +224,13 @@ class SearchDialog(AlertDialog):
         # Add document results
         for document in documents:
             tile = FileTile(
-                id=document["id"],
-                title=document["name"],
-                parent_id=document.get("parent_id"),
-                created_time=document.get("created_time", 0),
+                file_id=document["id"],
+                filename=document["name"],
                 last_modified=document.get("last_modified", 0),
                 size=document.get("size", 0),
-                view=self.parent_manager.file_listview,
+                show_id=True,
             )
             self.results_listview.controls.append(tile)
 
         self.results_listview.visible = True if total_count > 0 else False
         self.update()
-
-    def send_error(self, msg: str):
-        """Send error notification."""
-        send_error(self.page, msg)

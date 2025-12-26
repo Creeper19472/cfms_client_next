@@ -77,6 +77,8 @@ class SearchDialogController(BaseController["SearchDialog"]):
                     "search_documents": search_documents,
                     "search_directories": search_directories,
                 },
+                username=self.app_shared.username,
+                token=self.app_shared.token,
             )
             
             if response.code == 200:

@@ -39,7 +39,7 @@ class FileTile(ft.ListTile):
 
         subtitle_text = ""
         if show_id:
-            subtitle_text += _("ID: {file_id}").format(file_id=file_id)
+            subtitle_text += _("ID: {file_id}\n").format(file_id=file_id)
 
         if last_modified is not None:
             subtitle_text += _("Last modified: {last_modified}\n").format(
@@ -127,7 +127,7 @@ class DirectoryTile(ft.ListTile):
 
         subtitle_text = ""
         if show_id:
-            subtitle_text += _("ID: {dir_id}").format(dir_id=self.directory_id)
+            subtitle_text += _("ID: {dir_id}\n").format(dir_id=self.directory_id)
 
         if created_at is not None:
             subtitle_text += _("Created at: {created_at}").format(
