@@ -79,10 +79,13 @@ class ConnectFormController(BaseController["ConnectForm"]):
         self.control.page.title = f"CFMS Client - {server_address}"
         self.control.update()
 
+        # temp fix
+        ph_service = fph.PermissionHandler()
+
         assert self.app_shared.ph_service
         assert self.control.page.platform
         if (
-            await self.app_shared.ph_service.request(
+            await ph_service.request(
                 fph.Permission.MANAGE_EXTERNAL_STORAGE
             )
             == fph.PermissionStatus.DENIED

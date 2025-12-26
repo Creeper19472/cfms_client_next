@@ -8,7 +8,6 @@ import flet as ft
 from include.classes.config import AppShared
 from include.controllers.dialogs.search import SearchDialogController
 from include.ui.controls.dialogs.base import AlertDialog
-from include.ui.util.notifications import send_error
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -153,7 +152,8 @@ class SearchDialog(AlertDialog):
                 ft.dropdown.Option(_("Size")),
             ],
             value=_("Name"),
-            width=200,
+            expand=True,
+            expand_loose=True,
         )
 
         self.sort_order_dropdown = ft.Dropdown(
@@ -163,15 +163,17 @@ class SearchDialog(AlertDialog):
                 ft.dropdown.Option(_("Descending")),
             ],
             value=_("Ascending"),
-            width=150,
+            expand=True,
+            expand_loose=True,
         )
 
         # Limit option
         self.limit_textfield = ft.TextField(
             label=_("Results limit"),
             value="100",
-            width=120,
             keyboard_type=ft.KeyboardType.NUMBER,
+            expand=True,
+            expand_loose=True,
         )
 
         # Results area
@@ -180,6 +182,7 @@ class SearchDialog(AlertDialog):
             size=16,
             weight=ft.FontWeight.BOLD,
             visible=False,
+            align=ft.Alignment.CENTER
         )
         self.results_listview = ft.ListView(
             controls=[],
@@ -312,7 +315,3 @@ class SearchDialog(AlertDialog):
 
         self.results_listview.visible = True if total_count > 0 else False
         self.update()
-
-    def send_error(self, msg: str):
-        """Send error notification."""
-        send_error(self.page, msg)

@@ -146,7 +146,9 @@ exit
     async def _handle_other_platforms_update(self):
         assert isinstance(self.page, ft.Page)
         app_shared = AppShared()
-        ph: PermissionHandler = app_shared.get_not_none_attribute("ph_service")
+        # ph: PermissionHandler = app_shared.get_not_none_attribute("ph_service")
+        import flet_permission_handler as fph
+        ph = fph.PermissionHandler()
 
         async def _async_request():
             if (
