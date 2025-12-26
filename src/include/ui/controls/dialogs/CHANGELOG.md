@@ -3,6 +3,17 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.2
+**Released on:** 2025-12-26
+
+**Title:** Introducing Search Function
+
+This version adds a search function for the file explorer,
+allowing users to search for files and directories.
+
+Need server-side support.
+
+---
 ## v0.4.1
 **Released on:** 2025-12-26
 
