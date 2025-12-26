@@ -1623,15 +1623,9 @@ msgstr "Enter search term"
 msgid "Search Options"
 msgstr "Search Options"
 
-
-
 #: .\include\ui\controls\dialogs\search.py
 msgid "Results limit"
 msgstr "Results limit"
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "Search Results"
-msgstr "Search Results"
 
 #: .\include\ui\controls\dialogs\search.py
 msgid "No results found for \"{query}\""

@@ -1592,15 +1592,9 @@ msgstr "输入搜索词"
 msgid "Search Options"
 msgstr "搜索选项"
 
-
-
 #: .\include\ui\controls\dialogs\search.py
 msgid "Results limit"
 msgstr "结果限制"
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "Search Results"
-msgstr "搜索结果"
 
 #: .\include\ui\controls\dialogs\search.py
 msgid "No results found for \"{query}\""
