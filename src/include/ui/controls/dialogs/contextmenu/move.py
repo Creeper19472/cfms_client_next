@@ -294,6 +294,16 @@ class MoveDialog(AlertDialog):
             self.enable_interactions()
             return
 
+        # For directories, prevent moving into itself or a subdirectory
+        if self.object_type == "directory":
+            if self.current_directory_id == self.object_id:
+                send_error(
+                    self.page,
+                    _("Cannot move a directory into itself"),
+                )
+                self.enable_interactions()
+                return
+
         # Perform the move operation
         try:
             if self.object_type == "document":
