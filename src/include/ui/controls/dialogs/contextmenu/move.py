@@ -1,3 +1,4 @@
+import copy
 from typing import TYPE_CHECKING
 import asyncio
 
@@ -44,6 +45,7 @@ class MoveDialog(AlertDialog):
         self.current_directory_id: str | None = (
             file_listview.parent_manager.current_directory_id
         )
+        self.original_parent_id: str | None = copy.deepcopy(self.current_directory_id)
         self.navigation_stack: list[tuple[str | None, str]] = []  # [(dir_id, dir_name)]
 
         # Set display name based on object type
@@ -149,14 +151,12 @@ class MoveDialog(AlertDialog):
         - Move Here button: visible when current directory differs from original
         - Go to Root button: visible when not in root directory
         """
-        # Get the original parent directory
-        original_parent = self.file_listview.current_parent_id
         
         # Move Here button: visible if current location differs from original
-        self.move_here_button.visible = (self.current_directory_id != original_parent)
+        self.move_here_button.visible = (self.current_directory_id != self.original_parent_id)
         
         # Go to Root button: visible if not at root (navigation stack not empty)
-        self.go_to_root_button.visible = bool(self.navigation_stack)
+        self.go_to_root_button.visible = self.current_directory_id not in (None, "/")
         
         self.update()
 
