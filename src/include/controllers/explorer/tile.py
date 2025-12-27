@@ -6,6 +6,7 @@ from include.ui.controls.dialogs.contextmenu.explorer import (
     GetDocumentInfoDialog,
     RenameDialog,
 )
+from include.ui.controls.dialogs.contextmenu.move import MoveDialog
 from include.ui.controls.dialogs.authorize import AuthorizeDialog
 from include.ui.controls.components.rulemanager import RuleManager
 from include.ui.util.path import get_directory, get_document
@@ -59,6 +60,11 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
             RenameDialog("document", self.control.file_id, self.control.parent_listview)
         )
 
+    async def action_move_file(self):
+        self.control.page.show_dialog(
+            MoveDialog("document", self.control.file_id, self.control.parent_listview)
+        )
+
     async def action_authorize(self):
         self.control.page.show_dialog(
             AuthorizeDialog("document", self.control.file_id, self.control.parent_listview)
@@ -105,6 +111,13 @@ class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
     async def action_rename_directory(self):
         self.control.page.show_dialog(
             RenameDialog(
+                "directory", self.control.directory_id, self.control.parent_listview
+            )
+        )
+
+    async def action_move_directory(self):
+        self.control.page.show_dialog(
+            MoveDialog(
                 "directory", self.control.directory_id, self.control.parent_listview
             )
         )

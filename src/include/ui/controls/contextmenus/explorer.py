@@ -70,6 +70,12 @@ class FileContextMenu(ContextMenu2):
                     "on_click": self.rename_button_click,
                 },
                 {
+                    "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                    "content": _("Move"),
+                    "on_click": self.move_button_click,
+                    "require": {"move"},
+                },
+                {
                     "icon": ft.Icons.LOCK_PERSON_OUTLINED,
                     "content": _("Authorize"),
                     "on_click": self.authorize_button_click,
@@ -105,6 +111,9 @@ class FileContextMenu(ContextMenu2):
 
     async def rename_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_rename_file)
+
+    async def move_button_click(self, event: ft.Event[ft.PopupMenuItem]):
+        self.page.run_task(self.controller.action_move_file)
 
     async def authorize_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_authorize)
@@ -158,6 +167,12 @@ class DirectoryContextMenu(ContextMenu2):
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                 "content": _("Rename"),
                 "on_click": self.rename_button_click,
+            },
+            {
+                "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                "content": _("Move"),
+                "on_click": self.move_button_click,
+                "require": {"move"},
             },
             {
                 "icon": ft.Icons.LOCK_PERSON_OUTLINED,
@@ -220,6 +235,9 @@ class DirectoryContextMenu(ContextMenu2):
 
     async def rename_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_rename_directory)
+
+    async def move_button_click(self, event: ft.Event[ft.ListTile]):
+        self.page.run_task(self.controller.action_move_directory)
 
     async def authorize_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_authorize)
