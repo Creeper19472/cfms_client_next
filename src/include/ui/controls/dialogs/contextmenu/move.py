@@ -143,6 +143,23 @@ class MoveDialog(AlertDialog):
         self.modal = False
         self.update()
 
+    def update_button_visibility(self):
+        """Update button visibility based on current state.
+        
+        - Move Here button: visible when current directory differs from original
+        - Go to Root button: visible when not in root directory
+        """
+        # Get the original parent directory
+        original_parent = self.file_listview.current_parent_id
+        
+        # Move Here button: visible if current location differs from original
+        self.move_here_button.visible = (self.current_directory_id != original_parent)
+        
+        # Go to Root button: visible if not at root (navigation stack not empty)
+        self.go_to_root_button.visible = bool(self.navigation_stack)
+        
+        self.update()
+
     def update_location_text(self, path: str = "/"):
         """Update the breadcrumb location indicator."""
         self.location_text.value = _("Current location: {path}").format(path=path)
@@ -235,6 +252,7 @@ class MoveDialog(AlertDialog):
                     self.folder_listview.controls.append(folder_item)
 
             self.enable_interactions()
+            self.update_button_visibility()
 
         except Exception as e:
             send_error(
