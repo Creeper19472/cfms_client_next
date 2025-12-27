@@ -2,7 +2,6 @@
 
 from typing import TYPE_CHECKING
 
-from include.classes.config import AppShared
 from include.controllers.base import BaseController
 from include.util.requests import do_request_2
 
@@ -39,19 +38,9 @@ class SearchDialogController(BaseController["SearchDialog"]):
             return
         
         # Get sort parameters
-        sort_by_map = {
-            _("Name"): "name",
-            _("Created time"): "created_time",
-            _("Last modified"): "last_modified",
-            _("Size"): "size",
-        }
-        sort_order_map = {
-            _("Ascending"): "asc",
-            _("Descending"): "desc",
-        }
-        
-        sort_by = sort_by_map.get(self.control.sort_by_dropdown.value, "name")
-        sort_order = sort_order_map.get(self.control.sort_order_dropdown.value, "asc")
+        # Dropdown values are expected to be internal sort keys (e.g. "name", "created_time", "asc", "desc")
+        sort_by = self.control.sort_by_dropdown.value or "name"
+        sort_order = self.control.sort_order_dropdown.value or "asc"
         
         try:
             limit = int(self.control.limit_textfield.value)
@@ -61,6 +50,9 @@ class SearchDialogController(BaseController["SearchDialog"]):
                 limit = 1000
         except (ValueError, TypeError):
             limit = 100
+        
+        # Clear any previous error before starting a valid search
+        self.control.search_textfield.error = None
         
         # Show loading state
         self.control.show_loading()
@@ -93,5 +85,5 @@ class SearchDialogController(BaseController["SearchDialog"]):
                 )
                 self.control.hide_loading()
         except Exception as e:
-            self.control.send_error(f"Search error: {str(e)}")
+            self.control.send_error(_("Search failed: {error}").format(error=str(e)))
             self.control.hide_loading()

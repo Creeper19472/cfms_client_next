@@ -80,7 +80,7 @@ class SearchResultFileTile(ft.ListTile):
         self.dialog = dialog
         
         # Format subtitle with size and last modified
-        size_text = f"{size / 1024 / 1024:.2f} MB" if size > 0 else "0 KB"
+        size_text = "0 Byte" if size == 0 else f"{size / 1024 / 1024:.3f} MB"
         modified_text = datetime.fromtimestamp(last_modified).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
