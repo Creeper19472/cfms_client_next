@@ -58,7 +58,7 @@ class ExplorerTopBar(ft.Row):
                             ft.Icons.FOLDER_OPEN_OUTLINED,
                             on_click=self.on_open_folder_button_click,
                         )
-                    ]
+                    ],
                 ),
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -150,9 +150,7 @@ class FileSortBar(ft.Row):
             self.order_button,
         ]
 
-    async def sort_dropdown_on_select(
-        self, event: ft.Event[ft.Dropdown]
-    ) -> None:
+    async def sort_dropdown_on_select(self, event: ft.Event[ft.Dropdown]) -> None:
         self.page.run_task(self.controller.apply_sorting)
 
     async def order_button_on_click(self, event: ft.Event[ft.IconButton]) -> None:
