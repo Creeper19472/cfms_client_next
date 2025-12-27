@@ -19,7 +19,7 @@ _ = t.gettext
 
 class MoveDialog(AlertDialog):
     """Dialog for moving documents and directories to a different location.
-    
+
     This dialog provides a browsable directory tree interface that allows users
     to navigate through the directory hierarchy and select a target location
     for moving the selected object.
@@ -75,12 +75,13 @@ class MoveDialog(AlertDialog):
         self.folder_listview = ft.ListView(
             visible=False,
             expand=True,
+            expand_loose=True,
             spacing=5,
             padding=10,
         )
 
         # Action buttons
-        self.move_here_button = ft.ElevatedButton(
+        self.move_here_button = ft.Button(
             _("Move Here"),
             icon=ft.Icons.CHECK_CIRCLE,
             on_click=self.move_here_button_click,
@@ -103,11 +104,7 @@ class MoveDialog(AlertDialog):
             controls=[
                 self.location_text,
                 ft.Divider(),
-                ft.Container(
-                    content=self.progress_ring,
-                    alignment=ft.alignment.center,
-                    expand=True,
-                ),
+                self.progress_ring,
                 self.folder_listview,
             ],
             width=550,
@@ -153,7 +150,7 @@ class MoveDialog(AlertDialog):
 
     async def load_directory(self, directory_id: str | None):
         """Load and display folders in the specified directory.
-        
+
         Args:
             directory_id: The ID of the directory to load, or None for root
         """
@@ -195,7 +192,9 @@ class MoveDialog(AlertDialog):
             if parent_id is not None:
                 parent_item = ft.ListTile(
                     leading=ft.Icon(ft.Icons.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
-                    title=ft.Text(_(".. (Parent Directory)"), weight=ft.FontWeight.BOLD),
+                    title=ft.Text(
+                        _(".. (Parent Directory)"), weight=ft.FontWeight.BOLD
+                    ),
                     on_click=lambda _: asyncio.create_task(
                         self.navigate_to_parent(parent_id)
                     ),
@@ -213,7 +212,7 @@ class MoveDialog(AlertDialog):
                         italic=True,
                     ),
                     padding=20,
-                    alignment=ft.alignment.center,
+                    alignment=ft.Alignment.CENTER,
                 )
                 self.folder_listview.controls.append(empty_message)
             else:
@@ -222,10 +221,7 @@ class MoveDialog(AlertDialog):
                     folder_name = folder["name"]
 
                     # Skip the folder we're trying to move (can't move into itself)
-                    if (
-                        self.object_type == "directory"
-                        and folder_id == self.object_id
-                    ):
+                    if self.object_type == "directory" and folder_id == self.object_id:
                         continue
 
                     folder_item = ft.ListTile(
@@ -255,7 +251,7 @@ class MoveDialog(AlertDialog):
 
     async def navigate_to_folder(self, folder_id: str, folder_name: str):
         """Navigate into a subfolder.
-        
+
         Args:
             folder_id: ID of the folder to navigate to
             folder_name: Name of the folder (for breadcrumb)
@@ -265,20 +261,20 @@ class MoveDialog(AlertDialog):
 
     async def navigate_to_parent(self, parent_id: str | None):
         """Navigate to the parent directory.
-        
+
         Args:
             parent_id: ID of the parent directory
         """
         if self.navigation_stack:
             self.navigation_stack.pop()
-        await self.load_directory(parent_id)
+        await self.load_directory(parent_id if parent_id != "/" else None)
 
     async def go_to_root_button_click(self, event: ft.Event[ft.TextButton]):
         """Navigate to the root directory."""
         self.navigation_stack.clear()
         await self.load_directory(None)
 
-    async def move_here_button_click(self, event: ft.Event[ft.ElevatedButton]):
+    async def move_here_button_click(self, event: ft.Event[ft.Button]):
         """Move the object to the current directory."""
         yield self.disable_interactions()
 
