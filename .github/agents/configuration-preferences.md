@@ -290,8 +290,8 @@ class LanguageSettingsModel(Model):
             label=_("Language"),
             value=current_lang,
             options=[
-                ft.dropdown.Option("zh_CN", _("简体中文")),
-                ft.dropdown.Option("en", _("English")),
+                ft.DropdownOption("zh_CN", _("简体中文")),
+                ft.DropdownOption("en", _("English")),
             ],
             on_change=self.language_changed
         )

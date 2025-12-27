@@ -146,12 +146,12 @@ class SearchDialog(AlertDialog):
         self.sort_by_dropdown = ft.Dropdown(
             label=_("Sort by"),
             options=[
-                ft.dropdown.Option(_("Name")),
-                ft.dropdown.Option(_("Created time")),
-                ft.dropdown.Option(_("Last modified")),
-                ft.dropdown.Option(_("Size")),
+                ft.DropdownOption("name", _("Name")),
+                ft.DropdownOption("created_time", _("Created time")),
+                ft.DropdownOption("last_modified", _("Last modified")),
+                ft.DropdownOption("size", _("Size")),
             ],
-            value=_("Name"),
+            value="name",
             expand=True,
             expand_loose=True,
         )
@@ -159,10 +159,10 @@ class SearchDialog(AlertDialog):
         self.sort_order_dropdown = ft.Dropdown(
             label=_("Sort order"),
             options=[
-                ft.dropdown.Option(_("Ascending")),
-                ft.dropdown.Option(_("Descending")),
+                ft.DropdownOption("asc", _("Ascending")),
+                ft.DropdownOption("desc", _("Descending")),
             ],
-            value=_("Ascending"),
+            value="asc",
             expand=True,
             expand_loose=True,
         )

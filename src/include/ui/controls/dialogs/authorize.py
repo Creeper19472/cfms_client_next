@@ -315,7 +315,7 @@ class AuthorizeDialog(AlertDialog):
         """Re-enable all interactive elements after processing."""
         self.entity_search.disabled = False
         self.search_button.disabled = False
-        if self.entity_dropdown.options:
+        if self.entity_DropdownOptions:
             self.entity_dropdown.disabled = False
         self.entity_type.disabled = False
         self.date_range_button.disabled = False
@@ -351,7 +351,7 @@ class AuthorizeDialog(AlertDialog):
     async def on_target_type_change(self, event: ft.Event[ft.RadioGroup]):
         """Handle target type change."""
         # Clear previous search results
-        self.entity_dropdown.options = []
+        self.entity_DropdownOptions = []
         self.entity_dropdown.value = None
         self.entity_dropdown.disabled = True
         

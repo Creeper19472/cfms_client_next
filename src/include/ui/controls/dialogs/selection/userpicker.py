@@ -92,7 +92,7 @@ class UserPicker(ft.AlertDialog):
 
         # Load users from config
         users = self.app_shared.get_users()
-        self.user_dropdown.options = [ft.dropdown.Option(user) for user in users]
+        self.user_DropdownOptions = [ft.DropdownOption(user) for user in users]
 
         # Show dialog
         self.page.dialog = self

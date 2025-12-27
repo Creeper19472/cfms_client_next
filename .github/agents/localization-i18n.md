@@ -287,8 +287,8 @@ class LanguageSettingsModel(Model):
             label=_("Language"),
             value=current_lang,
             options=[
-                ft.dropdown.Option("zh_CN", "简体中文 (Simplified Chinese)"),
-                ft.dropdown.Option("en", "English"),
+                ft.DropdownOption("zh_CN", "简体中文 (Simplified Chinese)"),
+                ft.DropdownOption("en", "English"),
                 # Add more languages here
             ],
             on_change=self.on_language_changed
@@ -487,8 +487,8 @@ username_field = ft.TextField(
 language_dropdown = ft.Dropdown(
     label=_("Language"),
     options=[
-        ft.dropdown.Option("zh_CN", _("Simplified Chinese")),
-        ft.dropdown.Option("en", _("English")),
+        ft.DropdownOption("zh_CN", _("Simplified Chinese")),
+        ft.DropdownOption("en", _("English")),
     ]
 )
 
@@ -596,7 +596,7 @@ msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
 
 6. **Add to Language Dropdown**:
    ```python
-   ft.dropdown.Option("fr", _("Français (French)")),
+   ft.DropdownOption("fr", _("Français (French)")),
    ```
 
 7. **Test**:

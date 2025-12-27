@@ -33,8 +33,8 @@ class LanguageSettingsModel(Model):
             label="Language",
             hint_text="Select your preferred language",
             options=[
-                ft.dropdown.Option(key="zh_CN", text="中文 (Chinese Simplified)"),
-                ft.dropdown.Option(key="en", text="English"),
+                ft.DropdownOption(key="zh_CN", text="中文 (Chinese Simplified)"),
+                ft.DropdownOption(key="en", text="English"),
             ],
             expand=True,
             expand_loose=True,
