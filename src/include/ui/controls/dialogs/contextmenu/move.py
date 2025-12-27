@@ -155,7 +155,7 @@ class MoveDialog(AlertDialog):
         # Move Here button: visible if current location differs from original
         self.move_here_button.visible = (self.current_directory_id != self.original_parent_id)
         
-        # Go to Root button: visible if not at root (navigation stack not empty)
+        # Go to Root button: visible if not at root
         self.go_to_root_button.visible = self.current_directory_id not in (None, "/")
         
         self.update()
