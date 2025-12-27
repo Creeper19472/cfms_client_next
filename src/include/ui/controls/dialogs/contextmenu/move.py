@@ -295,29 +295,7 @@ class MoveDialog(AlertDialog):
     async def move_here_button_click(self, event: ft.Event[ft.Button]):
         """Move the object to the current directory."""
         yield self.disable_interactions()
-
-        # Check if trying to move to the same location
-        current_parent = self.file_listview.current_parent_id
-        if self.current_directory_id == current_parent:
-            send_error(
-                self.page,
-                _("The {display_name} is already in this location").format(
-                    display_name=self.object_display_name.lower()
-                ),
-            )
-            self.enable_interactions()
-            return
-
-        # For directories, prevent moving into itself or a subdirectory
-        if self.object_type == "directory":
-            if self.current_directory_id == self.object_id:
-                send_error(
-                    self.page,
-                    _("Cannot move a directory into itself"),
-                )
-                self.enable_interactions()
-                return
-
+        
         # Perform the move operation
         try:
             if self.object_type == "document":
