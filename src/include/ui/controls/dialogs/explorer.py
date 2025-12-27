@@ -404,7 +404,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
     def format_file_size(self, size_bytes: int) -> str:
         """Format file size in human-readable format."""
         if size_bytes == 0:
-            return "0 Bytes"
+            return "0 Byte"
         elif size_bytes < 1024:
             return f"{size_bytes} Bytes"
         elif size_bytes < 1024 * 1024:
