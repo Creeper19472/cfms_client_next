@@ -40,6 +40,9 @@ class EntryListTile(ft.ListTile):
     async def on_remove_clicked(self, event: ft.Event[ft.IconButton]):
         self.parent_entries_area.require.remove(self.entry_name)
         self.parent_entries_area.require_listview.controls.remove(self)
+        
+        # Sync data to parent editor immediately
+        self.parent_entries_area.parent_edit_area.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
 
 class SubRuleGroupEditEntriesArea(ft.ExpansionTile):
@@ -113,7 +116,8 @@ class SubRuleGroupEditEntriesArea(ft.ExpansionTile):
 
     async def on_match_mode_changed(self, event: ft.Event[ft.Dropdown]):
         self.match_mode = event.data
-        # print(f"Match mode changed to {self.match_mode}")
+        # Sync data to parent editor immediately
+        self.parent_edit_area.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
     @property
     def dict_data(self) -> dict[str, Any]:
@@ -267,6 +271,9 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         self.match_mode = event.data
         self.subtitle = _("Mode: {mode}").format(mode=self._get_display_mode())
         self.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
     async def on_add_rights_section(self, event: ft.Event[ft.OutlinedButton]):
         """Add a rights section to this subgroup"""
@@ -289,6 +296,9 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 self.controls.remove(self.add_buttons_row)
                 self.add_buttons_row = None
             self.update()
+            
+            # Sync data to parent editor immediately
+            self.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
     async def on_add_groups_section(self, event: ft.Event[ft.OutlinedButton]):
         """Add a groups section to this subgroup"""
@@ -311,6 +321,9 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 self.controls.remove(self.add_buttons_row)
                 self.add_buttons_row = None
             self.update()
+            
+            # Sync data to parent editor immediately
+            self.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
     async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
         # Remove this subgroup from the parent collection area
@@ -326,6 +339,9 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 subgroup_index += 1
 
         self.parent_collection_area.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_collection_area.parent_edit_section.sync_data_to_parent()
 
     def did_mount(self):
         super().did_mount()
@@ -444,6 +460,9 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         self.match_mode = event.data
         self.subtitle = _("Mode: {mode}").format(mode=self._get_display_mode())
         self.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_edit_section.sync_data_to_parent()
 
     async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
         # Remove this rule group from the parent collection
@@ -459,6 +478,9 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
                 rule_group_index += 1
 
         parent_column.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_edit_section.sync_data_to_parent()
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:
@@ -534,9 +556,13 @@ class VisualRuleEditorEditSection(ft.Column):
         super().did_mount()
         self.page.run_task(self.load_rules)
 
+    def sync_data_to_parent(self):
+        """Sync current edit section data to parent editor immediately"""
+        self.parent_editor.edited_rule_data[self.access_type] = self.dict_data
+
     def will_unmount(self):
         super().will_unmount()
-        self.parent_editor.edited_rule_data[self.access_type] = self.dict_data
+        self.sync_data_to_parent()
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:

@@ -71,6 +71,9 @@ class CollectionAreasControlBar(ft.Row):
         # Insert before the control bar (which is always the last control)
         self.parent_column.controls.insert(-1, new_rule_group)
         self.parent_column.parent_edit_section.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_column.parent_edit_section.sync_data_to_parent()
 
         self.enable_interactions()
 

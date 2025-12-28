@@ -70,6 +70,10 @@ class SubRuleGroupControlBar(ft.Row):
         )
         self.parent_collection_area.controls.append(new_subgroup)
         self.parent_collection_area.update()
+        
+        # Sync data to parent editor immediately
+        self.parent_collection_area.parent_edit_section.sync_data_to_parent()
+        
         self.enable_interactions()
 
 
@@ -137,4 +141,8 @@ class EntryListTileControlBar(ft.Row):
         )
         self.parent_area.require_listview.update()
         self.name_textfield.value = ""
+        
+        # Sync data to parent editor immediately
+        self.parent_area.parent_edit_area.parent_collection_area.parent_edit_section.sync_data_to_parent()
+        
         self.enable_interactions()
