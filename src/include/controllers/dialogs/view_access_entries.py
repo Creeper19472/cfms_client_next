@@ -90,7 +90,7 @@ class ViewAccessEntriesDialogController(BaseController["ViewAccessEntriesDialog"
                 self.control.page,
                 _("Access entry revoked successfully"),
             )
-            
+
             # Refresh the access entries list
             await self.action_fetch_access_entries()
 
