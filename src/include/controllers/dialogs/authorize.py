@@ -57,7 +57,7 @@ class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
                 ]
 
                 # Update dropdown with results
-                self.control.entity_DropdownOptions = [
+                self.control.entity_dropdown.options = [
                     ft.DropdownOption(
                         key=user["username"],
                         text=f"{user['username']} ({user.get('nickname', '')})",
@@ -93,7 +93,7 @@ class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
                 ]
 
                 # Update dropdown with results
-                self.control.entity_DropdownOptions = [
+                self.control.entity_dropdown.options = [
                     ft.DropdownOption(
                         key=group["name"],
                         text=f"{group['name']} ({group.get('display_name') or group['name']})",
@@ -101,7 +101,7 @@ class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
                     for group in filtered
                 ]
 
-            if not self.control.entity_DropdownOptions:
+            if not self.control.entity_dropdown.options:
                 self.control.entity_search.error = _("No results found")
             else:
                 self.control.entity_search.error = None
