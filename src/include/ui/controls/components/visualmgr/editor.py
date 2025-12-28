@@ -105,6 +105,7 @@ class SubRuleGroupEditEntriesArea(ft.ExpansionTile):
             ref=ref,
             controls_padding=ft.Padding(top=15),
             expanded=True,
+            bgcolor=ft.Colors.with_opacity(0.03, ft.Colors.PRIMARY),
         )
 
     async def on_match_mode_changed(self, event: ft.Event[ft.Dropdown]):
@@ -137,52 +138,169 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         self.match_groups = deepcopy(match_groups)
         self.match_rights = deepcopy(match_rights)
 
-        match self.match_mode:
-            case "all":
-                display_match_mode = _("All of the following")
-            case "any":
-                display_match_mode = _("Any of the following")
-            case _:
-                raise ValueError(f"Invalid subgroup match mode '{self.match_mode}'")
+        # Create match mode dropdown
+        self.match_mode_dropdown = ft.Dropdown(
+            options=[
+                ft.DropdownOption(
+                    "all",
+                    _("All (AND)"),
+                    leading_icon=ft.Icons.SELECT_ALL,
+                ),
+                ft.DropdownOption(
+                    "any",
+                    _("Any (OR)"),
+                    leading_icon=ft.Icons.FILE_COPY,
+                ),
+            ],
+            label=_("Match Mode"),
+            value=self.match_mode,
+            on_select=self.on_match_mode_changed,
+            dense=True,
+            width=180,
+        )
 
-        controls = []
+        # Create delete button
+        self.delete_button = ft.IconButton(
+            icon=ft.Icons.REMOVE_CIRCLE_OUTLINE,
+            tooltip=_("Delete Subgroup"),
+            on_click=self.on_delete_button_click,
+        )
+
+        # Create control bar
+        control_bar = ft.Row(
+            controls=[
+                self.match_mode_dropdown,
+                self.delete_button,
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+        )
+
+        controls = [control_bar]
+
+        # Store references for dynamic addition
+        self.rights_expansion_tile = None
+        self.groups_expansion_tile = None
 
         if self.match_rights:  # handle rights
             rights_block_match_mode = self.match_rights.get("match", None)
             rights_block_require = self.match_rights.get("require", [])
             assert rights_block_match_mode is not None
 
-            rights_block_expansion_tile = SubRuleGroupEditEntriesArea(
+            self.rights_expansion_tile = SubRuleGroupEditEntriesArea(
                 self,
                 "rights",
                 rights_block_match_mode,
                 rights_block_require,
             )
-            controls.append(rights_block_expansion_tile)
+            controls.append(self.rights_expansion_tile)
 
         if self.match_groups:  # handle groups
             groups_block_match_mode = self.match_groups.get("match", None)
             groups_block_require = self.match_groups.get("require", [])
             assert groups_block_match_mode is not None
 
-            groups_block_expansion_tile = SubRuleGroupEditEntriesArea(
+            self.groups_expansion_tile = SubRuleGroupEditEntriesArea(
                 self,
                 "groups",
                 groups_block_match_mode,
                 groups_block_require,
             )
 
-            controls.append(groups_block_expansion_tile)
+            controls.append(self.groups_expansion_tile)
+
+        # Add buttons for adding missing sections
+        add_buttons = []
+        if not self.match_rights:
+            add_buttons.append(
+                ft.OutlinedButton(
+                    text=_("Add Rights Section"),
+                    icon=ft.Icons.ADD,
+                    on_click=self.on_add_rights_section,
+                )
+            )
+        if not self.match_groups:
+            add_buttons.append(
+                ft.OutlinedButton(
+                    text=_("Add Groups Section"),
+                    icon=ft.Icons.ADD,
+                    on_click=self.on_add_groups_section,
+                )
+            )
+
+        if add_buttons:
+            controls.append(
+                ft.Row(
+                    controls=add_buttons,
+                    wrap=True,
+                    spacing=10,
+                )
+            )
 
         super().__init__(
             _("Subgroup #{index}").format(
                 index=self.index,
             ),
-            subtitle=_("Mode: {mode}").format(mode=display_match_mode),
+            subtitle=_("Mode: {mode}").format(mode=self._get_display_mode()),
             controls=controls,
             expanded=True,
             ref=ref,
+            bgcolor=ft.Colors.with_opacity(0.05, ft.Colors.SURFACE_CONTAINER),
         )
+
+    def _get_display_mode(self) -> str:
+        """Get user-friendly display name for match mode"""
+        return _("All (AND)") if self.match_mode == "all" else _("Any (OR)")
+
+    async def on_match_mode_changed(self, event: ft.Event[ft.Dropdown]):
+        self.match_mode = event.data
+        self.subtitle = _("Mode: {mode}").format(mode=self._get_display_mode())
+        self.update()
+
+    async def on_add_rights_section(self, event: ft.Event[ft.OutlinedButton]):
+        """Add a rights section to this subgroup"""
+        if not self.match_rights:
+            self.match_rights = {"match": "any", "require": []}
+            self.rights_expansion_tile = SubRuleGroupEditEntriesArea(
+                self,
+                "rights",
+                "any",
+                [],
+            )
+            # Insert before the button row
+            self.controls.insert(-1, self.rights_expansion_tile)
+            # Remove the add button
+            event.control.visible = False
+            self.update()
+
+    async def on_add_groups_section(self, event: ft.Event[ft.OutlinedButton]):
+        """Add a groups section to this subgroup"""
+        if not self.match_groups:
+            self.match_groups = {"match": "any", "require": []}
+            self.groups_expansion_tile = SubRuleGroupEditEntriesArea(
+                self,
+                "groups",
+                "any",
+                [],
+            )
+            # Insert before the button row
+            self.controls.insert(-1, self.groups_expansion_tile)
+            # Remove the add button
+            event.control.visible = False
+            self.update()
+
+    async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
+        # Remove this subgroup from the parent collection area
+        self.parent_collection_area.controls.remove(self)
+
+        # Reindex remaining subgroups
+        subgroup_index = 1
+        for control in self.parent_collection_area.controls:
+            if isinstance(control, SubRuleGroupEditArea):
+                control.index = subgroup_index
+                control.title = _("Subgroup #{index}").format(index=subgroup_index)
+                subgroup_index += 1
+
+        self.parent_collection_area.update()
 
     def did_mount(self):
         super().did_mount()
@@ -195,6 +313,8 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         for control in self.controls:
             if isinstance(control, SubRuleGroupEditEntriesArea):
                 data[control.entry_type] = control.dict_data
+            # Skip control bars - they're not data
+            
         return data
 
 
@@ -207,23 +327,53 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         parent_edit_section: "VisualRuleEditorEditSection",
         ref: ft.Ref | None = None,
     ):
-        super().__init__(
-            title=_("#{index}").format(
-                index=index + 1,
-            ),
-            subtitle=_("Mode: {mode}").format(mode=match_mode),
-            expanded=not index,
-            expand=True,
-            expand_loose=True,
-            align=ft.Alignment.TOP_CENTER,
-            ref=ref,
-        )
         self.page: ft.Page
         self.parent_edit_section = parent_edit_section
-        self.controls = [SubRuleGroupControlBar(self)]
-
         self.index = index
         self.match_mode = match_mode
+
+        # Create match mode dropdown
+        self.match_mode_dropdown = ft.Dropdown(
+            options=[
+                ft.DropdownOption(
+                    "all",
+                    _("All (AND)"),
+                    leading_icon=ft.Icons.SELECT_ALL,
+                ),
+                ft.DropdownOption(
+                    "any",
+                    _("Any (OR)"),
+                    leading_icon=ft.Icons.FILE_COPY,
+                ),
+            ],
+            label=_("Match Mode"),
+            value=self.match_mode,
+            on_select=self.on_match_mode_changed,
+            dense=True,
+            width=180,
+        )
+
+        # Create delete button
+        self.delete_button = ft.IconButton(
+            icon=ft.Icons.DELETE,
+            tooltip=_("Delete Rule Group"),
+            on_click=self.on_delete_button_click,
+        )
+
+        # Create control bar at the top
+        self.top_control_bar = ft.Row(
+            controls=[
+                self.match_mode_dropdown,
+                self.delete_button,
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+        )
+
+        # Initialize controls list with control bar and SubRuleGroupControlBar
+        controls = [
+            self.top_control_bar,
+            SubRuleGroupControlBar(self),
+        ]
 
         for index, subgroup in enumerate(match_groups):
             subgroup_match_mode: Optional[str] = subgroup.get("match", None)
@@ -239,7 +389,47 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
                 subgroup_rights_block,
             )
 
-            self.controls.append(subgroup_expansion_tile)
+            controls.append(subgroup_expansion_tile)
+
+        super().__init__(
+            title=_("Rule Group #{index}").format(
+                index=index + 1,
+            ),
+            subtitle=_("Mode: {mode}").format(mode=self._get_display_mode()),
+            expanded=not index,
+            expand=True,
+            expand_loose=True,
+            align=ft.Alignment.TOP_CENTER,
+            ref=ref,
+            bgcolor=ft.Colors.with_opacity(0.1, ft.Colors.SURFACE_CONTAINER_HIGHEST),
+            controls=controls,
+        )
+
+    def _get_display_mode(self) -> str:
+        """Get user-friendly display name for match mode"""
+        return _("All (AND)") if self.match_mode == "all" else _("Any (OR)")
+
+    async def on_match_mode_changed(self, event: ft.Event[ft.Dropdown]):
+        self.match_mode = event.data
+        self.subtitle = _("Mode: {mode}").format(mode=self._get_display_mode())
+        self.update()
+
+    async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
+        from include.ui.controls.components.visualmgr.columns import (
+            CollectionAreasControlBar,
+        )
+
+        # Remove this rule group from the parent collection
+        parent_column = self.parent_edit_section.collection_areas_column
+        parent_column.controls.remove(self)
+
+        # Reindex remaining rule groups
+        for idx, control in enumerate(parent_column.controls):
+            if isinstance(control, SubRuleGroupCollectionArea):
+                control.index = idx
+                control.title = _("Rule Group #{index}").format(index=idx + 1)
+
+        parent_column.update()
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:
@@ -249,6 +439,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         for control in self.controls:
             if isinstance(control, SubRuleGroupEditArea):
                 data.append(control.dict_data)
+            # Skip control bars - they're not data
 
         return data
 
@@ -277,7 +468,17 @@ class VisualRuleEditorEditSection(ft.Column):
         self.controls = [self.empty_rule_text, self.collection_areas_column]
 
     async def load_rules(self):
-        # clear existing controls
+        from include.ui.controls.components.visualmgr.columns import (
+            CollectionAreasControlBar,
+        )
+
+        # clear existing controls but preserve the control bar
+        control_bar = None
+        for control in self.collection_areas_column.controls:
+            if isinstance(control, CollectionAreasControlBar):
+                control_bar = control
+                break
+        
         self.collection_areas_column.controls.clear()
 
         async def parse_sub_rules(
@@ -305,9 +506,15 @@ class VisualRuleEditorEditSection(ft.Column):
                 match_mode, match_groups, index
             )
             self.collection_areas_column.controls.append(new_rule_tile)
+        
+        # Re-add the control bar at the end
+        if control_bar:
+            self.collection_areas_column.controls.append(control_bar)
+        
         self.collection_areas_column.update()
 
-        self.empty_rule_text.visible = not len(self.collection_areas_column.controls)
+        # Hide empty text when we have the control bar
+        self.empty_rule_text.visible = False
         self.update()
 
     def did_mount(self):
@@ -320,6 +527,10 @@ class VisualRuleEditorEditSection(ft.Column):
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:
+        from include.ui.controls.components.visualmgr.columns import (
+            CollectionAreasControlBar,
+        )
+        
         data: list[dict[str, Any]] = []
 
         for control in self.collection_areas_column.controls:
@@ -330,6 +541,7 @@ class VisualRuleEditorEditSection(ft.Column):
                         "match_groups": control.dict_data,
                     }
                 )
+            # Skip CollectionAreasControlBar - it's not data
 
         return data
 
