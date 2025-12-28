@@ -1,8 +1,6 @@
 """Controller for the view access entries dialog."""
 
-from typing import TYPE_CHECKING, Literal
-
-import flet as ft
+from typing import TYPE_CHECKING
 
 from include.controllers.base import BaseController
 from include.ui.util.notifications import send_error

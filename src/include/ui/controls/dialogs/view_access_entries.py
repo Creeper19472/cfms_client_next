@@ -197,7 +197,7 @@ class ViewAccessEntriesDialog(AlertDialog):
                         end_time_str = datetime.fromtimestamp(entry["end_time"]).strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                    except (ValueError, OSError):
+                    except (ValueError, OSError, KeyError):
                         end_time_str = _("Invalid date")
                 else:
                     end_time_str = _("No expiry")
