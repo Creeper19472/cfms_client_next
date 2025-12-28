@@ -174,7 +174,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
-        
+
         # Add whitespace container around control bar for better visual spacing
         control_bar_container = ft.Container(
             content=control_bar,
@@ -377,7 +377,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
-        
+
         # Add whitespace container around control bar for better visual spacing
         top_control_bar_container = ft.Container(
             content=self.top_control_bar,
@@ -442,7 +442,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         for idx, control in enumerate(parent_column.controls):
             if isinstance(control, SubRuleGroupCollectionArea):
                 control.index = idx
-                control.title = _("Rule Group #{index}").format(index=idx)
+                control.title = _("Rule Group #{index}").format(index=idx + 1)
 
         parent_column.update()
 
@@ -473,14 +473,8 @@ class VisualRuleEditorEditSection(ft.Column):
         self.scroll = ft.ScrollMode.AUTO
         self.access_type = access_type  # "read", "write", "move", "manage"
 
-        self.empty_rule_text = ft.Text(
-            _("No rules defined for this access type."),
-            text_align=ft.TextAlign.CENTER,
-            align=ft.Alignment.CENTER,
-            visible=False,
-        )
         self.collection_areas_column = CollectionAreasColumn(self)
-        self.controls = [self.empty_rule_text, self.collection_areas_column]
+        self.controls = [self.collection_areas_column]
 
     async def load_rules(self):
         from include.ui.controls.components.visualmgr.columns import (
@@ -517,23 +511,13 @@ class VisualRuleEditorEditSection(ft.Column):
             assert match_mode is not None
 
             # get ExpansionTile for this rule
-            new_rule_tile = await parse_sub_rules(
-                match_mode, match_groups, index
-            )
+            new_rule_tile = await parse_sub_rules(match_mode, match_groups, index)
             self.collection_areas_column.controls.append(new_rule_tile)
 
         # Re-add the control bar at the end
         if control_bar:
             self.collection_areas_column.controls.append(control_bar)
 
-        self.collection_areas_column.update()
-
-        # Show empty text only when there are no rule groups
-        has_rule_groups = any(
-            isinstance(control, SubRuleGroupCollectionArea)
-            for control in self.collection_areas_column.controls
-        )
-        self.empty_rule_text.visible = has_rule_groups is False
         self.update()
 
     def did_mount(self):
