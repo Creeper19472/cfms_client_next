@@ -155,6 +155,11 @@ class ViewAccessEntriesDialog(AlertDialog):
         self.close_button.disabled = True
         self.progress_ring.visible = True
         self.modal = True
+        # Disable all delete buttons in the table
+        for row in self.access_entries_table.rows:
+            for cell in row.cells:
+                if cell.content and isinstance(cell.content, ft.IconButton):
+                    cell.content.disabled = True
         self.update()
 
     def enable_interactions(self):
@@ -163,6 +168,11 @@ class ViewAccessEntriesDialog(AlertDialog):
         self.close_button.disabled = False
         self.progress_ring.visible = False
         self.modal = False
+        # Re-enable all delete buttons in the table
+        for row in self.access_entries_table.rows:
+            for cell in row.cells:
+                if cell.content and isinstance(cell.content, ft.IconButton):
+                    cell.content.disabled = False
         self.update()
 
     def update_table(self, entries: list[dict]):
