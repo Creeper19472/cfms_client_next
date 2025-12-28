@@ -5,7 +5,10 @@ import flet as ft
 if TYPE_CHECKING:
     from include.ui.controls.components.rulemanager import VisualRuleEditor
 
-from include.ui.controls.components.visualmgr.columns import CollectionAreasColumn
+from include.ui.controls.components.visualmgr.columns import (
+    CollectionAreasColumn,
+    CollectionAreasControlBar,
+)
 from include.util.locale import get_translation
 from include.ui.controls.components.visualmgr.bars import (
     EntryListTileControlBar,
@@ -215,32 +218,35 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             controls.append(self.groups_expansion_tile)
 
         # Add buttons for adding missing sections
+        self.add_buttons_row = None
         add_buttons = []
         if not self.match_rights:
-            add_buttons.append(
-                ft.OutlinedButton(
-                    content=_("Add Rights Section"),
-                    icon=ft.Icons.ADD,
-                    on_click=self.on_add_rights_section,
-                )
+            self.add_rights_button = ft.OutlinedButton(
+                content=_("Add Rights Section"),
+                icon=ft.Icons.ADD,
+                on_click=self.on_add_rights_section,
             )
+            add_buttons.append(self.add_rights_button)
+        else:
+            self.add_rights_button = None
+            
         if not self.match_groups:
-            add_buttons.append(
-                ft.OutlinedButton(
-                    content=_("Add Groups Section"),
-                    icon=ft.Icons.ADD,
-                    on_click=self.on_add_groups_section,
-                )
+            self.add_groups_button = ft.OutlinedButton(
+                content=_("Add Groups Section"),
+                icon=ft.Icons.ADD,
+                on_click=self.on_add_groups_section,
             )
+            add_buttons.append(self.add_groups_button)
+        else:
+            self.add_groups_button = None
 
         if add_buttons:
-            controls.append(
-                ft.Row(
-                    controls=add_buttons,
-                    wrap=True,
-                    spacing=10,
-                )
+            self.add_buttons_row = ft.Row(
+                controls=add_buttons,
+                wrap=True,
+                spacing=10,
             )
+            controls.append(self.add_buttons_row)
 
         super().__init__(
             _("Subgroup #{index}").format(
@@ -275,8 +281,13 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             # Insert before the button row
             assert self.controls is not None
             self.controls.insert(-1, self.rights_expansion_tile)
-            # Remove the add button
-            event.control.visible = False
+            # Hide the add button
+            if self.add_rights_button:
+                self.add_rights_button.visible = False
+            # Remove button row if both sections are added
+            if self.add_buttons_row and self.match_groups:
+                self.controls.remove(self.add_buttons_row)
+                self.add_buttons_row = None
             self.update()
 
     async def on_add_groups_section(self, event: ft.Event[ft.OutlinedButton]):
@@ -292,8 +303,13 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             # Insert before the button row
             assert self.controls is not None
             self.controls.insert(-1, self.groups_expansion_tile)
-            # Remove the add button
-            event.control.visible = False
+            # Hide the add button
+            if self.add_groups_button:
+                self.add_groups_button.visible = False
+            # Remove button row if both sections are added
+            if self.add_buttons_row and self.match_rights:
+                self.controls.remove(self.add_buttons_row)
+                self.add_buttons_row = None
             self.update()
 
     async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
@@ -430,19 +446,17 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         self.update()
 
     async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
-        from include.ui.controls.components.visualmgr.columns import (
-            CollectionAreasControlBar,
-        )
-
         # Remove this rule group from the parent collection
         parent_column = self.parent_edit_section.collection_areas_column
         parent_column.controls.remove(self)
 
-        # Reindex remaining rule groups
-        for idx, control in enumerate(parent_column.controls):
+        # Reindex remaining rule groups by counting only SubRuleGroupCollectionArea instances
+        rule_group_index = 0
+        for control in parent_column.controls:
             if isinstance(control, SubRuleGroupCollectionArea):
-                control.index = idx
-                control.title = _("Rule Group #{index}").format(index=idx + 1)
+                control.index = rule_group_index
+                control.title = _("Rule Group #{index}").format(index=rule_group_index + 1)
+                rule_group_index += 1
 
         parent_column.update()
 
@@ -477,10 +491,6 @@ class VisualRuleEditorEditSection(ft.Column):
         self.controls = [self.collection_areas_column]
 
     async def load_rules(self):
-        from include.ui.controls.components.visualmgr.columns import (
-            CollectionAreasControlBar,
-        )
-
         # clear existing controls but preserve the control bar
         control_bar = None
         for control in self.collection_areas_column.controls:
@@ -530,10 +540,6 @@ class VisualRuleEditorEditSection(ft.Column):
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:
-        from include.ui.controls.components.visualmgr.columns import (
-            CollectionAreasControlBar,
-        )
-
         data: list[dict[str, Any]] = []
 
         for control in self.collection_areas_column.controls:
