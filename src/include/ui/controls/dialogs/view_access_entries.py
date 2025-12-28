@@ -142,6 +142,7 @@ class ViewAccessEntriesDialog(AlertDialog):
         """Called when dialog is mounted to the page."""
         super().did_mount()
         # Automatically fetch access entries when dialog opens
+        self.disable_interactions()
         self.page.run_task(self.controller.action_fetch_access_entries)
 
     def disable_interactions(self):
@@ -169,14 +170,14 @@ class ViewAccessEntriesDialog(AlertDialog):
             self.access_entries_table.rows.append(
                 fdt.DataRow2(
                     cells=[
-                        fdt.DataCell(ft.Text(_("No access entries found"), italic=True)),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
-                        fdt.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text(_("No access entries found"), italic=True)),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
+                        ft.DataCell(ft.Text("")),
                     ]
                 )
             )
@@ -197,14 +198,14 @@ class ViewAccessEntriesDialog(AlertDialog):
                 self.access_entries_table.rows.append(
                     fdt.DataRow2(
                         cells=[
-                            fdt.DataCell(ft.Text(str(entry["id"]))),
-                            fdt.DataCell(ft.Text(entry["entity_type"])),
-                            fdt.DataCell(ft.Text(entry["entity_identifier"])),
-                            fdt.DataCell(ft.Text(entry["target_type"])),
-                            fdt.DataCell(ft.Text(entry["target_identifier"])),
-                            fdt.DataCell(ft.Text(entry["access_type"])),
-                            fdt.DataCell(ft.Text(start_time_str)),
-                            fdt.DataCell(ft.Text(end_time_str)),
+                            ft.DataCell(ft.Text(str(entry["id"]))),
+                            ft.DataCell(ft.Text(entry["entity_type"])),
+                            ft.DataCell(ft.Text(entry["entity_identifier"])),
+                            ft.DataCell(ft.Text(entry["target_type"])),
+                            ft.DataCell(ft.Text(entry["target_identifier"])),
+                            ft.DataCell(ft.Text(entry["access_type"])),
+                            ft.DataCell(ft.Text(start_time_str)),
+                            ft.DataCell(ft.Text(end_time_str)),
                         ]
                     )
                 )
