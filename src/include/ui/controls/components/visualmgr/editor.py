@@ -314,7 +314,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             if isinstance(control, SubRuleGroupEditEntriesArea):
                 data[control.entry_type] = control.dict_data
             # Skip control bars - they're not data
-            
+
         return data
 
 
@@ -478,7 +478,7 @@ class VisualRuleEditorEditSection(ft.Column):
             if isinstance(control, CollectionAreasControlBar):
                 control_bar = control
                 break
-        
+
         self.collection_areas_column.controls.clear()
 
         async def parse_sub_rules(
@@ -506,11 +506,11 @@ class VisualRuleEditorEditSection(ft.Column):
                 match_mode, match_groups, index
             )
             self.collection_areas_column.controls.append(new_rule_tile)
-        
+
         # Re-add the control bar at the end
         if control_bar:
             self.collection_areas_column.controls.append(control_bar)
-        
+
         self.collection_areas_column.update()
 
         # Hide empty text when we have the control bar
@@ -530,7 +530,7 @@ class VisualRuleEditorEditSection(ft.Column):
         from include.ui.controls.components.visualmgr.columns import (
             CollectionAreasControlBar,
         )
-        
+
         data: list[dict[str, Any]] = []
 
         for control in self.collection_areas_column.controls:

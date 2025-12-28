@@ -78,6 +78,6 @@ class CollectionAreasColumn(ft.Column):
         super().__init__(expand=True, expand_loose=True, ref=ref)
         self.page: ft.Page
         self.parent_edit_section = parent_edit_section
-        
+
         # Add the control bar as the last item in the column
         self.controls = [CollectionAreasControlBar(self)]
