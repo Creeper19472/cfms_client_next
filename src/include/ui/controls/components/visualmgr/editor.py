@@ -174,8 +174,14 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
+        
+        # Add whitespace container around control bar for better visual spacing
+        control_bar_container = ft.Container(
+            content=control_bar,
+            padding=ft.Padding(top=10, left=0, right=0, bottom=0),
+        )
 
-        controls: list = [control_bar]
+        controls: list = [control_bar_container]
 
         # Store references for dynamic addition
         self.rights_expansion_tile = None
@@ -371,10 +377,16 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
+        
+        # Add whitespace container around control bar for better visual spacing
+        top_control_bar_container = ft.Container(
+            content=self.top_control_bar,
+            padding=ft.Padding(top=10, left=0, right=0, bottom=0),
+        )
 
         # Initialize controls list with control bar and SubRuleGroupControlBar
         controls = [
-            self.top_control_bar,
+            top_control_bar_container,
             SubRuleGroupControlBar(self),
         ]
 

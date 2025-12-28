@@ -54,9 +54,16 @@ class SubRuleGroupControlBar(ft.Row):
         assert type(self.parent_collection_area.controls) == list
 
         self.disable_interactions()
+        
+        # Count existing subgroups to determine the correct index
+        existing_subgroups = sum(
+            1 for control in self.parent_collection_area.controls
+            if isinstance(control, SubRuleGroupEditArea)
+        )
+        
         new_subgroup = SubRuleGroupEditArea(
             self.parent_collection_area,
-            index=len(self.parent_collection_area.controls),  # workaround
+            index=existing_subgroups + 1,  # Start from 1
             match_mode="all",
             match_groups={},
             match_rights={},
