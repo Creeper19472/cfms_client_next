@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.6
+**Released on:** 2025-12-28
+
+**Title:** Fix Rule Editor
+
+This version fixes the issue where the rules editor's content wasn't being 
+updated in a timely manner.
+
+---
 ## v0.4.5
 **Released on:** 2025-12-28
 
