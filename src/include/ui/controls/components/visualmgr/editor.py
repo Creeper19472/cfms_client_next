@@ -515,25 +515,18 @@ class VisualRuleEditorEditSection(ft.Column):
             self.access_type, []
         )
 
-        # Add rule groups with sequential indexing starting from 0
-        rule_group_count = 0
-        for rule in rules:
+        for index, rule in enumerate(rules):
             match_mode = rule.get("match", None)
             match_groups = rule.get("match_groups", [])
-            if match_mode is None:
-                continue  # Skip invalid rules
-            
-            # get ExpansionTile for this rule with explicit index
-            new_rule_tile = await parse_sub_rules(match_mode, match_groups, rule_group_count)
+            assert match_mode is not None
+
+            # get ExpansionTile for this rule
+            new_rule_tile = await parse_sub_rules(match_mode, match_groups, index)
             self.collection_areas_column.controls.append(new_rule_tile)
-            rule_group_count += 1
 
         # Re-add the control bar at the end
         if control_bar:
             self.collection_areas_column.controls.append(control_bar)
-        elif len(self.collection_areas_column.controls) == 0:
-            # If no control bar was found (shouldn't happen), create a new one
-            self.collection_areas_column.controls.append(CollectionAreasControlBar(self.collection_areas_column))
 
         self.update()
 
