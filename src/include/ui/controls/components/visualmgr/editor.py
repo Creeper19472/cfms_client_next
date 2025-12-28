@@ -175,7 +175,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
 
-        controls = [control_bar]
+        controls: list = [control_bar]
 
         # Store references for dynamic addition
         self.rights_expansion_tile = None
@@ -213,7 +213,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         if not self.match_rights:
             add_buttons.append(
                 ft.OutlinedButton(
-                    text=_("Add Rights Section"),
+                    content=_("Add Rights Section"),
                     icon=ft.Icons.ADD,
                     on_click=self.on_add_rights_section,
                 )
@@ -221,7 +221,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         if not self.match_groups:
             add_buttons.append(
                 ft.OutlinedButton(
-                    text=_("Add Groups Section"),
+                    content=_("Add Groups Section"),
                     icon=ft.Icons.ADD,
                     on_click=self.on_add_groups_section,
                 )
@@ -267,6 +267,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 [],
             )
             # Insert before the button row
+            assert self.controls is not None
             self.controls.insert(-1, self.rights_expansion_tile)
             # Remove the add button
             event.control.visible = False
@@ -283,6 +284,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 [],
             )
             # Insert before the button row
+            assert self.controls is not None
             self.controls.insert(-1, self.groups_expansion_tile)
             # Remove the add button
             event.control.visible = False
@@ -290,6 +292,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
 
     async def on_delete_button_click(self, event: ft.Event[ft.IconButton]):
         # Remove this subgroup from the parent collection area
+        assert self.parent_collection_area.controls is not None
         self.parent_collection_area.controls.remove(self)
 
         # Reindex remaining subgroups

@@ -28,7 +28,7 @@ class CollectionAreasControlBar(ft.Row):
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.add_button = ft.FilledButton(
-            text=_("Add Rule Group"),
+            content=_("Add Rule Group"),
             icon=ft.Icons.ADD,
             on_click=self.on_add_button_click,
         )
@@ -48,7 +48,7 @@ class CollectionAreasControlBar(ft.Row):
         self.progress_ring.visible = False
         self.update()
 
-    async def on_add_button_click(self, event: ft.Event[ft.FilledButton]):
+    async def on_add_button_click(self, event: ft.Event[ft.Button]):
         from include.ui.controls.components.visualmgr.editor import (
             SubRuleGroupCollectionArea,
         )
