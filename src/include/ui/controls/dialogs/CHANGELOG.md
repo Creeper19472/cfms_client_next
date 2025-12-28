@@ -8,7 +8,7 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 **Title:** Fix Rule Editor
 
-This version fixes the issue where the rules editor's content wasn't being 
+This version fixes the issue where the rule editor's content wasn't being 
 updated in a timely manner.
 
 ---

@@ -1,5 +1,6 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional
+import asyncio
 import flet as ft
 
 if TYPE_CHECKING:
@@ -511,6 +512,10 @@ class VisualRuleEditorEditSection(ft.Column):
 
         self.collection_areas_column = CollectionAreasColumn(self)
         self.controls = [self.collection_areas_column]
+        
+        # Debouncing state
+        self._sync_task: Optional[asyncio.Task] = None
+        self._debounce_delay = 0.3  # 300ms delay
 
     async def load_rules(self):
         # clear existing controls but preserve the control bar
@@ -556,13 +561,42 @@ class VisualRuleEditorEditSection(ft.Column):
         super().did_mount()
         self.page.run_task(self.load_rules)
 
-    def sync_data_to_parent(self):
-        """Sync current edit section data to parent editor immediately"""
-        self.parent_editor.edited_rule_data[self.access_type] = self.dict_data
+    async def _debounced_sync_task(self):
+        """Internal task that performs the actual sync after delay"""
+        try:
+            await asyncio.sleep(self._debounce_delay)
+            self.parent_editor.edited_rule_data[self.access_type] = self.dict_data
+        except asyncio.CancelledError:
+            # Task was cancelled, which is expected when a new sync is requested
+            pass
+
+    def sync_data_to_parent(self, debounced: bool = True):
+        """
+        Sync current edit section data to parent editor.
+        
+        Args:
+            debounced: If True, debounces the sync to avoid redundant serialization 
+                      with rapid changes. If False, syncs immediately.
+        """
+        if debounced:
+            # Cancel any pending sync task
+            if self._sync_task and not self._sync_task.done():
+                self._sync_task.cancel()
+            
+            # Schedule a new sync task
+            if hasattr(self, 'page') and self.page:
+                self._sync_task = self.page.run_task(self._debounced_sync_task)
+        else:
+            # Immediate sync without debouncing
+            self.parent_editor.edited_rule_data[self.access_type] = self.dict_data
 
     def will_unmount(self):
         super().will_unmount()
-        self.sync_data_to_parent()
+        # Cancel any pending debounced sync
+        if self._sync_task and not self._sync_task.done():
+            self._sync_task.cancel()
+        # Perform immediate sync on unmount to ensure data is saved
+        self.sync_data_to_parent(debounced=False)
 
     @property
     def dict_data(self) -> list[dict[str, Any]]:
