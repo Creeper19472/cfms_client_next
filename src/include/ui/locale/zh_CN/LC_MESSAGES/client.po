@@ -1620,6 +1620,26 @@ msgstr "搜索失败：({code}) {message}"
 msgid "At least one search type must be selected"
 msgstr "至少需要选择一种搜索类型"
 
+#: .\include\ui\controls\dialogs\view_access_entries.py
+msgid "Actions"
+msgstr "操作"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py
+msgid "Revoke"
+msgstr "撤销"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Failed to revoke access: ({code}) {message}"
+msgstr "撤销访问权限失败：({code}) {message}"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Access entry revoked successfully"
+msgstr "访问条目已成功撤销"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Failed to revoke access: {error}"
+msgstr "撤销访问权限失败：{error}"
+
 #~ msgid "ID: {file_id} (No longer exists)"
 #~ msgstr "ID：{file_id}（不再存在）"
 

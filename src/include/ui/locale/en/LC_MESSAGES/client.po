@@ -1651,6 +1651,26 @@ msgstr "Search failed: ({code}) {message}"
 msgid "At least one search type must be selected"
 msgstr "At least one search type must be selected"
 
+#: .\include\ui\controls\dialogs\view_access_entries.py
+msgid "Actions"
+msgstr "Actions"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py
+msgid "Revoke"
+msgstr "Revoke"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Failed to revoke access: ({code}) {message}"
+msgstr "Failed to revoke access: ({code}) {message}"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Access entry revoked successfully"
+msgstr "Access entry revoked successfully"
+
+#: .\include\controllers\dialogs\view_access_entries.py
+msgid "Failed to revoke access: {error}"
+msgstr "Failed to revoke access: {error}"
+
 #~ msgid "ID: {file_id} (No longer exists)"
 #~ msgstr "ID: {file_id} (No longer exists)"
 
