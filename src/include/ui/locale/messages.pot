@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-28 14:59+0800\n"
+"POT-Creation-Date: 2025-12-28 18:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -503,8 +503,12 @@ msgstr ""
 msgid "The submitted rule is not valid JSON"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\bars.py:88
+#: .\include\ui\controls\components\visualmgr\bars.py:95
 msgid "Add..."
+msgstr ""
+
+#: .\include\ui\controls\components\visualmgr\columns.py:31
+msgid "Add Rule Group"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:61
@@ -517,6 +521,8 @@ msgid "Any"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:70
+#: .\include\ui\controls\components\visualmgr\editor.py:155
+#: .\include\ui\controls\components\visualmgr\editor.py:358
 msgid "Match Mode"
 msgstr ""
 
@@ -529,28 +535,54 @@ msgstr ""
 msgid "Rights"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:142
-msgid "All of the following"
+#: .\include\ui\controls\components\visualmgr\editor.py:146
+#: .\include\ui\controls\components\visualmgr\editor.py:258
+#: .\include\ui\controls\components\visualmgr\editor.py:349
+#: .\include\ui\controls\components\visualmgr\editor.py:425
+msgid "All (AND)"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:144
-msgid "Any of the following"
+#: .\include\ui\controls\components\visualmgr\editor.py:151
+#: .\include\ui\controls\components\visualmgr\editor.py:258
+#: .\include\ui\controls\components\visualmgr\editor.py:354
+#: .\include\ui\controls\components\visualmgr\editor.py:425
+msgid "Any (OR)"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:178
+#: .\include\ui\controls\components\visualmgr\editor.py:165
+msgid "Delete Subgroup"
+msgstr ""
+
+#: .\include\ui\controls\components\visualmgr\editor.py:222
+msgid "Add Rights Section"
+msgstr ""
+
+#: .\include\ui\controls\components\visualmgr\editor.py:230
+msgid "Add Groups Section"
+msgstr ""
+
+#: .\include\ui\controls\components\visualmgr\editor.py:246
+#: .\include\ui\controls\components\visualmgr\editor.py:309
 msgid "Subgroup #{index}"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:181
-#: .\include\ui\controls\components\visualmgr\editor.py:214
+#: .\include\ui\controls\components\visualmgr\editor.py:249
+#: .\include\ui\controls\components\visualmgr\editor.py:262
+#: .\include\ui\controls\components\visualmgr\editor.py:413
+#: .\include\ui\controls\components\visualmgr\editor.py:429
 msgid "Mode: {mode}"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:211
-msgid "#{index}"
+#: .\include\ui\controls\components\visualmgr\editor.py:368
+msgid "Delete Rule Group"
 msgstr ""
 
-#: .\include\ui\controls\components\visualmgr\editor.py:271
+#: .\include\ui\controls\components\visualmgr\editor.py:410
+#: .\include\ui\controls\components\visualmgr\editor.py:445
+msgid "Rule Group #{index}"
+msgstr ""
+
+#: .\include\ui\controls\components\visualmgr\editor.py:477
 msgid "No rules defined for this access type."
 msgstr ""
 
