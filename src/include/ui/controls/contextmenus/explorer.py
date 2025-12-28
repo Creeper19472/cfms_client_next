@@ -81,6 +81,12 @@ class FileContextMenu(ContextMenu2):
                     "on_click": self.authorize_button_click,
                 },
                 {
+                    "icon": ft.Icons.LIST_ALT,
+                    "content": _("View Access Entries"),
+                    "on_click": self.view_access_entries_button_click,
+                    "require": {"view_access_entries"},
+                },
+                {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
                     "content": _("Set Permissions"),
                     "on_click": self.set_access_rules_button_click,
@@ -117,6 +123,9 @@ class FileContextMenu(ContextMenu2):
 
     async def authorize_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_authorize)
+
+    async def view_access_entries_button_click(self, event: ft.Event[ft.PopupMenuItem]):
+        self.page.run_task(self.controller.action_view_access_entries)
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_set_access_rules)
@@ -180,6 +189,12 @@ class DirectoryContextMenu(ContextMenu2):
                 "on_click": self.authorize_button_click,
             },
             {
+                "icon": ft.Icons.LIST_ALT,
+                "content": _("View Access Entries"),
+                "on_click": self.view_access_entries_button_click,
+                "require": {"view_access_entries"},
+            },
+            {
                 "icon": ft.Icons.SETTINGS_OUTLINED,
                 "content": _("Set Permissions"),
                 "on_click": self.set_access_rules_button_click,
@@ -241,6 +256,9 @@ class DirectoryContextMenu(ContextMenu2):
 
     async def authorize_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_authorize)
+
+    async def view_access_entries_button_click(self, event: ft.Event[ft.ListTile]):
+        self.page.run_task(self.controller.action_view_access_entries)
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.ListTile]):
         self.page.run_task(self.controller.action_set_access_rules)

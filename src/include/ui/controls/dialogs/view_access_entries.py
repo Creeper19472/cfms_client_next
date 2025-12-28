@@ -1,0 +1,221 @@
+"""Dialog for viewing access entries for files and directories."""
+
+from datetime import datetime
+from typing import TYPE_CHECKING, Literal
+
+import flet as ft
+import flet_datatable2 as fdt
+
+from include.classes.config import AppShared
+from include.controllers.dialogs.view_access_entries import ViewAccessEntriesDialogController
+from include.ui.controls.dialogs.base import AlertDialog
+from include.util.locale import get_translation
+
+if TYPE_CHECKING:
+    from include.ui.controls.views.explorer import FileListView
+
+t = get_translation()
+_ = t.gettext
+
+
+class ViewAccessEntriesDialog(AlertDialog):
+    """Dialog for viewing access entries to files or directories."""
+
+    def __init__(
+        self,
+        object_type: Literal["document", "directory"],
+        object_id: str,
+        parent_listview: "FileListView",
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.controller = ViewAccessEntriesDialogController(self)
+        self.object_type = object_type
+        self.object_id = object_id
+        self.parent_listview = parent_listview
+        self.app_shared = AppShared()
+
+        match self.object_type:
+            case "document":
+                self.object_display_name = _("File")
+            case "directory":
+                self.object_display_name = _("Directory")
+            case _:
+                raise ValueError(f"Invalid object type: {object_type}")
+
+        self.modal = False
+        self.title = ft.Text(
+            _("View Access Entries for {display_name}").format(
+                display_name=self.object_display_name
+            )
+        )
+
+        # Progress indicator
+        self.progress_ring = ft.ProgressRing(visible=False)
+
+        # Data table for displaying access entries
+        self.access_entries_table = fdt.DataTable2(
+            columns=[
+                fdt.DataColumn2(
+                    label=ft.Text(_("ID")),
+                    size=fdt.DataColumnSize.S,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Entity Type")),
+                    size=fdt.DataColumnSize.S,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Entity Identifier")),
+                    size=fdt.DataColumnSize.M,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Target Type")),
+                    size=fdt.DataColumnSize.S,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Target Identifier")),
+                    size=fdt.DataColumnSize.M,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Access Type")),
+                    size=fdt.DataColumnSize.S,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("Start Time")),
+                    size=fdt.DataColumnSize.M,
+                ),
+                fdt.DataColumn2(
+                    label=ft.Text(_("End Time")),
+                    size=fdt.DataColumnSize.M,
+                ),
+            ],
+            horizontal_margin=12,
+            data_row_height=60,
+            min_width=800,
+        )
+
+        # Refresh button
+        self.refresh_button = ft.IconButton(
+            icon=ft.Icons.REFRESH,
+            tooltip=_("Refresh"),
+            on_click=self.refresh_button_click,
+        )
+
+        # Close button
+        self.close_button = ft.TextButton(
+            _("Close"), on_click=self.close_button_click
+        )
+
+        # Build content layout
+        self.content = ft.Column(
+            controls=[
+                ft.Row(
+                    [
+                        ft.Text(
+                            _("Access entries for this {type}").format(
+                                type=self.object_display_name.lower()
+                            ),
+                            size=14,
+                        ),
+                        self.refresh_button,
+                    ],
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                ),
+                ft.Divider(),
+                self.progress_ring,
+                ft.Container(
+                    content=self.access_entries_table,
+                    expand=True,
+                ),
+            ],
+            width=900,
+            height=500,
+            spacing=10,
+            scroll=ft.ScrollMode.AUTO,
+        )
+
+        self.actions = [self.close_button]
+
+    def did_mount(self):
+        """Called when dialog is mounted to the page."""
+        super().did_mount()
+        # Automatically fetch access entries when dialog opens
+        self.page.run_task(self.controller.action_fetch_access_entries)
+
+    def disable_interactions(self):
+        """Disable all interactive elements during processing."""
+        self.refresh_button.disabled = True
+        self.close_button.disabled = True
+        self.progress_ring.visible = True
+        self.modal = True
+        self.update()
+
+    def enable_interactions(self):
+        """Re-enable all interactive elements after processing."""
+        self.refresh_button.disabled = False
+        self.close_button.disabled = False
+        self.progress_ring.visible = False
+        self.modal = False
+        self.update()
+
+    def update_table(self, entries: list[dict]):
+        """Update the data table with the fetched access entries."""
+        self.access_entries_table.rows.clear()
+
+        if not entries:
+            # Show a message if no entries found
+            self.access_entries_table.rows.append(
+                fdt.DataRow2(
+                    cells=[
+                        fdt.DataCell(ft.Text(_("No access entries found"), italic=True)),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                        fdt.DataCell(ft.Text("")),
+                    ]
+                )
+            )
+        else:
+            for entry in entries:
+                # Format timestamps
+                start_time_str = datetime.fromtimestamp(entry["start_time"]).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+                end_time_str = (
+                    datetime.fromtimestamp(entry["end_time"]).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+                    if entry.get("end_time")
+                    else _("No expiry")
+                )
+
+                self.access_entries_table.rows.append(
+                    fdt.DataRow2(
+                        cells=[
+                            fdt.DataCell(ft.Text(str(entry["id"]))),
+                            fdt.DataCell(ft.Text(entry["entity_type"])),
+                            fdt.DataCell(ft.Text(entry["entity_identifier"])),
+                            fdt.DataCell(ft.Text(entry["target_type"])),
+                            fdt.DataCell(ft.Text(entry["target_identifier"])),
+                            fdt.DataCell(ft.Text(entry["access_type"])),
+                            fdt.DataCell(ft.Text(start_time_str)),
+                            fdt.DataCell(ft.Text(end_time_str)),
+                        ]
+                    )
+                )
+
+        self.access_entries_table.update()
+
+    async def refresh_button_click(self, event):
+        """Handle refresh button click."""
+        self.disable_interactions()
+        self.page.run_task(self.controller.action_fetch_access_entries)
+
+    async def close_button_click(self, event: ft.Event[ft.TextButton]):
+        """Handle close button click."""
+        self.close()

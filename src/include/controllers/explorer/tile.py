@@ -8,6 +8,7 @@ from include.ui.controls.dialogs.contextmenu.explorer import (
 )
 from include.ui.controls.dialogs.contextmenu.move import MoveDialog
 from include.ui.controls.dialogs.authorize import AuthorizeDialog
+from include.ui.controls.dialogs.view_access_entries import ViewAccessEntriesDialog
 from include.ui.controls.components.rulemanager import RuleManager
 from include.ui.util.path import get_directory, get_document
 from include.util.requests import do_request
@@ -70,6 +71,11 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
             AuthorizeDialog("document", self.control.file_id, self.control.parent_listview)
         )
 
+    async def action_view_access_entries(self):
+        self.control.page.show_dialog(
+            ViewAccessEntriesDialog("document", self.control.file_id, self.control.parent_listview)
+        )
+
     async def action_set_access_rules(self):
         self.control.page.show_dialog(RuleManager(self.control.file_id, "document"))
 
@@ -125,6 +131,13 @@ class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
     async def action_authorize(self):
         self.control.page.show_dialog(
             AuthorizeDialog(
+                "directory", self.control.directory_id, self.control.parent_listview
+            )
+        )
+
+    async def action_view_access_entries(self):
+        self.control.page.show_dialog(
+            ViewAccessEntriesDialog(
                 "directory", self.control.directory_id, self.control.parent_listview
             )
         )
