@@ -55,9 +55,16 @@ class CollectionAreasControlBar(ft.Row):
 
         self.disable_interactions()
 
+        # Determine the next index based on existing SubRuleGroupCollectionArea instances
+        new_index = sum(
+            1
+            for control in self.parent_column.controls
+            if isinstance(control, SubRuleGroupCollectionArea)
+        )
+
         # Create a new rule group with default "any" match mode
         new_rule_group = SubRuleGroupCollectionArea(
-            index=len(self.parent_column.controls) - 1,  # -1 for the control bar itself
+            index=new_index,
             match_mode="any",
             match_groups=[],
             parent_edit_section=self.parent_column.parent_edit_section,

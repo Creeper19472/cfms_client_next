@@ -442,7 +442,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
         for idx, control in enumerate(parent_column.controls):
             if isinstance(control, SubRuleGroupCollectionArea):
                 control.index = idx
-                control.title = _("Rule Group #{index}").format(index=idx + 1)
+                control.title = _("Rule Group #{index}").format(index=idx)
 
         parent_column.update()
 
@@ -528,8 +528,12 @@ class VisualRuleEditorEditSection(ft.Column):
 
         self.collection_areas_column.update()
 
-        # Hide empty text when we have the control bar
-        self.empty_rule_text.visible = False
+        # Show empty text only when there are no rule groups
+        has_rule_groups = any(
+            isinstance(control, SubRuleGroupCollectionArea)
+            for control in self.collection_areas_column.controls
+        )
+        self.empty_rule_text.visible = has_rule_groups is False
         self.update()
 
     def did_mount(self):
