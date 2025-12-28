@@ -406,7 +406,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
             SubRuleGroupControlBar(self),
         ]
 
-        for index, subgroup in enumerate(match_groups):
+        for group_index, subgroup in enumerate(match_groups):
             subgroup_match_mode: Optional[str] = subgroup.get("match", None)
             subgroup_rights_block: dict = subgroup.get("rights", {})
             subgroup_groups_block: dict = subgroup.get("groups", {})
@@ -414,7 +414,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
 
             subgroup_expansion_tile = SubRuleGroupEditArea(
                 self,
-                index + 1,
+                group_index + 1,
                 subgroup_match_mode,
                 subgroup_groups_block,
                 subgroup_rights_block,

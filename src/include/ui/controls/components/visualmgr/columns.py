@@ -5,7 +5,6 @@ from include.util.locale import get_translation
 if TYPE_CHECKING:
     from include.ui.controls.components.visualmgr.editor import (
         VisualRuleEditorEditSection,
-        SubRuleGroupCollectionArea,
     )
 
 t = get_translation()
