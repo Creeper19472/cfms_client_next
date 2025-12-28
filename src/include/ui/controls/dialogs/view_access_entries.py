@@ -183,27 +183,34 @@ class ViewAccessEntriesDialog(AlertDialog):
             )
         else:
             for entry in entries:
-                # Format timestamps
-                start_time_str = datetime.fromtimestamp(entry["start_time"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
-                end_time_str = (
-                    datetime.fromtimestamp(entry["end_time"]).strftime(
+                # Format timestamps with error handling
+                try:
+                    start_time_str = datetime.fromtimestamp(entry["start_time"]).strftime(
                         "%Y-%m-%d %H:%M:%S"
                     )
-                    if entry.get("end_time")
-                    else _("No expiry")
-                )
+                except (ValueError, OSError, KeyError):
+                    start_time_str = _("Invalid date")
+                
+                # Check for end_time properly (None check to handle timestamp 0)
+                if entry.get("end_time") is not None:
+                    try:
+                        end_time_str = datetime.fromtimestamp(entry["end_time"]).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
+                    except (ValueError, OSError):
+                        end_time_str = _("Invalid date")
+                else:
+                    end_time_str = _("No expiry")
 
                 self.access_entries_table.rows.append(
                     fdt.DataRow2(
                         cells=[
-                            ft.DataCell(ft.Text(str(entry["id"]))),
-                            ft.DataCell(ft.Text(entry["entity_type"])),
-                            ft.DataCell(ft.Text(entry["entity_identifier"])),
-                            ft.DataCell(ft.Text(entry["target_type"])),
-                            ft.DataCell(ft.Text(entry["target_identifier"])),
-                            ft.DataCell(ft.Text(entry["access_type"])),
+                            ft.DataCell(ft.Text(str(entry.get("id", "")))),
+                            ft.DataCell(ft.Text(entry.get("entity_type", ""))),
+                            ft.DataCell(ft.Text(entry.get("entity_identifier", ""))),
+                            ft.DataCell(ft.Text(entry.get("target_type", ""))),
+                            ft.DataCell(ft.Text(entry.get("target_identifier", ""))),
+                            ft.DataCell(ft.Text(entry.get("access_type", ""))),
                             ft.DataCell(ft.Text(start_time_str)),
                             ft.DataCell(ft.Text(end_time_str)),
                         ]
