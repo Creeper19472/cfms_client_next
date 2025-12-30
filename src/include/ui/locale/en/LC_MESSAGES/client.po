@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-25 18:37+0800\n"
+"POT-Creation-Date: 2025-12-28 18:55+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: English\n"
@@ -20,34 +20,34 @@ msgstr "New version {version} is available! Check the About page for details."
 msgid "Go to About"
 msgstr "Go to About"
 
-#: .\include\controllers\connect.py:39
+#: .\include\controllers\connect.py:40
 msgid "Connection failed because the connection was reset: {strerror}"
 msgstr "Connection failed because the connection was reset: {strerror}"
 
-#: .\include\controllers\connect.py:43
+#: .\include\controllers\connect.py:44
 msgid "Connection failed because the connection was reset."
 msgstr "Connection failed because the connection was reset."
 
-#: .\include\controllers\connect.py:49
+#: .\include\controllers\connect.py:50
 msgid "Connection failed: ({exc_class_name}) {str_err}"
 msgstr "Connection failed: ({exc_class_name}) {str_err}"
 
-#: .\include\controllers\connect.py:62
+#: .\include\controllers\connect.py:63
 msgid "You are connecting to a server using a higher version protocol"
 msgstr "You are connecting to a server using a higher version protocol"
 
-#: .\include\controllers\connect.py:64
+#: .\include\controllers\connect.py:65
 msgid ""
 "(Protocol version {server_protocol_version}), please update the client."
 msgstr ""
 "(Protocol version {server_protocol_version}), please update the client."
 
-#: .\include\controllers\connect.py:93
+#: .\include\controllers\connect.py:97
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr ""
 "Authorization failed, you will not be able to download files normally."
 
-#: .\include\controllers\connect.py:97
+#: .\include\controllers\connect.py:101
 msgid "Please allow the app to access your files in settings."
 msgstr "Please allow the app to access your files in settings."
 
@@ -72,6 +72,7 @@ msgid "No results found"
 msgstr "No results found"
 
 #: .\include\controllers\dialogs\authorize.py:113
+#: .\include\controllers\dialogs\search.py:88
 msgid "Search failed: {error}"
 msgstr "Search failed: {error}"
 
@@ -168,6 +169,7 @@ msgstr "Child object count: {child_count}"
 
 #: .\include\controllers\dialogs\menus.py:108
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:210
+#: .\include\ui\controls\dialogs\search.py:38
 msgid "Created: {created_time}"
 msgstr "Created: {created_time}"
 
@@ -196,6 +198,38 @@ msgstr "Password for user '{username}' changed successfully."
 #: .\include\controllers\dialogs\rulemanager.py:79
 msgid "Modification failed: {message}"
 msgstr "Modification failed: {message}"
+
+#: .\include\controllers\dialogs\search.py:29
+msgid "Search query cannot be empty"
+msgstr "Search query cannot be empty"
+
+#: .\include\controllers\dialogs\search.py:37
+msgid "At least one search type must be selected"
+msgstr "At least one search type must be selected"
+
+#: .\include\controllers\dialogs\search.py:81
+msgid "Search failed: ({code}) {message}"
+msgstr "Search failed: ({code}) {message}"
+
+#: .\include\controllers\dialogs\view_access_entries.py:43
+msgid "Failed to fetch access entries: ({code}) {message}"
+msgstr "Failed to fetch access entries: ({code}) {message}"
+
+#: .\include\controllers\dialogs\view_access_entries.py:57
+msgid "Failed to fetch access entries: {error}"
+msgstr "Failed to fetch access entries: {error}"
+
+#: .\include\controllers\dialogs\view_access_entries.py:81
+msgid "Failed to revoke access: ({code}) {message}"
+msgstr "Failed to revoke access: ({code}) {message}"
+
+#: .\include\controllers\dialogs\view_access_entries.py:91
+msgid "Access entry revoked successfully"
+msgstr "Access entry revoked successfully"
+
+#: .\include\controllers\dialogs\view_access_entries.py:100
+msgid "Failed to revoke access: {error}"
+msgstr "Failed to revoke access: {error}"
 
 #: .\include\controllers\explorer\itself.py:40
 msgid "Preparing upload"
@@ -235,24 +269,24 @@ msgstr "Upload file \"{filename}\" failed: {errmsg}"
 msgid "Create file \"{filename}\" failed: {errmsg}"
 msgstr "Create file \"{filename}\" failed: {errmsg}"
 
-#: .\include\controllers\explorer\itself.py:460
+#: .\include\controllers\explorer\itself.py:461
 msgid "Problem occurred when uploading file \"{filename}\": {err}"
 msgstr "Problem occurred when uploading file \"{filename}\": {err}"
 
-#: .\include\controllers\explorer\itself.py:467
+#: .\include\controllers\explorer\itself.py:468
 msgid "Retrying [{retry}/{max_retries}]: {strerr}"
 msgstr "Retrying [{retry}/{max_retries}]: {strerr}"
 
-#: .\include\controllers\explorer\itself.py:492
+#: .\include\controllers\explorer\itself.py:493
 msgid "Please wait"
 msgstr "Please wait"
 
-#: .\include\controllers\explorer\itself.py:505
+#: .\include\controllers\explorer\itself.py:506
 msgid "Upload completed with {total_errors} error(s)."
 msgstr "Upload completed with {total_errors} error(s)."
 
-#: .\include\controllers\explorer\tile.py:47
-#: .\include\controllers\explorer\tile.py:95
+#: .\include\controllers\explorer\tile.py:49
+#: .\include\controllers\explorer\tile.py:107
 msgid "Deletion failed: ({code}) {message}"
 msgstr "Deletion failed: ({code}) {message}"
 
@@ -310,45 +344,54 @@ msgstr ""
 "relatively stable and is more suitable for general users to try. After one "
 "or more versions are released, the application may enter a stable version."
 
-#: .\include\ui\controls\components\explorer\bar.py:117
+#: .\include\ui\controls\components\explorer\bar.py:49
+#: .\include\ui\controls\dialogs\authorize.py:74
+#: .\include\ui\controls\dialogs\search.py:124
+#: .\include\ui\controls\dialogs\search.py:200
+msgid "Search"
+msgstr "Search"
+
+#: .\include\ui\controls\components\explorer\bar.py:127
 msgid "Sort by:"
 msgstr "Sort by:"
 
-#: .\include\ui\controls\components\explorer\bar.py:120
+#: .\include\ui\controls\components\explorer\bar.py:130
+#: .\include\ui\controls\dialogs\search.py:149
 msgid "Name"
 msgstr "Name"
 
-#: .\include\ui\controls\components\explorer\bar.py:121
+#: .\include\ui\controls\components\explorer\bar.py:131
 msgid "Created at"
 msgstr "Created at"
 
-#: .\include\ui\controls\components\explorer\bar.py:122
+#: .\include\ui\controls\components\explorer\bar.py:132
 msgid "Last Modified"
 msgstr "Last Modified"
 
-#: .\include\ui\controls\components\explorer\bar.py:123
+#: .\include\ui\controls\components\explorer\bar.py:133
+#: .\include\ui\controls\dialogs\search.py:152
 msgid "Size"
 msgstr "Size"
 
-#: .\include\ui\controls\components\explorer\bar.py:124
+#: .\include\ui\controls\components\explorer\bar.py:134
 msgid "Type"
 msgstr "Type"
 
-#: .\include\ui\controls\components\explorer\bar.py:133
+#: .\include\ui\controls\components\explorer\bar.py:143
 msgid "Toggle Sort Order"
 msgstr "Toggle Sort Order"
 
 #: .\include\ui\controls\components\explorer\tile.py:42
-msgid "ID: {file_id}"
-msgstr "ID: {file_id}"
+msgid "ID: {file_id}\n"
+msgstr "ID: {file_id}\n"
 
 #: .\include\ui\controls\components\explorer\tile.py:45
 msgid "Last modified: {last_modified}\n"
 msgstr "Last modified: {last_modified}\n"
 
 #: .\include\ui\controls\components\explorer\tile.py:130
-msgid "ID: {dir_id}"
-msgstr "ID: {dir_id}"
+msgid "ID: {dir_id}\n"
+msgstr "ID: {dir_id}\n"
 
 #: .\include\ui\controls\components\explorer\tile.py:133
 msgid "Created at: {created_at}"
@@ -395,19 +438,19 @@ msgstr "ID: {id} (No longer exists)"
 msgid "This document no longer exists on the server."
 msgstr "This document no longer exists on the server."
 
-#: .\include\ui\controls\components\homepage.py:243
+#: .\include\ui\controls\components\homepage.py:239
 msgid "Failed to download document: ({code}) {message}"
 msgstr "Failed to download document: ({code}) {message}"
 
-#: .\include\ui\controls\components\homepage.py:251
+#: .\include\ui\controls\components\homepage.py:247
 msgid "Failed to download document: {error}"
 msgstr "Failed to download document: {error}"
 
-#: .\include\ui\controls\components\homepage.py:302
+#: .\include\ui\controls\components\homepage.py:297
 msgid "You have not favorited any documents or folders yet."
 msgstr "You have not favorited any documents or folders yet."
 
-#: .\include\ui\controls\components\homepage.py:322
+#: .\include\ui\controls\components\homepage.py:317
 msgid "Favorites"
 msgstr "Favorites"
 
@@ -461,6 +504,7 @@ msgstr "Source Code"
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:67
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:139
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:275
+#: .\include\ui\controls\dialogs\contextmenu\move.py:101
 #: .\include\ui\controls\dialogs\dev.py:41
 #: .\include\ui\controls\dialogs\explorer.py:56
 #: .\include\ui\controls\dialogs\explorer.py:119
@@ -480,9 +524,13 @@ msgstr "Cancel"
 msgid "The submitted rule is not valid JSON"
 msgstr "The submitted rule is not valid JSON"
 
-#: .\include\ui\controls\components\visualmgr\bars.py:88
+#: .\include\ui\controls\components\visualmgr\bars.py:95
 msgid "Add..."
 msgstr "Add..."
+
+#: .\include\ui\controls\components\visualmgr\columns.py:31
+msgid "Add Rule Group"
+msgstr "Add Rule Group"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:61
 #: .\include\ui\controls\views\tasks.py:370
@@ -494,6 +542,8 @@ msgid "Any"
 msgstr "Any"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:70
+#: .\include\ui\controls\components\visualmgr\editor.py:155
+#: .\include\ui\controls\components\visualmgr\editor.py:358
 msgid "Match Mode"
 msgstr "Match Mode"
 
@@ -506,28 +556,54 @@ msgstr "Groups"
 msgid "Rights"
 msgstr "Rights"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:142
-msgid "All of the following"
-msgstr "All of the following"
+#: .\include\ui\controls\components\visualmgr\editor.py:146
+#: .\include\ui\controls\components\visualmgr\editor.py:258
+#: .\include\ui\controls\components\visualmgr\editor.py:349
+#: .\include\ui\controls\components\visualmgr\editor.py:425
+msgid "All (AND)"
+msgstr "All (AND)"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:144
-msgid "Any of the following"
-msgstr "Any of the following"
+#: .\include\ui\controls\components\visualmgr\editor.py:151
+#: .\include\ui\controls\components\visualmgr\editor.py:258
+#: .\include\ui\controls\components\visualmgr\editor.py:354
+#: .\include\ui\controls\components\visualmgr\editor.py:425
+msgid "Any (OR)"
+msgstr "Any (OR)"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:178
+#: .\include\ui\controls\components\visualmgr\editor.py:165
+msgid "Delete Subgroup"
+msgstr "Delete Subgroup"
+
+#: .\include\ui\controls\components\visualmgr\editor.py:222
+msgid "Add Rights Section"
+msgstr "Add Rights Section"
+
+#: .\include\ui\controls\components\visualmgr\editor.py:230
+msgid "Add Groups Section"
+msgstr "Add Groups Section"
+
+#: .\include\ui\controls\components\visualmgr\editor.py:246
+#: .\include\ui\controls\components\visualmgr\editor.py:309
 msgid "Subgroup #{index}"
 msgstr "Subgroup #{index}"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:181
-#: .\include\ui\controls\components\visualmgr\editor.py:214
+#: .\include\ui\controls\components\visualmgr\editor.py:249
+#: .\include\ui\controls\components\visualmgr\editor.py:262
+#: .\include\ui\controls\components\visualmgr\editor.py:413
+#: .\include\ui\controls\components\visualmgr\editor.py:429
 msgid "Mode: {mode}"
 msgstr "Mode: {mode}"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:211
-msgid "#{index}"
-msgstr "#{index}"
+#: .\include\ui\controls\components\visualmgr\editor.py:368
+msgid "Delete Rule Group"
+msgstr "Delete Rule Group"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:271
+#: .\include\ui\controls\components\visualmgr\editor.py:410
+#: .\include\ui\controls\components\visualmgr\editor.py:445
+msgid "Rule Group #{index}"
+msgstr "Rule Group #{index}"
+
+#: .\include\ui\controls\components\visualmgr\editor.py:477
 msgid "No rules defined for this access type."
 msgstr "No rules defined for this access type."
 
@@ -546,33 +622,44 @@ msgstr ""
 "internet, aiming to ensure process compliance through a procedural approach."
 
 #: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:154
+#: .\include\ui\controls\contextmenus\explorer.py:172
 #: .\include\ui\controls\contextmenus\group.py:50
 #: .\include\ui\controls\contextmenus\management.py:57
 msgid "Delete"
 msgstr "Delete"
 
 #: .\include\ui\controls\contextmenus\explorer.py:69
-#: .\include\ui\controls\contextmenus\explorer.py:159
+#: .\include\ui\controls\contextmenus\explorer.py:177
 #: .\include\ui\controls\contextmenus\group.py:55
 #: .\include\ui\controls\dialogs\admin\accounts.py:225
 msgid "Rename"
 msgstr "Rename"
 
 #: .\include\ui\controls\contextmenus\explorer.py:74
-#: .\include\ui\controls\contextmenus\explorer.py:164
+#: .\include\ui\controls\contextmenus\explorer.py:182
+#: .\include\ui\controls\dialogs\authorize.py:123
+msgid "Move"
+msgstr "Move"
+
+#: .\include\ui\controls\contextmenus\explorer.py:80
+#: .\include\ui\controls\contextmenus\explorer.py:188
 #: .\include\ui\controls\dialogs\authorize.py:183
 msgid "Authorize"
 msgstr "Authorize"
 
-#: .\include\ui\controls\contextmenus\explorer.py:79
-#: .\include\ui\controls\contextmenus\explorer.py:169
+#: .\include\ui\controls\contextmenus\explorer.py:85
+#: .\include\ui\controls\contextmenus\explorer.py:193
+msgid "View Access Entries"
+msgstr "View Access Entries"
+
+#: .\include\ui\controls\contextmenus\explorer.py:91
+#: .\include\ui\controls\contextmenus\explorer.py:199
 #: .\include\ui\controls\contextmenus\group.py:60
 msgid "Set Permissions"
 msgstr "Set Permissions"
 
-#: .\include\ui\controls\contextmenus\explorer.py:85
-#: .\include\ui\controls\contextmenus\explorer.py:175
+#: .\include\ui\controls\contextmenus\explorer.py:97
+#: .\include\ui\controls\contextmenus\explorer.py:205
 #: .\include\ui\controls\contextmenus\management.py:77
 msgid "Properties"
 msgstr "Properties"
@@ -712,11 +799,14 @@ msgid "Failed to fetch user group info: ({code}) {message}"
 msgstr "Failed to fetch user group info: ({code}) {message}"
 
 #: .\include\ui\controls\dialogs\authorize.py:42
+#: .\include\ui\controls\dialogs\view_access_entries.py:42
 msgid "File"
 msgstr "File"
 
 #: .\include\ui\controls\dialogs\authorize.py:44
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
+#: .\include\ui\controls\dialogs\contextmenu\move.py:56
+#: .\include\ui\controls\dialogs\view_access_entries.py:44
 msgid "Directory"
 msgstr "Directory"
 
@@ -732,10 +822,6 @@ msgstr "Username or Group Name"
 #: .\include\ui\controls\dialogs\authorize.py:272
 msgid "Enter username or group name"
 msgstr "Enter username or group name"
-
-#: .\include\ui\controls\dialogs\authorize.py:74
-msgid "Search"
-msgstr "Search"
 
 #: .\include\ui\controls\dialogs\authorize.py:81
 msgid "Select Entity"
@@ -761,19 +847,17 @@ msgstr "Read"
 msgid "Write"
 msgstr "Write"
 
-#: .\include\ui\controls\dialogs\authorize.py:123
-msgid "Move"
-msgstr "Move"
-
 #: .\include\ui\controls\dialogs\authorize.py:138
 msgid "Date Range"
 msgstr "Date Range"
 
 #: .\include\ui\controls\dialogs\authorize.py:151
+#: .\include\ui\controls\dialogs\view_access_entries.py:86
 msgid "Start Time"
 msgstr "Start Time"
 
 #: .\include\ui\controls\dialogs\authorize.py:168
+#: .\include\ui\controls\dialogs\view_access_entries.py:90
 msgid "End Time"
 msgstr "End Time"
 
@@ -846,6 +930,7 @@ msgid "Store these codes safely - they won't be shown again!"
 msgstr "Store these codes safely - they won't be shown again!"
 
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:42
+#: .\include\ui\controls\dialogs\contextmenu\move.py:54
 msgid "Document"
 msgstr "Document"
 
@@ -888,6 +973,54 @@ msgstr "Last modified: {last_modified}"
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:263
 msgid "Directory Details"
 msgstr "Directory Details"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:62
+msgid "Move {display_name}"
+msgstr "Move {display_name}"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:70
+msgid "Current location: /"
+msgstr "Current location: /"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:87
+msgid "Move Here"
+msgstr "Move Here"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:94
+msgid "Go to Root"
+msgstr "Go to Root"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:165
+msgid "Current location: {path}"
+msgstr "Current location: {path}"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:187
+msgid "Failed to load directory: ({code}) {message}"
+msgstr "Failed to load directory: ({code}) {message}"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:213
+msgid ".. (Parent Directory)"
+msgstr ".. (Parent Directory)"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:227
+msgid "No subfolders available"
+msgstr "No subfolders available"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:260
+msgid "Error loading directory: {error}"
+msgstr "Error loading directory: {error}"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:326
+msgid "Move failed: ({code}) {message}"
+msgstr "Move failed: ({code}) {message}"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:334
+msgid "{display_name} moved successfully"
+msgstr "{display_name} moved successfully"
+
+#: .\include\ui\controls\dialogs\contextmenu\move.py:350
+msgid "Error moving {display_name}: {error}"
+msgstr "Error moving {display_name}: {error}"
 
 #: .\include\ui\controls\dialogs\dev.py:26
 msgid "Request Name"
@@ -979,27 +1112,27 @@ msgstr "Always Overwrite"
 msgid "Always Skip"
 msgstr "Always Skip"
 
-#: .\include\ui\controls\dialogs\explorer.py:448
+#: .\include\ui\controls\dialogs\explorer.py:452
 msgid "Could not load file details"
 msgstr "Could not load file details"
 
-#: .\include\ui\controls\dialogs\explorer.py:463
+#: .\include\ui\controls\dialogs\explorer.py:470
 msgid "File size: {size}"
 msgstr "File size: {size}"
 
-#: .\include\ui\controls\dialogs\explorer.py:481
+#: .\include\ui\controls\dialogs\explorer.py:490
 msgid "Last modified: {date}"
 msgstr "Last modified: {date}"
 
-#: .\include\ui\controls\dialogs\explorer.py:490
+#: .\include\ui\controls\dialogs\explorer.py:499
 msgid "Created: {date}"
 msgstr "Created: {date}"
 
-#: .\include\ui\controls\dialogs\explorer.py:496
+#: .\include\ui\controls\dialogs\explorer.py:505
 msgid "No details available"
 msgstr "No details available"
 
-#: .\include\ui\controls\dialogs\explorer.py:512
+#: .\include\ui\controls\dialogs\explorer.py:521
 msgid "Error loading file details"
 msgstr "Error loading file details"
 
@@ -1019,6 +1152,72 @@ msgstr "Password cannot be empty"
 #: .\include\ui\controls\dialogs\password_confirm.py:125
 msgid "Invalid password"
 msgstr "Invalid password"
+
+#: .\include\ui\controls\dialogs\search.py:87
+#: .\include\ui\controls\dialogs\search.py:151
+msgid "Last modified"
+msgstr "Last modified"
+
+#: .\include\ui\controls\dialogs\search.py:128
+msgid "Search query"
+msgstr "Search query"
+
+#: .\include\ui\controls\dialogs\search.py:129
+msgid "Enter search term"
+msgstr "Enter search term"
+
+#: .\include\ui\controls\dialogs\search.py:137
+msgid "Documents"
+msgstr "Documents"
+
+#: .\include\ui\controls\dialogs\search.py:141
+msgid "Directories"
+msgstr "Directories"
+
+#: .\include\ui\controls\dialogs\search.py:147
+msgid "Sort by"
+msgstr "Sort by"
+
+#: .\include\ui\controls\dialogs\search.py:150
+msgid "Created time"
+msgstr "Created time"
+
+#: .\include\ui\controls\dialogs\search.py:160
+msgid "Sort order"
+msgstr "Sort order"
+
+#: .\include\ui\controls\dialogs\search.py:162
+msgid "Ascending"
+msgstr "Ascending"
+
+#: .\include\ui\controls\dialogs\search.py:163
+msgid "Descending"
+msgstr "Descending"
+
+#: .\include\ui\controls\dialogs\search.py:172
+msgid "Results limit"
+msgstr "Results limit"
+
+#: .\include\ui\controls\dialogs\search.py:196
+msgid "Searching..."
+msgstr "Searching..."
+
+#: .\include\ui\controls\dialogs\search.py:205
+#: .\include\ui\controls\dialogs\view_access_entries.py:112
+msgid "Close"
+msgstr "Close"
+
+#: .\include\ui\controls\dialogs\search.py:216
+msgid "Search Options"
+msgstr "Search Options"
+
+#: .\include\ui\controls\dialogs\search.py:281
+msgid "No results found for \"{query}\""
+msgstr "No results found for \"{query}\""
+
+#: .\include\ui\controls\dialogs\search.py:283
+msgid "Found {count} result(s) for \"{query}\""
+msgstr "Found {count} result(s) for \"{query}\""
 
 #: .\include\ui\controls\dialogs\selection\userpicker.py:26
 msgid "Select User"
@@ -1082,7 +1281,7 @@ msgid "Use recovery code instead"
 msgstr "Use recovery code instead"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:38
-#: .\include\ui\models\settings\overview.py:51
+#: .\include\ui\models\settings\overview.py:61
 #: .\include\ui\models\settings\twofa.py:34
 msgid "Two-Factor Authentication"
 msgstr "Two-Factor Authentication"
@@ -1152,7 +1351,7 @@ msgstr "Closing application"
 msgid "Error occurred during update: {e}"
 msgstr "Error occurred during update: {e}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:158
+#: .\include\ui\controls\dialogs\upgrade.py:160
 msgid ""
 "Authorization failed, you will not be able to install updates normally. "
 "Please allow the app to install updates in settings."
@@ -1160,25 +1359,79 @@ msgstr ""
 "Authorization failed, you will not be able to install updates normally. "
 "Please allow the app to install updates in settings."
 
-#: .\include\ui\controls\dialogs\upgrade.py:213
+#: .\include\ui\controls\dialogs\upgrade.py:215
 msgid "Downloaded: {downloaded_size} bytes"
 msgstr "Downloaded: {downloaded_size} bytes"
 
-#: .\include\ui\controls\dialogs\upgrade.py:231
+#: .\include\ui\controls\dialogs\upgrade.py:233
 msgid "Download failed, HTTP status code: {status_code}"
 msgstr "Download failed, HTTP status code: {status_code}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:240
+#: .\include\ui\controls\dialogs\upgrade.py:242
 msgid "Network error occurred during update: {strerr}"
 msgstr "Network error occurred during update: {strerr}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:247
+#: .\include\ui\controls\dialogs\upgrade.py:249
 msgid "Download timeout, please check network connection"
 msgstr "Download timeout, please check network connection"
 
-#: .\include\ui\controls\dialogs\upgrade.py:253
+#: .\include\ui\controls\dialogs\upgrade.py:255
 msgid "Unknown error occurred during download: {strerr}"
 msgstr "Unknown error occurred during download: {strerr}"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:50
+msgid "View Access Entries for {display_name}"
+msgstr "View Access Entries for {display_name}"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:62
+msgid "ID"
+msgstr "ID"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:66
+msgid "Entity Type"
+msgstr "Entity Type"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:70
+msgid "Entity Identifier"
+msgstr "Entity Identifier"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:74
+msgid "Target Type"
+msgstr "Target Type"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:78
+msgid "Target Identifier"
+msgstr "Target Identifier"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:82
+msgid "Access Type"
+msgstr "Access Type"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:94
+msgid "Actions"
+msgstr "Actions"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:106
+#: .\include\ui\controls\views\tasks.py:459
+msgid "Refresh"
+msgstr "Refresh"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:121
+msgid "Access entries for this {type}"
+msgstr "Access entries for this {type}"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:189
+#: .\include\ui\controls\dialogs\view_access_entries.py:198
+msgid "Invalid date"
+msgstr "Invalid date"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:200
+msgid "No expiry"
+msgstr "No expiry"
+
+#: .\include\ui\controls\dialogs\view_access_entries.py:207
+msgid "Revoke"
+msgstr "Revoke"
 
 #: .\include\ui\controls\dialogs\wait.py:28
 msgid "In Progress"
@@ -1254,7 +1507,7 @@ msgid "Disable SSL verification (Insecure)"
 msgstr "Disable SSL verification (Insecure)"
 
 #: .\include\ui\controls\views\connect.py:59
-#: .\include\ui\models\settings\overview.py:39
+#: .\include\ui\models\settings\overview.py:38
 msgid "Connect"
 msgstr "Connect"
 
@@ -1396,10 +1649,6 @@ msgstr "Clear completed"
 msgid "Clear failed"
 msgstr "Clear failed"
 
-#: .\include\ui\controls\views\tasks.py:459
-msgid "Refresh"
-msgstr "Refresh"
-
 #: .\include\ui\models\about.py:52
 msgid "Debugging..."
 msgstr "Debugging..."
@@ -1479,27 +1728,51 @@ msgstr "Logs"
 msgid "Management"
 msgstr "Management"
 
-#: .\include\ui\models\settings\overview.py:33
+#: .\include\ui\models\settings\connection.py:27
+msgid "Connection"
+msgstr "Connection"
+
+#: .\include\ui\models\settings\connection.py:37
+msgid "Enable proxy"
+msgstr "Enable proxy"
+
+#: .\include\ui\models\settings\connection.py:40
+msgid "Follow system proxy settings"
+msgstr "Follow system proxy settings"
+
+#: .\include\ui\models\settings\connection.py:43
+msgid "Custom Proxy"
+msgstr "Custom Proxy"
+
+#: .\include\ui\models\settings\connection.py:49
+msgid "Force IPv4"
+msgstr "Force IPv4"
+
+#: .\include\ui\models\settings\connection.py:85
+msgid "Settings Saved."
+msgstr "Settings Saved."
+
+#: .\include\ui\models\settings\overview.py:32
 msgid "Language"
 msgstr "Language"
 
-#: .\include\ui\models\settings\overview.py:34
+#: .\include\ui\models\settings\overview.py:33
 msgid "Select your preferred language"
 msgstr "Select your preferred language"
 
-#: .\include\ui\models\settings\overview.py:40
+#: .\include\ui\models\settings\overview.py:39
 msgid "Change application proxy settings"
 msgstr "Change application proxy settings"
 
-#: .\include\ui\models\settings\overview.py:45
+#: .\include\ui\models\settings\overview.py:44
 msgid "Security"
 msgstr "Security"
 
-#: .\include\ui\models\settings\overview.py:46
+#: .\include\ui\models\settings\overview.py:45
 msgid "Adjust application connection history policy"
 msgstr "Adjust application connection history policy"
 
-#: .\include\ui\models\settings\overview.py:52
+#: .\include\ui\models\settings\overview.py:62
 msgid "Manage two-factor authentication settings"
 msgstr "Manage two-factor authentication settings"
 
@@ -1559,23 +1832,23 @@ msgstr "Parent directory"
 msgid "Download added: {filename}"
 msgstr "Download added: {filename}"
 
-#: .\include\ui\util\path.py:189
+#: .\include\ui\util\path.py:190
 msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
 msgstr "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
 
-#: .\include\ui\util\path.py:197
+#: .\include\ui\util\path.py:198
 msgid "Deleting temporary files"
 msgstr "Deleting temporary files"
 
-#: .\include\ui\util\path.py:200
+#: .\include\ui\util\path.py:201
 msgid "Verifying file"
 msgstr "Verifying file"
 
-#: .\include\ui\util\path.py:204
+#: .\include\ui\util\path.py:205
 msgid "File hash mismatch: {exc}"
 msgstr "File hash mismatch: {exc}"
 
-#: .\include\ui\util\path.py:206
+#: .\include\ui\util\path.py:207
 msgid "File size mismatch: {exc}"
 msgstr "File size mismatch: {exc}"
 
@@ -1611,65 +1884,14 @@ msgid ""
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 
-#: .\include\ui\controls\dialogs\search.py
-msgid "Search query"
-msgstr "Search query"
+#~ msgid "All of the following"
+#~ msgstr "All of the following"
 
-#: .\include\ui\controls\dialogs\search.py
-msgid "Enter search term"
-msgstr "Enter search term"
+#~ msgid "Any of the following"
+#~ msgstr "Any of the following"
 
-#: .\include\ui\controls\dialogs\search.py
-msgid "Search Options"
-msgstr "Search Options"
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "Results limit"
-msgstr "Results limit"
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "No results found for \"{query}\""
-msgstr "No results found for \"{query}\""
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "Found {count} result(s) for \"{query}\""
-msgstr "Found {count} result(s) for \"{query}\""
-
-#: .\include\ui\controls\dialogs\search.py
-msgid "Searching..."
-msgstr "Searching..."
-
-#: .\include\ui\controllers\dialogs\search.py
-msgid "Search query cannot be empty"
-msgstr "Search query cannot be empty"
-
-#: .\include\ui\controllers\dialogs\search.py
-msgid "Search failed: ({code}) {message}"
-msgstr "Search failed: ({code}) {message}"
-
-#: .\include\ui\controllers\dialogs\search.py
-msgid "At least one search type must be selected"
-msgstr "At least one search type must be selected"
-
-#: .\include\ui\controls\dialogs\view_access_entries.py
-msgid "Actions"
-msgstr "Actions"
-
-#: .\include\ui\controls\dialogs\view_access_entries.py
-msgid "Revoke"
-msgstr "Revoke"
-
-#: .\include\controllers\dialogs\view_access_entries.py
-msgid "Failed to revoke access: ({code}) {message}"
-msgstr "Failed to revoke access: ({code}) {message}"
-
-#: .\include\controllers\dialogs\view_access_entries.py
-msgid "Access entry revoked successfully"
-msgstr "Access entry revoked successfully"
-
-#: .\include\controllers\dialogs\view_access_entries.py
-msgid "Failed to revoke access: {error}"
-msgstr "Failed to revoke access: {error}"
+#~ msgid "#{index}"
+#~ msgstr "#{index}"
 
 #~ msgid "ID: {file_id} (No longer exists)"
 #~ msgstr "ID: {file_id} (No longer exists)"
@@ -1688,9 +1910,6 @@ msgstr "Failed to revoke access: {error}"
 
 #~ msgid "Manage Users"
 #~ msgstr "Manage Users"
-
-#~ msgid "Delete this user group"
-#~ msgstr "Delete this user group"
 
 #~ msgid "Change display name for user group"
 #~ msgstr "Change display name for user group"
@@ -1712,9 +1931,6 @@ msgstr "Failed to revoke access: {error}"
 
 #~ msgid "Grant temporary access to this file"
 #~ msgstr "Grant temporary access to this file"
-
-#~ msgid "Change access rules for this file"
-#~ msgstr "Change access rules for this file"
 
 #~ msgid "Manage Directories"
 #~ msgstr "Manage Directories"
