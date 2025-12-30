@@ -593,22 +593,22 @@ class VisualRuleEditorNavigationRail(ft.NavigationRail):
                 ft.NavigationRailDestination(
                     icon=ft.Icons.PAGEVIEW_OUTLINED,
                     selected_icon=ft.Icons.PAGEVIEW,
-                    label="Read",
+                    label=_("Read"),
                 ),
                 ft.NavigationRailDestination(
                     icon=ft.Icon(ft.Icons.EDIT_OUTLINED),
                     selected_icon=ft.Icon(ft.Icons.EDIT),
-                    label="Write",
+                    label=_("Write"),
                 ),
                 ft.NavigationRailDestination(
                     icon=ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
                     selected_icon=ft.Icon(ft.Icons.DRIVE_FILE_MOVE),
-                    label="Move",
+                    label=_("Move"),
                 ),
                 ft.NavigationRailDestination(
                     icon=ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
                     selected_icon=ft.Icon(ft.Icons.MANAGE_ACCOUNTS),
-                    label="Manage",
+                    label=_("Manage"),
                 ),
             ],
             ref=ref,
