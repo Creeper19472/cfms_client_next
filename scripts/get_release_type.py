@@ -2,7 +2,6 @@
 """Script to determine if the current version is a prerelease based on CHANNEL constant."""
 
 import sys
-import os
 from pathlib import Path
 
 # Add src to path to import constants

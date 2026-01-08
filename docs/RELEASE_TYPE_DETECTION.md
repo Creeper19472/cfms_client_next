@@ -29,7 +29,7 @@ The workflow file `.github/workflows/desktop-and-mobile-builds.yml` includes:
 ## Example Behavior
 
 | Channel Type | Release Type | GitHub Actions `prerelease` Value |
-|-------------|--------------|-----------------------------------|
+| ------------- | -------------- | ----------------------------------- |
 | STABLE      | Normal       | `false`                          |
 | ALPHA       | Pre-release  | `true`                           |
 | BETA        | Pre-release  | `true`                           |
