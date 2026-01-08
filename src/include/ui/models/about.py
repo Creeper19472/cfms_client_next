@@ -7,7 +7,7 @@ import requests
 
 from include.classes.config import AppShared
 from include.classes.version import ChannelType
-from include.constants import APP_VERSION, BUILD_VERSION, MODIFIED
+from include.constants import APP_VERSION, BUILD_VERSION, MODIFIED, DEFAULT_UPDATE_CHANNEL
 from include.ui.controls.components.about import VersionTypeBlock
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
@@ -198,15 +198,15 @@ class AboutModel(Model):
             # Get user's preferred update channel from preferences
             app_shared = AppShared()
             channel_str = app_shared.preferences.get("settings", {}).get(
-                "update_channel", ChannelType.ALPHA.value
+                "update_channel", DEFAULT_UPDATE_CHANNEL.value
             )
             
             # Convert string to ChannelType enum
             try:
                 preferred_channel = ChannelType(channel_str)
             except ValueError:
-                # Default to alpha if invalid channel in preferences
-                preferred_channel = ChannelType.ALPHA
+                # Default to configured default if invalid channel in preferences
+                preferred_channel = DEFAULT_UPDATE_CHANNEL
 
             # Set the version to find for the running architecture.
             assert self.page.platform

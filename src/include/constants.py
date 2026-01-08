@@ -35,6 +35,9 @@ CHANNEL = ChannelType.ALPHA
 BUILD_VERSION = "v0.4.9"
 MODIFIED = "20260108"
 
+# Default update channel for user preferences
+DEFAULT_UPDATE_CHANNEL = ChannelType.ALPHA
+
 if CHANNEL == ChannelType.STABLE:
     APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED} NEXT"
 else:

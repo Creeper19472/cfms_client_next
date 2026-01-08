@@ -3,6 +3,7 @@ import flet as ft
 
 from include.classes.config import AppShared
 from include.classes.version import ChannelType
+from include.constants import DEFAULT_UPDATE_CHANNEL
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
@@ -113,7 +114,7 @@ class UpdatesSettingsModel(Model):
     async def load_settings(self):
         # Load the current channel setting
         current_channel = self.app_shared.preferences.get("settings", {}).get(
-            "update_channel", ChannelType.ALPHA.value
+            "update_channel", DEFAULT_UPDATE_CHANNEL.value
         )
         self.channel_dropdown.value = current_channel
         self.update_channel_description(current_channel)
