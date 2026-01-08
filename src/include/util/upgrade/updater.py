@@ -89,7 +89,7 @@ def parse_channel_from_body(body: str, is_prerelease: bool) -> ChannelType:
         return ChannelType.STABLE
 
 
-def get_latest_release(channel: Optional[ChannelType] = None) -> GithubRelease | None:
+def get_latest_release(channel: Optional[ChannelType] = None) -> Optional[GithubRelease]:
     """
     Get the latest release, optionally filtered by channel.
     
