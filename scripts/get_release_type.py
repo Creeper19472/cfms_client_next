@@ -21,7 +21,7 @@ def main():
     # Output in a format that GitHub Actions can use
     print(f"{str(is_prerelease).lower()}")
     
-    return 0 if not is_prerelease else 1
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

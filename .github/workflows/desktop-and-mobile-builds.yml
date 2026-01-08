@@ -92,6 +92,10 @@ jobs:
       id: release_type
       run: |
         $isPrerelease = python scripts/get_release_type.py
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to determine release type"
+          exit 1
+        }
         echo "prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
@@ -180,6 +184,10 @@ jobs:
       id: release_type
       run: |
         isPrerelease=$(python scripts/get_release_type.py)
+        if [ $? -ne 0 ]; then
+          echo "Failed to determine release type"
+          exit 1
+        fi
         echo "prerelease=$isPrerelease" >> $GITHUB_OUTPUT
 
     - name: Extract keystore
