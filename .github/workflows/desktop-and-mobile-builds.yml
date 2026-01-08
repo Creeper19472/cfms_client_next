@@ -88,6 +88,13 @@ jobs:
         python -m pip install uv
         uv sync --dev --upgrade
 
+    - name: Determine Release Type
+      id: release_type
+      run: |
+        $isPrerelease = python scripts/get_release_type.py
+        echo "prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
     - name: Flet Build Windows
       run: |
         uv run flet build windows --yes -vv --no-rich-output
@@ -116,6 +123,7 @@ jobs:
           cfms-cli-${{ github.ref }}-windows.zip
         # overwrite_files: true
         generate_release_notes: true
+        prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
 
   # build-aab:
   #   runs-on: ubuntu-latest
@@ -168,6 +176,12 @@ jobs:
         python -m pip install uv
         uv sync --upgrade
 
+    - name: Determine Release Type
+      id: release_type
+      run: |
+        isPrerelease=$(python scripts/get_release_type.py)
+        echo "prerelease=$isPrerelease" >> $GITHUB_OUTPUT
+
     - name: Extract keystore
       run: |
         mkdir -p ./build/flutter/android/app
@@ -198,3 +212,4 @@ jobs:
           build/apk/app-release.apk.sha1
         # overwrite_files: true
         # generate_release_notes: true
+        prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
