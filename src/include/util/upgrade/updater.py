@@ -70,8 +70,10 @@ def parse_channel_from_body(body: str, is_prerelease: bool) -> ChannelType:
         ChannelType enum value
     """
     # Try to find channel metadata in HTML comment
-    # Only accept valid channel types: alpha, beta, or stable
-    match = re.search(r'<!--\s*channel:\s*(alpha|beta|stable)\s*-->', body, re.IGNORECASE)
+    # Build regex pattern from valid channel types
+    valid_channels = '|'.join([c.value for c in ChannelType])
+    pattern = rf'<!--\s*channel:\s*({valid_channels})\s*-->'
+    match = re.search(pattern, body, re.IGNORECASE)
     if match:
         channel_str = match.group(1).lower()
         try:

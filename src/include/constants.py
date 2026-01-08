@@ -15,6 +15,7 @@ __all__ = [
     "DEFAULT_WINDOW_TITLE",
     "GITHUB_REPO",
     "INTEGRATED_CA_CERT",
+    "DEFAULT_UPDATE_CHANNEL",
 ]
 
 # Path Configuration
