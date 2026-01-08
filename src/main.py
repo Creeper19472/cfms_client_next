@@ -11,6 +11,7 @@ import warnings
 import flet as ft
 import flet_permission_handler as fph
 
+from include.constants import RUNTIME_PATH
 from include.classes.config import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
@@ -148,6 +149,7 @@ async def main(page: ft.Page):
     # Set runtime platform info
     assert page.platform
     app_shared.is_mobile = page.platform.is_mobile()
+    app_shared.is_production = bool(RUNTIME_PATH)
 
     # Register Flet services
     ph_service = fph.PermissionHandler()

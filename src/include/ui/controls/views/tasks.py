@@ -54,8 +54,8 @@ class TaskTile(ft.Card):
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
-            visible=task.status == DownloadTaskStatus.COMPLETED
-            and AppShared().is_mobile,
+            visible=task.status == DownloadTaskStatus.COMPLETED,
+            disabled=not AppShared().is_production,  # and AppShared().is_mobile,
         )
 
         # Pause/Resume button (only if server supports resume)

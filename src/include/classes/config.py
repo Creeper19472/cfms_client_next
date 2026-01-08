@@ -72,6 +72,7 @@ class AppShared:
         
         # Runtime constants
         self.is_mobile: bool = False
+        self.is_production: bool = False
 
         # Server configuration
         self.server_address: Optional[str] = None
