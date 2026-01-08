@@ -50,6 +50,7 @@ class UpdatesSettingsModel(Model):
                 ),
             ],
             expand=True,
+            on_change=self.channel_dropdown_change,
         )
 
         self.channel_description = ft.Text(
@@ -102,6 +103,12 @@ class UpdatesSettingsModel(Model):
             self.app_shared.preferences["settings"]["update_channel"] = selected_channel
             self.app_shared.dump_preferences()
             send_success(self.page, _("Settings Saved."))
+
+    async def channel_dropdown_change(self, event: ft.Event[ft.Dropdown]):
+        # Update description when user changes selection
+        if event.control.value:
+            self.update_channel_description(event.control.value)
+            self.update()
 
     async def load_settings(self):
         # Load the current channel setting
