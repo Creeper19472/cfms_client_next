@@ -51,7 +51,9 @@ class UpdatesSettingsModel(Model):
                 ),
             ],
             expand=True,
-            on_change=self.channel_dropdown_change,
+            expand_loose=True,
+            border_color=ft.Colors.WHITE_54,
+            on_select=self.channel_dropdown_select,
         )
 
         self.channel_description = ft.Text(
@@ -59,35 +61,13 @@ class UpdatesSettingsModel(Model):
             size=14,
             color=ft.Colors.GREY,
             expand=True,
+            expand_loose=True,
+            margin=ft.Margin(top=-5),
         )
 
         self.controls = [
-            ft.Text(
-                _("Update Settings"),
-                size=20,
-                weight=ft.FontWeight.BOLD,
-            ),
-            ft.Divider(),
             self.channel_dropdown,
             self.channel_description,
-            ft.Container(height=20),
-            ft.Text(
-                _("Channel Descriptions:"),
-                size=16,
-                weight=ft.FontWeight.BOLD,
-            ),
-            ft.Text(
-                _("• Stable: Recommended for most users. Only stable, thoroughly tested releases."),
-                size=14,
-            ),
-            ft.Text(
-                _("• Beta: Pre-release versions with new features. Generally stable but may have minor issues."),
-                size=14,
-            ),
-            ft.Text(
-                _("• Alpha: Latest development versions with cutting-edge features. May be unstable and receive frequent updates."),
-                size=14,
-            ),
         ]
 
     def did_mount(self) -> None:
@@ -105,7 +85,7 @@ class UpdatesSettingsModel(Model):
             self.app_shared.dump_preferences()
             send_success(self.page, _("Settings Saved."))
 
-    async def channel_dropdown_change(self, event: ft.Event[ft.Dropdown]):
+    async def channel_dropdown_select(self, event: ft.Event[ft.Dropdown]):
         # Update description when user changes selection
         if event.control.value:
             self.update_channel_description(event.control.value)

@@ -7,7 +7,12 @@ import requests
 
 from include.classes.config import AppShared
 from include.classes.version import ChannelType
-from include.constants import APP_VERSION, BUILD_VERSION, MODIFIED, DEFAULT_UPDATE_CHANNEL
+from include.constants import (
+    APP_VERSION,
+    BUILD_VERSION,
+    MODIFIED,
+    DEFAULT_UPDATE_CHANNEL,
+)
 from include.ui.controls.components.about import VersionTypeBlock
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
 from include.ui.controls.dialogs.whatsnew import ChangelogHistoryDialog
@@ -53,7 +58,12 @@ class AboutModel(Model):
                     icon=ft.Icons.BUG_REPORT_OUTLINED,
                     tooltip=_("Debugging..."),
                     on_click=self.debugging_button_click,
-                )
+                ),
+                ft.IconButton(
+                    icon=ft.Icons.SETTINGS_OUTLINED,
+                    tooltip=_("Updates Settings"),
+                    on_click=self.settings_button_click,
+                ),
             ],
             actions_padding=10,
         )
@@ -200,7 +210,7 @@ class AboutModel(Model):
             channel_str = app_shared.preferences.get("settings", {}).get(
                 "update_channel", DEFAULT_UPDATE_CHANNEL.value
             )
-            
+
             # Convert string to ChannelType enum
             try:
                 preferred_channel = ChannelType(channel_str)
@@ -216,7 +226,9 @@ class AboutModel(Model):
                 # Use thread pool to avoid blocking main event loop
                 # Pass the preferred channel to get_latest_release
                 loop = asyncio.get_running_loop()
-                latest = await loop.run_in_executor(None, lambda: get_latest_release(preferred_channel))
+                latest = await loop.run_in_executor(
+                    None, lambda: get_latest_release(preferred_channel)
+                )
             except requests.exceptions.ConnectionError as e:
                 send_error(
                     self.page,
@@ -232,8 +244,10 @@ class AboutModel(Model):
                 return
 
             # Display channel information
-            channel_display = _("Channel: {channel}").format(channel=latest.channel.value if latest.channel else "unknown")
-            
+            channel_display = _("Channel: {channel}").format(
+                channel=latest.channel.value if latest.channel else "unknown"
+            )
+
             self.suc_release_info.controls = [
                 ft.Text(
                     _("Current version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
@@ -321,6 +335,9 @@ class AboutModel(Model):
 
     async def debugging_button_click(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(self.page.route + "/debugging")
+
+    async def settings_button_click(self, event: ft.Event[ft.IconButton]):
+        await self.page.push_route(self.page.route + "/updates_settings")
 
     def did_mount(self) -> None:
         async def run():
