@@ -15,7 +15,6 @@ The release type is determined by the `CHANNEL` constant in `src/include/constan
 ### Scripts
 
 - `scripts/get_release_type.py`: Reads the CHANNEL constant and outputs "true" or "false" for use in GitHub Actions
-- `scripts/test_release_type.py`: Unit tests to verify the logic works correctly
 - `scripts/demo_release_type.py`: Demonstration script showing current configuration
 
 ### GitHub Workflow
