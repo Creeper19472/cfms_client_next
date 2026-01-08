@@ -234,6 +234,4 @@ jobs:
           build/apk/app-release.apk.sha1
         # overwrite_files: true
         # generate_release_notes: true
-        body: |
-          <!-- channel: ${{ steps.release_type.outputs.channel }} -->
         prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
