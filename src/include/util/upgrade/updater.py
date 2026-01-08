@@ -78,7 +78,7 @@ def parse_channel_from_body(body: str, is_prerelease: bool) -> ChannelType:
         except ValueError:
             pass  # Invalid channel, fall through to default logic
     
-    # Fallback: if prerelease flag is set, assume alpha/beta (we'll use alpha as default)
+    # Fallback: if prerelease flag is set, assume alpha as default
     # If not prerelease, it's stable
     if is_prerelease:
         return ChannelType.ALPHA

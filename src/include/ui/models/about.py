@@ -197,7 +197,9 @@ class AboutModel(Model):
         async def _impl_check_for_updates():
             # Get user's preferred update channel from preferences
             app_shared = AppShared()
-            channel_str = app_shared.preferences.get("settings", {}).get("update_channel", "alpha")
+            channel_str = app_shared.preferences.get("settings", {}).get(
+                "update_channel", ChannelType.ALPHA.value
+            )
             
             # Convert string to ChannelType enum
             try:
