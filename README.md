@@ -64,6 +64,16 @@ This script automatically updates:
 
 For more details, see [scripts/README.md](scripts/README.md).
 
+## Release Type Detection
+
+The repository uses a channel-based system to determine if GitHub releases should be marked as pre-releases or normal releases. The release type is determined by the `CHANNEL` constant in `src/include/constants.py`:
+
+- **STABLE**: Creates a normal release
+- **ALPHA**: Creates a pre-release  
+- **BETA**: Creates a pre-release
+
+For more details, see [docs/RELEASE_TYPE_DETECTION.md](docs/RELEASE_TYPE_DETECTION.md).
+
 ## Build the app
 
 ### Android
