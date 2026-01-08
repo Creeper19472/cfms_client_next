@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-05 12:33+0800\n"
+"POT-Creation-Date: 2026-01-08 18:03+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -335,6 +335,11 @@ msgid ""
 msgstr ""
 "虽然此阶段的应用程序仍在测试中，但已经变得相对稳定，更适合普通用户尝试。在发"
 "布一个或多个版本后，应用程序可能会进入稳定版本。"
+
+#: .\include\ui\controls\components\account.py:47
+#: .\include\ui\controls\dialogs\authorize.py:93
+msgid "User"
+msgstr "用户"
 
 #: .\include\ui\controls\components\explorer\bar.py:49
 #: .\include\ui\controls\dialogs\authorize.py:74
@@ -826,10 +831,6 @@ msgstr "选择实体"
 msgid "Search to see available options"
 msgstr "搜索以查看可用选项"
 
-#: .\include\ui\controls\dialogs\authorize.py:93
-msgid "User"
-msgstr "用户"
-
 #: .\include\ui\controls\dialogs\authorize.py:94
 msgid "Group"
 msgstr "组"
@@ -1305,7 +1306,7 @@ msgstr "无效的恢复代码"
 msgid "Invalid verification code"
 msgstr "验证码无效"
 
-#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:113
+#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:127
 msgid "Update"
 msgstr "更新"
 
@@ -1511,15 +1512,15 @@ msgstr "登录"
 msgid "Username cannot be empty"
 msgstr "用户名不能为空"
 
-#: .\include\ui\controls\views\more.py:62
+#: .\include\ui\controls\views\more.py:42
 msgid "Change Password"
 msgstr "修改密码"
 
-#: .\include\ui\controls\views\more.py:67
+#: .\include\ui\controls\views\more.py:47
 msgid "Settings"
 msgstr "设置"
 
-#: .\include\ui\controls\views\more.py:72
+#: .\include\ui\controls\views\more.py:52
 msgid "About"
 msgstr "关于"
 
@@ -1633,68 +1634,76 @@ msgstr "清除已完成"
 msgid "Clear failed"
 msgstr "清除失败"
 
-#: .\include\ui\models\about.py:52
+#: .\include\ui\models\about.py:59
 msgid "Debugging..."
 msgstr "调试中..."
 
-#: .\include\ui\models\about.py:68
+#: .\include\ui\models\about.py:64
+msgid "Updates Settings"
+msgstr "更新设置"
+
+#: .\include\ui\models\about.py:80
 msgid "Version: {BUILD_VERSION}"
 msgstr "版本：{BUILD_VERSION}"
 
-#: .\include\ui\models\about.py:79
+#: .\include\ui\models\about.py:93
 msgid "Copyright (C) 2025 Creeper Team"
 msgstr "版权所有 (C) 2025 Creeper Team"
 
-#: .\include\ui\models\about.py:84
+#: .\include\ui\models\about.py:98
 msgid "Licensed under Apache License Version 2.0."
 msgstr "使用 Apache License 2.0 版本授权。"
 
-#: .\include\ui\models\about.py:89
+#: .\include\ui\models\about.py:103
 msgid "View changelogs"
 msgstr "查看更新日志"
 
-#: .\include\ui\models\about.py:105
+#: .\include\ui\models\about.py:119
 msgid "Checking for updates"
 msgstr "正在检查更新"
 
-#: .\include\ui\models\about.py:107
+#: .\include\ui\models\about.py:121
 msgid "Cannot update: Cannot check for updates when running from source code."
 msgstr "无法更新：源代码运行时不能检查更新。"
 
-#: .\include\ui\models\about.py:127
+#: .\include\ui\models\about.py:141
 msgid "Software Update"
 msgstr "软件更新"
 
-#: .\include\ui\models\about.py:206
+#: .\include\ui\models\about.py:235
 msgid "Connection failed: {strerror}"
 msgstr "连接失败：{strerror}"
 
-#: .\include\ui\models\about.py:211
+#: .\include\ui\models\about.py:240
 msgid "Failed to retrieve version information"
 msgstr "未获取到版本信息"
 
-#: .\include\ui\models\about.py:219
+#: .\include\ui\models\about.py:247
+msgid "Channel: {channel}"
+msgstr "频道：{channel}"
+
+#: .\include\ui\models\about.py:253
 msgid "Current version: {APP_VERSION}"
 msgstr "当前版本：{APP_VERSION}"
 
-#: .\include\ui\models\about.py:224
+#: .\include\ui\models\about.py:258
 msgid "Latest version: {latest_version}"
 msgstr "最新版本：{latest_version}"
 
-#: .\include\ui\models\about.py:231
+#: .\include\ui\models\about.py:271
 msgid "Update Notes:"
 msgstr "更新说明："
 
-#: .\include\ui\models\about.py:244
+#: .\include\ui\models\about.py:284
 msgid "Already on the latest version"
 msgstr "已是最新版本"
 
-#: .\include\ui\models\about.py:258
+#: .\include\ui\models\about.py:298
 msgid ""
 "No package found for the corresponding architecture in the latest version"
 msgstr "未在最新版本中找到对应架构的包"
 
-#: .\include\ui\models\about.py:263
+#: .\include\ui\models\about.py:303
 msgid "No update found: Unsupported architecture"
 msgstr "没有找到更新：不支持的架构"
 
@@ -1731,6 +1740,7 @@ msgid "Force IPv4"
 msgstr "强制使用 IPv4"
 
 #: .\include\ui\models\settings\connection.py:85
+#: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr "设置已保存。"
 
@@ -1753,6 +1763,15 @@ msgstr "安全"
 #: .\include\ui\models\settings\overview.py:45
 msgid "Adjust application connection history policy"
 msgstr "调整应用记住连接历史的策略"
+
+#: .\include\ui\models\settings\overview.py:50
+#: .\include\ui\models\settings\updates.py:27
+msgid "Updates"
+msgstr "更新"
+
+#: .\include\ui\models\settings\overview.py:51
+msgid "Configure update channel preferences"
+msgstr "配置更新频道偏好"
 
 #: .\include\ui\models\settings\overview.py:62
 msgid "Manage two-factor authentication settings"
@@ -1800,6 +1819,46 @@ msgstr "请输入您的密码以禁用双因素认证。"
 #: .\include\ui\models\settings\twofa.py:268
 msgid "Two-Factor Authentication disabled"
 msgstr "双因素认证已禁用"
+
+#: .\include\ui\models\settings\updates.py:37
+msgid "Update Channel"
+msgstr "更新频道"
+
+#: .\include\ui\models\settings\updates.py:38
+msgid "Select the update channel to check for updates"
+msgstr "选择要检查的更新频道"
+
+#: .\include\ui\models\settings\updates.py:42
+msgid "Stable - Most stable releases"
+msgstr "Stable - 最稳定的发行版本"
+
+#: .\include\ui\models\settings\updates.py:46
+msgid "Beta - Pre-release testing versions"
+msgstr "Beta - 预发布的测试版本"
+
+#: .\include\ui\models\settings\updates.py:50
+msgid "Alpha - Cutting edge, frequent updates"
+msgstr "Alpha - 频繁更新的前沿开发版本"
+
+#: .\include\ui\models\settings\updates.py:106
+msgid "You will receive only stable, thoroughly tested releases."
+msgstr "您只会收到稳定且经过全面测试的版本。"
+
+#: .\include\ui\models\settings\updates.py:109
+msgid ""
+"You will receive pre-release versions with new features that are generally "
+"stable."
+msgstr "您将收到包含新功能的预发布版本，这些版本通常稳定。"
+
+#: .\include\ui\models\settings\updates.py:112
+msgid ""
+"You will receive the latest development versions with cutting-edge features. "
+"Expect frequent updates."
+msgstr "您将收到包含前沿功能的最新开发版本。预期有频繁的更新。"
+
+#: .\include\ui\models\settings\updates.py:117
+msgid "Select a channel to see its description"
+msgstr "选择一个频道来查看它的描述"
 
 #: .\include\ui\models\wizards\welcome.py:24
 msgid "Intro Wizard"

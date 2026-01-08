@@ -3,6 +3,14 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.10
+**Released on:** 2026-01-08
+
+**Title:** Channel Selector For Updates
+
+This version includes patch updates and improvements.
+
+---
 ## v0.4.9
 **Released on:** 2026-01-08
 

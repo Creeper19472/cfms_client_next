@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-05 12:33+0800\n"
+"POT-Creation-Date: 2026-01-08 18:03+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: English\n"
@@ -341,6 +341,11 @@ msgstr ""
 "Although the application at this stage is still in testing, it has become "
 "relatively stable and is more suitable for general users to try. After one "
 "or more versions are released, the application may enter a stable version."
+
+#: .\include\ui\controls\components\account.py:47
+#: .\include\ui\controls\dialogs\authorize.py:93
+msgid "User"
+msgstr "User"
 
 #: .\include\ui\controls\components\explorer\bar.py:49
 #: .\include\ui\controls\dialogs\authorize.py:74
@@ -835,10 +840,6 @@ msgstr "Select Entity"
 msgid "Search to see available options"
 msgstr "Search to see available options"
 
-#: .\include\ui\controls\dialogs\authorize.py:93
-msgid "User"
-msgstr "User"
-
 #: .\include\ui\controls\dialogs\authorize.py:94
 msgid "Group"
 msgstr "Group"
@@ -1314,7 +1315,7 @@ msgstr "Invalid recovery code"
 msgid "Invalid verification code"
 msgstr "Invalid verification code"
 
-#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:113
+#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:127
 msgid "Update"
 msgstr "Update"
 
@@ -1522,15 +1523,15 @@ msgstr "Login"
 msgid "Username cannot be empty"
 msgstr "Username cannot be empty"
 
-#: .\include\ui\controls\views\more.py:62
+#: .\include\ui\controls\views\more.py:42
 msgid "Change Password"
 msgstr "Change Password"
 
-#: .\include\ui\controls\views\more.py:67
+#: .\include\ui\controls\views\more.py:47
 msgid "Settings"
 msgstr "Settings"
 
-#: .\include\ui\controls\views\more.py:72
+#: .\include\ui\controls\views\more.py:52
 msgid "About"
 msgstr "About"
 
@@ -1644,70 +1645,77 @@ msgstr "Clear completed"
 msgid "Clear failed"
 msgstr "Clear failed"
 
-#: .\include\ui\models\about.py:52
+#: .\include\ui\models\about.py:59
 msgid "Debugging..."
 msgstr "Debugging..."
 
-#: .\include\ui\models\about.py:68
-#, fuzzy
-msgid "Version: {BUILD_VERSION}"
-msgstr "Version: {APP_VERSION}"
+#: .\include\ui\models\about.py:64
+msgid "Updates Settings"
+msgstr "Updates Settings"
 
-#: .\include\ui\models\about.py:79
+#: .\include\ui\models\about.py:80
+msgid "Version: {BUILD_VERSION}"
+msgstr "Version: {BUILD_VERSION}"
+
+#: .\include\ui\models\about.py:93
 msgid "Copyright (C) 2025 Creeper Team"
 msgstr "Copyright (C) 2025 Creeper Team"
 
-#: .\include\ui\models\about.py:84
+#: .\include\ui\models\about.py:98
 msgid "Licensed under Apache License Version 2.0."
 msgstr "Licensed under Apache License Version 2.0."
 
-#: .\include\ui\models\about.py:89
+#: .\include\ui\models\about.py:103
 msgid "View changelogs"
 msgstr "View changelogs"
 
-#: .\include\ui\models\about.py:105
+#: .\include\ui\models\about.py:119
 msgid "Checking for updates"
 msgstr "Checking for updates"
 
-#: .\include\ui\models\about.py:107
+#: .\include\ui\models\about.py:121
 msgid "Cannot update: Cannot check for updates when running from source code."
 msgstr "Cannot update: Cannot check for updates when running from source code."
 
-#: .\include\ui\models\about.py:127
+#: .\include\ui\models\about.py:141
 msgid "Software Update"
 msgstr "Software Update"
 
-#: .\include\ui\models\about.py:206
+#: .\include\ui\models\about.py:235
 msgid "Connection failed: {strerror}"
 msgstr "Connection failed: {strerror}"
 
-#: .\include\ui\models\about.py:211
+#: .\include\ui\models\about.py:240
 msgid "Failed to retrieve version information"
 msgstr "Failed to retrieve version information"
 
-#: .\include\ui\models\about.py:219
+#: .\include\ui\models\about.py:247
+msgid "Channel: {channel}"
+msgstr ""
+
+#: .\include\ui\models\about.py:253
 msgid "Current version: {APP_VERSION}"
 msgstr "Current version: {APP_VERSION}"
 
-#: .\include\ui\models\about.py:224
+#: .\include\ui\models\about.py:258
 msgid "Latest version: {latest_version}"
 msgstr "Latest version: {latest_version}"
 
-#: .\include\ui\models\about.py:231
+#: .\include\ui\models\about.py:271
 msgid "Update Notes:"
 msgstr "Update Notes:"
 
-#: .\include\ui\models\about.py:244
+#: .\include\ui\models\about.py:284
 msgid "Already on the latest version"
 msgstr "Already on the latest version"
 
-#: .\include\ui\models\about.py:258
+#: .\include\ui\models\about.py:298
 msgid ""
 "No package found for the corresponding architecture in the latest version"
 msgstr ""
 "No package found for the corresponding architecture in the latest version"
 
-#: .\include\ui\models\about.py:263
+#: .\include\ui\models\about.py:303
 msgid "No update found: Unsupported architecture"
 msgstr "No update found: Unsupported architecture"
 
@@ -1744,6 +1752,7 @@ msgid "Force IPv4"
 msgstr "Force IPv4"
 
 #: .\include\ui\models\settings\connection.py:85
+#: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr "Settings Saved."
 
@@ -1766,6 +1775,15 @@ msgstr "Security"
 #: .\include\ui\models\settings\overview.py:45
 msgid "Adjust application connection history policy"
 msgstr "Adjust application connection history policy"
+
+#: .\include\ui\models\settings\overview.py:50
+#: .\include\ui\models\settings\updates.py:27
+msgid "Updates"
+msgstr "Updates"
+
+#: .\include\ui\models\settings\overview.py:51
+msgid "Configure update channel preferences"
+msgstr ""
 
 #: .\include\ui\models\settings\overview.py:62
 msgid "Manage two-factor authentication settings"
@@ -1814,6 +1832,46 @@ msgstr "Please enter your password to disable two-factor authentication."
 #: .\include\ui\models\settings\twofa.py:268
 msgid "Two-Factor Authentication disabled"
 msgstr "Two-Factor Authentication disabled"
+
+#: .\include\ui\models\settings\updates.py:37
+msgid "Update Channel"
+msgstr "Update Channel"
+
+#: .\include\ui\models\settings\updates.py:38
+msgid "Select the update channel to check for updates"
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:42
+msgid "Stable - Most stable releases"
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:46
+msgid "Beta - Pre-release testing versions"
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:50
+msgid "Alpha - Cutting edge, frequent updates"
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:106
+msgid "You will receive only stable, thoroughly tested releases."
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:109
+msgid ""
+"You will receive pre-release versions with new features that are generally "
+"stable."
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:112
+msgid ""
+"You will receive the latest development versions with cutting-edge features. "
+"Expect frequent updates."
+msgstr ""
+
+#: .\include\ui\models\settings\updates.py:117
+msgid "Select a channel to see its description"
+msgstr ""
 
 #: .\include\ui\models\wizards\welcome.py:24
 msgid "Intro Wizard"
