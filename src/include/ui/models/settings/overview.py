@@ -45,12 +45,12 @@ class SettingsModel(Model):
                 subtitle=ft.Text(_("Adjust application connection history policy")),
                 on_click=self.configure_safety_listtile_click,
             ),
-            # ft.ListTile(
-            #     leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
-            #     title=ft.Text(_("Updates")),
-            #     subtitle=ft.Text(_("Automatically check and install updates")),
-            #     # on_click=open_change_passwd_dialog,
-            # ),
+            ft.ListTile(
+                leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
+                title=ft.Text(_("Updates")),
+                subtitle=ft.Text(_("Configure update channel preferences")),
+                on_click=self.configure_updates_listtile_click,
+            ),
         ]
 
         # Disabled for mobile devices - see issue #24
@@ -87,3 +87,6 @@ class SettingsModel(Model):
 
     async def configure_twofa_listtile_click(self, event: ft.Event[ft.ListTile]):
         await self.page.push_route(self.page.route + "/twofa_settings")
+
+    async def configure_updates_listtile_click(self, event: ft.Event[ft.ListTile]):
+        await self.page.push_route(self.page.route + "/updates_settings")

@@ -147,6 +147,7 @@ class AppShared:
                 "custom_proxy": "",
                 "enable_conn_history_logging": False,
                 "force_ipv4": False,
+                "update_channel": "alpha",  # Channel for checking updates: alpha, beta, or stable
             }
         }
 

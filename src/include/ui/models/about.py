@@ -5,6 +5,8 @@ from flet_model import Model, Router, route
 import flet as ft
 import requests
 
+from include.classes.config import AppShared
+from include.classes.version import ChannelType
 from include.constants import APP_VERSION, BUILD_VERSION, MODIFIED
 from include.ui.controls.components.about import VersionTypeBlock
 from include.ui.controls.dialogs.upgrade import UpgradeDialog
@@ -193,6 +195,16 @@ class AboutModel(Model):
         yield self.disable_interactions()
 
         async def _impl_check_for_updates():
+            # Get user's preferred update channel from preferences
+            app_shared = AppShared()
+            channel_str = app_shared.preferences.get("settings", {}).get("update_channel", "alpha")
+            
+            # Convert string to ChannelType enum
+            try:
+                preferred_channel = ChannelType(channel_str)
+            except ValueError:
+                # Default to alpha if invalid channel in preferences
+                preferred_channel = ChannelType.ALPHA
 
             # Set the version to find for the running architecture.
             assert self.page.platform
@@ -200,8 +212,9 @@ class AboutModel(Model):
 
             try:
                 # Use thread pool to avoid blocking main event loop
+                # Pass the preferred channel to get_latest_release
                 loop = asyncio.get_running_loop()
-                latest = await loop.run_in_executor(None, get_latest_release)
+                latest = await loop.run_in_executor(None, lambda: get_latest_release(preferred_channel))
             except requests.exceptions.ConnectionError as e:
                 send_error(
                     self.page,
@@ -216,6 +229,9 @@ class AboutModel(Model):
                 self.suc_unavailable_text.visible = True
                 return
 
+            # Display channel information
+            channel_display = _("Channel: {channel}").format(channel=latest.channel.value if latest.channel else "unknown")
+            
             self.suc_release_info.controls = [
                 ft.Text(
                     _("Current version: {APP_VERSION}").format(APP_VERSION=APP_VERSION),
@@ -228,6 +244,12 @@ class AboutModel(Model):
                     ),
                     size=16,
                     text_align=ft.TextAlign.LEFT,
+                ),
+                ft.Text(
+                    channel_display,
+                    size=14,
+                    text_align=ft.TextAlign.LEFT,
+                    color=ft.Colors.GREY,
                 ),
                 ft.Text(
                     _("Update Notes:"),

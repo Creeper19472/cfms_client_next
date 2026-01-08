@@ -1,8 +1,10 @@
 from typing import Optional
 from enum import Enum
+import re
 import requests
 
 from include.constants import GITHUB_REPO
+from include.classes.version import ChannelType
 from include.util.locale import get_translation
 
 t = get_translation()
@@ -44,40 +46,136 @@ class GithubRelease:
         info: str = "",
         release_link: str = "",
         assets: list[GithubAsset] = [],
+        channel: Optional[ChannelType] = None,
     ):
         self.version = version  # <- tag_name
         self.info = info  # <- body
         self.release_link = release_link  # <- html_url
         self.assets = assets  # <- assets
+        self.channel = channel  # <- parsed from body or prerelease flag
 
 
-def get_latest_release() -> GithubRelease | None:
-    # check for updates
+def parse_channel_from_body(body: str, is_prerelease: bool) -> ChannelType:
+    """
+    Parse channel type from release body.
+    
+    Looks for structured metadata like: <!-- channel: alpha -->
+    Falls back to prerelease flag if metadata not found.
+    
+    Args:
+        body: Release body text
+        is_prerelease: Whether the release is marked as prerelease
+        
+    Returns:
+        ChannelType enum value
+    """
+    # Try to find channel metadata in HTML comment
+    match = re.search(r'<!--\s*channel:\s*(\w+)\s*-->', body)
+    if match:
+        channel_str = match.group(1).lower()
+        try:
+            return ChannelType(channel_str)
+        except ValueError:
+            pass  # Invalid channel, fall through to default logic
+    
+    # Fallback: if prerelease flag is set, assume alpha/beta (we'll use alpha as default)
+    # If not prerelease, it's stable
+    if is_prerelease:
+        return ChannelType.ALPHA
+    else:
+        return ChannelType.STABLE
+
+
+def get_latest_release(channel: Optional[ChannelType] = None) -> GithubRelease | None:
+    """
+    Get the latest release, optionally filtered by channel.
+    
+    Args:
+        channel: If provided, only returns releases matching this channel.
+                If None, returns the latest stable release (GitHub's /releases/latest).
+    
+    Returns:
+        GithubRelease object or None if no matching release found
+    """
+    # If no channel specified or stable channel, use /releases/latest endpoint
+    if channel is None or channel == ChannelType.STABLE:
+        try:
+            resp = requests.get(
+                f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+            )
+            if resp.status_code != 200:
+                return None
+        except requests.exceptions.ConnectionError:
+            raise  # leave it to the parent to handle
+
+        release_data = resp.json()
+        assets = []
+        for asset in release_data["assets"]:
+            assets.append(
+                GithubAsset(
+                    name=asset["name"],
+                    digest=AssetDigest(asset["digest"]),
+                    download_link=asset["browser_download_url"],
+                )
+            )
+
+        parsed_channel = parse_channel_from_body(
+            release_data.get("body", ""),
+            release_data.get("prerelease", False)
+        )
+
+        return GithubRelease(
+            version=release_data["tag_name"],
+            info=release_data["body"],
+            release_link=release_data["html_url"],
+            assets=assets,
+            channel=parsed_channel,
+        )
+    
+    # For alpha/beta channels, fetch all releases and filter
     try:
         resp = requests.get(
-            f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+            f"https://api.github.com/repos/{GITHUB_REPO}/releases"
         )
         if resp.status_code != 200:
-            return
+            return None
     except requests.exceptions.ConnectionError:
         raise  # leave it to the parent to handle
 
-    assets = []
-    for asset in resp.json()["assets"]:
-        assets.append(
-            GithubAsset(
-                name=asset["name"],
-                digest=AssetDigest(asset["digest"]),
-                download_link=asset["browser_download_url"],
-            )
+    releases_data = resp.json()
+    
+    # Filter and find the latest release matching the requested channel
+    for release_data in releases_data:
+        parsed_channel = parse_channel_from_body(
+            release_data.get("body", ""),
+            release_data.get("prerelease", False)
         )
+        
+        # Skip if channel doesn't match
+        if parsed_channel != channel:
+            continue
+        
+        # Found a matching release
+        assets = []
+        for asset in release_data["assets"]:
+            assets.append(
+                GithubAsset(
+                    name=asset["name"],
+                    digest=AssetDigest(asset["digest"]),
+                    download_link=asset["browser_download_url"],
+                )
+            )
 
-    return GithubRelease(
-        version=resp.json()["tag_name"],
-        info=resp.json()["body"],
-        release_link=resp.json()["html_url"],
-        assets=assets,
-    )
+        return GithubRelease(
+            version=release_data["tag_name"],
+            info=release_data["body"],
+            release_link=release_data["html_url"],
+            assets=assets,
+            channel=parsed_channel,
+        )
+    
+    # No matching release found
+    return None
 
 
 def is_new_version(

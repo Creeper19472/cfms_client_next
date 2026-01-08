@@ -96,7 +96,13 @@ jobs:
           Write-Error "Failed to determine release type"
           exit 1
         }
+        $channelName = python scripts/get_channel_name.py
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Failed to determine channel name"
+          exit 1
+        }
         echo "prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+        echo "channel=$channelName" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
     - name: Flet Build Windows
@@ -127,6 +133,8 @@ jobs:
           cfms-cli-${{ github.ref }}-windows.zip
         # overwrite_files: true
         generate_release_notes: true
+        body: |
+          <!-- channel: ${{ steps.release_type.outputs.channel }} -->
         prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
 
   # build-aab:
@@ -188,7 +196,13 @@ jobs:
           echo "Failed to determine release type"
           exit 1
         fi
+        channelName=$(python scripts/get_channel_name.py)
+        if [ $? -ne 0 ]; then
+          echo "Failed to determine channel name"
+          exit 1
+        fi
         echo "prerelease=$isPrerelease" >> $GITHUB_OUTPUT
+        echo "channel=$channelName" >> $GITHUB_OUTPUT
 
     - name: Extract keystore
       run: |
@@ -220,4 +234,6 @@ jobs:
           build/apk/app-release.apk.sha1
         # overwrite_files: true
         # generate_release_notes: true
+        body: |
+          <!-- channel: ${{ steps.release_type.outputs.channel }} -->
         prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
