@@ -27,7 +27,7 @@ class UpdatesSettingsModel(Model):
             title=ft.Text(_("Updates")),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
             actions=[
-                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self.save_button_click)
+                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self.save_button_on_click)
             ],
             actions_padding=10,
         )
@@ -53,7 +53,7 @@ class UpdatesSettingsModel(Model):
             expand=True,
             expand_loose=True,
             border_color=ft.Colors.WHITE_54,
-            on_select=self.channel_dropdown_select,
+            on_select=self.channel_dropdown_on_select,
         )
 
         self.channel_description = ft.Text(
@@ -77,7 +77,7 @@ class UpdatesSettingsModel(Model):
     async def _go_back(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
 
-    async def save_button_click(self, event: ft.Event[ft.IconButton]):
+    async def save_button_on_click(self, event: ft.Event[ft.IconButton]):
         # Save the selected channel to preferences
         selected_channel = self.channel_dropdown.value
         if selected_channel:
@@ -85,7 +85,7 @@ class UpdatesSettingsModel(Model):
             self.app_shared.dump_preferences()
             send_success(self.page, _("Settings Saved."))
 
-    async def channel_dropdown_select(self, event: ft.Event[ft.Dropdown]):
+    async def channel_dropdown_on_select(self, event: ft.Event[ft.Dropdown]):
         # Update description when user changes selection
         if event.control.value:
             self.update_channel_description(event.control.value)
