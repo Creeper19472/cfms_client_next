@@ -76,10 +76,7 @@ def parse_channel_from_body(body: str, is_prerelease: bool) -> ChannelType:
     match = re.search(pattern, body, re.IGNORECASE)
     if match:
         channel_str = match.group(1).lower()
-        try:
-            return ChannelType(channel_str)
-        except ValueError:
-            pass  # Invalid channel, fall through to default logic
+        return ChannelType(channel_str)
     
     # Fallback: if prerelease flag is set, assume alpha as default
     # If not prerelease, it's stable
