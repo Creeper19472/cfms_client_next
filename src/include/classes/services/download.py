@@ -616,6 +616,7 @@ class DownloadManagerService(BaseService):
     def delete_task_with_file(self, task_id: str) -> tuple[bool, str | None]:
         """
         Delete a completed task and its associated file.
+        Also deletes all other tasks pointing to the same file path.
 
         Args:
             task_id: ID of the task to delete
@@ -636,22 +637,39 @@ class DownloadManagerService(BaseService):
             )
             return False, "Task is not completed"
 
+        file_path = task.file_path
+
+        # Find all tasks pointing to the same file path
+        tasks_with_same_file = [
+            t for t in self.tasks.values() if t.file_path == file_path
+        ]
+
         # Delete the file if it exists
-        if os.path.exists(task.file_path):
+        if os.path.exists(file_path):
             try:
-                os.remove(task.file_path)
-                self.logger.info(f"Deleted file: {task.file_path}")
+                os.remove(file_path)
+                self.logger.info(f"Deleted file: {file_path}")
             except Exception as e:
                 error_msg = f"Failed to delete file: {str(e)}"
                 self.logger.error(
-                    f"Failed to delete file {task.file_path}: {e}", exc_info=True
+                    f"Failed to delete file {file_path}: {e}", exc_info=True
                 )
-                # Do not delete task if file deletion fails
+                # Do not delete any tasks if file deletion fails
                 return False, error_msg
 
-        # Remove task from dictionary
-        del self.tasks[task_id]
-        self.logger.info(f"Deleted task: {task.filename} (task_id: {task_id})")
+        # Remove all tasks with the same file path
+        deleted_count = 0
+        for t in tasks_with_same_file:
+            if t.task_id in self.tasks:
+                # Notify listeners before removing
+                self._notify_task_update(t)
+                del self.tasks[t.task_id]
+                deleted_count += 1
+                self.logger.info(f"Deleted task: {t.filename} (task_id: {t.task_id})")
+
+        self.logger.info(
+            f"Deleted {deleted_count} task(s) associated with file: {file_path}"
+        )
 
         # Save tasks after deletion
         if self.enable_persistence:

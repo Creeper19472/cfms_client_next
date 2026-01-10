@@ -148,7 +148,7 @@ class TaskTile(ft.Card):
                 weight=ft.FontWeight.BOLD,
                 color=ft.Colors.WHITE,
             ),
-            bgcolor=ft.Colors.GREY,
+            bgcolor=ft.Colors.RED,
             padding=ft.Padding.symmetric(horizontal=6, vertical=2),
             border_radius=10,
             visible=task.status == DownloadTaskStatus.COMPLETED
