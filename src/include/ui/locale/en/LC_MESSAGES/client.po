@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-08 18:03+0800\n"
+"POT-Creation-Date: 2026-01-10 13:15+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: English\n"
@@ -517,7 +517,7 @@ msgstr "Source Code"
 #: .\include\ui\controls\dialogs\twofa_setup.py:90
 #: .\include\ui\controls\dialogs\twofa_verify.py:80
 #: .\include\ui\controls\dialogs\upgrade.py:41
-#: .\include\ui\controls\views\tasks.py:92
+#: .\include\ui\controls\views\tasks.py:108
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -535,7 +535,7 @@ msgid "Add Rule Group"
 msgstr "Add Rule Group"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\views\tasks.py:370
+#: .\include\ui\controls\views\tasks.py:457
 msgid "All"
 msgstr "All"
 
@@ -1408,7 +1408,7 @@ msgid "Actions"
 msgstr "Actions"
 
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:459
+#: .\include\ui\controls\views\tasks.py:546
 msgid "Refresh"
 msgstr "Refresh"
 
@@ -1470,7 +1470,7 @@ msgid "User List"
 msgstr "User List"
 
 #: .\include\ui\controls\views\admin\account.py:109
-#: .\include\ui\controls\views\admin\group.py:113 .\include\ui\util\path.py:59
+#: .\include\ui\controls\views\admin\group.py:113 .\include\ui\util\path.py:53
 msgid "Load failed: ({code}) {message}"
 msgstr "Load failed: ({code}) {message}"
 
@@ -1478,15 +1478,15 @@ msgstr "Load failed: ({code}) {message}"
 msgid "Audit Logs"
 msgstr "Audit Logs"
 
-#: .\include\ui\controls\views\admin\audit.py:215
+#: .\include\ui\controls\views\admin\audit.py:218
 msgid "Load failed: ({code}) {errmsg}"
 msgstr "Load failed: ({code}) {errmsg}"
 
-#: .\include\ui\controls\views\admin\audit.py:227
+#: .\include\ui\controls\views\admin\audit.py:230
 msgid "{view_start} - {view_end} of {total} items"
 msgstr "{view_start} - {view_end} of {total} items"
 
-#: .\include\ui\controls\views\admin\audit.py:248
+#: .\include\ui\controls\views\admin\audit.py:251
 msgid "Load failed: {errstr}"
 msgstr "Load failed: {errstr}"
 
@@ -1494,20 +1494,20 @@ msgstr "Load failed: {errstr}"
 msgid "User Group List"
 msgstr "User Group List"
 
-#: .\include\ui\controls\views\connect.py:39
+#: .\include\ui\controls\views\connect.py:40
 msgid "Server Address"
 msgstr "Server Address"
 
-#: .\include\ui\controls\views\connect.py:55
+#: .\include\ui\controls\views\connect.py:56
 msgid "Disable SSL verification (Insecure)"
 msgstr "Disable SSL verification (Insecure)"
 
-#: .\include\ui\controls\views\connect.py:59
+#: .\include\ui\controls\views\connect.py:63
 #: .\include\ui\models\settings\overview.py:38
 msgid "Connect"
 msgstr "Connect"
 
-#: .\include\ui\controls\views\connect.py:134
+#: .\include\ui\controls\views\connect.py:138
 msgid "Invalid server address"
 msgstr "Invalid server address"
 
@@ -1515,9 +1515,14 @@ msgstr "Invalid server address"
 msgid "File Management"
 msgstr "File Management"
 
+#: .\include\ui\controls\views\login.py:63
 #: .\include\ui\controls\views\login.py:74
 msgid "Login"
 msgstr "Login"
+
+#: .\include\ui\controls\views\login.py:68
+msgid "Disconnect"
+msgstr "Disconnect"
 
 #: .\include\ui\controls\views\login.py:136
 msgid "Username cannot be empty"
@@ -1535,113 +1540,125 @@ msgstr "Settings"
 msgid "About"
 msgstr "About"
 
-#: .\include\ui\controls\views\tasks.py:55
+#: .\include\ui\controls\views\tasks.py:63
 msgid "Open file"
 msgstr "Open file"
 
-#: .\include\ui\controls\views\tasks.py:71
-#: .\include\ui\controls\views\tasks.py:297
+#: .\include\ui\controls\views\tasks.py:72
+msgid "Delete file and task"
+msgstr "Delete file and task"
+
+#: .\include\ui\controls\views\tasks.py:87
+#: .\include\ui\controls\views\tasks.py:348
 msgid "Pause"
 msgstr "Pause"
 
-#: .\include\ui\controls\views\tasks.py:73
-#: .\include\ui\controls\views\tasks.py:297
+#: .\include\ui\controls\views\tasks.py:89
+#: .\include\ui\controls\views\tasks.py:348
 msgid "Resume"
 msgstr "Resume"
 
-#: .\include\ui\controls\views\tasks.py:209
+#: .\include\ui\controls\views\tasks.py:146
+msgid "File missing"
+msgstr "File missing"
+
+#: .\include\ui\controls\views\tasks.py:245
 msgid "Pending"
 msgstr "Pending"
 
-#: .\include\ui\controls\views\tasks.py:210
+#: .\include\ui\controls\views\tasks.py:246
 msgid "Downloading"
 msgstr "Downloading"
 
-#: .\include\ui\controls\views\tasks.py:211
-#: .\include\ui\controls\views\tasks.py:372
+#: .\include\ui\controls\views\tasks.py:247
+#: .\include\ui\controls\views\tasks.py:459
 msgid "Paused"
 msgstr "Paused"
 
-#: .\include\ui\controls\views\tasks.py:212
+#: .\include\ui\controls\views\tasks.py:248
 msgid "Decrypting"
 msgstr "Decrypting"
 
-#: .\include\ui\controls\views\tasks.py:213
+#: .\include\ui\controls\views\tasks.py:249
 msgid "Verifying"
 msgstr "Verifying"
 
-#: .\include\ui\controls\views\tasks.py:214
-#: .\include\ui\controls\views\tasks.py:374
+#: .\include\ui\controls\views\tasks.py:250
+#: .\include\ui\controls\views\tasks.py:461
 msgid "Completed"
 msgstr "Completed"
 
-#: .\include\ui\controls\views\tasks.py:215
-#: .\include\ui\controls\views\tasks.py:375
+#: .\include\ui\controls\views\tasks.py:251
+#: .\include\ui\controls\views\tasks.py:462
 msgid "Failed"
 msgstr "Failed"
 
-#: .\include\ui\controls\views\tasks.py:216
+#: .\include\ui\controls\views\tasks.py:252
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: .\include\ui\controls\views\tasks.py:217
-#: .\include\ui\controls\views\tasks.py:373
+#: .\include\ui\controls\views\tasks.py:253
+#: .\include\ui\controls\views\tasks.py:460
 msgid "Scheduled"
 msgstr "Scheduled"
 
-#: .\include\ui\controls\views\tasks.py:219
+#: .\include\ui\controls\views\tasks.py:255
 msgid "Unknown"
 msgstr "Unknown"
 
-#: .\include\ui\controls\views\tasks.py:233
+#: .\include\ui\controls\views\tasks.py:269
 msgid "Download completed"
 msgstr "Download completed"
 
-#: .\include\ui\controls\views\tasks.py:248
+#: .\include\ui\controls\views\tasks.py:284
 msgid "Waiting to start..."
 msgstr "Waiting to start..."
 
-#: .\include\ui\controls\views\tasks.py:341
+#: .\include\ui\controls\views\tasks.py:408
 msgid "Failed to open file: {error}"
 msgstr "Failed to open file: {error}"
 
-#: .\include\ui\controls\views\tasks.py:367
+#: .\include\ui\controls\views\tasks.py:428
+msgid "Failed to delete: {error}"
+msgstr "Failed to delete: {error}"
+
+#: .\include\ui\controls\views\tasks.py:454
 msgid "Filter"
 msgstr "Filter"
 
-#: .\include\ui\controls\views\tasks.py:371
+#: .\include\ui\controls\views\tasks.py:458
 msgid "Active"
 msgstr "Active"
 
-#: .\include\ui\controls\views\tasks.py:399
+#: .\include\ui\controls\views\tasks.py:486
 msgid "No download tasks"
 msgstr "No download tasks"
 
-#: .\include\ui\controls\views\tasks.py:418
+#: .\include\ui\controls\views\tasks.py:505
 msgid "Download Tasks"
 msgstr "Download Tasks"
 
-#: .\include\ui\controls\views\tasks.py:427
+#: .\include\ui\controls\views\tasks.py:514
 msgid "More actions"
 msgstr "More actions"
 
-#: .\include\ui\controls\views\tasks.py:430
+#: .\include\ui\controls\views\tasks.py:517
 msgid "Pause all active"
 msgstr "Pause all active"
 
-#: .\include\ui\controls\views\tasks.py:435
+#: .\include\ui\controls\views\tasks.py:522
 msgid "Resume all paused"
 msgstr "Resume all paused"
 
-#: .\include\ui\controls\views\tasks.py:440
+#: .\include\ui\controls\views\tasks.py:527
 msgid "Cancel all pending"
 msgstr "Cancel all pending"
 
-#: .\include\ui\controls\views\tasks.py:446
+#: .\include\ui\controls\views\tasks.py:533
 msgid "Clear completed"
 msgstr "Clear completed"
 
-#: .\include\ui\controls\views\tasks.py:451
+#: .\include\ui\controls\views\tasks.py:538
 msgid "Clear failed"
 msgstr "Clear failed"
 
@@ -1881,29 +1898,9 @@ msgstr "Intro Wizard"
 msgid "Parent directory"
 msgstr "Parent directory"
 
-#: .\include\ui\util\path.py:145
+#: .\include\ui\util\path.py:137
 msgid "Download added: {filename}"
 msgstr "Download added: {filename}"
-
-#: .\include\ui\util\path.py:190
-msgid "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
-msgstr "Decrypting chunk [{decrypted_chunks}/{total_chunks}]"
-
-#: .\include\ui\util\path.py:198
-msgid "Deleting temporary files"
-msgstr "Deleting temporary files"
-
-#: .\include\ui\util\path.py:201
-msgid "Verifying file"
-msgstr "Verifying file"
-
-#: .\include\ui\util\path.py:205
-msgid "File hash mismatch: {exc}"
-msgstr "File hash mismatch: {exc}"
-
-#: .\include\ui\util\path.py:207
-msgid "File size mismatch: {exc}"
-msgstr "File size mismatch: {exc}"
 
 #: .\include\ui\util\quotes.py:15
 msgid ""
@@ -1936,31 +1933,3 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
-
-#: .\include\ui\controls\views\tasks.py:71
-msgid "Delete file and task"
-msgstr "Delete file and task"
-
-#: .\include\ui\controls\views\tasks.py:148
-msgid "File missing"
-msgstr "File missing"
-
-#: .\include\ui\controls\views\tasks.py:440
-msgid "Confirm deletion"
-msgstr "Confirm deletion"
-
-#: .\include\ui\controls\views\tasks.py:442
-msgid "Are you sure you want to delete this file and task?\n\nFile: {filename}"
-msgstr "Are you sure you want to delete this file and task?\n\nFile: {filename}"
-
-#: .\include\ui\controls\views\tasks.py:425
-msgid "File and task deleted successfully"
-msgstr "File and task deleted successfully"
-
-#: .\include\ui\controls\views\tasks.py:389
-msgid "File not found: {filename}"
-msgstr "File not found: {filename}"
-
-#: .\include\ui\controls\views\tasks.py:433
-msgid "Failed to delete: {error}"
-msgstr "Failed to delete: {error}"
