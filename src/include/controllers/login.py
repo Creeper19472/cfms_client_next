@@ -37,7 +37,7 @@ class LoginFormController(BaseController["LoginForm"]):
 
         if (code := response["code"]) == 200:
             # Regular login without 2FA
-            self._complete_login(username, response["data"])
+            await self._complete_login(username, response["data"])
 
         elif code == 202:
             # Server indicates 2FA verification is required
@@ -74,8 +74,16 @@ class LoginFormController(BaseController["LoginForm"]):
                 )
             )
     
-    def _complete_login(self, username: str, data: dict):
+    async def _complete_login(self, username: str, data: dict):
         """Complete the login process after authentication."""
+        # Save current user's tasks before switching users
+        if self.app_shared.service_manager and self.app_shared.username and self.app_shared.username != username:
+            download_service = self.app_shared.service_manager.get_service("download_manager")
+            if download_service:
+                # Save tasks for the current user before switching
+                # This is important to prevent data loss when switching users
+                await download_service._save_tasks()
+        
         self.app_shared.username = username
         self.app_shared.nickname = data.get("nickname")
         self.app_shared.token = data["token"]
@@ -90,7 +98,7 @@ class LoginFormController(BaseController["LoginForm"]):
         if self.app_shared.service_manager:
             download_service = self.app_shared.service_manager.get_service("download_manager")
             if download_service:
-                self.control.page.run_task(download_service.reload_tasks_for_user)
+                await download_service.reload_tasks_for_user()
 
         self.control.clear_fields()
         self.control.page.run_task(self.control.page.push_route, "/home")
@@ -121,7 +129,7 @@ class LoginFormController(BaseController["LoginForm"]):
             
             if response["code"] == 200:
                 assert self.app_shared.username
-                self._complete_login(self.app_shared.username, response["data"])
+                await self._complete_login(self.app_shared.username, response["data"])
                 return True
             else:
                 return False

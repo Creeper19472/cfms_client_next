@@ -591,22 +591,22 @@ class DownloadManagerService(BaseService):
         Reload tasks for the current user.
         
         This method should be called after a user logs in to load their specific tasks.
-        It saves the current tasks (if any) and then loads the tasks for the newly logged-in user.
+        Note: This method does NOT save the previous user's tasks before clearing, 
+        as tasks are automatically saved periodically and on service stop. 
+        The username should already be set to the new user before calling this method.
         """
         self.logger.info(f"Reloading tasks for user '{self.app_shared.username or 'anonymous'}'")
         
-        # Save current tasks before clearing (in case we're switching users)
-        if self.enable_persistence and self.tasks:
-            await self._save_tasks()
-        
-        # Clear current tasks
+        # Clear current tasks (from previous user or initial state)
+        # We don't save here because the username has already been changed,
+        # and tasks are auto-saved periodically anyway
         self.tasks.clear()
         
         # Load tasks for the current user
         if self.enable_persistence:
             await self._load_tasks()
         
-        # Notify UI about the change (all tasks were cleared and reloaded)
+        # Log the result
         self.logger.debug(f"Loaded {len(self.tasks)} tasks for user '{self.app_shared.username or 'anonymous'}'")
 
     def clear_completed_tasks(self) -> int:
