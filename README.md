@@ -62,8 +62,6 @@ This script automatically updates:
 - `pyproject.toml` (version)
 - `src/include/ui/controls/dialogs/CHANGELOG.md` (release entry)
 
-For more details, see [scripts/README.md](scripts/README.md).
-
 ## Release Type Detection
 
 The repository uses a channel-based system to determine if GitHub releases should be marked as pre-releases or normal releases. The release type is determined by the `CHANNEL` constant in `src/include/constants.py`:
@@ -82,7 +80,7 @@ For more details, see [docs/RELEASE_TYPE_DETECTION.md](docs/RELEASE_TYPE_DETECTI
 flet build apk -v
 ```
 
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://flet.dev/docs/publish/android/).
+For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://docs.flet.dev/publish/android/).
 
 ### iOS
 
@@ -90,7 +88,7 @@ For more details on building and signing `.apk` or `.aab`, refer to the [Android
 flet build ipa -v
 ```
 
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://flet.dev/docs/publish/ios/).
+For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://docs.flet.dev/publish/ios/).
 
 ### macOS
 
@@ -98,7 +96,7 @@ For more details on building and signing `.ipa`, refer to the [iOS Packaging Gui
 flet build macos -v
 ```
 
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://flet.dev/docs/publish/macos/).
+For more details on building macOS package, refer to the [macOS Packaging Guide](https://docs.flet.dev/publish/macos/).
 
 ### Linux
 
@@ -106,7 +104,7 @@ For more details on building macOS package, refer to the [macOS Packaging Guide]
 flet build linux -v
 ```
 
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://flet.dev/docs/publish/linux/).
+For more details on building Linux package, refer to the [Linux Packaging Guide](https://docs.flet.dev/publish/linux/).
 
 ### Windows
 
@@ -114,4 +112,4 @@ For more details on building Linux package, refer to the [Linux Packaging Guide]
 flet build windows -v
 ```
 
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
+For more details on building Windows package, refer to the [Windows Packaging Guide](https://docs.flet.dev/publish/windows/).
