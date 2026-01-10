@@ -728,6 +728,9 @@ class DownloadManagerService(BaseService):
     ) -> DownloadTask:
         """
         Add a new download task to the queue.
+        
+        If a completed task already exists with the same file_path, it will be removed
+        since the file will be overwritten by this new download.
 
         Args:
             task_id: Server task ID for the download
@@ -743,6 +746,25 @@ class DownloadManagerService(BaseService):
         Returns:
             The created DownloadTask instance
         """
+        # Check for existing completed tasks with the same file_path
+        # These will be overwritten, so remove them to avoid confusion
+        tasks_to_remove = []
+        for existing_task_id, existing_task in self.tasks.items():
+            if (existing_task.file_path == file_path and 
+                existing_task.status == DownloadTaskStatus.COMPLETED):
+                tasks_to_remove.append(existing_task_id)
+                self.logger.info(
+                    f"Removing old completed task {existing_task_id} for {existing_task.filename} "
+                    f"as new task will overwrite the file at {file_path}"
+                )
+        
+        # Remove old completed tasks
+        for task_id_to_remove in tasks_to_remove:
+            # Notify before removing
+            old_task = self.tasks[task_id_to_remove]
+            self._notify_task_update(old_task)
+            del self.tasks[task_id_to_remove]
+        
         # Determine initial status
         if scheduled_time and scheduled_time > time.time():
             status = DownloadTaskStatus.SCHEDULED
