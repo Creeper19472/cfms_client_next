@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.4.13
+**Released on:** 2026-01-10
+
+**Title:** Separate Task Lists
+
+This version adjusts the way the transfer task list is stored, so that each user 
+at each server address has their own independent storage file.
+
+---
 ## v0.4.12
 **Released on:** 2026-01-10
 
