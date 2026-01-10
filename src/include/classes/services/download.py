@@ -16,6 +16,9 @@ from include.util.transfer import receive_file_from_server
 
 __all__ = ["DownloadManagerService"]
 
+# Directory for task persistence (similar to user_preferences)
+DOWNLOAD_TASKS_PATH = f"{FLET_APP_STORAGE_DATA}/download_tasks"
+
 # Legacy path for task persistence (kept for backward compatibility)
 TASKS_PERSISTENCE_FILE_LEGACY = f"{FLET_APP_STORAGE_DATA}/download_tasks.json"
 
@@ -417,14 +420,23 @@ class DownloadManagerService(BaseService):
         """
         Get the user-specific persistence file path.
         
+        Uses the same pattern as user_preferences: {server_address_hash}_{username}.json
+        This ensures task lists are separated by both server and user.
+        
         Returns:
-            Path to the user-specific persistence file. If no user is logged in,
-            returns the legacy shared file path for backward compatibility.
+            Path to the user-specific persistence file. If no user is logged in or
+            server address is not set, returns the legacy shared file path for 
+            backward compatibility.
         """
         username = self.app_shared.username
         if username:
-            # Use user-specific file path
-            return f"{FLET_APP_STORAGE_DATA}/download_tasks_{username}.json"
+            try:
+                server_hash = self.app_shared.server_address_hash
+                # Use server_hash + username pattern like user_preferences
+                return f"{DOWNLOAD_TASKS_PATH}/{server_hash}_{username}.json"
+            except (ValueError, AttributeError):
+                # Fall back to legacy if server address not set
+                return TASKS_PERSISTENCE_FILE_LEGACY
         else:
             # Fall back to legacy shared file path when no user is logged in
             return TASKS_PERSISTENCE_FILE_LEGACY
@@ -471,7 +483,7 @@ class DownloadManagerService(BaseService):
             with open(persistence_file, "w") as f:
                 json.dump(tasks_to_save, f, indent=2)
 
-            self.logger.debug(f"Saved {len(tasks_to_save)} tasks to disk for user '{self.app_shared.username or 'anonymous'}'")
+            self.logger.debug(f"Saved {len(tasks_to_save)} tasks to disk (file: {os.path.basename(persistence_file)})")
 
         except Exception as e:
             self.logger.error(f"Failed to save tasks: {e}", exc_info=True)
@@ -527,8 +539,7 @@ class DownloadManagerService(BaseService):
 
                 self.tasks[task_id] = task
 
-            self.logger.info(f"Loaded {len(self.tasks)} tasks from disk for user '{self.app_shared.username or 'anonymous'}'")
-
+            self.logger.info(f"Loaded {len(self.tasks)} tasks from disk (file: {os.path.basename(persistence_file)})")
 
         except Exception as e:
             self.logger.error(f"Failed to load tasks: {e}", exc_info=True)
@@ -591,6 +602,9 @@ class DownloadManagerService(BaseService):
         Reload tasks for the current user.
         
         This method should be called after a user logs in to load their specific tasks.
+        It clears current tasks in memory and loads the tasks for the newly logged-in user
+        from their user-specific persistence file.
+        
         Note: This method does NOT save the previous user's tasks before clearing, 
         as tasks are automatically saved periodically and on service stop. 
         The username should already be set to the new user before calling this method.
@@ -607,7 +621,7 @@ class DownloadManagerService(BaseService):
             await self._load_tasks()
         
         # Log the result
-        self.logger.debug(f"Loaded {len(self.tasks)} tasks for user '{self.app_shared.username or 'anonymous'}'")
+        self.logger.debug(f"Task reload complete: {len(self.tasks)} tasks loaded")
 
     def clear_completed_tasks(self) -> int:
         """

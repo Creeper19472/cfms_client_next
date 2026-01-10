@@ -77,11 +77,11 @@ class LoginFormController(BaseController["LoginForm"]):
     async def _complete_login(self, username: str, data: dict):
         """Complete the login process after authentication."""
         # Save current user's tasks before switching users
+        # This prevents data loss when switching between users
         if self.app_shared.service_manager and self.app_shared.username and self.app_shared.username != username:
             download_service = self.app_shared.service_manager.get_service("download_manager")
             if download_service:
                 # Save tasks for the current user before switching
-                # This is important to prevent data loss when switching users
                 await download_service._save_tasks()
         
         self.app_shared.username = username
