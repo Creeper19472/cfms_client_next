@@ -1936,3 +1936,23 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
+
+#: .\include\ui\controls\views\tasks.py:71
+msgid "Delete file and task"
+msgstr "Delete file and task"
+
+#: .\include\ui\controls\views\tasks.py:148
+msgid "File missing"
+msgstr "File missing"
+
+#: .\include\ui\controls\views\tasks.py:440
+msgid "Confirm deletion"
+msgstr "Confirm deletion"
+
+#: .\include\ui\controls\views\tasks.py:442
+msgid "Are you sure you want to delete this file and task?\n\nFile: {filename}"
+msgstr "Are you sure you want to delete this file and task?\n\nFile: {filename}"
+
+#: .\include\ui\controls\views\tasks.py:425
+msgid "File and task deleted successfully"
+msgstr "File and task deleted successfully"

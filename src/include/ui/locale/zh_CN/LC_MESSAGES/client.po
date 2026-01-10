@@ -1917,3 +1917,23 @@ msgstr "身无彩凤双飞翼，心有灵犀一点通。"
 msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr "相寻梦里路，飞雨落花中。"
+
+#: .\include\ui\controls\views\tasks.py:71
+msgid "Delete file and task"
+msgstr "删除文件和任务"
+
+#: .\include\ui\controls\views\tasks.py:148
+msgid "File missing"
+msgstr "文件缺失"
+
+#: .\include\ui\controls\views\tasks.py:440
+msgid "Confirm deletion"
+msgstr "确认删除"
+
+#: .\include\ui\controls\views\tasks.py:442
+msgid "Are you sure you want to delete this file and task?\n\nFile: {filename}"
+msgstr "您确定要删除此文件和任务吗？\n\n文件：{filename}"
+
+#: .\include\ui\controls\views\tasks.py:425
+msgid "File and task deleted successfully"
+msgstr "文件和任务已成功删除"
