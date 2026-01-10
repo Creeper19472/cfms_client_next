@@ -234,12 +234,11 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.CANCELLED: ft.Colors.GREY,
             DownloadTaskStatus.SCHEDULED: ft.Colors.CYAN,
         }
-        return (
-            status_colors.get(self.task.status, ft.Colors.WHITE)
-            if self.file_exists
-            else ft.Colors.GREY
-        )
+        # Only override the completed status color when the file is missing.
+        if self.task.status == DownloadTaskStatus.COMPLETED and not self.file_exists:
+            return ft.Colors.GREY
 
+        return status_colors.get(self.task.status, ft.Colors.WHITE)
     def _get_status_text(self) -> str:
         """Get status text based on task status."""
         status_texts = {

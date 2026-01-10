@@ -659,21 +659,6 @@ class DownloadManagerService(BaseService):
 
         return True, None
 
-    def file_exists_for_task(self, task_id: str) -> bool:
-        """
-        Check if the file for a task exists.
-
-        Args:
-            task_id: ID of the task to check
-
-        Returns:
-            True if file exists, False otherwise
-        """
-        task = self.tasks.get(task_id)
-        if not task:
-            return False
-        return os.path.exists(task.file_path)
-
     def _notify_task_update(self, task: DownloadTask):
         """
         Notify listeners about task updates.
