@@ -49,13 +49,28 @@ class TaskTile(ft.Card):
 
         # Create control buttons
         # Open file button (only visible for completed tasks)
+        # Check if file exists for completed tasks
+        self.file_exists = True
+        if task.status == DownloadTaskStatus.COMPLETED:
+            import os
+            self.file_exists = os.path.exists(task.file_path)
+        
         self.open_file_button = ft.IconButton(
             icon=ft.Icons.OPEN_IN_NEW,
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
-            visible=task.status == DownloadTaskStatus.COMPLETED,
+            visible=task.status == DownloadTaskStatus.COMPLETED and self.file_exists,
             # disabled=not AppShared().is_mobile,
+        )
+
+        # Delete file button (only visible for completed tasks)
+        self.delete_file_button = ft.IconButton(
+            icon=ft.Icons.DELETE,
+            icon_size=16,
+            tooltip=_("Delete file and task"),
+            on_click=self._on_delete_file,
+            visible=task.status == DownloadTaskStatus.COMPLETED,
         )
 
         # Pause/Resume button (only if server supports resume)
@@ -124,6 +139,26 @@ class TaskTile(ft.Card):
             color=self._get_status_color(),
         )
 
+        # File missing warning badge (only for completed tasks where file is missing)
+        self.file_missing_badge = ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(icon=ft.Icons.WARNING, size=12, color=ft.Colors.WHITE),
+                    ft.Text(
+                        value=_("File missing"),
+                        size=10,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.WHITE,
+                    ),
+                ],
+                spacing=3,
+            ),
+            bgcolor=ft.Colors.RED,
+            padding=ft.Padding.symmetric(horizontal=6, vertical=2),
+            border_radius=10,
+            visible=task.status == DownloadTaskStatus.COMPLETED and not self.file_exists,
+        )
+
         # Set progress bar visibility
         self.progress_bar.visible = task.status not in [
             DownloadTaskStatus.COMPLETED,
@@ -149,6 +184,7 @@ class TaskTile(ft.Card):
                                                 overflow=ft.TextOverflow.ELLIPSIS,
                                             ),
                                             self.priority_badge,
+                                            self.file_missing_badge,
                                         ],
                                         spacing=5,
                                     ),
@@ -158,6 +194,7 @@ class TaskTile(ft.Card):
                                 expand=True,
                             ),
                             self.open_file_button,
+                            self.delete_file_button,
                             self.pause_resume_button,
                             self.cancel_button,
                         ],
@@ -251,6 +288,13 @@ class TaskTile(ft.Card):
         """Update the tile with new task data."""
         self.task = task
 
+        # Check file existence for completed tasks
+        import os
+        if task.status == DownloadTaskStatus.COMPLETED:
+            self.file_exists = os.path.exists(task.file_path)
+        else:
+            self.file_exists = True
+
         # Update status icon
         self.status_icon.icon = self._get_status_icondata()
         self.status_icon.color = self._get_status_color()
@@ -277,9 +321,19 @@ class TaskTile(ft.Card):
             ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
         )
 
-        # Update open file button visibility
-        self.open_file_button.visible = task.status == DownloadTaskStatus.COMPLETED
+        # Update file missing badge
+        self.file_missing_badge.visible = (
+            task.status == DownloadTaskStatus.COMPLETED and not self.file_exists
+        )
+
+        # Update open file button visibility (only if file exists)
+        self.open_file_button.visible = (
+            task.status == DownloadTaskStatus.COMPLETED and self.file_exists
+        )
         # self.open_file_button.disabled = not AppShared().is_mobile
+
+        # Update delete file button visibility (always visible for completed tasks)
+        self.delete_file_button.visible = task.status == DownloadTaskStatus.COMPLETED
 
         # Update pause/resume button visibility and icons (only if supports_resume)
         self.pause_resume_button.visible = task.supports_resume and task.status in [
@@ -352,6 +406,53 @@ class TaskTile(ft.Card):
             send_error(
                 self.page, _("Failed to open file: {error}").format(error=str(exc))
             )
+
+    async def _on_delete_file(self, e):
+        """Handle delete file button click."""
+        download_service = self.parent_view.download_service
+        if not download_service:
+            return
+
+        # Show confirmation dialog
+        from include.ui.util.notifications import send_info
+
+        def on_confirm(dialog_e):
+            # Delete the task and file
+            if download_service.delete_task_with_file(self.task.task_id):
+                # Refresh the task list to remove the deleted task
+                self.parent_view._refresh_tasks()
+                if self.page:
+                    send_info(
+                        self.page,
+                        _("File and task deleted successfully"),
+                    )
+            dialog.open = False
+            if self.page:
+                self.page.update()
+
+        def on_cancel(dialog_e):
+            dialog.open = False
+            if self.page:
+                self.page.update()
+
+        dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(_("Confirm deletion")),
+            content=ft.Text(
+                _("Are you sure you want to delete this file and task?\n\nFile: {filename}").format(
+                    filename=self.task.filename
+                )
+            ),
+            actions=[
+                ft.TextButton(_("Cancel"), on_click=on_cancel),
+                ft.TextButton(_("Delete"), on_click=on_confirm),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        if self.page:
+            self.page.open(dialog)
+            self.page.update()
 
 
 class TasksView(ft.Container):

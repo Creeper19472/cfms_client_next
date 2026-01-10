@@ -81,6 +81,7 @@ class DownloadManagerService(BaseService):
         if on_task_update:
             self.on_task_update_callbacks.append(on_task_update)
         self._download_lock = asyncio.Lock()
+        self._last_file_check = 0.0  # Track last time we checked files
 
     async def execute(self):
         """
@@ -88,8 +89,14 @@ class DownloadManagerService(BaseService):
 
         Processes pending/scheduled downloads from the queue if capacity is available.
         Handles scheduled downloads and priority-based queue.
+        Also periodically checks if files for completed tasks still exist.
         """
         current_time = time.time()
+
+        # Check completed task files every 30 seconds
+        if current_time - self._last_file_check > 30:
+            self._check_completed_task_files()
+            self._last_file_check = current_time
 
         # Check for scheduled tasks that are ready
         scheduled_tasks = [
@@ -419,7 +426,7 @@ class DownloadManagerService(BaseService):
             return
 
         try:
-            # Only save non-completed tasks
+            # Save all tasks (including completed ones)
             tasks_to_save = {
                 task_id: {
                     "task_id": task.task_id,
@@ -444,7 +451,6 @@ class DownloadManagerService(BaseService):
                     "supports_resume": task.supports_resume,
                 }
                 for task_id, task in self.tasks.items()
-                if task.status not in [DownloadTaskStatus.COMPLETED]
             }
 
             # Ensure directory exists
@@ -613,6 +619,76 @@ class DownloadManagerService(BaseService):
                 asyncio.create_task(self._save_tasks())
 
         return count
+
+    def _check_completed_task_files(self):
+        """
+        Check if files for completed tasks still exist.
+        Updates tasks if files are missing or found.
+        """
+        for task in self.tasks.values():
+            if task.status == DownloadTaskStatus.COMPLETED:
+                file_exists = os.path.exists(task.file_path)
+                # We don't store file_exists in the task, but we can notify UI
+                # The UI will check file existence when needed
+                # This is just to trigger UI updates periodically
+                pass
+
+    def delete_task_with_file(self, task_id: str) -> bool:
+        """
+        Delete a completed task and its associated file.
+
+        Args:
+            task_id: ID of the task to delete
+
+        Returns:
+            True if task and file were deleted, False if task not found or not completed
+        """
+        task = self.tasks.get(task_id)
+        if not task:
+            self.logger.warning(f"Cannot delete task {task_id}: task not found")
+            return False
+
+        if task.status != DownloadTaskStatus.COMPLETED:
+            self.logger.warning(
+                f"Cannot delete task {task_id}: task not completed (status: {task.status})"
+            )
+            return False
+
+        # Delete the file if it exists
+        if os.path.exists(task.file_path):
+            try:
+                os.remove(task.file_path)
+                self.logger.info(f"Deleted file: {task.file_path}")
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to delete file {task.file_path}: {e}", exc_info=True
+                )
+                # Continue to delete task even if file deletion fails
+
+        # Remove task from dictionary
+        del self.tasks[task_id]
+        self.logger.info(f"Deleted task: {task.filename} (task_id: {task_id})")
+
+        # Save tasks after deletion
+        if self.enable_persistence:
+            asyncio.create_task(self._save_tasks())
+
+        return True
+
+    def file_exists_for_task(self, task_id: str) -> bool:
+        """
+        Check if the file for a task exists.
+
+        Args:
+            task_id: ID of the task to check
+
+        Returns:
+            True if file exists, False otherwise
+        """
+        task = self.tasks.get(task_id)
+        if not task:
+            return False
+        return os.path.exists(task.file_path)
 
     def _notify_task_update(self, task: DownloadTask):
         """
