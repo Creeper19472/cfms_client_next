@@ -605,21 +605,61 @@ class DownloadManagerService(BaseService):
         It clears current tasks in memory and loads the tasks for the newly logged-in user
         from their user-specific persistence file.
         
-        Note: This method does NOT save the previous user's tasks before clearing, 
-        as tasks are automatically saved periodically and on service stop. 
+        Note: This method does NOT save the previous user's tasks before clearing,
+        as tasks are automatically saved periodically and on service stop.
         The username should already be set to the new user before calling this method.
+        
+        Active downloads associated with the previous user are cancelled before tasks
+        are cleared to avoid leaving dangling references to removed tasks.
         """
         self.logger.info(f"Reloading tasks for user '{self.app_shared.username or 'anonymous'}'")
-        
+
+        # Safely handle any active downloads before clearing tasks
+        active_downloads = getattr(self, "active_downloads", set())
+        active_tasks = getattr(self, "active_tasks", {})
+
+        if active_downloads:
+            self.logger.warning(
+                "Cancelling %d active download(s) before reloading tasks for new user",
+                len(active_downloads),
+            )
+            # Attempt to cancel any associated asyncio Tasks
+            for task_id in list(active_downloads):
+                task = None
+                # active_tasks may be a dict-like mapping of id -> asyncio.Task
+                if isinstance(active_tasks, dict):
+                    task = active_tasks.get(task_id)
+                elif hasattr(active_tasks, "get"):
+                    task = active_tasks.get(task_id)  # type: ignore[assignment]
+
+                if task is not None:
+                    try:
+                        task.cancel()
+                    except Exception as exc:
+                        self.logger.error(
+                            "Error while cancelling active download task '%s': %s",
+                            task_id,
+                            exc,
+                        )
+
+            # Clear tracking collections to avoid dangling references
+            try:
+                active_downloads.clear()
+            except Exception:
+                # Be defensive: if it's not a real set, skip clearing
+                pass
+
+            if isinstance(active_tasks, dict):
+                active_tasks.clear()
+
         # Clear current tasks (from previous user or initial state)
         # We don't save here because the username has already been changed,
         # and tasks are auto-saved periodically anyway
         self.tasks.clear()
-        
+
         # Load tasks for the current user
         if self.enable_persistence:
             await self._load_tasks()
-        
         # Log the result
         self.logger.debug(f"Task reload complete: {len(self.tasks)} tasks loaded")
 
