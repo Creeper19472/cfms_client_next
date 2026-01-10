@@ -382,6 +382,18 @@ class TaskTile(ft.Card):
         assert type(self.page) == ft.Page
         assert self.page.platform
         
+        # Check if file exists before attempting to open
+        import os
+        if not os.path.exists(self.task.file_path):
+            from include.ui.util.notifications import send_error
+            send_error(
+                self.page, _("File not found: {filename}").format(filename=self.task.filename)
+            )
+            # Update the UI to reflect that file is missing
+            self.file_exists = False
+            self.update_task(self.task)
+            return
+        
         try:
             if AppShared().is_mobile:
                 # Import OpenFile service
@@ -413,46 +425,26 @@ class TaskTile(ft.Card):
         if not download_service:
             return
 
-        # Show confirmation dialog
-        from include.ui.util.notifications import send_info
+        # Delete the task and file without confirmation
+        from include.ui.util.notifications import send_info, send_error
 
-        def on_confirm(dialog_e):
-            # Delete the task and file
-            if download_service.delete_task_with_file(self.task.task_id):
-                # Refresh the task list to remove the deleted task
-                self.parent_view._refresh_tasks()
-                if self.page:
-                    send_info(
-                        self.page,
-                        _("File and task deleted successfully"),
-                    )
-            dialog.open = False
+        success, error_msg = download_service.delete_task_with_file(self.task.task_id)
+        
+        if success:
+            # Refresh the task list to remove the deleted task
+            self.parent_view._refresh_tasks()
             if self.page:
-                self.page.update()
-
-        def on_cancel(dialog_e):
-            dialog.open = False
-            if self.page:
-                self.page.update()
-
-        dialog = ft.AlertDialog(
-            modal=True,
-            title=ft.Text(_("Confirm deletion")),
-            content=ft.Text(
-                _("Are you sure you want to delete this file and task?\n\nFile: {filename}").format(
-                    filename=self.task.filename
+                send_info(
+                    self.page,
+                    _("File and task deleted successfully"),
                 )
-            ),
-            actions=[
-                ft.TextButton(_("Cancel"), on_click=on_cancel),
-                ft.TextButton(_("Delete"), on_click=on_confirm),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
-        )
-
-        if self.page:
-            self.page.open(dialog)
-            self.page.update()
+        else:
+            # Show error message
+            if self.page and error_msg:
+                send_error(
+                    self.page,
+                    _("Failed to delete: {error}").format(error=error_msg),
+                )
 
 
 class TasksView(ft.Container):

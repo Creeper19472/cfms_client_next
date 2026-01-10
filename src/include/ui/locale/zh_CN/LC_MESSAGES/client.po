@@ -1937,3 +1937,11 @@ msgstr "您确定要删除此文件和任务吗？\n\n文件：{filename}"
 #: .\include\ui\controls\views\tasks.py:425
 msgid "File and task deleted successfully"
 msgstr "文件和任务已成功删除"
+
+#: .\include\ui\controls\views\tasks.py:389
+msgid "File not found: {filename}"
+msgstr "未找到文件：{filename}"
+
+#: .\include\ui\controls\views\tasks.py:433
+msgid "Failed to delete: {error}"
+msgstr "删除失败：{error}"

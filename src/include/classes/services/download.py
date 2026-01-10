@@ -81,7 +81,6 @@ class DownloadManagerService(BaseService):
         if on_task_update:
             self.on_task_update_callbacks.append(on_task_update)
         self._download_lock = asyncio.Lock()
-        self._last_file_check = 0.0  # Track last time we checked files
 
     async def execute(self):
         """
@@ -89,14 +88,8 @@ class DownloadManagerService(BaseService):
 
         Processes pending/scheduled downloads from the queue if capacity is available.
         Handles scheduled downloads and priority-based queue.
-        Also periodically checks if files for completed tasks still exist.
         """
         current_time = time.time()
-
-        # Check completed task files every 30 seconds
-        if current_time - self._last_file_check > 30:
-            self._check_completed_task_files()
-            self._last_file_check = current_time
 
         # Check for scheduled tasks that are ready
         scheduled_tasks = [
@@ -620,20 +613,7 @@ class DownloadManagerService(BaseService):
 
         return count
 
-    def _check_completed_task_files(self):
-        """
-        Check if files for completed tasks still exist.
-        Updates tasks if files are missing or found.
-        """
-        for task in self.tasks.values():
-            if task.status == DownloadTaskStatus.COMPLETED:
-                file_exists = os.path.exists(task.file_path)
-                # We don't store file_exists in the task, but we can notify UI
-                # The UI will check file existence when needed
-                # This is just to trigger UI updates periodically
-                pass
-
-    def delete_task_with_file(self, task_id: str) -> bool:
+    def delete_task_with_file(self, task_id: str) -> tuple[bool, str | None]:
         """
         Delete a completed task and its associated file.
 
@@ -641,18 +621,20 @@ class DownloadManagerService(BaseService):
             task_id: ID of the task to delete
 
         Returns:
-            True if task and file were deleted, False if task not found or not completed
+            Tuple of (success: bool, error_message: str | None)
+            - (True, None) if task and file were deleted successfully
+            - (False, error_msg) if deletion failed
         """
         task = self.tasks.get(task_id)
         if not task:
             self.logger.warning(f"Cannot delete task {task_id}: task not found")
-            return False
+            return False, "Task not found"
 
         if task.status != DownloadTaskStatus.COMPLETED:
             self.logger.warning(
                 f"Cannot delete task {task_id}: task not completed (status: {task.status})"
             )
-            return False
+            return False, "Task is not completed"
 
         # Delete the file if it exists
         if os.path.exists(task.file_path):
@@ -660,10 +642,12 @@ class DownloadManagerService(BaseService):
                 os.remove(task.file_path)
                 self.logger.info(f"Deleted file: {task.file_path}")
             except Exception as e:
+                error_msg = f"Failed to delete file: {str(e)}"
                 self.logger.error(
                     f"Failed to delete file {task.file_path}: {e}", exc_info=True
                 )
-                # Continue to delete task even if file deletion fails
+                # Do not delete task if file deletion fails
+                return False, error_msg
 
         # Remove task from dictionary
         del self.tasks[task_id]
@@ -673,7 +657,7 @@ class DownloadManagerService(BaseService):
         if self.enable_persistence:
             asyncio.create_task(self._save_tasks())
 
-        return True
+        return True, None
 
     def file_exists_for_task(self, task_id: str) -> bool:
         """

@@ -1956,3 +1956,11 @@ msgstr "Are you sure you want to delete this file and task?\n\nFile: {filename}"
 #: .\include\ui\controls\views\tasks.py:425
 msgid "File and task deleted successfully"
 msgstr "File and task deleted successfully"
+
+#: .\include\ui\controls\views\tasks.py:389
+msgid "File not found: {filename}"
+msgstr "File not found: {filename}"
+
+#: .\include\ui\controls\views\tasks.py:433
+msgid "Failed to delete: {error}"
+msgstr "Failed to delete: {error}"
