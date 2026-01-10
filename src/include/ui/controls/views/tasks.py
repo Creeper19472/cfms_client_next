@@ -415,11 +415,14 @@ class TaskTile(ft.Card):
             return
 
         # Delete the task and file without confirmation
-        success, error_msg = download_service.delete_task_with_file(self.task.task_id)
+        success, error_msg = await download_service.delete_task_with_file(self.task.task_id)
 
         if success:
             # Refresh the task list to remove the deleted task
             self.parent_view._refresh_tasks()
+            # Ensure the page reflects the updated task list
+            if self.page:
+                self.page.update()
         else:
             # Show error message
             if self.page and error_msg:

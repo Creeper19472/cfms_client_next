@@ -613,7 +613,7 @@ class DownloadManagerService(BaseService):
 
         return count
 
-    def delete_task_with_file(self, task_id: str) -> tuple[bool, str | None]:
+    async def delete_task_with_file(self, task_id: str) -> tuple[bool, str | None]:
         """
         Delete a completed task and its associated file.
         Also deletes all other tasks pointing to the same file path.
@@ -673,7 +673,7 @@ class DownloadManagerService(BaseService):
 
         # Save tasks after deletion
         if self.enable_persistence:
-            asyncio.create_task(self._save_tasks())
+            await self._save_tasks()
 
         return True, None
 
