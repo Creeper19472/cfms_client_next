@@ -153,7 +153,7 @@ class TaskTile(ft.Card):
                 ],
                 spacing=3,
             ),
-            bgcolor=ft.Colors.RED,
+            bgcolor=ft.Colors.GREY,
             padding=ft.Padding.symmetric(horizontal=6, vertical=2),
             border_radius=10,
             visible=task.status == DownloadTaskStatus.COMPLETED and not self.file_exists,
@@ -386,9 +386,6 @@ class TaskTile(ft.Card):
         import os
         if not os.path.exists(self.task.file_path):
             from include.ui.util.notifications import send_error
-            send_error(
-                self.page, _("File not found: {filename}").format(filename=self.task.filename)
-            )
             # Update the UI to reflect that file is missing
             self.file_exists = False
             self.update_task(self.task)
@@ -426,18 +423,13 @@ class TaskTile(ft.Card):
             return
 
         # Delete the task and file without confirmation
-        from include.ui.util.notifications import send_info, send_error
+        from include.ui.util.notifications import send_error
 
         success, error_msg = download_service.delete_task_with_file(self.task.task_id)
         
         if success:
             # Refresh the task list to remove the deleted task
             self.parent_view._refresh_tasks()
-            if self.page:
-                send_info(
-                    self.page,
-                    _("File and task deleted successfully"),
-                )
         else:
             # Show error message
             if self.page and error_msg:
