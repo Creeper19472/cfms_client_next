@@ -86,6 +86,12 @@ class LoginFormController(BaseController["LoginForm"]):
         self.app_shared.pending_2fa_verification = False
         self.app_shared.user_perference = load_user_preference(username)
 
+        # Reload download tasks for the logged-in user
+        if self.app_shared.service_manager:
+            download_service = self.app_shared.service_manager.get_service("download_manager")
+            if download_service:
+                self.control.page.run_task(download_service.reload_tasks_for_user)
+
         self.control.clear_fields()
         self.control.page.run_task(self.control.page.push_route, "/home")
     

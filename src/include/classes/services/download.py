@@ -16,8 +16,8 @@ from include.util.transfer import receive_file_from_server
 
 __all__ = ["DownloadManagerService"]
 
-# Path for task persistence
-TASKS_PERSISTENCE_FILE = f"{FLET_APP_STORAGE_DATA}/download_tasks.json"
+# Legacy path for task persistence (kept for backward compatibility)
+TASKS_PERSISTENCE_FILE_LEGACY = f"{FLET_APP_STORAGE_DATA}/download_tasks.json"
 
 
 class DownloadManagerService(BaseService):
@@ -413,6 +413,22 @@ class DownloadManagerService(BaseService):
         self.logger.info(f"Batch resumed {count} tasks")
         return count
 
+    def _get_persistence_file_path(self) -> str:
+        """
+        Get the user-specific persistence file path.
+        
+        Returns:
+            Path to the user-specific persistence file. If no user is logged in,
+            returns the legacy shared file path for backward compatibility.
+        """
+        username = self.app_shared.username
+        if username:
+            # Use user-specific file path
+            return f"{FLET_APP_STORAGE_DATA}/download_tasks_{username}.json"
+        else:
+            # Fall back to legacy shared file path when no user is logged in
+            return TASKS_PERSISTENCE_FILE_LEGACY
+
     async def _save_tasks(self):
         """Save tasks to disk for persistence."""
         if not self.enable_persistence:
@@ -446,24 +462,33 @@ class DownloadManagerService(BaseService):
                 for task_id, task in self.tasks.items()
             }
 
-            # Ensure directory exists
-            os.makedirs(os.path.dirname(TASKS_PERSISTENCE_FILE), exist_ok=True)
+            # Get user-specific persistence file path
+            persistence_file = self._get_persistence_file_path()
 
-            with open(TASKS_PERSISTENCE_FILE, "w") as f:
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(persistence_file), exist_ok=True)
+
+            with open(persistence_file, "w") as f:
                 json.dump(tasks_to_save, f, indent=2)
 
-            self.logger.debug(f"Saved {len(tasks_to_save)} tasks to disk")
+            self.logger.debug(f"Saved {len(tasks_to_save)} tasks to disk for user '{self.app_shared.username or 'anonymous'}'")
 
         except Exception as e:
             self.logger.error(f"Failed to save tasks: {e}", exc_info=True)
 
     async def _load_tasks(self):
         """Load tasks from disk."""
-        if not self.enable_persistence or not os.path.exists(TASKS_PERSISTENCE_FILE):
+        if not self.enable_persistence:
+            return
+
+        # Get user-specific persistence file path
+        persistence_file = self._get_persistence_file_path()
+        
+        if not os.path.exists(persistence_file):
             return
 
         try:
-            with open(TASKS_PERSISTENCE_FILE, "r") as f:
+            with open(persistence_file, "r") as f:
                 tasks_data = json.load(f)
 
             for task_id, task_dict in tasks_data.items():
@@ -502,7 +527,8 @@ class DownloadManagerService(BaseService):
 
                 self.tasks[task_id] = task
 
-            self.logger.info(f"Loaded {len(self.tasks)} tasks from disk")
+            self.logger.info(f"Loaded {len(self.tasks)} tasks from disk for user '{self.app_shared.username or 'anonymous'}'")
+
 
         except Exception as e:
             self.logger.error(f"Failed to load tasks: {e}", exc_info=True)
@@ -559,6 +585,29 @@ class DownloadManagerService(BaseService):
             List of DownloadTask instances with the specified status
         """
         return [task for task in self.tasks.values() if task.status == status]
+
+    async def reload_tasks_for_user(self):
+        """
+        Reload tasks for the current user.
+        
+        This method should be called after a user logs in to load their specific tasks.
+        It saves the current tasks (if any) and then loads the tasks for the newly logged-in user.
+        """
+        self.logger.info(f"Reloading tasks for user '{self.app_shared.username or 'anonymous'}'")
+        
+        # Save current tasks before clearing (in case we're switching users)
+        if self.enable_persistence and self.tasks:
+            await self._save_tasks()
+        
+        # Clear current tasks
+        self.tasks.clear()
+        
+        # Load tasks for the current user
+        if self.enable_persistence:
+            await self._load_tasks()
+        
+        # Notify UI about the change (all tasks were cleared and reloaded)
+        self.logger.debug(f"Loaded {len(self.tasks)} tasks for user '{self.app_shared.username or 'anonymous'}'")
 
     def clear_completed_tasks(self) -> int:
         """
