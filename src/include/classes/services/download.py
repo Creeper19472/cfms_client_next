@@ -4,7 +4,7 @@ import asyncio
 import json
 import os
 import time
-from typing import Dict, List, Optional, Callable, Set
+from typing import Dict, Iterable, List, Optional, Callable, Set
 from websockets.asyncio.client import ClientConnection
 
 from include.classes.config import AppShared
@@ -362,7 +362,7 @@ class DownloadManagerService(BaseService):
 
         return True
 
-    def batch_cancel_tasks(self, task_ids: List[str]) -> int:
+    def batch_cancel_tasks(self, task_ids: Iterable[str]) -> int:
         """
         Cancel multiple tasks at once.
 
@@ -599,58 +599,29 @@ class DownloadManagerService(BaseService):
 
     async def reload_tasks_for_user(self):
         """
-        Reload tasks for the current user.
-        
-        This method should be called after a user logs in to load their specific tasks.
-        It clears current tasks in memory and loads the tasks for the newly logged-in user
-        from their user-specific persistence file.
-        
-        Note: This method does NOT save the previous user's tasks before clearing,
-        as tasks are automatically saved periodically and on service stop.
-        The username should already be set to the new user before calling this method.
-        
-        Active downloads associated with the previous user are cancelled before tasks
-        are cleared to avoid leaving dangling references to removed tasks.
+        Reload download tasks for the current user.
+        This method handles the transition when a user changes by:
+        1. Cancelling any active downloads from the previous user
+        2. Clearing all cached tasks
+        3. Loading tasks for the new user from persistent storage (if enabled)
+        The method logs progress at each stage for debugging purposes.
+        Raises:
+            None
+        Returns:
+            None
+        Note:
+            Tasks are not explicitly saved before clearing as the username has already
+            been updated, and tasks are saved periodically through auto-save mechanisms.
         """
+
         self.logger.info(f"Reloading tasks for user '{self.app_shared.username or 'anonymous'}'")
 
-        # Safely handle any active downloads before clearing tasks
-        active_downloads = getattr(self, "active_downloads", set())
-        active_tasks = getattr(self, "active_tasks", {})
-
-        if active_downloads:
+        if self.active_downloads:
             self.logger.warning(
                 "Cancelling %d active download(s) before reloading tasks for new user",
-                len(active_downloads),
+                len(self.active_downloads),
             )
-            # Attempt to cancel any associated asyncio Tasks
-            for task_id in list(active_downloads):
-                task = None
-                # active_tasks may be a dict-like mapping of id -> asyncio.Task
-                if isinstance(active_tasks, dict):
-                    task = active_tasks.get(task_id)
-                elif hasattr(active_tasks, "get"):
-                    task = active_tasks.get(task_id)  # type: ignore[assignment]
-
-                if task is not None:
-                    try:
-                        task.cancel()
-                    except Exception as exc:
-                        self.logger.error(
-                            "Error while cancelling active download task '%s': %s",
-                            task_id,
-                            exc,
-                        )
-
-            # Clear tracking collections to avoid dangling references
-            try:
-                active_downloads.clear()
-            except Exception:
-                # Be defensive: if it's not a real set, skip clearing
-                pass
-
-            if isinstance(active_tasks, dict):
-                active_tasks.clear()
+            self.batch_cancel_tasks(self.active_downloads)
 
         # Clear current tasks (from previous user or initial state)
         # We don't save here because the username has already been changed,
