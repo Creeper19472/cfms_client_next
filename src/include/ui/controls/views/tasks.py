@@ -1,12 +1,14 @@
 """Tasks view for displaying and managing download tasks."""
 
 from typing import TYPE_CHECKING, Optional, cast
+import os
 import flet as ft
 
 from include.classes.config import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
 from include.classes.services.download import DownloadManagerService
 from include.util.locale import get_translation
+from include.ui.util.notifications import send_error
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -26,6 +28,11 @@ class TaskTile(ft.Card):
         super().__init__()
         self.task = task
         self.parent_view = parent_view
+
+        # Check if file exists for completed tasks
+        self.file_exists = True
+        if task.status == DownloadTaskStatus.COMPLETED:
+            self.file_exists = os.path.exists(task.file_path)
 
         # Create progress bar
         self.progress_bar = ft.ProgressBar(
@@ -49,19 +56,13 @@ class TaskTile(ft.Card):
 
         # Create control buttons
         # Open file button (only visible for completed tasks)
-        # Check if file exists for completed tasks
-        self.file_exists = True
-        if task.status == DownloadTaskStatus.COMPLETED:
-            import os
-            self.file_exists = os.path.exists(task.file_path)
-        
+
         self.open_file_button = ft.IconButton(
             icon=ft.Icons.OPEN_IN_NEW,
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
             visible=task.status == DownloadTaskStatus.COMPLETED and self.file_exists,
-            # disabled=not AppShared().is_mobile,
         )
 
         # Delete file button (only visible for completed tasks)
@@ -141,22 +142,17 @@ class TaskTile(ft.Card):
 
         # File missing warning badge (only for completed tasks where file is missing)
         self.file_missing_badge = ft.Container(
-            content=ft.Row(
-                controls=[
-                    ft.Icon(icon=ft.Icons.WARNING, size=12, color=ft.Colors.WHITE),
-                    ft.Text(
-                        value=_("File missing"),
-                        size=10,
-                        weight=ft.FontWeight.BOLD,
-                        color=ft.Colors.WHITE,
-                    ),
-                ],
-                spacing=3,
+            content=ft.Text(
+                value=_("File missing"),
+                size=10,
+                weight=ft.FontWeight.BOLD,
+                color=ft.Colors.WHITE,
             ),
             bgcolor=ft.Colors.GREY,
             padding=ft.Padding.symmetric(horizontal=6, vertical=2),
             border_radius=10,
-            visible=task.status == DownloadTaskStatus.COMPLETED and not self.file_exists,
+            visible=task.status == DownloadTaskStatus.COMPLETED
+            and not self.file_exists,
         )
 
         # Set progress bar visibility
@@ -238,7 +234,11 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.CANCELLED: ft.Colors.GREY,
             DownloadTaskStatus.SCHEDULED: ft.Colors.CYAN,
         }
-        return status_colors.get(self.task.status, ft.Colors.WHITE)
+        return (
+            status_colors.get(self.task.status, ft.Colors.WHITE)
+            if self.file_exists
+            else ft.Colors.GREY
+        )
 
     def _get_status_text(self) -> str:
         """Get status text based on task status."""
@@ -289,7 +289,6 @@ class TaskTile(ft.Card):
         self.task = task
 
         # Check file existence for completed tasks
-        import os
         if task.status == DownloadTaskStatus.COMPLETED:
             self.file_exists = os.path.exists(task.file_path)
         else:
@@ -381,16 +380,14 @@ class TaskTile(ft.Card):
         """Handle open file button click."""
         assert type(self.page) == ft.Page
         assert self.page.platform
-        
+
         # Check if file exists before attempting to open
-        import os
         if not os.path.exists(self.task.file_path):
-            from include.ui.util.notifications import send_error
             # Update the UI to reflect that file is missing
             self.file_exists = False
             self.update_task(self.task)
             return
-        
+
         try:
             if AppShared().is_mobile:
                 # Import OpenFile service
@@ -401,8 +398,6 @@ class TaskTile(ft.Card):
                 await open_file_service.open(self.task.file_path, 3)
 
             elif self.page.platform.value == "windows":
-                import os
-
                 os.startfile(self.task.file_path)
 
             else:
@@ -410,8 +405,6 @@ class TaskTile(ft.Card):
 
         except Exception as exc:
             # Show error if file can't be opened
-            from include.ui.util.notifications import send_error
-
             send_error(
                 self.page, _("Failed to open file: {error}").format(error=str(exc))
             )
@@ -423,10 +416,8 @@ class TaskTile(ft.Card):
             return
 
         # Delete the task and file without confirmation
-        from include.ui.util.notifications import send_error
-
         success, error_msg = download_service.delete_task_with_file(self.task.task_id)
-        
+
         if success:
             # Refresh the task list to remove the deleted task
             self.parent_view._refresh_tasks()
