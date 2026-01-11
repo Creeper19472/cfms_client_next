@@ -10,7 +10,7 @@ t = get_translation()
 _ = t.gettext
 
 
-async def trigger_file_upload(parent_view: "FileManagerView", event: ft.ControlEvent):
+async def trigger_file_upload(parent_view: "FileManagerView", event: ft.Event[ft.Container]):
     """
     Common helper function to trigger file upload via file picker.
     
@@ -43,11 +43,11 @@ class FileUploadDropZone(ft.Container):
         self.parent_view = parent_view
         
         # Visual styling for the drop zone
-        self.border = ft.border.all(2, ft.Colors.BLUE_400)
+        self.border = ft.Border.all(2, ft.Colors.BLUE_400)
         self.border_radius = 10
         self.padding = 20
         self.bgcolor = ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400)
-        self.alignment = ft.alignment.center
+        self.alignment = ft.Alignment.CENTER
         
         # Content
         self.content = ft.Column(
@@ -140,7 +140,7 @@ class FileUploadDragTarget(ft.DragTarget):
             border_radius=10,
             padding=20,
             bgcolor=ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400),
-            alignment=ft.alignment.center,
+            alignment=ft.Alignment.CENTER,
             on_click=self.handle_click,
         )
         
@@ -160,15 +160,15 @@ class FileUploadDragTarget(ft.DragTarget):
     async def handle_will_accept(self, event: ft.Event[ft.DragTarget]):
         """Handle when a draggable enters the target."""
         # Change visual feedback
-        self.content.bgcolor = ft.Colors.with_opacity(0.1, ft.Colors.BLUE_600)
-        self.content.border = ft.border.all(2, ft.Colors.BLUE_600)
+        # self.content.bgcolor = ft.Colors.with_opacity(0.1, ft.Colors.BLUE_600)
+        # self.content.border = ft.border.all(2, ft.Colors.BLUE_600)
         self.update()
     
     async def handle_accept(self, event: ft.Event[ft.DragTarget]):
         """Handle when a draggable is dropped on the target."""
         # Reset visual feedback
-        self.content.bgcolor = ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400)
-        self.content.border = ft.border.all(2, ft.Colors.BLUE_400)
+        # self.content.bgcolor = ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400)
+        # self.content.border = ft.border.all(2, ft.Colors.BLUE_400)
         self.update()
         
         # Note: This won't receive OS file drops, only internal Flet Draggable components
@@ -177,6 +177,6 @@ class FileUploadDragTarget(ft.DragTarget):
     async def handle_leave(self, event: ft.Event[ft.DragTarget]):
         """Handle when a draggable leaves the target."""
         # Reset visual feedback
-        self.content.bgcolor = ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400)
-        self.content.border = ft.border.all(2, ft.Colors.BLUE_400)
+        # self.content.bgcolor = ft.Colors.with_opacity(0.05, ft.Colors.BLUE_400)
+        # self.content.border = ft.border.all(2, ft.Colors.BLUE_400)
         self.update()
