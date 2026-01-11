@@ -10,13 +10,13 @@ t = get_translation()
 _ = t.gettext
 
 
-async def trigger_file_upload(parent_view: "FileManagerView", event):
+async def trigger_file_upload(parent_view: "FileManagerView", event: ft.ControlEvent):
     """
     Common helper function to trigger file upload via file picker.
     
     Args:
         parent_view: The FileManagerView instance containing the file picker and upload controller
-        event: The event that triggered the upload (unused but kept for handler compatibility)
+        event: The control event that triggered the upload
     """
     files = await parent_view.parent_model.file_picker.pick_files(
         allow_multiple=True
