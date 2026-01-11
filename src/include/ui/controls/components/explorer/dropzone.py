@@ -24,7 +24,6 @@ class FileUploadDropZone(ft.Container):
         ref: ft.Ref | None = None,
     ):
         super().__init__(ref=ref)
-        self.page: ft.Page
         self.parent_view = parent_view
         
         # Visual styling for the drop zone
@@ -69,7 +68,8 @@ class FileUploadDropZone(ft.Container):
             allow_multiple=True
         )
         if files:
-            self.page.run_task(self.parent_view.controller.action_upload, files)
+            # Access page through parent_view
+            self.parent_view.page.run_task(self.parent_view.controller.action_upload, files)
     
     async def handle_hover(self, event: ft.Event[ft.Container]):
         """Handle hover to provide visual feedback."""
@@ -99,7 +99,6 @@ class FileUploadDragTarget(ft.DragTarget):
         ref: ft.Ref | None = None,
     ):
         self.parent_view = parent_view
-        self.page: ft.Page
         
         # Create the drop zone content
         drop_zone_content = ft.Container(
@@ -149,7 +148,8 @@ class FileUploadDragTarget(ft.DragTarget):
             allow_multiple=True
         )
         if files:
-            self.page.run_task(self.parent_view.controller.action_upload, files)
+            # Access page through parent_view
+            self.parent_view.page.run_task(self.parent_view.controller.action_upload, files)
     
     async def handle_will_accept(self, event: ft.Event[ft.DragTarget]):
         """Handle when a draggable enters the target."""
