@@ -1933,3 +1933,18 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Click to select files or drag and drop here"
+msgstr "Click to select files or drag and drop here"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Upload files to current directory"
+msgstr "Upload files to current directory"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Drop files here to upload"
+msgstr "Drop files here to upload"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "(Click to select files)"
+msgstr "(Click to select files)"

@@ -8,6 +8,7 @@ from websockets.asyncio.client import ClientConnection
 from include.classes.config import AppShared
 from include.controllers.explorer.itself import FileExplorerController
 from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar
+from include.ui.controls.components.explorer.dropzone import FileUploadDropZone
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import update_file_controls
 
@@ -140,6 +141,7 @@ class FileManagerView(ft.Container):
         self.indicator = FilePathIndicator("/")
         self.top_bar = ExplorerTopBar(self)
         self.sort_bar = FileSortBar(self, visible=False)
+        self.drop_zone = FileUploadDropZone(self)
         self.file_listview = FileListView(self, visible=False)
         self.progress_ring = ft.ProgressRing(visible=False)
 
@@ -148,6 +150,7 @@ class FileManagerView(ft.Container):
                 ft.Text(_("File Management"), size=24, weight=ft.FontWeight.BOLD),
                 self.indicator,
                 self.top_bar,
+                self.drop_zone,
                 ft.Divider(),
                 self.progress_ring,
                 # File list, initially hidden until loading is complete

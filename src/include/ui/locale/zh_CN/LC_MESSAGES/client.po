@@ -1914,3 +1914,18 @@ msgstr "身无彩凤双飞翼，心有灵犀一点通。"
 msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr "相寻梦里路，飞雨落花中。"
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Click to select files or drag and drop here"
+msgstr "点击选择文件或拖放到此处"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Upload files to current directory"
+msgstr "上传文件到当前目录"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "Drop files here to upload"
+msgstr "将文件拖放到此处上传"
+
+#: .\include\ui\controls\components\explorer\dropzone.py
+msgid "(Click to select files)"
+msgstr "(点击选择文件)"
