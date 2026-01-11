@@ -10,6 +10,22 @@ t = get_translation()
 _ = t.gettext
 
 
+async def trigger_file_upload(parent_view: "FileManagerView", event):
+    """
+    Common helper function to trigger file upload via file picker.
+    
+    Args:
+        parent_view: The FileManagerView instance containing the file picker and upload controller
+        event: The event that triggered the upload (unused but kept for handler compatibility)
+    """
+    files = await parent_view.parent_model.file_picker.pick_files(
+        allow_multiple=True
+    )
+    if files:
+        # Trigger upload task on the page
+        parent_view.page.run_task(parent_view.controller.action_upload, files)
+
+
 class FileUploadDropZone(ft.Container):
     """
     A visual drag-and-drop zone for file uploads.
@@ -63,13 +79,8 @@ class FileUploadDropZone(ft.Container):
         self.on_hover = self.handle_hover
     
     async def handle_click(self, event: ft.Event[ft.Container]):
-        """Handle click to open file picker."""
-        files = await self.parent_view.parent_model.file_picker.pick_files(
-            allow_multiple=True
-        )
-        if files:
-            # Access page through parent_view
-            self.parent_view.page.run_task(self.parent_view.controller.action_upload, files)
+        """Handle click to open file picker and trigger upload."""
+        await trigger_file_upload(self.parent_view, event)
     
     async def handle_hover(self, event: ft.Event[ft.Container]):
         """Handle hover to provide visual feedback."""
@@ -143,13 +154,8 @@ class FileUploadDragTarget(ft.DragTarget):
         )
     
     async def handle_click(self, event: ft.Event[ft.Container]):
-        """Handle click to open file picker."""
-        files = await self.parent_view.parent_model.file_picker.pick_files(
-            allow_multiple=True
-        )
-        if files:
-            # Access page through parent_view
-            self.parent_view.page.run_task(self.parent_view.controller.action_upload, files)
+        """Handle click to open file picker and trigger upload."""
+        await trigger_file_upload(self.parent_view, event)
     
     async def handle_will_accept(self, event: ft.Event[ft.DragTarget]):
         """Handle when a draggable enters the target."""
