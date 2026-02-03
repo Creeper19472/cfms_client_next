@@ -5,10 +5,8 @@ import os
 from typing import AsyncIterator, Optional, cast
 
 from include.classes.shared import AppShared
-from include.classes.exceptions.request import InvalidResponseError
 from include.classes.services.download import DownloadManagerService
-from include.classes.datacls import DownloadTaskStatus
-from include.util.requests import do_request, do_request_2
+from include.util.requests import do_request
 
 from include.util.locale import get_translation
 
