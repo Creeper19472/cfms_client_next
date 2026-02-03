@@ -2,13 +2,13 @@
 
 import asyncio
 import os
-from typing import AsyncIterator, Optional
+from typing import AsyncIterator, Optional, cast
 
 from include.classes.shared import AppShared
 from include.classes.exceptions.request import InvalidResponseError
+from include.classes.services.download import DownloadManagerService
+from include.classes.datacls import DownloadTaskStatus
 from include.util.requests import do_request, do_request_2
-from include.util.transfer import receive_file_from_server
-from include.util.connect import get_connection
 
 from include.util.locale import get_translation
 
@@ -92,6 +92,9 @@ async def batch_download_items(
     """
     Download multiple files and directories with structure preservation.
 
+    Uses the DownloadManagerService to handle downloads, ensuring proper
+    queuing, progress tracking, and error handling.
+
     Args:
         app_shared: Shared application state
         file_items: List of file dicts with keys: id, title
@@ -107,16 +110,33 @@ async def batch_download_items(
         - error_message: Error message if download failed, None otherwise
     """
 
+    # Get the download manager service
+    download_service = None
+    if app_shared.service_manager:
+        download_service = cast(
+            DownloadManagerService,
+            app_shared.service_manager.get_service("download_manager"),
+        )
+
+    if not download_service:
+        # If download service is not available, fail immediately
+        for file_data in file_items:
+            yield ("file", file_data["title"], file_data["title"], False, _("Download manager service not available"))
+        for dir_data in directory_items:
+            yield ("directory", dir_data["name"], dir_data["name"], False, _("Download manager service not available"))
+        return
+
     async def download_file(
-        file_id: str, filename: str, save_path: str
+        file_id: str, filename: str, save_path: str, download_service: DownloadManagerService
     ) -> tuple[bool, Optional[str]]:
         """
-        Download a single file from the server.
+        Download a single file from the server using the DownloadManagerService.
 
         Args:
             file_id: Server ID of the file to download
             filename: Name of the file (used for error messages)
             save_path: Local path where the file should be saved
+            download_service: DownloadManagerService instance to use for downloading
 
         Returns:
             Tuple of (success: bool, error_message: Optional[str])
@@ -124,9 +144,9 @@ async def batch_download_items(
             - error_message: Error description if failed, None otherwise
         """
         try:
-            # Create download task
+            # Request download task from server
             response = await do_request(
-                action="download_document",
+                action="get_document",
                 data={"document_id": file_id},
                 username=app_shared.username,
                 token=app_shared.token,
@@ -139,35 +159,48 @@ async def batch_download_items(
                 )
                 return (False, error_msg)
 
-            task_id = response.get("data", {}).get("task_data", {}).get("task_id")
+            task_data = response.get("data", {}).get("task_data", {})
+            task_id = task_data.get("task_id")
             if not task_id:
                 return (False, _("Failed to get download task ID"))
 
-            # Download the file
-            conn = await get_connection(
-                server_address=app_shared.get_not_none_attribute("server_address"),
-                disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
-                proxy=app_shared.preferences["settings"]["proxy_settings"],
-                max_size=1024**2 * 4,
-                force_ipv4=app_shared.preferences["settings"].get("force_ipv4", False),
+            # Check if server supports resume
+            supports_resume = task_data.get("supports_resume", False)
+
+            # Add task to download manager with high priority for batch operations
+            task = download_service.add_task(
+                task_id=task_id,
+                file_id=file_id,
+                filename=filename,
+                file_path=save_path,
+                priority=10,  # High priority for batch downloads
+                supports_resume=supports_resume,
             )
 
-            try:
-                async for i in receive_file_from_server(
-                    conn,
-                    task_id,
-                    save_path,
-                ):
-                    pass
+            # Wait for download to complete, checking status periodically
+            while task.status in [
+                DownloadTaskStatus.PENDING,
+                DownloadTaskStatus.SCHEDULED,
+                DownloadTaskStatus.DOWNLOADING,
+                DownloadTaskStatus.VERIFYING,
+            ]:
+                await asyncio.sleep(0.5)  # Check every 500ms
+
+            # Check final status
+            if task.status == DownloadTaskStatus.COMPLETED:
                 return (True, None)
-            finally:
-                await conn.close()
+            elif task.status == DownloadTaskStatus.FAILED:
+                return (False, task.error or _("Download failed"))
+            elif task.status == DownloadTaskStatus.CANCELLED:
+                return (False, _("Download cancelled"))
+            else:
+                return (False, _("Unknown download status: {status}").format(status=task.status))
 
         except Exception as e:
             return (False, str(e))
 
     async def download_directory_recursive(
-        dir_id: str, dir_name: str, parent_path: str
+        dir_id: str, dir_name: str, parent_path: str, download_service: DownloadManagerService
     ):
         """
         Recursively download a directory and all its contents.
@@ -179,6 +212,7 @@ async def batch_download_items(
             dir_id: Server ID of the directory to download
             dir_name: Name of the directory
             parent_path: Local parent path where the directory should be created
+            download_service: DownloadManagerService instance to use for downloading
 
         Yields:
             Tuples of (item_type, item_name, current_file, success, error_message)
@@ -219,7 +253,7 @@ async def batch_download_items(
                 filename = file_data["title"]
                 file_path = os.path.join(dir_path, filename)
 
-                success, error = await download_file(file_id, filename, file_path)
+                success, error = await download_file(file_id, filename, file_path, download_service)
                 yield ("file", filename, f"{dir_name}/{filename}", success, error)
 
             # Recursively download subdirectories
@@ -228,7 +262,7 @@ async def batch_download_items(
                 subdir_name = subdir_data["name"]
 
                 async for result in download_directory_recursive(
-                    subdir_id, subdir_name, dir_path
+                    subdir_id, subdir_name, dir_path, download_service
                 ):
                     yield result
 
@@ -241,7 +275,7 @@ async def batch_download_items(
         filename = file_data["title"]
         file_path = os.path.join(save_root_path, filename)
 
-        success, error = await download_file(file_id, filename, file_path)
+        success, error = await download_file(file_id, filename, file_path, download_service)
         yield ("file", filename, filename, success, error)
 
     # Download directories recursively
@@ -250,6 +284,6 @@ async def batch_download_items(
         dir_name = dir_data["name"]
 
         async for result in download_directory_recursive(
-            dir_id, dir_name, save_root_path
+            dir_id, dir_name, save_root_path, download_service
         ):
             yield result
