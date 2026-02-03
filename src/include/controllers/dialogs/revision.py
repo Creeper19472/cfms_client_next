@@ -62,15 +62,39 @@ class RevisionDialogController(BaseController["RevisionDialog"]):
             if response.code == 200:
                 task_data = response.data.get("task_data")
                 if task_data:
-                    # Download the revision file using the existing download mechanism
-                    from include.ui.util.path import get_document
-
-                    await get_document(
-                        document_id=task_data["id"],
-                        filename=f"{self.control.filename}_rev{revision_id}",
-                        page=self.control.page,
-                        task_data=task_data,
-                    )
+                    # Download the revision file using the download manager
+                    from include.classes.services.download import DownloadManagerService
+                    from include.constants import FLET_APP_STORAGE_DATA
+                    from include.ui.util.notifications import send_info
+                    from typing import cast
+                    
+                    task_id = task_data["task_id"]
+                    filename = f"{self.control.filename}_rev{revision_id}"
+                    file_path = f"{FLET_APP_STORAGE_DATA}/downloads/{filename}"
+                    supports_resume = task_data.get("supports_resume", False)
+                    
+                    # Get the download manager service
+                    download_service = None
+                    if self.app_shared.service_manager:
+                        download_service = cast(
+                            DownloadManagerService,
+                            self.app_shared.service_manager.get_service("download_manager"),
+                        )
+                    
+                    if download_service:
+                        download_service.add_task(
+                            task_id=task_id,
+                            file_id=str(revision_id),
+                            filename=filename,
+                            file_path=file_path,
+                            supports_resume=supports_resume,
+                        )
+                        send_info(
+                            self.control.page,
+                            _("Download added: {filename}").format(filename=filename),
+                        )
+                    else:
+                        self.control.send_error(_("Download manager service not available"))
                 else:
                     self.control.send_error(
                         _("Failed to get revision data: No task data returned")
