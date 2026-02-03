@@ -88,6 +88,17 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
     async def action_set_access_rules(self):
         self.control.page.show_dialog(RuleManager(self.control.file_id, "document"))
 
+    async def action_view_revisions(self):
+        from include.ui.controls.dialogs.revision import RevisionDialog
+        
+        self.control.page.show_dialog(
+            RevisionDialog(
+                document_id=self.control.file_id,
+                filename=self.control.filename,
+                parent_listview=self.control.parent_listview,
+            )
+        )
+
     async def action_open_document_info(self):
         self.control.page.show_dialog(GetDocumentInfoDialog(self.control.file_id))
 

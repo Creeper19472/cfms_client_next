@@ -93,6 +93,12 @@ class FileContextMenu(ContextMenu2):
                     "require": {"set_access_rules"},
                 },
                 {
+                    "icon": ft.Icons.HISTORY,
+                    "content": _("View Revisions"),
+                    "on_click": self.view_revisions_button_click,
+                    "require": {"list_revisions"},
+                },
+                {
                     "icon": ft.Icons.INFO_OUTLINED,
                     "content": _("Properties"),
                     "on_click": self.open_document_info_click,
@@ -129,6 +135,9 @@ class FileContextMenu(ContextMenu2):
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_set_access_rules)
+
+    async def view_revisions_button_click(self, event: ft.Event[ft.PopupMenuItem]):
+        self.page.run_task(self.controller.action_view_revisions)
 
     async def open_document_info_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_open_document_info)
