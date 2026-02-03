@@ -451,12 +451,6 @@ class TasksView(ft.Container):
         self.app_shared = AppShared()
         self.download_service: Optional[DownloadManagerService] = None
         self.task_tiles: dict[str, TaskTile] = {}
-        
-        # Batching mechanism for UI updates
-        self._pending_updates: set[str] = set()  # Set of task_ids with pending updates
-        self._update_counter: int = 0  # Counter for batching
-        self._batch_size: int = 5  # Update UI every 5 tasks
-        self._update_timer: Optional[int] = None  # Timer handle for fallback updates
 
         # Create filter dropdown
         self.filter_dropdown = ft.Dropdown(
@@ -597,10 +591,6 @@ class TasksView(ft.Container):
 
     def will_unmount(self):
         """Called when the view is about to be unmounted."""
-        # Apply any pending updates before unmounting
-        if self._pending_updates:
-            self._apply_pending_updates()
-        
         # Remove callback when view is unmounted
         if self.download_service:
             self.download_service.remove_task_update_callback(self._on_task_update)
@@ -608,88 +598,17 @@ class TasksView(ft.Container):
     def _on_task_update(self, task: DownloadTask):
         """
         Callback when a task is updated.
-        
-        Uses batched updates to prevent UI lag when many tasks are added quickly.
 
         Args:
             task: The updated task
         """
-        # Add to pending updates
-        self._pending_updates.add(task.task_id)
-        self._update_counter += 1
-        
-        # Update or create task tile (without calling update())
+        # Update or create task tile
         if task.task_id in self.task_tiles:
-            # Update existing tile data without UI refresh
-            tile = self.task_tiles[task.task_id]
-            tile.task = task
-            
-            # Update tile properties without calling update()
-            if task.status == DownloadTaskStatus.COMPLETED:
-                tile.file_exists = os.path.exists(task.file_path)
-            else:
-                tile.file_exists = True
-                
-            tile.status_icon.icon = tile._get_status_icondata()
-            tile.status_icon.color = tile._get_status_color()
-            tile.progress_bar.value = task.progress
-            tile.progress_bar.visible = task.status not in [
-                DownloadTaskStatus.COMPLETED,
-                DownloadTaskStatus.FAILED,
-                DownloadTaskStatus.CANCELLED,
-            ]
-            tile.status_text.value = tile._get_status_text()
-            tile.status_text.color = tile._get_status_color()
-            tile.progress_info.value = tile._get_progress_info()
-            tile.priority_badge.visible = task.priority != 0
-            tile.priority_badge_text = f"P{task.priority}"
-            tile.priority_badge.bgcolor = (
-                ft.Colors.ORANGE if task.priority > 0 else ft.Colors.GREY
-            )
-            tile.file_missing_badge.visible = (
-                task.status == DownloadTaskStatus.COMPLETED and not tile.file_exists
-            )
-            tile.open_file_button.visible = (
-                task.status == DownloadTaskStatus.COMPLETED and tile.file_exists
-            )
-            tile.delete_file_button.visible = task.status == DownloadTaskStatus.COMPLETED
-            tile.pause_resume_button.visible = task.supports_resume and task.status in [
-                DownloadTaskStatus.DOWNLOADING,
-                DownloadTaskStatus.PAUSED,
-                DownloadTaskStatus.PENDING,
-            ]
-            tile.pause_resume_button.icon = (
-                ft.Icons.PAUSE
-                if task.status == DownloadTaskStatus.DOWNLOADING
-                else ft.Icons.PLAY_ARROW
-            )
-            tile.pause_resume_button.tooltip = (
-                _("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume")
-            )
-            tile.cancel_button.visible = task.status in [
-                DownloadTaskStatus.PENDING,
-                DownloadTaskStatus.DOWNLOADING,
-                DownloadTaskStatus.DECRYPTING,
-                DownloadTaskStatus.VERIFYING,
-                DownloadTaskStatus.PAUSED,
-                DownloadTaskStatus.SCHEDULED,
-            ]
+            # Update existing tile
+            self.task_tiles[task.task_id].update_task(task)
         else:
-            # Create new tile without adding to UI yet
-            tile = TaskTile(task, self)
-            self.task_tiles[task.task_id] = tile
-            
-            # Add to listview if it should be shown (without update)
-            if self._should_show_task(task):
-                self.task_listview.controls.insert(0, tile)
-                self._update_empty_state()
-        
-        # Check if we should apply batched updates
-        if self._update_counter >= self._batch_size:
-            self._apply_pending_updates()
-        else:
-            # Schedule a timer-based update as fallback (after 100ms)
-            self._schedule_update_timer()
+            # Create new tile
+            self._add_task_tile(task)
 
     def _add_task_tile(self, task: DownloadTask):
         """Add a task tile to the list."""
@@ -706,46 +625,6 @@ class TasksView(ft.Container):
         # Update UI
         if self.page:
             self.update()
-    
-    def _apply_pending_updates(self):
-        """Apply all pending UI updates in a single batch."""
-        if not self._pending_updates:
-            return
-        
-        # Reset counter and clear pending updates
-        self._update_counter = 0
-        self._pending_updates.clear()
-        
-        # Cancel any pending timer
-        if self._update_timer is not None:
-            try:
-                if self.page:
-                    self.page.window.clear_timeout(self._update_timer)
-            except:
-                pass
-            self._update_timer = None
-        
-        # Perform single UI update for all changes
-        if self.page:
-            self.update()
-    
-    def _schedule_update_timer(self):
-        """Schedule a timer-based UI update as fallback."""
-        # Only schedule if no timer is already active
-        if self._update_timer is None and self.page:
-            try:
-                # Schedule update after 100ms
-                self._update_timer = self.page.window.set_timeout(
-                    self._on_update_timer, 0.1
-                )
-            except:
-                # Fallback: apply updates immediately if timer fails
-                self._apply_pending_updates()
-    
-    def _on_update_timer(self):
-        """Timer callback to apply pending updates."""
-        self._update_timer = None
-        self._apply_pending_updates()
 
     def _should_show_task(self, task: DownloadTask) -> bool:
         """Check if task should be shown based on current filter."""
