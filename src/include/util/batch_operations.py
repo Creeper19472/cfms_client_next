@@ -234,8 +234,8 @@ async def batch_download_items(
                 return
 
             data = response.get("data", {})
-            files = data.get("files", [])
-            subdirs = data.get("directories", [])
+            files = data.get("documents", [])  # API returns "documents", not "files"
+            subdirs = data.get("folders", [])  # API returns "folders", not "directories"
 
             # Download all files in this directory
             for file_data in files:

@@ -652,10 +652,12 @@ class FileExplorerController(BaseController["FileManagerView"]):
             self.control.send_error(_("No items selected"))
             return
         
-        # Ask user to select download directory
-        save_path = await self.control.parent_model.file_picker.get_directory_path()
-        if not save_path:
-            return
+        # Use default downloads directory
+        from include.constants import FLET_APP_STORAGE_DATA
+        save_path = f"{FLET_APP_STORAGE_DATA}/downloads"
+        
+        # Ensure downloads directory exists
+        os.makedirs(save_path, exist_ok=True)
         
         # Get file and directory data
         file_items = [f for f in self.control.file_listview.current_files_data if f["id"] in file_ids]
