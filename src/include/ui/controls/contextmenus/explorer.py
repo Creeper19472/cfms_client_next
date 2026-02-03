@@ -144,13 +144,10 @@ class FileContextMenu(ContextMenu2):
         self.page.run_task(self.controller.action_set_access_rules)
 
     async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
-        # Use the file picker from the page overlay
-        file_picker = getattr(self.page, 'revision_file_picker', None)
-        if not file_picker:
-            file_picker = ft.FilePicker()
-            self.page.overlay.append(file_picker)
-            self.page.revision_file_picker = file_picker
-            self.page.update()
+        # Create a new file picker each time (file picker is a singleton)
+        file_picker = ft.FilePicker()
+        self.page.overlay.append(file_picker)
+        self.page.update()
         
         result = await file_picker.pick_files(allow_multiple=False)
         if result and result.files:
