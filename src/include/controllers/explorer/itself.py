@@ -568,6 +568,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
         
         progress_dialog = ft.AlertDialog(
             modal=True,
+            scrollable=True,
             title=ft.Text(_("Deleting Items")),
             content=ft.Column(
                 controls=[progress_bar, progress_text, error_column],
@@ -676,8 +677,6 @@ class FileExplorerController(BaseController["FileManagerView"]):
             """Cancel the batch download operation."""
             cancel_event.set()
             e.control.disabled = True
-            e.control.text = _("Cancelling...")
-            e.control.update()
         
         cancel_button = ft.TextButton(_("Cancel"), on_click=cancel_operation)
         
@@ -688,7 +687,6 @@ class FileExplorerController(BaseController["FileManagerView"]):
             content=ft.Column(
                 controls=[progress_bar, progress_text, error_column],
                 width=400,
-                height=200,
             ),
             actions=[cancel_button],
         )
@@ -732,15 +730,8 @@ class FileExplorerController(BaseController["FileManagerView"]):
         async def close_download_dialog(e: ft.Event[ft.TextButton]):
             """Close the download progress dialog."""
             self._close_dialog(progress_dialog)
-        
-        if cancelled:
-            progress_text.value = _(
-                "Operation cancelled. Added {added} items, {failed} failed"
-            ).format(added=added, failed=failed)
-            ok_button = ft.TextButton(_("OK"), on_click=close_download_dialog)
-            progress_dialog.actions = [ok_button]
-            progress_dialog.update()
-        elif failed > 0:
+            
+        if failed > 0:
             progress_text.value = _(
                 "Added {added} items to download queue, {failed} failed"
             ).format(added=added, failed=failed)
@@ -748,9 +739,6 @@ class FileExplorerController(BaseController["FileManagerView"]):
             progress_dialog.actions = [ok_button]
             progress_dialog.update()
         else:
-            progress_text.value = _("Added {added} items to download queue. Check downloads page for progress.").format(
-                added=added
-            )
             progress_dialog.open = False
             progress_dialog.update()
         
