@@ -43,31 +43,31 @@ class SelectionToolbar(ft.Row):
         
         # Action buttons
         self.select_all_button = ft.TextButton(
-            text=_("Select All"),
+            content=_("Select All"),
             icon=ft.Icons.SELECT_ALL,
             on_click=self.on_select_all_click,
         )
         
         self.clear_selection_button = ft.TextButton(
-            text=_("Clear"),
+            content=_("Clear"),
             icon=ft.Icons.CLEAR,
             on_click=self.on_clear_selection_click,
         )
         
         self.download_button = ft.TextButton(
-            text=_("Download"),
+            content=_("Download"),
             icon=ft.Icons.DOWNLOAD,
             on_click=self.on_download_click,
         )
         
         self.delete_button = ft.TextButton(
-            text=_("Delete"),
+            content=_("Delete"),
             icon=ft.Icons.DELETE,
             on_click=self.on_delete_click,
         )
         
         self.cancel_button = ft.TextButton(
-            text=_("Cancel"),
+            content=_("Cancel"),
             icon=ft.Icons.CLOSE,
             on_click=self.on_cancel_click,
         )
