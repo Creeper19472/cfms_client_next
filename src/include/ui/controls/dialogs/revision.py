@@ -34,6 +34,7 @@ class RevisionTile(ft.ListTile):
         self.is_current = is_current
         self.controller = controller
         self.expand = True
+        self.expand_loose = True
 
         # Format creation time
         created_time_str = datetime.fromtimestamp(created_time).strftime(
@@ -91,7 +92,7 @@ class RevisionTile(ft.ListTile):
                 expand=True,
                 expand_loose=True,
                 spacing=5,
-                width=45,
+                width=120,
                 alignment=ft.MainAxisAlignment.END,
             ),
             # expand=True,
@@ -135,7 +136,7 @@ class RevisionDialog(AlertDialog):
         )
         self.expand = True
         self.expand_loose = True
-        self.width = 700
+        self.width = 800
         self.scrollable = True
 
         # Revisions list

@@ -3,6 +3,14 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.0
+**Released on:** 2026-02-03
+
+**Title:** Revision Management Feature
+
+This version adds the ability to manage revisions.
+
+---
 ## v0.4.16
 **Released on:** 2026-02-02
 

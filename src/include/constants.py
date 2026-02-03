@@ -32,9 +32,9 @@ DEFAULT_WINDOW_TITLE = "CFMS Client"
 GITHUB_REPO = "Creeper19472/cfms_client_next"
 
 # Version Information
-CHANNEL = ChannelType.STABLE
-BUILD_VERSION = "v0.4.16"
-MODIFIED = "20260202"
+CHANNEL = ChannelType.BETA
+BUILD_VERSION = "v0.5.0"
+MODIFIED = "20260203"
 
 # Default update channel for user preferences
 DEFAULT_UPDATE_CHANNEL = ChannelType.STABLE

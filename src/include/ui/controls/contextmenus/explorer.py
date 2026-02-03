@@ -146,12 +146,10 @@ class FileContextMenu(ContextMenu2):
     async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         # Create a new file picker each time (file picker is a singleton)
         file_picker = ft.FilePicker()
-        self.page.overlay.append(file_picker)
-        self.page.update()
         
         result = await file_picker.pick_files(allow_multiple=False)
-        if result and result.files:
-            self.page.run_task(self.controller.action_upload_new_revision, result.files[0])
+        if result:
+            self.page.run_task(self.controller.action_upload_new_revision, result[0])
 
     async def view_revisions_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_view_revisions)
