@@ -7,7 +7,7 @@ import flet as ft
 from websockets.asyncio.client import ClientConnection
 from include.classes.shared import AppShared
 from include.controllers.explorer.itself import FileExplorerController
-from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar
+from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar, SelectionToolbar
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import update_file_controls
 
@@ -72,6 +72,11 @@ class FileListView(ft.ListView):
         self.current_parent_id: str | None = None
         self.current_files_data: list[dict] = []
         self.current_directories_data: list[dict] = []
+        
+        # Selection mode state
+        self.selection_mode: bool = False
+        self.selected_file_ids: set[str] = set()
+        self.selected_directory_ids: set[str] = set()
 
     def sort_files(
         self,
@@ -116,6 +121,66 @@ class FileListView(ft.ListView):
             self.current_parent_id,
         )
 
+    def toggle_selection_mode(self, enabled: bool):
+        """Enable or disable selection mode."""
+        self.selection_mode = enabled
+        if not enabled:
+            # Clear selections when exiting selection mode
+            self.selected_file_ids.clear()
+            self.selected_directory_ids.clear()
+        
+        # Update all controls to show/hide checkboxes
+        update_file_controls(
+            self,
+            self.current_directories_data,
+            self.current_files_data,
+            self.current_parent_id,
+        )
+    
+    def select_all(self):
+        """Select all files and directories."""
+        self.selected_file_ids = {f["id"] for f in self.current_files_data}
+        self.selected_directory_ids = {d["id"] for d in self.current_directories_data}
+        
+        # Update UI to reflect selections
+        update_file_controls(
+            self,
+            self.current_directories_data,
+            self.current_files_data,
+            self.current_parent_id,
+        )
+    
+    def clear_selection(self):
+        """Clear all selections."""
+        self.selected_file_ids.clear()
+        self.selected_directory_ids.clear()
+        
+        # Update UI to reflect cleared selections
+        update_file_controls(
+            self,
+            self.current_directories_data,
+            self.current_files_data,
+            self.current_parent_id,
+        )
+    
+    def toggle_file_selection(self, file_id: str):
+        """Toggle selection state of a file."""
+        if file_id in self.selected_file_ids:
+            self.selected_file_ids.remove(file_id)
+        else:
+            self.selected_file_ids.add(file_id)
+    
+    def toggle_directory_selection(self, directory_id: str):
+        """Toggle selection state of a directory."""
+        if directory_id in self.selected_directory_ids:
+            self.selected_directory_ids.remove(directory_id)
+        else:
+            self.selected_directory_ids.add(directory_id)
+    
+    def get_selected_count(self) -> int:
+        """Get total count of selected items."""
+        return len(self.selected_file_ids) + len(self.selected_directory_ids)
+
 
 class FileManagerView(ft.Container):
     def __init__(self, parent_model, ref: ft.Ref | None = None, visible=True):
@@ -139,6 +204,7 @@ class FileManagerView(ft.Container):
         # Components
         self.indicator = FilePathIndicator("/")
         self.top_bar = ExplorerTopBar(self)
+        self.selection_toolbar = SelectionToolbar(self, visible=False)
         self.sort_bar = FileSortBar(self, visible=False)
         self.file_listview = FileListView(self, visible=False)
         self.progress_ring = ft.ProgressRing(visible=False)
@@ -148,6 +214,7 @@ class FileManagerView(ft.Container):
                 ft.Text(_("File Management"), size=24, weight=ft.FontWeight.BOLD),
                 self.indicator,
                 self.top_bar,
+                self.selection_toolbar,
                 ft.Divider(),
                 self.progress_ring,
                 # File list, initially hidden until loading is complete

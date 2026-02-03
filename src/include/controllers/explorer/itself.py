@@ -12,6 +12,7 @@ from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
     FileOverwriteConfirmDialog,
+    BatchDeleteConfirmDialog,
 )
 from include.ui.util.choice import normalize_always_choice
 from include.ui.util.path import get_directory
@@ -20,6 +21,7 @@ from include.util.create import create_directory
 from include.util.tree import build_directory_tree
 from include.util.requests import do_request
 from include.util.transfer import batch_upload_file_to_server, upload_file_to_server
+from include.util.batch_operations import batch_delete_items, batch_download_items
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -522,3 +524,210 @@ class FileExplorerController(BaseController["FileManagerView"]):
             upload_dialog.open = False
 
         upload_dialog.update()
+    
+    def _close_dialog(self, dialog: ft.AlertDialog):
+        """Helper method to close a dialog."""
+        dialog.open = False
+        dialog.update()
+
+    async def action_batch_delete(self):
+        """Handle batch delete of selected files and directories."""
+        file_ids = list(self.control.file_listview.selected_file_ids)
+        directory_ids = list(self.control.file_listview.selected_directory_ids)
+        
+        if not file_ids and not directory_ids:
+            self.control.send_error(_("No items selected"))
+            return
+        
+        # Show confirmation dialog
+        confirm_dialog = BatchDeleteConfirmDialog(
+            file_count=len(file_ids),
+            directory_count=len(directory_ids),
+        )
+        
+        self.control.page.show_dialog(confirm_dialog)
+        
+        # Wait for user confirmation
+        confirmed = await confirm_dialog.wait_for_confirmation()
+        if not confirmed:
+            return
+        
+        # Execute the batch delete
+        await self._execute_batch_delete(file_ids, directory_ids)
+    
+    async def _execute_batch_delete(
+        self,
+        file_ids: list[str],
+        directory_ids: list[str]
+    ):
+        """Execute the batch delete operation."""
+        # Create progress dialog
+        progress_bar = ft.ProgressBar(value=0)
+        progress_text = ft.Text(_("Deleting items..."), text_align=ft.TextAlign.CENTER)
+        error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
+        
+        progress_dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(_("Deleting Items")),
+            content=ft.Column(
+                controls=[progress_bar, progress_text, error_column],
+                width=400,
+                height=200,
+            ),
+            actions=[],
+        )
+        
+        self.control.page.show_dialog(progress_dialog)
+        
+        # Track progress
+        total_items = len(file_ids) + len(directory_ids)
+        completed = 0
+        failed = 0
+        
+        # Get file and directory names for error reporting
+        file_names = {f["id"]: f["title"] for f in self.control.file_listview.current_files_data}
+        dir_names = {d["id"]: d["name"] for d in self.control.file_listview.current_directories_data}
+        
+        # Delete items
+        async for item_type, item_id, success, error_msg in batch_delete_items(
+            self.app_shared, file_ids, directory_ids
+        ):
+            completed += 1
+            progress_bar.value = completed / total_items
+            
+            if not success:
+                failed += 1
+                item_name = file_names.get(item_id) if item_type == "file" else dir_names.get(item_id)
+                error_text = ft.Text(
+                    _('Failed to delete {type} "{name}": {error}').format(
+                        type=_("file") if item_type == "file" else _("directory"),
+                        name=item_name or item_id,
+                        error=error_msg
+                    )
+                )
+                error_column.controls.append(error_text)
+                error_column.update()
+            
+            progress_text.value = _("Deleted {completed}/{total} items ({failed} failed)").format(
+                completed=completed,
+                total=total_items,
+                failed=failed
+            )
+            progress_text.update()
+            progress_bar.update()
+        
+        # Show completion message
+        if failed > 0:
+            progress_text.value = _("Deletion completed with {failed} error(s)").format(failed=failed)
+            
+            async def close_delete_dialog(e: ft.Event[ft.TextButton]):
+                """Close the delete progress dialog."""
+                self._close_dialog(progress_dialog)
+            
+            ok_button = ft.TextButton(_("OK"), on_click=close_delete_dialog)
+            progress_dialog.actions = [ok_button]
+            progress_dialog.update()
+        else:
+            progress_dialog.open = False
+            progress_dialog.update()
+        
+        # Exit selection mode and refresh directory
+        self.control.file_listview.toggle_selection_mode(False)
+        self.control.selection_toolbar.visible = False
+        self.control.top_bar.selection_toggle_button.visible = True
+        self.control.selection_toolbar.update()
+        self.control.top_bar.update()
+        
+        await get_directory(
+            id=self.control.current_directory_id,
+            view=self.control.file_listview,
+        )
+    
+    async def action_batch_download(self):
+        """Handle batch download of selected files and directories."""
+        file_ids = list(self.control.file_listview.selected_file_ids)
+        directory_ids = list(self.control.file_listview.selected_directory_ids)
+        
+        if not file_ids and not directory_ids:
+            self.control.send_error(_("No items selected"))
+            return
+        
+        # Ask user to select download directory
+        save_path = await self.control.parent_model.file_picker.get_directory_path()
+        if not save_path:
+            return
+        
+        # Get file and directory data
+        file_items = [f for f in self.control.file_listview.current_files_data if f["id"] in file_ids]
+        directory_items = [d for d in self.control.file_listview.current_directories_data if d["id"] in directory_ids]
+        
+        # Create progress dialog
+        progress_bar = ft.ProgressBar(value=None)  # Indeterminate initially
+        progress_text = ft.Text(_("Preparing download..."), text_align=ft.TextAlign.CENTER)
+        error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
+        
+        progress_dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(_("Downloading Items")),
+            content=ft.Column(
+                controls=[progress_bar, progress_text, error_column],
+                width=400,
+                height=200,
+            ),
+            actions=[],
+        )
+        
+        self.control.page.show_dialog(progress_dialog)
+        
+        # Track progress
+        completed = 0
+        failed = 0
+        
+        # Download items
+        async for item_type, item_name, current_file, success, error_msg in batch_download_items(
+            self.app_shared, file_items, directory_items, save_path
+        ):
+            if not success:
+                failed += 1
+                error_text = ft.Text(
+                    _('Failed to download {type} "{name}": {error}').format(
+                        type=_("file") if item_type == "file" else _("directory"),
+                        name=item_name,
+                        error=error_msg
+                    )
+                )
+                error_column.controls.append(error_text)
+                error_column.update()
+            else:
+                completed += 1
+            
+            progress_text.value = _("Downloading: {current_file}").format(current_file=current_file)
+            progress_text.update()
+        
+        # Show completion message
+        total_attempted = completed + failed
+        if failed > 0:
+            progress_text.value = _(
+                "Download completed: {completed} succeeded, {failed} failed"
+            ).format(completed=completed, failed=failed)
+            
+            async def close_download_dialog(e: ft.Event[ft.TextButton]):
+                """Close the download progress dialog."""
+                self._close_dialog(progress_dialog)
+            
+            ok_button = ft.TextButton(_("OK"), on_click=close_download_dialog)
+            progress_dialog.actions = [ok_button]
+            progress_dialog.update()
+        else:
+            progress_text.value = _("Download completed successfully: {completed} items").format(
+                completed=completed
+            )
+            progress_dialog.open = False
+            progress_dialog.update()
+        
+        # Exit selection mode
+        self.control.file_listview.toggle_selection_mode(False)
+        self.control.selection_toolbar.visible = False
+        self.control.top_bar.selection_toggle_button.visible = True
+        self.control.selection_toolbar.update()
+        self.control.top_bar.update()

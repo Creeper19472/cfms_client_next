@@ -549,3 +549,78 @@ class FileOverwriteConfirmDialog(AlertDialog):
         """Wait for the user to make a choice and return it."""
         await self.choice_event.wait()
         return self.user_choice
+
+
+class BatchDeleteConfirmDialog(AlertDialog):
+    """Dialog to confirm batch deletion of files and directories."""
+    
+    def __init__(
+        self,
+        file_count: int,
+        directory_count: int,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        
+        self.modal = True
+        self.title = ft.Text(_("Confirm Delete"))
+        
+        self.file_count = file_count
+        self.directory_count = directory_count
+        self.user_confirmed = False
+        self.choice_event = asyncio.Event()
+        
+        # Build confirmation message
+        total_count = file_count + directory_count
+        if file_count > 0 and directory_count > 0:
+            message = _("Delete {count} items ({file_count} files, {dir_count} directories)?").format(
+                count=total_count,
+                file_count=file_count,
+                dir_count=directory_count
+            )
+        elif file_count > 0:
+            message = _("Delete {count} file(s)?").format(count=file_count)
+        else:
+            message = _("Delete {count} directory(ies)?").format(count=directory_count)
+        
+        self.content = ft.Column(
+            controls=[
+                ft.Text(message, size=16),
+                ft.Container(height=10),
+                ft.Text(
+                    _("This action cannot be undone."),
+                    color=ft.Colors.RED_400,
+                    weight=ft.FontWeight.BOLD,
+                ),
+            ],
+            width=400,
+        )
+        
+        self.delete_button = ft.TextButton(
+            _("Delete"),
+            on_click=self.delete_button_click,
+        )
+        self.cancel_button = ft.TextButton(
+            _("Cancel"),
+            on_click=self.cancel_button_click,
+        )
+        
+        self.actions = [self.delete_button, self.cancel_button]
+    
+    async def delete_button_click(self, event: ft.Event[ft.TextButton]):
+        """Handle delete button click."""
+        self.user_confirmed = True
+        self.choice_event.set()
+        self.close()
+    
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        """Handle cancel button click."""
+        self.user_confirmed = False
+        self.choice_event.set()
+        self.close()
+    
+    async def wait_for_confirmation(self) -> bool:
+        """Wait for the user to confirm or cancel."""
+        await self.choice_event.wait()
+        return self.user_confirmed
