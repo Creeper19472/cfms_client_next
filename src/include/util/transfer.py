@@ -559,3 +559,4 @@ async def upload_new_revision(
     finally:
         if transfer_conn:
             await transfer_conn.close()
+            transfer_conn = None
