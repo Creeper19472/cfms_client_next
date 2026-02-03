@@ -90,10 +90,11 @@ async def batch_download_items(
     save_root_path: str,
 ) -> AsyncIterator[tuple[str, str, str, bool, Optional[str]]]:
     """
-    Download multiple files and directories with structure preservation.
+    Add multiple files and directories to the download queue with structure preservation.
 
-    Uses the DownloadManagerService to handle downloads, ensuring proper
-    queuing, progress tracking, and error handling.
+    Uses the DownloadManagerService to queue downloads. The actual downloads happen
+    asynchronously in the background via the download service. This function only
+    adds tasks to the queue and reports success/failure of the queueing operation.
 
     Args:
         app_shared: Shared application state
@@ -105,9 +106,9 @@ async def batch_download_items(
         Tuples of (item_type, item_name, current_file, success, error_message)
         - item_type: "file" or "directory"
         - item_name: Name of the file/directory being processed
-        - current_file: Current file being downloaded (for progress display)
-        - success: True if download succeeded, False otherwise
-        - error_message: Error message if download failed, None otherwise
+        - current_file: Current file being added to queue (for progress display)
+        - success: True if task was added to queue, False otherwise
+        - error_message: Error message if adding to queue failed, None otherwise
     """
 
     # Get the download manager service
@@ -130,7 +131,11 @@ async def batch_download_items(
         file_id: str, filename: str, save_path: str, download_service: DownloadManagerService
     ) -> tuple[bool, Optional[str]]:
         """
-        Download a single file from the server using the DownloadManagerService.
+        Add a file to the download queue using the DownloadManagerService.
+
+        This function requests a download task from the server and adds it to the
+        download manager queue. The actual download happens asynchronously in the
+        background via the download service.
 
         Args:
             file_id: Server ID of the file to download
@@ -140,7 +145,7 @@ async def batch_download_items(
 
         Returns:
             Tuple of (success: bool, error_message: Optional[str])
-            - success: True if download succeeded, False otherwise
+            - success: True if task was successfully added to queue, False otherwise
             - error_message: Error description if failed, None otherwise
         """
         try:
@@ -167,8 +172,8 @@ async def batch_download_items(
             # Check if server supports resume
             supports_resume = task_data.get("supports_resume", False)
 
-            # Add task to download manager with high priority for batch operations
-            task = download_service.add_task(
+            # Add task to download manager - it will be downloaded in the background
+            download_service.add_task(
                 task_id=task_id,
                 file_id=file_id,
                 filename=filename,
@@ -177,24 +182,8 @@ async def batch_download_items(
                 supports_resume=supports_resume,
             )
 
-            # Wait for download to complete, checking status periodically
-            while task.status in [
-                DownloadTaskStatus.PENDING,
-                DownloadTaskStatus.SCHEDULED,
-                DownloadTaskStatus.DOWNLOADING,
-                DownloadTaskStatus.VERIFYING,
-            ]:
-                await asyncio.sleep(0.5)  # Check every 500ms
-
-            # Check final status
-            if task.status == DownloadTaskStatus.COMPLETED:
-                return (True, None)
-            elif task.status == DownloadTaskStatus.FAILED:
-                return (False, task.error or _("Download failed"))
-            elif task.status == DownloadTaskStatus.CANCELLED:
-                return (False, _("Download cancelled"))
-            else:
-                return (False, _("Unknown download status: {status}").format(status=task.status))
+            # Return success immediately - download happens in background
+            return (True, None)
 
         except Exception as e:
             return (False, str(e))
@@ -203,10 +192,11 @@ async def batch_download_items(
         dir_id: str, dir_name: str, parent_path: str, download_service: DownloadManagerService
     ):
         """
-        Recursively download a directory and all its contents.
+        Recursively add all files in a directory to the download queue.
 
-        Downloads all files in the directory and recursively processes subdirectories,
-        maintaining the directory structure locally.
+        Traverses the directory structure and adds all files to the download queue,
+        maintaining the directory structure locally. The actual downloads happen
+        asynchronously in the background via the download service.
 
         Args:
             dir_id: Server ID of the directory to download
@@ -218,8 +208,8 @@ async def batch_download_items(
             Tuples of (item_type, item_name, current_file, success, error_message)
             - item_type: "file" or "directory"
             - item_name: Name of the item being processed
-            - current_file: Path being downloaded for progress display
-            - success: True if operation succeeded, False otherwise
+            - current_file: Path being added to queue for progress display
+            - success: True if task was added to queue, False otherwise
             - error_message: Error description if failed, None otherwise
         """
         # Create directory

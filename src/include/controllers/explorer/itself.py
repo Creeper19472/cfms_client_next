@@ -661,14 +661,14 @@ class FileExplorerController(BaseController["FileManagerView"]):
         file_items = [f for f in self.control.file_listview.current_files_data if f["id"] in file_ids]
         directory_items = [d for d in self.control.file_listview.current_directories_data if d["id"] in directory_ids]
         
-        # Create progress dialog
+        # Create progress dialog for adding items to download queue
         progress_bar = ft.ProgressBar(value=None)  # Indeterminate initially
-        progress_text = ft.Text(_("Preparing download..."), text_align=ft.TextAlign.CENTER)
+        progress_text = ft.Text(_("Adding items to download queue..."), text_align=ft.TextAlign.CENTER)
         error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
         
         progress_dialog = ft.AlertDialog(
             modal=True,
-            title=ft.Text(_("Downloading Items")),
+            title=ft.Text(_("Adding Downloads")),
             content=ft.Column(
                 controls=[progress_bar, progress_text, error_column],
                 width=400,
@@ -680,17 +680,17 @@ class FileExplorerController(BaseController["FileManagerView"]):
         self.control.page.show_dialog(progress_dialog)
         
         # Track progress
-        completed = 0
+        added = 0
         failed = 0
         
-        # Download items
+        # Add items to download queue
         async for item_type, item_name, current_file, success, error_msg in batch_download_items(
             self.app_shared, file_items, directory_items, save_path
         ):
             if not success:
                 failed += 1
                 error_text = ft.Text(
-                    _('Failed to download {type} "{name}": {error}').format(
+                    _('Failed to add {type} "{name}": {error}').format(
                         type=_("file") if item_type == "file" else _("directory"),
                         name=item_name,
                         error=error_msg
@@ -699,17 +699,17 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 error_column.controls.append(error_text)
                 error_column.update()
             else:
-                completed += 1
+                added += 1
             
-            progress_text.value = _("Downloading: {current_file}").format(current_file=current_file)
+            progress_text.value = _("Adding: {current_file}").format(current_file=current_file)
             progress_text.update()
         
         # Show completion message
-        total_attempted = completed + failed
+        total_attempted = added + failed
         if failed > 0:
             progress_text.value = _(
-                "Download completed: {completed} succeeded, {failed} failed"
-            ).format(completed=completed, failed=failed)
+                "Added {added} items to download queue, {failed} failed"
+            ).format(added=added, failed=failed)
             
             async def close_download_dialog(e: ft.Event[ft.TextButton]):
                 """Close the download progress dialog."""
@@ -719,8 +719,8 @@ class FileExplorerController(BaseController["FileManagerView"]):
             progress_dialog.actions = [ok_button]
             progress_dialog.update()
         else:
-            progress_text.value = _("Download completed successfully: {completed} items").format(
-                completed=completed
+            progress_text.value = _("Added {added} items to download queue. Check downloads page for progress.").format(
+                added=added
             )
             progress_dialog.open = False
             progress_dialog.update()
