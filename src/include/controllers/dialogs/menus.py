@@ -24,6 +24,11 @@ class RenameDialogController(BaseController["RenameDialog"]):
         super().__init__(control)
 
     async def action_rename_object(self, new_title: str):
+
+        if self.control.object_display_name == new_title:
+            self.control.close()
+            return
+
         if self.control.object_type == "document":
             response = await do_request(
                 "rename_document",

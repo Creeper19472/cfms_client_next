@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+
+from flet import FilePickerFile
 from include.controllers.base import BaseController
 from include.ui.controls.dialogs.wait import wait
 from include.ui.controls.dialogs.contextmenu.explorer import (
@@ -87,6 +89,9 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
 
     async def action_set_access_rules(self):
         self.control.page.show_dialog(RuleManager(self.control.file_id, "document"))
+
+    async def action_upload_new_revision(self, picked_file: FilePickerFile):
+        pass
 
     async def action_view_revisions(self):
         from include.ui.controls.dialogs.revision import RevisionDialog

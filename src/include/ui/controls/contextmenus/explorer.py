@@ -82,22 +82,29 @@ class FileContextMenu(ContextMenu2):
                 },
                 {
                     "icon": ft.Icons.LIST_ALT,
-                    "content": _("View Access Entries"),
+                    "content": _("View access entries"),
                     "on_click": self.view_access_entries_button_click,
                     "require": {"view_access_entries"},
                 },
                 {
                     "icon": ft.Icons.SETTINGS_OUTLINED,
-                    "content": _("Set Permissions"),
+                    "content": _("Set permissions"),
                     "on_click": self.set_access_rules_button_click,
                     "require": {"set_access_rules"},
                 },
+                {},
                 {
-                    "icon": ft.Icons.HISTORY,
+                    "icon": ft.Icons.UPLOAD_FILE_OUTLINED,
+                    "content": _("Upload new version"),
+                    "on_click": self.new_revision_button_click,
+                },
+                {
+                    "icon": ft.Icons.HISTORY_OUTLINED,
                     "content": _("View Revisions"),
                     "on_click": self.view_revisions_button_click,
                     "require": {"list_revisions"},
                 },
+                {},
                 {
                     "icon": ft.Icons.INFO_OUTLINED,
                     "content": _("Properties"),
@@ -135,6 +142,11 @@ class FileContextMenu(ContextMenu2):
 
     async def set_access_rules_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_set_access_rules)
+
+    async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
+        file_picker = ft.FilePicker()
+        picked_files = await file_picker.pick_files()
+        self.page.run_task(self.controller.action_upload_new_revision, picked_files[0])
 
     async def view_revisions_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_view_revisions)

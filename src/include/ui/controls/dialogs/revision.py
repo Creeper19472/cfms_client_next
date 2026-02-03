@@ -33,6 +33,7 @@ class RevisionTile(ft.ListTile):
         self.created_time = created_time
         self.is_current = is_current
         self.controller = controller
+        self.expand = True
 
         # Format creation time
         created_time_str = datetime.fromtimestamp(created_time).strftime(
@@ -83,12 +84,18 @@ class RevisionTile(ft.ListTile):
 
         super().__init__(
             leading=ft.Icon(icon),
-            title=ft.Text(title_text),
+            title=title_text,
             subtitle=ft.Text("\n".join(subtitle_parts)),
             trailing=ft.Row(
                 controls=action_buttons,
+                expand=True,
+                expand_loose=True,
                 spacing=5,
+                width=45,
+                alignment=ft.MainAxisAlignment.END,
             ),
+            # expand=True,
+            # expand_loose=True,
         )
 
     async def on_view_click(self, e: ft.Event[ft.IconButton]):
@@ -123,17 +130,21 @@ class RevisionDialog(AlertDialog):
         self.app_shared = AppShared()
         self.controller = RevisionDialogController(self)
 
-        self.modal = True
         self.title = ft.Text(
-            _("Revisions: {filename}").format(filename=filename)
+            _("View Revisions of {filename}").format(filename=filename)
         )
+        self.expand = True
+        self.expand_loose = True
+        self.width = 700
+        self.scrollable = True
 
         # Revisions list
         self.revisions_listview = ft.ListView(
             controls=[],
             spacing=5,
-            height=400,
-            width=700,
+            # height=400,
+            expand=True,
+            expand_loose=True,
         )
 
         # Progress indicator
@@ -169,6 +180,8 @@ class RevisionDialog(AlertDialog):
                 self.info_text,
                 self.revisions_listview,
             ],
+            expand=True,
+            expand_loose=True,
             scroll=ft.ScrollMode.AUTO,
         )
 
