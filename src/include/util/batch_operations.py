@@ -88,6 +88,7 @@ async def batch_download_items(
     file_items: list[dict],
     directory_items: list[dict],
     save_root_path: str,
+    cancel_event: Optional[asyncio.Event] = None,
 ) -> AsyncIterator[tuple[str, str, str, bool, Optional[str]]]:
     """
     Add multiple files and directories to the download queue with structure preservation.
@@ -101,6 +102,7 @@ async def batch_download_items(
         file_items: List of file dicts with keys: id, title
         directory_items: List of directory dicts with keys: id, name
         save_root_path: Root directory where files should be saved
+        cancel_event: Optional asyncio.Event to signal cancellation
 
     Yields:
         Tuples of (item_type, item_name, current_file, success, error_message)
@@ -212,6 +214,10 @@ async def batch_download_items(
             - success: True if task was added to queue, False otherwise
             - error_message: Error description if failed, None otherwise
         """
+        # Check for cancellation
+        if cancel_event and cancel_event.is_set():
+            return
+            
         # Create directory
         dir_path = os.path.join(parent_path, dir_name)
         os.makedirs(dir_path, exist_ok=True)
@@ -239,6 +245,10 @@ async def batch_download_items(
 
             # Download all files in this directory
             for file_data in files:
+                # Check for cancellation before each file
+                if cancel_event and cancel_event.is_set():
+                    return
+                    
                 file_id = file_data["id"]
                 filename = file_data["title"]
                 file_path = os.path.join(dir_path, filename)
@@ -248,6 +258,10 @@ async def batch_download_items(
 
             # Recursively download subdirectories
             for subdir_data in subdirs:
+                # Check for cancellation before each subdirectory
+                if cancel_event and cancel_event.is_set():
+                    return
+                    
                 subdir_id = subdir_data["id"]
                 subdir_name = subdir_data["name"]
 
@@ -261,6 +275,10 @@ async def batch_download_items(
 
     # Download individual files
     for file_data in file_items:
+        # Check for cancellation before each file
+        if cancel_event and cancel_event.is_set():
+            return
+            
         file_id = file_data["id"]
         filename = file_data["title"]
         file_path = os.path.join(save_root_path, filename)
@@ -270,6 +288,10 @@ async def batch_download_items(
 
     # Download directories recursively
     for dir_data in directory_items:
+        # Check for cancellation before each directory
+        if cancel_event and cancel_event.is_set():
+            return
+            
         dir_id = dir_data["id"]
         dir_name = dir_data["name"]
 
