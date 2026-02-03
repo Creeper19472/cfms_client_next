@@ -3,6 +3,14 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.1
+**Released on:** 2026-02-04
+
+**Title:** Multiple Selection Feature
+
+This version adds support for multi-option items and is compatible with server-side protocols version 7.
+
+---
 ## v0.5.0
 **Released on:** 2026-02-03
 
