@@ -43,7 +43,8 @@ class RuleManagerController(BaseController["RuleManager"]):
                 f"Failed to fetch current rules: {info_resp['message']}"
             )
         else:
-            self.control.cached_access_rules = info_resp["data"]
+            self.control.cached_access_rules = info_resp["data"]["rules"]
+            self.control.inherit_checkbox.value = info_resp["data"]["inherit"]
             self.control.content_textfield.value = json.dumps(
                 self.control.cached_access_rules, indent=4
             )

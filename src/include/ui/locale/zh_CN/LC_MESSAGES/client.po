@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-03 20:13+0800\n"
+"POT-Creation-Date: 2026-02-03 23:48+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -205,6 +205,8 @@ msgid "Download added: {filename}"
 msgstr "已添加下载：{filename}"
 
 #: .\include\controllers\dialogs\revision.py:102
+#: .\include\util\batch_operations.py:127
+#: .\include\util\batch_operations.py:129
 msgid "Download manager service not available"
 msgstr "下载管理器服务不可用"
 
@@ -236,7 +238,7 @@ msgstr "删除修订版本失败：({code}) {message}"
 msgid "Failed to delete revision: {error}"
 msgstr "删除修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\rulemanager.py:79
+#: .\include\controllers\dialogs\rulemanager.py:80
 msgid "Modification failed: {message}"
 msgstr "修改失败：{message}"
 
@@ -272,59 +274,153 @@ msgstr "访问条目已成功撤销"
 msgid "Failed to revoke access: {error}"
 msgstr "撤销访问权限失败：{error}"
 
-#: .\include\controllers\explorer\itself.py:40
+#: .\include\controllers\explorer\itself.py:42
 msgid "Preparing upload"
 msgstr "正在准备上传"
 
-#: .\include\controllers\explorer\itself.py:95
+#: .\include\controllers\explorer\itself.py:97
 msgid "Upload failed: No permission to upload files"
 msgstr "上传失败: 无权上传文件"
 
-#: .\include\controllers\explorer\itself.py:98
+#: .\include\controllers\explorer\itself.py:100
 msgid "Upload failed: ({code}) {message}"
 msgstr "上传失败：({code}) {message}"
 
-#: .\include\controllers\explorer\itself.py:116
+#: .\include\controllers\explorer\itself.py:118
 msgid "Problem occurred when uploading \"{each_file_name}\": {exc}"
 msgstr "在上传 \"{each_file_name}\" 时遇到问题：{exc}"
 
-#: .\include\controllers\explorer\itself.py:206
+#: .\include\controllers\explorer\itself.py:208
 msgid "Creating directory \"{parent_path}\""
 msgstr "正在创建目录 \"{parent_path}\""
 
-#: .\include\controllers\explorer\itself.py:242
+#: .\include\controllers\explorer\itself.py:244
 msgid "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
 msgstr "[{_current_number}/{_total_number}] 正在上传文件 \"{abs_path}\""
 
-#: .\include\controllers\explorer\itself.py:322
-#: .\include\controllers\explorer\itself.py:394
+#: .\include\controllers\explorer\itself.py:324
+#: .\include\controllers\explorer\itself.py:396
 msgid "Internal error: Missing task_id for file \"{filename}\""
 msgstr "内部错误：文件 \"{filename}\" 缺少 task_id"
 
-#: .\include\controllers\explorer\itself.py:332
+#: .\include\controllers\explorer\itself.py:334
 msgid "Upload file \"{filename}\" failed: {errmsg}"
 msgstr "上传文件 \"{filename}\" 失败：{errmsg}"
 
-#: .\include\controllers\explorer\itself.py:357
-#: .\include\controllers\explorer\itself.py:371
+#: .\include\controllers\explorer\itself.py:359
+#: .\include\controllers\explorer\itself.py:373
 msgid "Create file \"{filename}\" failed: {errmsg}"
 msgstr "创建文件 \"{filename}\" 失败：{errmsg}"
 
-#: .\include\controllers\explorer\itself.py:471
+#: .\include\controllers\explorer\itself.py:473
 msgid "Problem occurred when uploading file \"{filename}\": {err}"
 msgstr "在上传文件 \"{filename}\" 时遇到问题：{err}"
 
-#: .\include\controllers\explorer\itself.py:478
+#: .\include\controllers\explorer\itself.py:480
 msgid "Retrying [{retry}/{max_retries}]: {strerr}"
 msgstr "正在重试 [{retry}/{max_retries}]：{strerr}"
 
-#: .\include\controllers\explorer\itself.py:503
+#: .\include\controllers\explorer\itself.py:505
 msgid "Please wait"
 msgstr "请稍候"
 
-#: .\include\controllers\explorer\itself.py:516
+#: .\include\controllers\explorer\itself.py:518
 msgid "Upload completed with {total_errors} error(s)."
 msgstr "上传完成，共计 {total_errors} 个错误。"
+
+#: .\include\controllers\explorer\itself.py:539
+#: .\include\controllers\explorer\itself.py:653
+msgid "No items selected"
+msgstr "未选择项目"
+
+#: .\include\controllers\explorer\itself.py:566
+msgid "Deleting items..."
+msgstr "删除项目中..."
+
+#: .\include\controllers\explorer\itself.py:572
+msgid "Deleting Items"
+msgstr "删除项目"
+
+#: .\include\controllers\explorer\itself.py:603
+msgid "Failed to delete {type} \"{name}\": {error}"
+msgstr "删除 {type} \"{name}\" 失败：{error}"
+
+#: .\include\controllers\explorer\itself.py:604
+#: .\include\controllers\explorer\itself.py:710
+msgid "file"
+msgstr "文件"
+
+#: .\include\controllers\explorer\itself.py:604
+#: .\include\controllers\explorer\itself.py:710
+msgid "directory"
+msgstr "目录"
+
+#: .\include\controllers\explorer\itself.py:612
+msgid "Deleted {completed}/{total} items ({failed} failed)"
+msgstr "删除了 {completed}/{total} 个项目（失败 {failed} 个）"
+
+#: .\include\controllers\explorer\itself.py:622
+msgid "Deletion completed with {failed} error(s)"
+msgstr "删除完成，共计 {failed} 个错误。"
+
+#: .\include\controllers\explorer\itself.py:628
+#: .\include\controllers\explorer\itself.py:738
+#: .\include\ui\controls\dialogs\explorer.py:116
+#: .\include\ui\controls\dialogs\explorer.py:162
+#: .\include\ui\controls\dialogs\whatsnew.py:79
+msgid "OK"
+msgstr "确定"
+
+#: .\include\controllers\explorer\itself.py:672
+msgid "Adding items to download queue..."
+msgstr "正在向下载队列添加项目..."
+
+#: .\include\controllers\explorer\itself.py:681
+#: .\include\ui\controls\components\explorer\bar.py:70
+#: .\include\ui\controls\components\rulemanager.py:111
+#: .\include\ui\controls\dialogs\admin\accounts.py:82
+#: .\include\ui\controls\dialogs\admin\accounts.py:162
+#: .\include\ui\controls\dialogs\admin\accounts.py:228
+#: .\include\ui\controls\dialogs\admin\accounts.py:285
+#: .\include\ui\controls\dialogs\admin\accounts.py:381
+#: .\include\ui\controls\dialogs\admin\groups.py:49
+#: .\include\ui\controls\dialogs\admin\groups.py:130
+#: .\include\ui\controls\dialogs\admin\groups.py:207
+#: .\include\ui\controls\dialogs\authorize.py:187
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
+#: .\include\ui\controls\dialogs\contextmenu\move.py:101
+#: .\include\ui\controls\dialogs\dev.py:39
+#: .\include\ui\controls\dialogs\explorer.py:56
+#: .\include\ui\controls\dialogs\explorer.py:119
+#: .\include\ui\controls\dialogs\explorer.py:165
+#: .\include\ui\controls\dialogs\explorer.py:231
+#: .\include\ui\controls\dialogs\explorer.py:366
+#: .\include\ui\controls\dialogs\explorer.py:605
+#: .\include\ui\controls\dialogs\password_confirm.py:61
+#: .\include\ui\controls\dialogs\twofa_setup.py:90
+#: .\include\ui\controls\dialogs\twofa_verify.py:80
+#: .\include\ui\controls\dialogs\upgrade.py:41
+#: .\include\ui\controls\views\tasks.py:108
+msgid "Cancel"
+msgstr "取消"
+
+#: .\include\controllers\explorer\itself.py:686
+msgid "Adding Downloads"
+msgstr "新增下载"
+
+#: .\include\controllers\explorer\itself.py:709
+msgid "Failed to add {type} \"{name}\": {error}"
+msgstr "添加 {type} \"{name}\" 失败：{error}"
+
+#: .\include\controllers\explorer\itself.py:720
+msgid "Adding: {current_file}"
+msgstr "正在添加：{current_file}"
+
+#: .\include\controllers\explorer\itself.py:735
+msgid "Added {added} items to download queue, {failed} failed"
+msgstr "添加了 {added} 个项目到下载队列中，{failed} 个失败"
 
 #: .\include\controllers\explorer\tile.py:51
 #: .\include\controllers\explorer\tile.py:167
@@ -397,56 +493,95 @@ msgstr ""
 msgid "User"
 msgstr "用户"
 
-#: .\include\ui\controls\components\explorer\bar.py:49
+#: .\include\ui\controls\components\explorer\bar.py:39
+#: .\include\ui\controls\components\explorer\bar.py:90
+msgid "0 items selected"
+msgstr "选择了 0 个项目"
+
+#: .\include\ui\controls\components\explorer\bar.py:46
+msgid "Select All"
+msgstr "全选"
+
+#: .\include\ui\controls\components\explorer\bar.py:52
+msgid "Clear"
+msgstr "清除"
+
+#: .\include\ui\controls\components\explorer\bar.py:58
+msgid "Download"
+msgstr "下载"
+
+#: .\include\ui\controls\components\explorer\bar.py:64
+#: .\include\ui\controls\contextmenus\explorer.py:64
+#: .\include\ui\controls\contextmenus\explorer.py:197
+#: .\include\ui\controls\contextmenus\group.py:50
+#: .\include\ui\controls\contextmenus\management.py:57
+#: .\include\ui\controls\dialogs\explorer.py:601
+#: .\include\ui\controls\dialogs\revision.py:79
+msgid "Delete"
+msgstr "删除"
+
+#: .\include\ui\controls\components\explorer\bar.py:92
+msgid "1 item selected"
+msgstr "选择了 1 个项目"
+
+#: .\include\ui\controls\components\explorer\bar.py:94
+msgid "{count} items selected"
+msgstr "选择了 {count} 个项目"
+
+#: .\include\ui\controls\components\explorer\bar.py:137
+msgid "Select items"
+msgstr "选择项目"
+
+#: .\include\ui\controls\components\explorer\bar.py:162
 #: .\include\ui\controls\dialogs\authorize.py:74
 #: .\include\ui\controls\dialogs\search.py:126
 #: .\include\ui\controls\dialogs\search.py:202
 msgid "Search"
 msgstr "搜索"
 
-#: .\include\ui\controls\components\explorer\bar.py:127
+#: .\include\ui\controls\components\explorer\bar.py:255
 msgid "Sort by:"
 msgstr "排序方式："
 
-#: .\include\ui\controls\components\explorer\bar.py:130
+#: .\include\ui\controls\components\explorer\bar.py:258
 #: .\include\ui\controls\dialogs\search.py:151
 msgid "Name"
 msgstr "名称"
 
-#: .\include\ui\controls\components\explorer\bar.py:131
+#: .\include\ui\controls\components\explorer\bar.py:259
 msgid "Created at"
 msgstr "创建时间"
 
-#: .\include\ui\controls\components\explorer\bar.py:132
+#: .\include\ui\controls\components\explorer\bar.py:260
 msgid "Last Modified"
 msgstr "最后修改"
 
-#: .\include\ui\controls\components\explorer\bar.py:133
+#: .\include\ui\controls\components\explorer\bar.py:261
 #: .\include\ui\controls\dialogs\search.py:154
 msgid "Size"
 msgstr "大小"
 
-#: .\include\ui\controls\components\explorer\bar.py:134
+#: .\include\ui\controls\components\explorer\bar.py:262
 msgid "Type"
 msgstr "类型"
 
-#: .\include\ui\controls\components\explorer\bar.py:143
+#: .\include\ui\controls\components\explorer\bar.py:271
 msgid "Toggle Sort Order"
 msgstr "切换排序顺序"
 
-#: .\include\ui\controls\components\explorer\tile.py:42
+#: .\include\ui\controls\components\explorer\tile.py:54
 msgid "ID: {file_id}\n"
 msgstr "ID：{file_id}\n"
 
-#: .\include\ui\controls\components\explorer\tile.py:45
+#: .\include\ui\controls\components\explorer\tile.py:57
 msgid "Last modified: {last_modified}\n"
 msgstr "最后更改时间：{last_modified}\n"
 
-#: .\include\ui\controls\components\explorer\tile.py:130
+#: .\include\ui\controls\components\explorer\tile.py:174
 msgid "ID: {dir_id}\n"
 msgstr "ID：{dir_id}\n"
 
-#: .\include\ui\controls\components\explorer\tile.py:133
+#: .\include\ui\controls\components\explorer\tile.py:177
 msgid "Created at: {created_at}"
 msgstr "创建于：{created_at}"
 
@@ -506,11 +641,15 @@ msgstr "您尚未收藏任何文档或文件夹。"
 msgid "Favorites"
 msgstr "收藏"
 
-#: .\include\ui\controls\components\rulemanager.py:36
+#: .\include\ui\controls\components\rulemanager.py:35
+msgid "Inherit rules from parent object"
+msgstr "从父对象继承规则"
+
+#: .\include\ui\controls\components\rulemanager.py:43
 msgid "Rule Content"
 msgstr "规则内容"
 
-#: .\include\ui\controls\components\rulemanager.py:44
+#: .\include\ui\controls\components\rulemanager.py:51
 msgid ""
 "For rule format documentation, please refer to [CFMS Server Documentation]"
 "(https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
@@ -518,7 +657,7 @@ msgstr ""
 "有关规则格式文档，请参阅 [CFMS 服务器文档](https://cfms-server-"
 "doc.readthedocs.io/zh-cn/latest/access_control.html)。"
 
-#: .\include\ui\controls\components\rulemanager.py:52
+#: .\include\ui\controls\components\rulemanager.py:59
 #: .\include\ui\controls\dialogs\admin\accounts.py:79
 #: .\include\ui\controls\dialogs\admin\accounts.py:282
 #: .\include\ui\controls\dialogs\admin\groups.py:127
@@ -529,48 +668,20 @@ msgstr ""
 msgid "Submit"
 msgstr "提交"
 
-#: .\include\ui\controls\components\rulemanager.py:55
+#: .\include\ui\controls\components\rulemanager.py:62
 msgid "Rule Manager"
 msgstr "规则管理器"
 
-#: .\include\ui\controls\components\rulemanager.py:64
+#: .\include\ui\controls\components\rulemanager.py:71
 msgid "Visualization"
 msgstr "可视化"
 
-#: .\include\ui\controls\components\rulemanager.py:67
+#: .\include\ui\controls\components\rulemanager.py:74
 msgid "Source Code"
 msgstr "源代码"
 
-#: .\include\ui\controls\components\rulemanager.py:101
-#: .\include\ui\controls\dialogs\admin\accounts.py:82
-#: .\include\ui\controls\dialogs\admin\accounts.py:162
-#: .\include\ui\controls\dialogs\admin\accounts.py:228
-#: .\include\ui\controls\dialogs\admin\accounts.py:285
-#: .\include\ui\controls\dialogs\admin\accounts.py:381
-#: .\include\ui\controls\dialogs\admin\groups.py:49
-#: .\include\ui\controls\dialogs\admin\groups.py:130
-#: .\include\ui\controls\dialogs\admin\groups.py:207
-#: .\include\ui\controls\dialogs\authorize.py:187
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
-#: .\include\ui\controls\dialogs\contextmenu\move.py:101
-#: .\include\ui\controls\dialogs\dev.py:39
-#: .\include\ui\controls\dialogs\explorer.py:56
-#: .\include\ui\controls\dialogs\explorer.py:119
-#: .\include\ui\controls\dialogs\explorer.py:165
-#: .\include\ui\controls\dialogs\explorer.py:231
-#: .\include\ui\controls\dialogs\explorer.py:366
-#: .\include\ui\controls\dialogs\password_confirm.py:61
-#: .\include\ui\controls\dialogs\twofa_setup.py:90
-#: .\include\ui\controls\dialogs\twofa_verify.py:80
-#: .\include\ui\controls\dialogs\upgrade.py:41
-#: .\include\ui\controls\views\tasks.py:108
-msgid "Cancel"
-msgstr "取消"
-
-#: .\include\ui\controls\components\rulemanager.py:124
-#: .\include\ui\controls\components\rulemanager.py:179
+#: .\include\ui\controls\components\rulemanager.py:137
+#: .\include\ui\controls\components\rulemanager.py:193
 msgid "The submitted rule is not valid JSON"
 msgstr "提交的规则不是有效的JSON"
 
@@ -583,7 +694,7 @@ msgid "Add Rule Group"
 msgstr "添加规则组"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\views\tasks.py:460
+#: .\include\ui\controls\views\tasks.py:466
 msgid "All"
 msgstr "全部"
 
@@ -682,14 +793,6 @@ msgid ""
 msgstr ""
 "这是一个专为互联网上机密信息的安全传输和保密而设计的管理系统，旨在通过程序化"
 "方法确保流程合规性。"
-
-#: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:197
-#: .\include\ui\controls\contextmenus\group.py:50
-#: .\include\ui\controls\contextmenus\management.py:57
-#: .\include\ui\controls\dialogs\revision.py:79
-msgid "Delete"
-msgstr "删除"
 
 #: .\include\ui\controls\contextmenus\explorer.py:69
 #: .\include\ui\controls\contextmenus\explorer.py:202
@@ -1115,12 +1218,6 @@ msgstr "目录名称不能为空"
 msgid "Batch Upload"
 msgstr "批量上传"
 
-#: .\include\ui\controls\dialogs\explorer.py:116
-#: .\include\ui\controls\dialogs\explorer.py:162
-#: .\include\ui\controls\dialogs\whatsnew.py:79
-msgid "OK"
-msgstr "确定"
-
 #: .\include\ui\controls\dialogs\explorer.py:156
 msgid "Upload Directory"
 msgstr "上传目录"
@@ -1197,6 +1294,26 @@ msgstr "无详细信息"
 msgid "Error loading file details"
 msgstr "加载文件详情时出错"
 
+#: .\include\ui\controls\dialogs\explorer.py:567
+msgid "Confirm Delete"
+msgstr "确认删除"
+
+#: .\include\ui\controls\dialogs\explorer.py:577
+msgid "Delete {count} items ({file_count} files, {dir_count} directories)?"
+msgstr "删除 {count} 个项目（{file_count} 个文件，{dir_count} 个目录）？"
+
+#: .\include\ui\controls\dialogs\explorer.py:583
+msgid "Delete {count} file(s)?"
+msgstr "删除 {count} 个文件？"
+
+#: .\include\ui\controls\dialogs\explorer.py:585
+msgid "Delete {count} directory(ies)?"
+msgstr "删除 {count} 个目录？"
+
+#: .\include\ui\controls\dialogs\explorer.py:592
+msgid "This action cannot be undone."
+msgstr "此操作不能撤销。"
+
 #: .\include\ui\controls\dialogs\password_confirm.py:38
 msgid "Confirm Password"
 msgstr "确认密码"
@@ -1248,7 +1365,7 @@ msgstr "正在加载修订版本..."
 
 #: .\include\ui\controls\dialogs\revision.py:157
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:549
+#: .\include\ui\controls\views\tasks.py:555
 msgid "Refresh"
 msgstr "刷新"
 
@@ -1628,7 +1745,7 @@ msgstr "连接"
 msgid "Invalid server address"
 msgstr "无效的服务器地址"
 
-#: .\include\ui\controls\views\explorer.py:148
+#: .\include\ui\controls\views\explorer.py:214
 msgid "File Management"
 msgstr "文件管理"
 
@@ -1668,11 +1785,13 @@ msgstr "删除文件和任务"
 
 #: .\include\ui\controls\views\tasks.py:87
 #: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:667
 msgid "Pause"
 msgstr "暂停"
 
 #: .\include\ui\controls\views\tasks.py:89
 #: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:667
 msgid "Resume"
 msgstr "恢复"
 
@@ -1689,7 +1808,7 @@ msgid "Downloading"
 msgstr "下载中"
 
 #: .\include\ui\controls\views\tasks.py:248
-#: .\include\ui\controls\views\tasks.py:462
+#: .\include\ui\controls\views\tasks.py:468
 msgid "Paused"
 msgstr "已暂停"
 
@@ -1702,12 +1821,12 @@ msgid "Verifying"
 msgstr "验证中"
 
 #: .\include\ui\controls\views\tasks.py:251
-#: .\include\ui\controls\views\tasks.py:464
+#: .\include\ui\controls\views\tasks.py:470
 msgid "Completed"
 msgstr "已完成"
 
 #: .\include\ui\controls\views\tasks.py:252
-#: .\include\ui\controls\views\tasks.py:465
+#: .\include\ui\controls\views\tasks.py:471
 msgid "Failed"
 msgstr "失败"
 
@@ -1716,7 +1835,7 @@ msgid "Cancelled"
 msgstr "已取消"
 
 #: .\include\ui\controls\views\tasks.py:254
-#: .\include\ui\controls\views\tasks.py:463
+#: .\include\ui\controls\views\tasks.py:469
 msgid "Scheduled"
 msgstr "已计划"
 
@@ -1740,43 +1859,43 @@ msgstr "打开文件失败：{error}"
 msgid "Failed to delete: {error}"
 msgstr "删除失败：{error}"
 
-#: .\include\ui\controls\views\tasks.py:457
+#: .\include\ui\controls\views\tasks.py:463
 msgid "Filter"
 msgstr "筛选"
 
-#: .\include\ui\controls\views\tasks.py:461
+#: .\include\ui\controls\views\tasks.py:467
 msgid "Active"
 msgstr "活动"
 
-#: .\include\ui\controls\views\tasks.py:489
+#: .\include\ui\controls\views\tasks.py:495
 msgid "No download tasks"
 msgstr "无下载任务"
 
-#: .\include\ui\controls\views\tasks.py:508
+#: .\include\ui\controls\views\tasks.py:514
 msgid "Download Tasks"
 msgstr "下载任务"
 
-#: .\include\ui\controls\views\tasks.py:517
+#: .\include\ui\controls\views\tasks.py:523
 msgid "More actions"
 msgstr "更多操作"
 
-#: .\include\ui\controls\views\tasks.py:520
+#: .\include\ui\controls\views\tasks.py:526
 msgid "Pause all active"
 msgstr "暂停所有活动任务"
 
-#: .\include\ui\controls\views\tasks.py:525
+#: .\include\ui\controls\views\tasks.py:531
 msgid "Resume all paused"
 msgstr "恢复所有已暂停任务"
 
-#: .\include\ui\controls\views\tasks.py:530
+#: .\include\ui\controls\views\tasks.py:536
 msgid "Cancel all pending"
 msgstr "取消所有等待任务"
 
-#: .\include\ui\controls\views\tasks.py:536
+#: .\include\ui\controls\views\tasks.py:542
 msgid "Clear completed"
 msgstr "清除已完成"
 
-#: .\include\ui\controls\views\tasks.py:541
+#: .\include\ui\controls\views\tasks.py:547
 msgid "Clear failed"
 msgstr "清除失败"
 
@@ -1823,9 +1942,9 @@ msgid ""
 "stable version available to connect to it. In this case, please try "
 "switching update channels to check if a development version is available."
 msgstr ""
-"取决于服务器管理员的策略，当服务器使用一个更高版本的通信协议时，客户端并不总有可供使"
-"用的稳定版本来实现与其的连接。在这种情况下，请您尝试切换更新频道来检查是否已有可用的"
-"开发版。"
+"取决于服务器管理员的策略，当服务器使用一个更高版本的通信协议时，客户端并不总"
+"有可供使用的稳定版本来实现与其的连接。在这种情况下，请您尝试切换更新频道来检"
+"查是否已有可用的开发版。"
 
 #: .\include\ui\models\about.py:247
 msgid "Connection failed: {strerror}"
@@ -2132,5 +2251,15 @@ msgid ""
 "Seeking each other on dream paths, amid flying rain and falling flowers."
 msgstr "相寻梦里路，飞雨落花中。"
 
-#~ msgid "Select User"
-#~ msgstr "选择用户"
+#: .\include\util\batch_operations.py:54 .\include\util\batch_operations.py:76
+#: .\include\util\batch_operations.py:163
+msgid "({code}) {message}"
+msgstr "({code}) {message}"
+
+#: .\include\util\batch_operations.py:172
+msgid "Failed to get download task ID"
+msgstr "获取下载任务ID失败"
+
+#: .\include\util\batch_operations.py:235
+msgid "Failed to list directory: ({code}) {message}"
+msgstr "列出目录失败：({code}) {message}"

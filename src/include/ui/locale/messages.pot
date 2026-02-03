@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-03 20:13+0800\n"
+"POT-Creation-Date: 2026-02-03 23:48+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -208,6 +208,8 @@ msgid "Download added: {filename}"
 msgstr ""
 
 #: .\include\controllers\dialogs\revision.py:102
+#: .\include\util\batch_operations.py:127
+#: .\include\util\batch_operations.py:129
 msgid "Download manager service not available"
 msgstr ""
 
@@ -239,7 +241,7 @@ msgstr ""
 msgid "Failed to delete revision: {error}"
 msgstr ""
 
-#: .\include\controllers\dialogs\rulemanager.py:79
+#: .\include\controllers\dialogs\rulemanager.py:80
 msgid "Modification failed: {message}"
 msgstr ""
 
@@ -275,58 +277,152 @@ msgstr ""
 msgid "Failed to revoke access: {error}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:40
+#: .\include\controllers\explorer\itself.py:42
 msgid "Preparing upload"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:95
+#: .\include\controllers\explorer\itself.py:97
 msgid "Upload failed: No permission to upload files"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:98
+#: .\include\controllers\explorer\itself.py:100
 msgid "Upload failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:116
+#: .\include\controllers\explorer\itself.py:118
 msgid "Problem occurred when uploading \"{each_file_name}\": {exc}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:206
+#: .\include\controllers\explorer\itself.py:208
 msgid "Creating directory \"{parent_path}\""
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:242
+#: .\include\controllers\explorer\itself.py:244
 msgid "[{_current_number}/{_total_number}] Uploading file \"{abs_path}\""
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:322
-#: .\include\controllers\explorer\itself.py:394
+#: .\include\controllers\explorer\itself.py:324
+#: .\include\controllers\explorer\itself.py:396
 msgid "Internal error: Missing task_id for file \"{filename}\""
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:332
+#: .\include\controllers\explorer\itself.py:334
 msgid "Upload file \"{filename}\" failed: {errmsg}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:357
-#: .\include\controllers\explorer\itself.py:371
+#: .\include\controllers\explorer\itself.py:359
+#: .\include\controllers\explorer\itself.py:373
 msgid "Create file \"{filename}\" failed: {errmsg}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:471
+#: .\include\controllers\explorer\itself.py:473
 msgid "Problem occurred when uploading file \"{filename}\": {err}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:478
+#: .\include\controllers\explorer\itself.py:480
 msgid "Retrying [{retry}/{max_retries}]: {strerr}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:503
+#: .\include\controllers\explorer\itself.py:505
 msgid "Please wait"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:516
+#: .\include\controllers\explorer\itself.py:518
 msgid "Upload completed with {total_errors} error(s)."
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:539
+#: .\include\controllers\explorer\itself.py:653
+msgid "No items selected"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:566
+msgid "Deleting items..."
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:572
+msgid "Deleting Items"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:603
+msgid "Failed to delete {type} \"{name}\": {error}"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:604
+#: .\include\controllers\explorer\itself.py:710
+msgid "file"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:604
+#: .\include\controllers\explorer\itself.py:710
+msgid "directory"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:612
+msgid "Deleted {completed}/{total} items ({failed} failed)"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:622
+msgid "Deletion completed with {failed} error(s)"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:628
+#: .\include\controllers\explorer\itself.py:738
+#: .\include\ui\controls\dialogs\explorer.py:116
+#: .\include\ui\controls\dialogs\explorer.py:162
+#: .\include\ui\controls\dialogs\whatsnew.py:79
+msgid "OK"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:672
+msgid "Adding items to download queue..."
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:681
+#: .\include\ui\controls\components\explorer\bar.py:70
+#: .\include\ui\controls\components\rulemanager.py:111
+#: .\include\ui\controls\dialogs\admin\accounts.py:82
+#: .\include\ui\controls\dialogs\admin\accounts.py:162
+#: .\include\ui\controls\dialogs\admin\accounts.py:228
+#: .\include\ui\controls\dialogs\admin\accounts.py:285
+#: .\include\ui\controls\dialogs\admin\accounts.py:381
+#: .\include\ui\controls\dialogs\admin\groups.py:49
+#: .\include\ui\controls\dialogs\admin\groups.py:130
+#: .\include\ui\controls\dialogs\admin\groups.py:207
+#: .\include\ui\controls\dialogs\authorize.py:187
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
+#: .\include\ui\controls\dialogs\contextmenu\move.py:101
+#: .\include\ui\controls\dialogs\dev.py:39
+#: .\include\ui\controls\dialogs\explorer.py:56
+#: .\include\ui\controls\dialogs\explorer.py:119
+#: .\include\ui\controls\dialogs\explorer.py:165
+#: .\include\ui\controls\dialogs\explorer.py:231
+#: .\include\ui\controls\dialogs\explorer.py:366
+#: .\include\ui\controls\dialogs\explorer.py:605
+#: .\include\ui\controls\dialogs\password_confirm.py:61
+#: .\include\ui\controls\dialogs\twofa_setup.py:90
+#: .\include\ui\controls\dialogs\twofa_verify.py:80
+#: .\include\ui\controls\dialogs\upgrade.py:41
+#: .\include\ui\controls\views\tasks.py:108
+msgid "Cancel"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:686
+msgid "Adding Downloads"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:709
+msgid "Failed to add {type} \"{name}\": {error}"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:720
+msgid "Adding: {current_file}"
+msgstr ""
+
+#: .\include\controllers\explorer\itself.py:735
+msgid "Added {added} items to download queue, {failed} failed"
 msgstr ""
 
 #: .\include\controllers\explorer\tile.py:51
@@ -391,59 +487,98 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:49
+#: .\include\ui\controls\components\explorer\bar.py:39
+#: .\include\ui\controls\components\explorer\bar.py:90
+msgid "0 items selected"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:46
+msgid "Select All"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:52
+msgid "Clear"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:58
+msgid "Download"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:64
+#: .\include\ui\controls\contextmenus\explorer.py:64
+#: .\include\ui\controls\contextmenus\explorer.py:197
+#: .\include\ui\controls\contextmenus\group.py:50
+#: .\include\ui\controls\contextmenus\management.py:57
+#: .\include\ui\controls\dialogs\explorer.py:601
+#: .\include\ui\controls\dialogs\revision.py:79
+msgid "Delete"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:92
+msgid "1 item selected"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:94
+msgid "{count} items selected"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:137
+msgid "Select items"
+msgstr ""
+
+#: .\include\ui\controls\components\explorer\bar.py:162
 #: .\include\ui\controls\dialogs\authorize.py:74
 #: .\include\ui\controls\dialogs\search.py:126
 #: .\include\ui\controls\dialogs\search.py:202
 msgid "Search"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:127
+#: .\include\ui\controls\components\explorer\bar.py:255
 msgid "Sort by:"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:130
+#: .\include\ui\controls\components\explorer\bar.py:258
 #: .\include\ui\controls\dialogs\search.py:151
 msgid "Name"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:131
+#: .\include\ui\controls\components\explorer\bar.py:259
 msgid "Created at"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:132
+#: .\include\ui\controls\components\explorer\bar.py:260
 msgid "Last Modified"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:133
+#: .\include\ui\controls\components\explorer\bar.py:261
 #: .\include\ui\controls\dialogs\search.py:154
 msgid "Size"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:134
+#: .\include\ui\controls\components\explorer\bar.py:262
 msgid "Type"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\bar.py:143
+#: .\include\ui\controls\components\explorer\bar.py:271
 msgid "Toggle Sort Order"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\tile.py:42
+#: .\include\ui\controls\components\explorer\tile.py:54
 msgid ""
 "ID: {file_id}\n"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\tile.py:45
+#: .\include\ui\controls\components\explorer\tile.py:57
 msgid ""
 "Last modified: {last_modified}\n"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\tile.py:130
+#: .\include\ui\controls\components\explorer\tile.py:174
 msgid ""
 "ID: {dir_id}\n"
 msgstr ""
 
-#: .\include\ui\controls\components\explorer\tile.py:133
+#: .\include\ui\controls\components\explorer\tile.py:177
 msgid "Created at: {created_at}"
 msgstr ""
 
@@ -501,15 +636,19 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:36
+#: .\include\ui\controls\components\rulemanager.py:35
+msgid "Inherit rules from parent object"
+msgstr ""
+
+#: .\include\ui\controls\components\rulemanager.py:43
 msgid "Rule Content"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:44
+#: .\include\ui\controls\components\rulemanager.py:51
 msgid "For rule format documentation, please refer to [CFMS Server Documentation](https://cfms-server-doc.readthedocs.io/zh-cn/latest/access_control.html)."
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:52
+#: .\include\ui\controls\components\rulemanager.py:59
 #: .\include\ui\controls\dialogs\admin\accounts.py:79
 #: .\include\ui\controls\dialogs\admin\accounts.py:282
 #: .\include\ui\controls\dialogs\admin\groups.py:127
@@ -520,48 +659,20 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:55
+#: .\include\ui\controls\components\rulemanager.py:62
 msgid "Rule Manager"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:64
+#: .\include\ui\controls\components\rulemanager.py:71
 msgid "Visualization"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:67
+#: .\include\ui\controls\components\rulemanager.py:74
 msgid "Source Code"
 msgstr ""
 
-#: .\include\ui\controls\components\rulemanager.py:101
-#: .\include\ui\controls\dialogs\admin\accounts.py:82
-#: .\include\ui\controls\dialogs\admin\accounts.py:162
-#: .\include\ui\controls\dialogs\admin\accounts.py:228
-#: .\include\ui\controls\dialogs\admin\accounts.py:285
-#: .\include\ui\controls\dialogs\admin\accounts.py:381
-#: .\include\ui\controls\dialogs\admin\groups.py:49
-#: .\include\ui\controls\dialogs\admin\groups.py:130
-#: .\include\ui\controls\dialogs\admin\groups.py:207
-#: .\include\ui\controls\dialogs\authorize.py:187
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
-#: .\include\ui\controls\dialogs\contextmenu\move.py:101
-#: .\include\ui\controls\dialogs\dev.py:39
-#: .\include\ui\controls\dialogs\explorer.py:56
-#: .\include\ui\controls\dialogs\explorer.py:119
-#: .\include\ui\controls\dialogs\explorer.py:165
-#: .\include\ui\controls\dialogs\explorer.py:231
-#: .\include\ui\controls\dialogs\explorer.py:366
-#: .\include\ui\controls\dialogs\password_confirm.py:61
-#: .\include\ui\controls\dialogs\twofa_setup.py:90
-#: .\include\ui\controls\dialogs\twofa_verify.py:80
-#: .\include\ui\controls\dialogs\upgrade.py:41
-#: .\include\ui\controls\views\tasks.py:108
-msgid "Cancel"
-msgstr ""
-
-#: .\include\ui\controls\components\rulemanager.py:124
-#: .\include\ui\controls\components\rulemanager.py:179
+#: .\include\ui\controls\components\rulemanager.py:137
+#: .\include\ui\controls\components\rulemanager.py:193
 msgid "The submitted rule is not valid JSON"
 msgstr ""
 
@@ -574,7 +685,7 @@ msgid "Add Rule Group"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\views\tasks.py:460
+#: .\include\ui\controls\views\tasks.py:466
 msgid "All"
 msgstr ""
 
@@ -667,14 +778,6 @@ msgstr ""
 
 #: .\include\ui\controls\components\wizards\welcome\intro1.py:18
 msgid "This is a management system specifically designed for the secure transmission and confidentiality of confidential information over the internet, aiming to ensure process compliance through a procedural approach."
-msgstr ""
-
-#: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:197
-#: .\include\ui\controls\contextmenus\group.py:50
-#: .\include\ui\controls\contextmenus\management.py:57
-#: .\include\ui\controls\dialogs\revision.py:79
-msgid "Delete"
 msgstr ""
 
 #: .\include\ui\controls\contextmenus\explorer.py:69
@@ -1098,12 +1201,6 @@ msgstr ""
 msgid "Batch Upload"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\explorer.py:116
-#: .\include\ui\controls\dialogs\explorer.py:162
-#: .\include\ui\controls\dialogs\whatsnew.py:79
-msgid "OK"
-msgstr ""
-
 #: .\include\ui\controls\dialogs\explorer.py:156
 msgid "Upload Directory"
 msgstr ""
@@ -1180,6 +1277,26 @@ msgstr ""
 msgid "Error loading file details"
 msgstr ""
 
+#: .\include\ui\controls\dialogs\explorer.py:567
+msgid "Confirm Delete"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:577
+msgid "Delete {count} items ({file_count} files, {dir_count} directories)?"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:583
+msgid "Delete {count} file(s)?"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:585
+msgid "Delete {count} directory(ies)?"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\explorer.py:592
+msgid "This action cannot be undone."
+msgstr ""
+
 #: .\include\ui\controls\dialogs\password_confirm.py:38
 msgid "Confirm Password"
 msgstr ""
@@ -1231,7 +1348,7 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\revision.py:157
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:549
+#: .\include\ui\controls\views\tasks.py:555
 msgid "Refresh"
 msgstr ""
 
@@ -1607,7 +1724,7 @@ msgstr ""
 msgid "Invalid server address"
 msgstr ""
 
-#: .\include\ui\controls\views\explorer.py:148
+#: .\include\ui\controls\views\explorer.py:214
 msgid "File Management"
 msgstr ""
 
@@ -1647,11 +1764,13 @@ msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:87
 #: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:667
 msgid "Pause"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:89
 #: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:667
 msgid "Resume"
 msgstr ""
 
@@ -1668,7 +1787,7 @@ msgid "Downloading"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:248
-#: .\include\ui\controls\views\tasks.py:462
+#: .\include\ui\controls\views\tasks.py:468
 msgid "Paused"
 msgstr ""
 
@@ -1681,12 +1800,12 @@ msgid "Verifying"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:251
-#: .\include\ui\controls\views\tasks.py:464
+#: .\include\ui\controls\views\tasks.py:470
 msgid "Completed"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:252
-#: .\include\ui\controls\views\tasks.py:465
+#: .\include\ui\controls\views\tasks.py:471
 msgid "Failed"
 msgstr ""
 
@@ -1695,7 +1814,7 @@ msgid "Cancelled"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:254
-#: .\include\ui\controls\views\tasks.py:463
+#: .\include\ui\controls\views\tasks.py:469
 msgid "Scheduled"
 msgstr ""
 
@@ -1719,43 +1838,43 @@ msgstr ""
 msgid "Failed to delete: {error}"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:457
+#: .\include\ui\controls\views\tasks.py:463
 msgid "Filter"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:461
+#: .\include\ui\controls\views\tasks.py:467
 msgid "Active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:489
+#: .\include\ui\controls\views\tasks.py:495
 msgid "No download tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:508
+#: .\include\ui\controls\views\tasks.py:514
 msgid "Download Tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:517
+#: .\include\ui\controls\views\tasks.py:523
 msgid "More actions"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:520
+#: .\include\ui\controls\views\tasks.py:526
 msgid "Pause all active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:525
+#: .\include\ui\controls\views\tasks.py:531
 msgid "Resume all paused"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:530
+#: .\include\ui\controls\views\tasks.py:536
 msgid "Cancel all pending"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:536
+#: .\include\ui\controls\views\tasks.py:542
 msgid "Clear completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:541
+#: .\include\ui\controls\views\tasks.py:547
 msgid "Clear failed"
 msgstr ""
 
@@ -2077,5 +2196,18 @@ msgstr ""
 
 #: .\include\ui\util\quotes.py:27
 msgid "Seeking each other on dream paths, amid flying rain and falling flowers."
+msgstr ""
+
+#: .\include\util\batch_operations.py:54 .\include\util\batch_operations.py:76
+#: .\include\util\batch_operations.py:163
+msgid "({code}) {message}"
+msgstr ""
+
+#: .\include\util\batch_operations.py:172
+msgid "Failed to get download task ID"
+msgstr ""
+
+#: .\include\util\batch_operations.py:235
+msgid "Failed to list directory: ({code}) {message}"
 msgstr ""
 

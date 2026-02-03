@@ -31,6 +31,13 @@ class RuleManager(AlertDialog):
         self.page: ft.Page
         self.controller = RuleManagerController(self)
 
+        self.inherit_checkbox = ft.Checkbox(
+            label=_("Inherit rules from parent object"),
+            value=False,
+            expand=True,
+            expand_loose=True,
+        )
+
         self.progress_ring = ft.ProgressRing(visible=False)
         self.content_textfield = ft.TextField(
             label=_("Rule Content"),
@@ -96,9 +103,15 @@ class RuleManager(AlertDialog):
             height=540,
         )
         self.actions = [
-            self.progress_ring,
-            self.submit_button,
-            ft.TextButton(_("Cancel"), on_click=lambda event: self.close()),
+            ft.Row(
+                [
+                    self.inherit_checkbox,
+                    self.progress_ring,
+                    self.submit_button,
+                    ft.TextButton(_("Cancel"), on_click=lambda event: self.close()),
+                ],
+                tight=True,
+            ),
         ]
 
         self.cached_access_rules: dict[str, Any] = {}
@@ -174,6 +187,7 @@ class RuleManager(AlertDialog):
                     if self.content_textfield.value
                     else {}
                 ),
+                "inherit_parent": self.inherit_checkbox.value,
             }
         except json.decoder.JSONDecodeError:
             self.content_textfield.error = _("The submitted rule is not valid JSON")
