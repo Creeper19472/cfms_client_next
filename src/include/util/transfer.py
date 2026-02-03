@@ -494,3 +494,68 @@ async def batch_upload_file_to_server(
         if transfer_conn:
             await transfer_conn.close()
             transfer_conn = None
+
+
+async def upload_new_revision(
+    app_shared: AppShared,
+    document_id: str,
+    file_path: str,
+    max_size: int = 1024**2 * 4,
+):
+    """
+    Upload a new revision for an existing document.
+
+    Creates a new revision on the server and uploads the file content.
+
+    Args:
+        app_shared: Application configuration containing auth and connection info
+        document_id: ID of the document to create a new revision for
+        file_path: Local path to the file to upload
+        max_size: Maximum WebSocket message size in bytes (default: 4MB)
+
+    Yields:
+        Tuples of (bytes_uploaded, total_size) for progress tracking
+
+    Raises:
+        ValueError: If task data is not returned or invalid
+        Exception: If upload fails
+    """
+    transfer_conn = None
+    try:
+        # Step 1: Request upload_document to get task data
+        response = await do_request_2(
+            action="upload_document",
+            data={"document_id": document_id},
+            username=app_shared.username,
+            token=app_shared.token,
+        )
+
+        if response.code != 200:
+            raise ValueError(
+                f"Failed to create revision: ({response.code}) {response.message}"
+            )
+
+        task_data = response.data.get("task_data")
+        if not task_data:
+            raise ValueError("No task data returned from server")
+
+        task_id = task_data["task_id"]
+
+        # Step 2: Create connection and upload the file
+        transfer_conn = await get_connection(
+            server_address=app_shared.get_not_none_attribute("server_address"),
+            disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
+            proxy=app_shared.preferences["settings"]["proxy_settings"],
+            max_size=max_size,
+            force_ipv4=app_shared.preferences.get("settings", {}).get("force_ipv4", False),
+        )
+
+        # Step 3: Upload the file with progress tracking
+        async for current, total in upload_file_to_server(
+            transfer_conn, task_id, file_path
+        ):
+            yield current, total
+
+    finally:
+        if transfer_conn:
+            await transfer_conn.close()

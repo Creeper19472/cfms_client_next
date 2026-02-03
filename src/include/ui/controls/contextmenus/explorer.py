@@ -144,9 +144,17 @@ class FileContextMenu(ContextMenu2):
         self.page.run_task(self.controller.action_set_access_rules)
 
     async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
-        file_picker = ft.FilePicker()
-        picked_files = await file_picker.pick_files()
-        self.page.run_task(self.controller.action_upload_new_revision, picked_files[0])
+        # Use the file picker from the home model if available
+        file_picker = getattr(self.page, '_revision_file_picker', None)
+        if not file_picker:
+            file_picker = ft.FilePicker()
+            self.page.overlay.append(file_picker)
+            self.page._revision_file_picker = file_picker
+            self.page.update()
+        
+        result = await file_picker.pick_files(allow_multiple=False)
+        if result and result.files:
+            self.page.run_task(self.controller.action_upload_new_revision, result.files[0])
 
     async def view_revisions_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         self.page.run_task(self.controller.action_view_revisions)
