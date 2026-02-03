@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 import json
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.base import BaseController
 from include.util.requests import do_request
 

@@ -192,8 +192,4 @@ def is_new_version(
         new_sem_ver = [int(part) for part in new_version.split(".")]
         old_sem_ver = [int(part) for part in old_version.split(".")]
 
-        for index, (new_part, old_part) in enumerate(zip(new_sem_ver, old_sem_ver)):
-            if new_part > old_part:
-                return True
-
-        return False
+        return new_sem_ver > old_sem_ver

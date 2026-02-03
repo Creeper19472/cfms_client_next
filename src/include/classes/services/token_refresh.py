@@ -2,7 +2,7 @@
 
 import time
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.services.base import BaseService
 from include.util.requests import do_request_2
 

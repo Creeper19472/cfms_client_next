@@ -3,7 +3,7 @@ import asyncio
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation

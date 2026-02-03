@@ -1,7 +1,7 @@
 from flet_model import Model, route, Router
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import set_translation, get_translation

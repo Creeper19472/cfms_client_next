@@ -2,7 +2,7 @@
 
 from typing import Generic, TypeVar
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 
 T = TypeVar("T")
 

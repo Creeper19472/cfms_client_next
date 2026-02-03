@@ -5,7 +5,7 @@ from datetime import datetime
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.dialogs.search import SearchDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 

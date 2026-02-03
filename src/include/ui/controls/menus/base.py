@@ -2,7 +2,7 @@ from typing import Any
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 
 __all__ = ["ContextMenu2"]
 

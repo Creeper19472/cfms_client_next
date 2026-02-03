@@ -12,7 +12,7 @@ import flet as ft
 import flet_permission_handler as fph
 
 from include.constants import RUNTIME_PATH
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
 from include.classes.services.download import DownloadManagerService

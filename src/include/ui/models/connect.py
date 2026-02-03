@@ -1,7 +1,7 @@
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.constants import APP_VERSION
 from include.ui.constants import PLACEHOLDER_COLOR
 from include.ui.controls.buttons.upgrade import FloatingUpgradeButton

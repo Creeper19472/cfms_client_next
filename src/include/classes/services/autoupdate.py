@@ -5,8 +5,10 @@ from typing import Optional
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include import constants
+from include.classes.shared import AppShared
 from include.classes.services.base import BaseService
+from include.classes.version import ChannelType
 from include.constants import BUILD_VERSION
 from include.util.upgrade.updater import (
     GithubRelease,
@@ -84,6 +86,11 @@ class AutoUpdateService(BaseService):
         This method is called periodically based on the interval setting.
         It checks for new versions and optionally notifies the user.
         """
+
+        if AppShared().is_production is False:
+            self.logger.info("Skipping update check: not in production mode")
+            return
+
         # Skip first execution if check_on_start is False
         if self._first_run and not self.check_on_start:
             self.logger.info("Skipping first update check as check_on_start is False")
@@ -95,10 +102,19 @@ class AutoUpdateService(BaseService):
         self.logger.info("Checking for application updates...")
 
         try:
+            channel_pref = (
+                AppShared().preferences.get("settings", {}).get("update_channel")
+            )
+            preferred_channel = (
+                ChannelType(channel_pref)
+                if channel_pref
+                else constants.DEFAULT_UPDATE_CHANNEL
+            )
+
             # Run the blocking API call in an executor to avoid blocking the event loop
             loop = asyncio.get_running_loop()
             latest_release: Optional[GithubRelease] = await loop.run_in_executor(
-                None, get_latest_release
+                None, get_latest_release, preferred_channel
             )
 
             if not latest_release:

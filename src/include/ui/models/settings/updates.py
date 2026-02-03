@@ -1,7 +1,7 @@
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.version import ChannelType
 from include.constants import DEFAULT_UPDATE_CHANNEL
 from include.ui.util.notifications import send_success

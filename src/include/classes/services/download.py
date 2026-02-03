@@ -7,7 +7,7 @@ import time
 from typing import Dict, Iterable, List, Optional, Callable, Set
 from websockets.asyncio.client import ClientConnection
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
 from include.classes.services.base import BaseService
 from include.constants import FLET_APP_STORAGE_DATA

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional, cast
 import flet as ft
 
 from include.constants import FLET_APP_STORAGE_DATA
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.exceptions.request import RequestFailureError
 from include.ui.util.notifications import send_error, send_info
 from include.util.requests import do_request

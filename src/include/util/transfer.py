@@ -14,7 +14,7 @@ from Crypto.Cipher import AES
 from flet import FilePickerFile
 from websockets.asyncio.client import ClientConnection
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.exceptions.request import InvalidResponseError
 from include.classes.exceptions.transmission import (
     FileHashMismatchError,

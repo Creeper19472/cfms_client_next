@@ -2,7 +2,7 @@ import re
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.constants import DEFAULT_WINDOW_TITLE
 from include.controllers.connect import ConnectFormController
 from include.ui import constants as const

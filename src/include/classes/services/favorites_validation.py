@@ -5,7 +5,7 @@ import inspect
 from typing import Set, Callable, List
 
 from include.classes.services.base import BaseService
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.util.requests import do_request_2
 import threading
 

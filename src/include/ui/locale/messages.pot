@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-03 15:50+0800\n"
+"POT-Creation-Date: 2026-02-03 20:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,11 +15,11 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: .\include\classes\services\autoupdate.py:158
+#: .\include\classes\services\autoupdate.py:174
 msgid "New version {version} is available! Check the About page for details."
 msgstr ""
 
-#: .\include\classes\services\autoupdate.py:162
+#: .\include\classes\services\autoupdate.py:178
 msgid "Go to About"
 msgstr ""
 
@@ -203,39 +203,39 @@ msgstr ""
 msgid "Failed to load revisions: {error}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:94 .\include\ui\util\path.py:137
+#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:137
 msgid "Download added: {filename}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:97
+#: .\include\controllers\dialogs\revision.py:102
 msgid "Download manager service not available"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:100
+#: .\include\controllers\dialogs\revision.py:105
 msgid "Failed to get revision data: No task data returned"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:104
+#: .\include\controllers\dialogs\revision.py:109
 msgid "Failed to view revision: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:111
+#: .\include\controllers\dialogs\revision.py:116
 msgid "Failed to view revision: {error}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:140
+#: .\include\controllers\dialogs\revision.py:145
 msgid "Failed to set current revision: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:147
+#: .\include\controllers\dialogs\revision.py:152
 msgid "Failed to set current revision: {error}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:166
+#: .\include\controllers\dialogs\revision.py:171
 msgid "Failed to delete revision: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:173
+#: .\include\controllers\dialogs\revision.py:178
 msgid "Failed to delete revision: {error}"
 msgstr ""
 
@@ -656,7 +656,7 @@ msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:608
 #: .\include\ui\controls\contextmenus\explorer.py:74
-#: .\include\ui\controls\contextmenus\explorer.py:206
+#: .\include\ui\controls\contextmenus\explorer.py:207
 #: .\include\ui\controls\dialogs\authorize.py:123
 msgid "Move"
 msgstr ""
@@ -670,53 +670,53 @@ msgid "This is a management system specifically designed for the secure transmis
 msgstr ""
 
 #: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:196
+#: .\include\ui\controls\contextmenus\explorer.py:197
 #: .\include\ui\controls\contextmenus\group.py:50
 #: .\include\ui\controls\contextmenus\management.py:57
-#: .\include\ui\controls\dialogs\revision.py:81
+#: .\include\ui\controls\dialogs\revision.py:79
 msgid "Delete"
 msgstr ""
 
 #: .\include\ui\controls\contextmenus\explorer.py:69
-#: .\include\ui\controls\contextmenus\explorer.py:201
+#: .\include\ui\controls\contextmenus\explorer.py:202
 #: .\include\ui\controls\contextmenus\group.py:55
 #: .\include\ui\controls\dialogs\admin\accounts.py:225
 msgid "Rename"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:80
-#: .\include\ui\controls\contextmenus\explorer.py:212
+#: .\include\ui\controls\contextmenus\explorer.py:81
+#: .\include\ui\controls\contextmenus\explorer.py:213
 #: .\include\ui\controls\dialogs\authorize.py:183
 msgid "Authorize"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:85
+#: .\include\ui\controls\contextmenus\explorer.py:86
 msgid "View access entries"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:91
+#: .\include\ui\controls\contextmenus\explorer.py:92
 msgid "Set permissions"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:98
+#: .\include\ui\controls\contextmenus\explorer.py:99
 msgid "Upload new version"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:103
+#: .\include\ui\controls\contextmenus\explorer.py:104
 msgid "View Revisions"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:110
-#: .\include\ui\controls\contextmenus\explorer.py:229
+#: .\include\ui\controls\contextmenus\explorer.py:111
+#: .\include\ui\controls\contextmenus\explorer.py:230
 #: .\include\ui\controls\contextmenus\management.py:77
 msgid "Properties"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:217
+#: .\include\ui\controls\contextmenus\explorer.py:218
 msgid "View Access Entries"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:223
+#: .\include\ui\controls\contextmenus\explorer.py:224
 #: .\include\ui\controls\contextmenus\group.py:60
 msgid "Set Permissions"
 msgstr ""
@@ -1197,51 +1197,51 @@ msgstr ""
 msgid "Invalid password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:45
+#: .\include\ui\controls\dialogs\revision.py:43
 msgid "Revision #{id}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:47
+#: .\include\ui\controls\dialogs\revision.py:45
 msgid " (Current)"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:49
+#: .\include\ui\controls\dialogs\revision.py:47
 msgid "Created: {time}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:52
+#: .\include\ui\controls\dialogs\revision.py:50
 msgid "Parent: Revision #{id}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:64
+#: .\include\ui\controls\dialogs\revision.py:62
 msgid "View/Download"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:73
+#: .\include\ui\controls\dialogs\revision.py:71
 msgid "Set as Current"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:135
+#: .\include\ui\controls\dialogs\revision.py:133
 msgid "View Revisions of {filename}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:153
+#: .\include\ui\controls\dialogs\revision.py:150
 msgid "Loading revisions..."
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:160
+#: .\include\ui\controls\dialogs\revision.py:157
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
 #: .\include\ui\controls\views\tasks.py:549
 msgid "Refresh"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:167
+#: .\include\ui\controls\dialogs\revision.py:164
 #: .\include\ui\controls\dialogs\search.py:207
 #: .\include\ui\controls\dialogs\view_access_entries.py:112
 msgid "Close"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\revision.py:226
+#: .\include\ui\controls\dialogs\revision.py:223
 msgid "No revisions found."
 msgstr ""
 
@@ -1795,39 +1795,43 @@ msgstr ""
 msgid "Software Update"
 msgstr ""
 
-#: .\include\ui\models\about.py:235
-msgid "Connection failed: {strerror}"
-msgstr ""
-
-#: .\include\ui\models\about.py:240
-msgid "Failed to retrieve version information"
+#: .\include\ui\models\about.py:159
+msgid "Depending on the server administrator's policy, when the server uses a higher version of the communication protocol, clients may not always have a stable version available to connect to it. In this case, please try switching update channels to check if a development version is available."
 msgstr ""
 
 #: .\include\ui\models\about.py:247
+msgid "Connection failed: {strerror}"
+msgstr ""
+
+#: .\include\ui\models\about.py:252
+msgid "Failed to retrieve version information"
+msgstr ""
+
+#: .\include\ui\models\about.py:259
 msgid "Channel: {channel}"
 msgstr ""
 
-#: .\include\ui\models\about.py:253
+#: .\include\ui\models\about.py:265
 msgid "Current version: {APP_VERSION}"
 msgstr ""
 
-#: .\include\ui\models\about.py:258
+#: .\include\ui\models\about.py:270
 msgid "Latest version: {latest_version}"
 msgstr ""
 
-#: .\include\ui\models\about.py:271
+#: .\include\ui\models\about.py:283
 msgid "Update Notes:"
 msgstr ""
 
-#: .\include\ui\models\about.py:284
+#: .\include\ui\models\about.py:296
 msgid "Already on the latest version"
 msgstr ""
 
-#: .\include\ui\models\about.py:298
+#: .\include\ui\models\about.py:310
 msgid "No package found for the corresponding architecture in the latest version"
 msgstr ""
 
-#: .\include\ui\models\about.py:303
+#: .\include\ui\models\about.py:315
 msgid "No update found: Unsupported architecture"
 msgstr ""
 

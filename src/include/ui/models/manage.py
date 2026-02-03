@@ -1,7 +1,7 @@
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.ui.controls.views.admin.account import ManageAccountsView
 from include.ui.controls.views.admin.audit import AuditLogView
 from include.ui.controls.views.admin.group import ManageGroupsView

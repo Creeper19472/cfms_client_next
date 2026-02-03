@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Literal, cast
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.dialogs.authorize import AuthorizeDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error

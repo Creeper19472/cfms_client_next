@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 import flet as ft
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.explorer.tile import (
     FileContextMenuController,
     DirectoryContextMenuController,
@@ -75,6 +75,7 @@ class FileContextMenu(ContextMenu2):
                     "on_click": self.move_button_click,
                     "require": {"move"},
                 },
+                {},
                 {
                     "icon": ft.Icons.LOCK_PERSON_OUTLINED,
                     "content": _("Authorize"),

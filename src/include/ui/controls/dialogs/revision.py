@@ -5,7 +5,7 @@ from datetime import datetime
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.dialogs.revision import RevisionDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
@@ -33,8 +33,6 @@ class RevisionTile(ft.ListTile):
         self.created_time = created_time
         self.is_current = is_current
         self.controller = controller
-        self.expand = True
-        self.expand_loose = True
 
         # Format creation time
         created_time_str = datetime.fromtimestamp(created_time).strftime(
@@ -92,16 +90,16 @@ class RevisionTile(ft.ListTile):
                 expand=True,
                 expand_loose=True,
                 spacing=5,
-                width=120,
+                width=len(action_buttons)*40,
                 alignment=ft.MainAxisAlignment.END,
             ),
-            # expand=True,
-            # expand_loose=True,
+            expand=True,
+            expand_loose=True,
         )
 
     async def on_view_click(self, e: ft.Event[ft.IconButton]):
         """Handle view/download button click."""
-        await self.controller.action_view_revision(self.revision_id)
+        await self.controller.action_view_revision(self.revision_id, self.is_current)
 
     async def on_set_current_click(self, e: ft.Event[ft.IconButton]):
         """Handle set as current button click."""
@@ -136,16 +134,15 @@ class RevisionDialog(AlertDialog):
         )
         self.expand = True
         self.expand_loose = True
-        self.width = 800
         self.scrollable = True
 
         # Revisions list
         self.revisions_listview = ft.ListView(
             controls=[],
             spacing=5,
-            # height=400,
             expand=True,
             expand_loose=True,
+            width=800
         )
 
         # Progress indicator

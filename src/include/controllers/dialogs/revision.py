@@ -48,7 +48,7 @@ class RevisionDialogController(BaseController["RevisionDialog"]):
                 _("Failed to load revisions: {error}").format(error=str(e))
             )
 
-    async def action_view_revision(self, revision_id: int):
+    async def action_view_revision(self, revision_id: int, is_current: bool):
         """View/download a specific revision."""
         try:
             # Request the revision data
@@ -69,7 +69,12 @@ class RevisionDialogController(BaseController["RevisionDialog"]):
                     from typing import cast
                     
                     task_id = task_data["task_id"]
-                    filename = f"{self.control.filename}_rev{revision_id}"
+                    
+                    if not is_current:
+                        filename = f"rev{revision_id}_{self.control.filename}"
+                    else:
+                        filename = self.control.filename
+
                     file_path = f"{FLET_APP_STORAGE_DATA}/downloads/{filename}"
                     supports_resume = task_data.get("supports_resume", False)
                     

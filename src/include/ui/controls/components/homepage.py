@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Union, cast
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.controls.views.explorer import FileManagerView

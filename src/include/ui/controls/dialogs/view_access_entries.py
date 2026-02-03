@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal
 import flet as ft
 import flet_datatable2 as fdt
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.dialogs.view_access_entries import ViewAccessEntriesDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation

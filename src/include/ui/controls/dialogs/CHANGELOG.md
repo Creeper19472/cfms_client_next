@@ -10,13 +10,25 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 This version adds the ability to manage revisions.
 
+### Improved
+- Added separator lines for the options in the document's right-click menu.
+- When renaming a document or directory, if the name is not actually changed, 
+no request is sent to the server, thus avoiding error messages.
+
+### Fixed
+- Fixed an issue where the automatic version checker's checking 
+strategy did not match user preferences, and corrects the version comparison 
+logic.
+
 ---
 ## v0.4.16
 **Released on:** 2026-02-02
 
 **Title:** Renaming Interface Improvement
 
-This version introduces a minor optimization to the renaming interface, so that the original name of the object now appears in the text box and can be selected in full, making it easier for users to make changes.
+This version introduces a minor optimization to the renaming interface, so that 
+the original name of the object now appears in the text box and can be selected 
+in full, making it easier for users to make changes.
 
 ---
 ## v0.4.15

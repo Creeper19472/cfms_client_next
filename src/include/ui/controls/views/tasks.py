@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, cast
 import os
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
 from include.classes.services.download import DownloadManagerService
 from include.util.locale import get_translation

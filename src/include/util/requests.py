@@ -9,7 +9,7 @@ from typing import Any, Optional
 from websockets import ConnectionClosed
 from websockets.asyncio.client import ClientConnection
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.response import Response
 from include.util.connect import get_connection
 

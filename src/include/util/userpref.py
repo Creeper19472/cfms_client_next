@@ -1,6 +1,6 @@
 import os
 import json
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.preferences import UserPreference
 from include.constants import USER_PREFERENCES_PATH
 

@@ -7,7 +7,7 @@ from flet_permission_handler import Permission, PermissionHandler, PermissionSta
 import flet as ft
 import requests
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.constants import FLET_APP_STORAGE_TEMP, RUNTIME_PATH
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error

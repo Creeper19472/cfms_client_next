@@ -5,7 +5,7 @@ import gettext
 import flet as ft
 import flet_datatable2 as fdt
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.constants import LOCALE_PATH
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation

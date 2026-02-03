@@ -5,7 +5,7 @@ from flet_model import Model, Router, route
 import flet as ft
 import requests
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.classes.version import ChannelType
 from include.constants import (
     APP_VERSION,
@@ -154,6 +154,18 @@ class AboutModel(Model):
                             self.suc_environ_unavailable_text,
                             self.suc_release_info,
                         ],
+                    ),
+                    ft.Text(
+                        _(
+                            "Depending on the server administrator's policy, when the "
+                            "server uses a higher version of the communication protocol, "
+                            "clients may not always have a stable version available to "
+                            "connect to it. In this case, please try switching update "
+                            "channels to check if a development version is available."
+                        ),
+                        size=13,
+                        color=ft.Colors.GREY,
+                        text_align=ft.TextAlign.START,
                     ),
                 ],
             ),

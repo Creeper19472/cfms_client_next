@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.base import BaseController
 from include.ui.util.path import get_directory
 from include.util.requests import do_request

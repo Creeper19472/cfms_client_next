@@ -3,7 +3,7 @@
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
 from include.ui.controls.dialogs.backup_codes import BackupCodesDialog

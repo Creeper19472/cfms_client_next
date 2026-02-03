@@ -5,7 +5,7 @@ from copy import deepcopy
 import flet as ft
 
 from websockets.asyncio.client import ClientConnection
-from include.classes.config import AppShared
+from include.classes.shared import AppShared
 from include.controllers.explorer.itself import FileExplorerController
 from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar
 from include.ui.util.notifications import send_error
