@@ -219,8 +219,8 @@ async def batch_download_items(
         # List directory contents
         try:
             response = await do_request(
-                action="list_files",
-                data={"directory_id": dir_id},
+                action="list_directory",
+                data={"folder_id": dir_id},
                 username=app_shared.username,
                 token=app_shared.token,
             )

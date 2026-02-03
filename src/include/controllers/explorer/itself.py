@@ -668,6 +668,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
         
         progress_dialog = ft.AlertDialog(
             modal=True,
+            scrollable=True,
             title=ft.Text(_("Adding Downloads")),
             content=ft.Column(
                 controls=[progress_bar, progress_text, error_column],

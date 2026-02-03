@@ -563,7 +563,7 @@ class BatchDeleteConfirmDialog(AlertDialog):
     ):
         super().__init__(ref=ref, visible=visible)
         
-        self.modal = True
+        self.scrollable = True
         self.title = ft.Text(_("Confirm Delete"))
         
         self.file_count = file_count

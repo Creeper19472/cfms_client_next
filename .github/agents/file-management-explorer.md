@@ -272,8 +272,8 @@ async def load_directory(self, directory_id: str):
     
     # Fetch directory contents
     response = await do_request_2(
-        action="list_files",
-        data={"directory_id": directory_id}
+        action="list_directory",
+        data={"folder_id": directory_id}
     )
     
     # Update FileListView

@@ -157,7 +157,7 @@ Both functions automatically handle connection failures:
 Example usage:
 ```python
 response = await do_request_2(
-    action="list_files",
+    action="list_directory",
     data={"directory_id": dir_id}
 )
 
@@ -221,7 +221,7 @@ if response.code == 200:
 **List Files**:
 ```python
 response = await do_request_2(
-    action="list_files",
+    action="list_directory",
     data={"directory_id": dir_id}
 )
 
