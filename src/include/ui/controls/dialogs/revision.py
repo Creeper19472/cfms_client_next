@@ -174,12 +174,11 @@ class RevisionDialog(AlertDialog):
 
         self.actions = [self.refresh_button, self.close_button]
 
-        # Load revisions when dialog is created
-        # This will be called by the page after the dialog is shown
-
-    async def did_mount_async(self):
-        """Called after the dialog is mounted to the page."""
-        await self.controller.action_load_revisions()
+    def did_mount(self):
+        """Called when dialog is mounted to the page."""
+        super().did_mount()
+        # Automatically load revisions when dialog opens
+        self.page.run_task(self.controller.action_load_revisions)
 
     async def on_refresh_click(self, e: ft.Event[ft.TextButton]):
         """Handle refresh button click."""
