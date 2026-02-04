@@ -3,6 +3,18 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.3
+**Released on:** 2026-02-04
+
+**Title:** Batch Move Function
+
+This version introduces a batch move feature.
+
+### Improved
+- Batch delete operations now support interruption.
+- All batch operations now share a single progress dialog implementation, improving code reusability.
+
+---
 ## v0.5.2
 **Released on:** 2026-02-04
 
