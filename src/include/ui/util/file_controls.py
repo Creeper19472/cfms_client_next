@@ -25,11 +25,11 @@ def update_file_controls(
     view.controls = []  # reset
 
     async def parent_button_click(event: ft.Event[ft.ListTile]):
-        view.parent_manager.indicator.back()
         view.parent_manager.current_directory_id = (
             None if parent_id == "/" else parent_id
         )
-        await get_directory(view.parent_manager.current_directory_id, view=view)
+        if await get_directory(view.parent_manager.current_directory_id, view=view):
+            view.parent_manager.indicator.back()
 
     if (
         parent_id != None

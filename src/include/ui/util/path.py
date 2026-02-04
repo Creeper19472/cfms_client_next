@@ -26,10 +26,11 @@ async def get_directory(
     fallback: Optional[str] = None,
     _raise_on_error=False,
     _set_new_root=False,
-):
+) -> bool:
     from include.ui.util.file_controls import update_file_controls
 
-    view.parent_manager.hide_content()
+    pm = view.parent_manager
+    pm.hide_content()
     view.current_directories_data = []
     view.current_files_data = []
 
@@ -40,35 +41,40 @@ async def get_directory(
         token=_app_shared.token,
     )
 
-    if (code := response["code"]) != 200:
-        update_file_controls(view, [], [], view.parent_manager.current_directory_id)
+    code = response["code"]
+    if code != 200:
+        update_file_controls(view, [], [], None)
+
         if _raise_on_error:
-            view.parent_manager.progress_ring.visible = False
-            view.parent_manager.progress_ring.update()
+            pm.progress_ring.visible = False
+            pm.progress_ring.update()
             view.visible = True
             view.update()
-            if fallback != None:
+            if fallback is not None:
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
+
         send_error(
             view.page,
             _("Load failed: ({code}) {message}").format(
                 code=code, message=response["message"]
             ),
         )
-    else:
-        if _set_new_root:
-            view.parent_manager.root_directory_id = id
+        pm.show_content()
+        return False
 
-        view.parent_manager.current_directory_id = id
+    if _set_new_root:
+        pm.root_directory_id = id
 
-        view.current_directories_data = response["data"]["folders"]
-        view.current_files_data = response["data"]["documents"]
-        view.current_parent_id = response["data"]["parent_id"]
+    pm.current_directory_id = id
+    view.current_directories_data = response["data"]["folders"]
+    view.current_files_data = response["data"]["documents"]
+    view.current_parent_id = response["data"]["parent_id"]
 
-        await view.parent_manager.sort_bar.controller.apply_sorting()
-
-    view.parent_manager.show_content()
+    await pm.sort_bar.controller.apply_sorting()
+    pm.show_content()
+    
+    return True
 
 
 async def get_document(id: str | None, filename: str, page: ft.Page):

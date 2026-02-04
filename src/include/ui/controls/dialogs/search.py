@@ -55,10 +55,11 @@ class SearchResultDirectoryTile(ft.ListTile):
         # Navigate to the directory
         from include.ui.util.file_controls import get_directory
 
-        await get_directory(
+        if await get_directory(
             id=self.directory_id,
             view=self.parent_manager.file_listview,
-        )
+        ):
+            self.parent_manager.indicator.go(self.directory_id)
 
 
 class SearchResultFileTile(ft.ListTile):
@@ -101,10 +102,14 @@ class SearchResultFileTile(ft.ListTile):
         # Navigate to the parent directory (or root if parent_id is None)
         from include.ui.util.file_controls import get_directory
 
-        await get_directory(
+        if await get_directory(
             id=self.parent_id,
             view=self.parent_manager.file_listview,
-        )
+        ):
+            if self.parent_id:
+                self.parent_manager.indicator.go(self.parent_id)
+            else:
+                self.parent_manager.indicator.reset()
 
 
 class SearchDialog(AlertDialog):

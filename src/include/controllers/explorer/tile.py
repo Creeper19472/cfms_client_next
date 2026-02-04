@@ -96,10 +96,10 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
         if not picked_file or not picked_file.path:
             send_error(self.control.page, _("No file selected"))
             return
-        
+
         try:
             from include.util.transfer import upload_new_revision
-            
+
             # Upload the file as a new revision
             async for current, total in upload_new_revision(
                 self.app_shared,
@@ -108,20 +108,20 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
             ):
                 # Progress updates are handled by the @wait decorator
                 pass
-            
+
             send_info(
                 self.control.page,
                 _("New revision uploaded successfully for {filename}").format(
                     filename=self.control.filename
                 ),
             )
-            
+
             # Refresh the directory to show updated file
             await get_directory(
                 self.control.parent_listview.parent_manager.current_directory_id,
                 self.control.parent_listview,
             )
-                    
+
         except Exception as e:
             send_error(
                 self.control.page,
@@ -130,7 +130,7 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
 
     async def action_view_revisions(self):
         from include.ui.controls.dialogs.revision import RevisionDialog
-        
+
         self.control.page.show_dialog(
             RevisionDialog(
                 document_id=self.control.file_id,
@@ -148,10 +148,12 @@ class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
         super().__init__(control)
 
     async def action_open_directory(self):
-        self.control.parent_listview.parent_manager.indicator.go(self.control.dir_name)
-        await get_directory(
+        if await get_directory(
             self.control.directory_id, view=self.control.parent_listview
-        )
+        ):
+            self.control.parent_listview.parent_manager.indicator.go(
+                self.control.dir_name
+            )
 
     @wait("delete_directory")
     async def action_delete_directory(self):
