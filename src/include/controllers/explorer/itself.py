@@ -589,33 +589,30 @@ class FileExplorerController(BaseController["FileManagerView"]):
         }
         
         # Delete items
-        try:
-            async for item_type, item_id, success, error_msg in batch_delete_items(
-                file_ids, directory_ids, cancel_event
-            ):
-                completed += 1
-                
-                if not success:
-                    failed += 1
-                    item_name = (
-                        file_names.get(item_id)
-                        if item_type == "file"
-                        else dir_names.get(item_id)
-                    )
-                    error_text = _('Failed to delete {type} "{name}": {error}').format(
-                        type=_("file") if item_type == "file" else _("directory"),
-                        name=item_name or item_id,
-                        error=error_msg,
-                    )
-                    progress_dialog.add_error(error_text)
-                
-                # Update progress
-                progress_text = _(
-                    "Deleted {completed}/{total} items ({failed} failed)"
-                ).format(completed=completed, total=total_items, failed=failed)
-                progress_dialog.update_progress(completed, total_items, progress_text)
-        except StopAsyncIteration:
-            pass
+        async for item_type, item_id, success, error_msg in batch_delete_items(
+            file_ids, directory_ids, cancel_event
+        ):
+            completed += 1
+            
+            if not success:
+                failed += 1
+                item_name = (
+                    file_names.get(item_id)
+                    if item_type == "file"
+                    else dir_names.get(item_id)
+                )
+                error_text = _('Failed to delete {type} "{name}": {error}').format(
+                    type=_("file") if item_type == "file" else _("directory"),
+                    name=item_name or item_id,
+                    error=error_msg,
+                )
+                progress_dialog.add_error(error_text)
+            
+            # Update progress
+            progress_text = _(
+                "Deleted {completed}/{total} items ({failed} failed)"
+            ).format(completed=completed, total=total_items, failed=failed)
+            progress_dialog.update_progress(completed, total_items, progress_text)
         
         # Check if operation was cancelled
         if cancel_event.is_set():
