@@ -42,7 +42,7 @@ async def batch_delete_items(
         # Check for cancellation before each delete
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="delete_document",
@@ -68,7 +68,7 @@ async def batch_delete_items(
         # Check for cancellation before each delete
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="delete_directory",
@@ -361,7 +361,7 @@ async def batch_move_items(
         # Check for cancellation before each move
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="move_document",
@@ -387,7 +387,7 @@ async def batch_move_items(
         # Check for cancellation before each move
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="move_directory",
