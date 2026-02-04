@@ -60,6 +60,12 @@ class SelectionToolbar(ft.Row):
             on_click=self.on_download_click,
         )
         
+        self.move_button = ft.TextButton(
+            content=_("Move"),
+            icon=ft.Icons.DRIVE_FILE_MOVE,
+            on_click=self.on_move_click,
+        )
+        
         self.delete_button = ft.TextButton(
             content=_("Delete"),
             icon=ft.Icons.DELETE,
@@ -79,6 +85,7 @@ class SelectionToolbar(ft.Row):
             self.clear_selection_button,
             ft.VerticalDivider(),
             self.download_button,
+            self.move_button,
             self.delete_button,
             ft.VerticalDivider(),
             self.cancel_button,
@@ -108,6 +115,10 @@ class SelectionToolbar(ft.Row):
     async def on_download_click(self, event: ft.Event[ft.TextButton]):
         """Handle download selected button click."""
         self.page.run_task(self.parent_view.controller.action_batch_download)
+    
+    async def on_move_click(self, event: ft.Event[ft.TextButton]):
+        """Handle move selected button click."""
+        self.page.run_task(self.parent_view.controller.action_batch_move)
     
     async def on_delete_click(self, event: ft.Event[ft.TextButton]):
         """Handle delete selected button click."""

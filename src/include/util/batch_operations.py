@@ -17,6 +17,7 @@ _ = t.gettext
 async def batch_delete_items(
     file_ids: list[str],
     directory_ids: list[str],
+    cancel_event: Optional[asyncio.Event] = None,
 ) -> AsyncIterator[tuple[str, str, bool, Optional[str]]]:
     """
     Delete multiple files and directories.
@@ -26,6 +27,7 @@ async def batch_delete_items(
     Args:
         file_ids: List of file IDs to delete
         directory_ids: List of directory IDs to delete
+        cancel_event: Optional asyncio.Event to signal cancellation
 
     Yields:
         Tuples of (item_type, item_id, success, error_message)
@@ -37,6 +39,10 @@ async def batch_delete_items(
     app_shared = AppShared()
     # Delete files first
     for file_id in file_ids:
+        # Check for cancellation before each delete
+        if cancel_event and cancel_event.is_set():
+            return
+        
         try:
             response = await do_request(
                 action="delete_document",
@@ -59,6 +65,10 @@ async def batch_delete_items(
 
     # Delete directories
     for dir_id in directory_ids:
+        # Check for cancellation before each delete
+        if cancel_event and cancel_event.is_set():
+            return
+        
         try:
             response = await do_request(
                 action="delete_directory",
