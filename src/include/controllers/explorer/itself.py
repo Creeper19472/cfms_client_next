@@ -561,10 +561,14 @@ class FileExplorerController(BaseController["FileManagerView"]):
         self, file_ids: list[str], directory_ids: list[str]
     ):
         """Execute the batch delete operation."""
-        # Create progress dialog
+        # Create cancel event for stopping the operation
+        cancel_event = asyncio.Event()
+        
+        # Create progress dialog with cancel button
         progress_dialog = BatchProgressDialog(
             title=_("Deleting Items"),
-            with_cancel=False,
+            with_cancel=True,
+            cancel_event=cancel_event,
         )
         
         self.control.page.show_dialog(progress_dialog)
@@ -573,6 +577,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
         total_items = len(file_ids) + len(directory_ids)
         completed = 0
         failed = 0
+        cancelled = False
         
         # Get file and directory names for error reporting
         file_names = {
@@ -584,39 +589,51 @@ class FileExplorerController(BaseController["FileManagerView"]):
         }
         
         # Delete items
-        async for item_type, item_id, success, error_msg in batch_delete_items(
-            file_ids, directory_ids
-        ):
-            completed += 1
-            
-            if not success:
-                failed += 1
-                item_name = (
-                    file_names.get(item_id)
-                    if item_type == "file"
-                    else dir_names.get(item_id)
-                )
-                error_text = _('Failed to delete {type} "{name}": {error}').format(
-                    type=_("file") if item_type == "file" else _("directory"),
-                    name=item_name or item_id,
-                    error=error_msg,
-                )
-                progress_dialog.add_error(error_text)
-            
-            # Update progress
-            progress_text = _(
-                "Deleted {completed}/{total} items ({failed} failed)"
-            ).format(completed=completed, total=total_items, failed=failed)
-            progress_dialog.update_progress(completed, total_items, progress_text)
+        try:
+            async for item_type, item_id, success, error_msg in batch_delete_items(
+                file_ids, directory_ids, cancel_event
+            ):
+                completed += 1
+                
+                if not success:
+                    failed += 1
+                    item_name = (
+                        file_names.get(item_id)
+                        if item_type == "file"
+                        else dir_names.get(item_id)
+                    )
+                    error_text = _('Failed to delete {type} "{name}": {error}').format(
+                        type=_("file") if item_type == "file" else _("directory"),
+                        name=item_name or item_id,
+                        error=error_msg,
+                    )
+                    progress_dialog.add_error(error_text)
+                
+                # Update progress
+                progress_text = _(
+                    "Deleted {completed}/{total} items ({failed} failed)"
+                ).format(completed=completed, total=total_items, failed=failed)
+                progress_dialog.update_progress(completed, total_items, progress_text)
+        except StopAsyncIteration:
+            pass
+        
+        # Check if operation was cancelled
+        if cancel_event.is_set():
+            cancelled = True
         
         # Show completion
-        if failed > 0:
+        if cancelled:
+            progress_dialog.progress_text.value = _(
+                "Deletion cancelled. Deleted {completed}/{total} items ({failed} failed)"
+            ).format(completed=completed, total=total_items, failed=failed)
+            progress_dialog.progress_text.update()
+        elif failed > 0:
             progress_dialog.progress_text.value = _("Deletion completed with {failed} error(s)").format(
                 failed=failed
             )
             progress_dialog.progress_text.update()
         
-        progress_dialog.show_completion(failed > 0)
+        progress_dialog.show_completion(failed > 0 or cancelled)
         
         # Exit selection mode and refresh directory
         self.control.file_listview.toggle_selection_mode(False)
