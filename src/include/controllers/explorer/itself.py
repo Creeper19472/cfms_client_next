@@ -13,6 +13,8 @@ from include.ui.controls.dialogs.explorer import (
     UploadDirectoryAlertDialog,
     FileOverwriteConfirmDialog,
     BatchDeleteConfirmDialog,
+    BatchProgressDialog,
+    DirectorySelectorDialog,
 )
 from include.ui.util.choice import normalize_always_choice
 from include.ui.util.path import get_directory
@@ -21,7 +23,7 @@ from include.util.create import create_directory
 from include.util.tree import build_directory_tree
 from include.util.requests import do_request
 from include.util.transfer import batch_upload_file_to_server, upload_file_to_server
-from include.util.batch_operations import batch_delete_items, batch_download_items
+from include.util.batch_operations import batch_delete_items, batch_download_items, batch_move_items
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -560,29 +562,18 @@ class FileExplorerController(BaseController["FileManagerView"]):
     ):
         """Execute the batch delete operation."""
         # Create progress dialog
-        progress_bar = ft.ProgressBar(value=0)
-        progress_text = ft.Text(_("Deleting items..."), text_align=ft.TextAlign.CENTER)
-        error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
-
-        progress_dialog = ft.AlertDialog(
-            modal=True,
-            scrollable=True,
-            title=ft.Text(_("Deleting Items")),
-            content=ft.Column(
-                controls=[progress_bar, progress_text, error_column],
-                width=400,
-                height=200,
-            ),
-            actions=[],
+        progress_dialog = BatchProgressDialog(
+            title=_("Deleting Items"),
+            with_cancel=False,
         )
-
+        
         self.control.page.show_dialog(progress_dialog)
-
+        
         # Track progress
         total_items = len(file_ids) + len(directory_ids)
         completed = 0
         failed = 0
-
+        
         # Get file and directory names for error reporting
         file_names = {
             f["id"]: f["title"] for f in self.control.file_listview.current_files_data
@@ -591,14 +582,13 @@ class FileExplorerController(BaseController["FileManagerView"]):
             d["id"]: d["name"]
             for d in self.control.file_listview.current_directories_data
         }
-
+        
         # Delete items
         async for item_type, item_id, success, error_msg in batch_delete_items(
             file_ids, directory_ids
         ):
             completed += 1
-            progress_bar.value = completed / total_items
-
+            
             if not success:
                 failed += 1
                 item_name = (
@@ -606,46 +596,35 @@ class FileExplorerController(BaseController["FileManagerView"]):
                     if item_type == "file"
                     else dir_names.get(item_id)
                 )
-                error_text = ft.Text(
-                    _('Failed to delete {type} "{name}": {error}').format(
-                        type=_("file") if item_type == "file" else _("directory"),
-                        name=item_name or item_id,
-                        error=error_msg,
-                    )
+                error_text = _('Failed to delete {type} "{name}": {error}').format(
+                    type=_("file") if item_type == "file" else _("directory"),
+                    name=item_name or item_id,
+                    error=error_msg,
                 )
-                error_column.controls.append(error_text)
-                error_column.update()
-
-            progress_text.value = _(
+                progress_dialog.add_error(error_text)
+            
+            # Update progress
+            progress_text = _(
                 "Deleted {completed}/{total} items ({failed} failed)"
             ).format(completed=completed, total=total_items, failed=failed)
-            progress_text.update()
-            progress_bar.update()
-
-        # Show completion message
+            progress_dialog.update_progress(completed, total_items, progress_text)
+        
+        # Show completion
         if failed > 0:
-            progress_text.value = _("Deletion completed with {failed} error(s)").format(
+            progress_dialog.progress_text.value = _("Deletion completed with {failed} error(s)").format(
                 failed=failed
             )
-
-            async def close_delete_dialog(e: ft.Event[ft.TextButton]):
-                """Close the delete progress dialog."""
-                self._close_dialog(progress_dialog)
-
-            ok_button = ft.TextButton(_("OK"), on_click=close_delete_dialog)
-            progress_dialog.actions = [ok_button]
-            progress_dialog.update()
-        else:
-            progress_dialog.open = False
-            progress_dialog.update()
-
+            progress_dialog.progress_text.update()
+        
+        progress_dialog.show_completion(failed > 0)
+        
         # Exit selection mode and refresh directory
         self.control.file_listview.toggle_selection_mode(False)
         self.control.selection_toolbar.visible = False
         self.control.top_bar.selection_toggle_button.visible = True
         self.control.selection_toolbar.update()
         self.control.top_bar.update()
-
+        
         await get_directory(
             id=self.control.current_directory_id,
             view=self.control.file_listview,
@@ -682,40 +661,24 @@ class FileExplorerController(BaseController["FileManagerView"]):
 
         # Create cancel event for stopping the operation
         cancel_event = asyncio.Event()
-
+        
         # Create progress dialog for adding items to download queue
-        progress_bar = ft.ProgressBar(value=None)  # Indeterminate initially
-        progress_text = ft.Text(
-            _("Adding items to download queue..."), text_align=ft.TextAlign.CENTER
+        progress_dialog = BatchProgressDialog(
+            title=_("Adding Downloads"),
+            with_cancel=True,
+            cancel_event=cancel_event,
         )
-        error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
-
-        # Cancel button handler
-        async def cancel_operation(e: ft.Event[ft.TextButton]):
-            """Cancel the batch download operation."""
-            cancel_event.set()
-            e.control.disabled = True
-
-        cancel_button = ft.TextButton(_("Cancel"), on_click=cancel_operation)
-
-        progress_dialog = ft.AlertDialog(
-            modal=True,
-            scrollable=True,
-            title=ft.Text(_("Adding Downloads")),
-            content=ft.Column(
-                controls=[progress_bar, progress_text, error_column],
-                width=400,
-            ),
-            actions=[cancel_button],
-        )
-
+        
+        # Set progress bar to indeterminate initially
+        progress_dialog.progress_bar.value = None
+        progress_dialog.progress_text.value = _("Adding items to download queue...")
+        
         self.control.page.show_dialog(progress_dialog)
-
+        
         # Track progress
         added = 0
         failed = 0
-        cancelled = False
-
+        
         # Add items to download queue
         try:
             async for (
@@ -729,45 +692,31 @@ class FileExplorerController(BaseController["FileManagerView"]):
             ):
                 if not success:
                     failed += 1
-                    error_text = ft.Text(
-                        _('Failed to add {type} "{name}": {error}').format(
-                            type=_("file") if item_type == "file" else _("directory"),
-                            name=item_name,
-                            error=error_msg,
-                        )
+                    error_text = _('Failed to add {type} "{name}": {error}').format(
+                        type=_("file") if item_type == "file" else _("directory"),
+                        name=item_name,
+                        error=error_msg,
                     )
-                    error_column.controls.append(error_text)
-                    error_column.update()
+                    progress_dialog.add_error(error_text)
                 else:
                     added += 1
-
-                progress_text.value = _("Adding: {current_file}").format(
+                
+                progress_dialog.progress_text.value = _("Adding: {current_file}").format(
                     current_file=current_file
                 )
-                progress_text.update()
+                progress_dialog.progress_text.update()
         except StopAsyncIteration:
             pass
-
-        # Check if operation was cancelled
-        if cancel_event.is_set():
-            cancelled = True
-
+        
         # Show completion message
-        async def close_download_dialog(e: ft.Event[ft.TextButton]):
-            """Close the download progress dialog."""
-            self._close_dialog(progress_dialog)
-
         if failed > 0:
-            progress_text.value = _(
+            progress_dialog.progress_text.value = _(
                 "Added {added} items to download queue, {failed} failed"
             ).format(added=added, failed=failed)
-            ok_button = ft.TextButton(_("OK"), on_click=close_download_dialog)
-            progress_dialog.actions = [ok_button]
-            progress_dialog.update()
-        else:
-            progress_dialog.open = False
-            progress_dialog.update()
-
+            progress_dialog.progress_text.update()
+        
+        progress_dialog.show_completion(failed > 0)
+        
         # Exit selection mode
         self.control.file_listview.toggle_selection_mode(False)
         self.control.selection_toolbar.visible = False
@@ -777,6 +726,111 @@ class FileExplorerController(BaseController["FileManagerView"]):
 
     async def action_batch_move(self):
         """Handle batch move of selected files and directories."""
-        # This method can be implemented similarly to batch delete and download,
-        # with appropriate dialogs for selecting target directory and confirming the move.
-        pass    
+        file_ids = list(self.control.file_listview.selected_file_ids)
+        directory_ids = list(self.control.file_listview.selected_directory_ids)
+        
+        if not file_ids and not directory_ids:
+            self.control.send_error(_("No items selected"))
+            return
+        
+        # Show directory selector dialog
+        selector_dialog = DirectorySelectorDialog(
+            file_listview=self.control,
+            excluded_directory_ids=directory_ids,  # Exclude directories being moved
+        )
+        
+        self.control.page.show_dialog(selector_dialog)
+        
+        # Wait for user to select a directory
+        target_directory_id = await selector_dialog.wait_for_selection()
+        
+        if target_directory_id is None:
+            # User cancelled the selection
+            return
+        
+        # Check if target is the same as current directory
+        if target_directory_id == self.control.current_directory_id:
+            self.control.send_error(_("Target directory is the same as current directory"))
+            return
+        
+        # Execute the batch move
+        await self._execute_batch_move(file_ids, directory_ids, target_directory_id)
+    
+    async def _execute_batch_move(
+        self, file_ids: list[str], directory_ids: list[str], target_directory_id: str | None
+    ):
+        """Execute the batch move operation.
+        
+        Args:
+            file_ids: List of file IDs to move
+            directory_ids: List of directory IDs to move
+            target_directory_id: Target directory ID (None for root)
+        """
+        # Create progress dialog
+        progress_dialog = BatchProgressDialog(
+            title=_("Moving Items"),
+            with_cancel=False,
+        )
+        
+        self.control.page.show_dialog(progress_dialog)
+        
+        # Track progress
+        total_items = len(file_ids) + len(directory_ids)
+        completed = 0
+        failed = 0
+        
+        # Get file and directory names for error reporting
+        file_names = {
+            f["id"]: f["title"] for f in self.control.file_listview.current_files_data
+        }
+        dir_names = {
+            d["id"]: d["name"]
+            for d in self.control.file_listview.current_directories_data
+        }
+        
+        # Move items
+        async for item_type, item_id, success, error_msg in batch_move_items(
+            file_ids, directory_ids, target_directory_id
+        ):
+            completed += 1
+            
+            if not success:
+                failed += 1
+                item_name = (
+                    file_names.get(item_id)
+                    if item_type == "file"
+                    else dir_names.get(item_id)
+                )
+                error_text = _('Failed to move {type} "{name}": {error}').format(
+                    type=_("file") if item_type == "file" else _("directory"),
+                    name=item_name or item_id,
+                    error=error_msg,
+                )
+                progress_dialog.add_error(error_text)
+            
+            # Update progress
+            progress_text = _(
+                "Moved {completed}/{total} items ({failed} failed)"
+            ).format(completed=completed, total=total_items, failed=failed)
+            progress_dialog.update_progress(completed, total_items, progress_text)
+        
+        # Show completion
+        if failed > 0:
+            progress_dialog.progress_text.value = _("Move completed with {failed} error(s)").format(
+                failed=failed
+            )
+            progress_dialog.progress_text.update()
+        
+        progress_dialog.show_completion(failed > 0)
+        
+        # Exit selection mode and refresh directory
+        self.control.file_listview.toggle_selection_mode(False)
+        self.control.selection_toolbar.visible = False
+        self.control.top_bar.selection_toggle_button.visible = True
+        self.control.selection_toolbar.update()
+        self.control.top_bar.update()
+        
+        await get_directory(
+            id=self.control.current_directory_id,
+            view=self.control.file_listview,
+        )    
