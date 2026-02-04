@@ -3,12 +3,28 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.2
+**Released on:** 2026-02-04
+
+**Title:** UI Behaviour Fix
+
+This version corrects an issue with the UI when accessing directories, ensuring 
+the address tooltip only updates upon successful access. Additionally, it adds 
+address tooltip updates to the search navigation section.
+
+### Known issues
+- After quickly navigating to a directory, and then performing other directory 
+switching operations, the leftmost side of the address bar may display two 
+forward slashes (instead of one).
+
+---
 ## v0.5.1
 **Released on:** 2026-02-04
 
 **Title:** Multiple Selection Feature
 
-This version adds support for multi-option items and is compatible with server-side protocols version 7.
+This version adds support for multi-option items and is compatible with 
+server-side protocols version 7.
 
 ---
 ## v0.5.0
