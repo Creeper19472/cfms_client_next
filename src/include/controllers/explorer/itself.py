@@ -775,10 +775,14 @@ class FileExplorerController(BaseController["FileManagerView"]):
             directory_ids: List of directory IDs to move
             target_directory_id: Target directory ID (None for root)
         """
-        # Create progress dialog
+        # Create cancel event for stopping the operation
+        cancel_event = asyncio.Event()
+        
+        # Create progress dialog with cancel button
         progress_dialog = BatchProgressDialog(
             title=_("Moving Items"),
-            with_cancel=False,
+            with_cancel=True,
+            cancel_event=cancel_event,
         )
         
         self.control.page.show_dialog(progress_dialog)
@@ -799,7 +803,7 @@ class FileExplorerController(BaseController["FileManagerView"]):
         
         # Move items
         async for item_type, item_id, success, error_msg in batch_move_items(
-            file_ids, directory_ids, target_directory_id
+            file_ids, directory_ids, target_directory_id, cancel_event
         ):
             completed += 1
             
@@ -822,6 +826,10 @@ class FileExplorerController(BaseController["FileManagerView"]):
                 "Moved {completed}/{total} items ({failed} failed)"
             ).format(completed=completed, total=total_items, failed=failed)
             progress_dialog.update_progress(completed, total_items, progress_text)
+        
+        # Check if operation was cancelled
+        if cancel_event.is_set():
+            cancelled = True
         
         # Show completion
         if failed > 0:
