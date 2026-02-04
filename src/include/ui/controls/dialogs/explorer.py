@@ -594,7 +594,6 @@ class BatchProgressDialog(AlertDialog):
         self.content = ft.Column(
             controls=[self.progress_bar, self.progress_text, self.error_column],
             width=400,
-            height=200,
         )
         
         # Create buttons
@@ -694,11 +693,10 @@ class BatchDeleteConfirmDialog(AlertDialog):
         self.content = ft.Column(
             controls=[
                 ft.Text(message, size=16),
-                ft.Container(height=10),
                 ft.Text(
                     _("This action cannot be undone."),
-                    color=ft.Colors.RED_400,
                     weight=ft.FontWeight.BOLD,
+                    align=ft.Alignment.CENTER,
                 ),
             ],
             width=400,
