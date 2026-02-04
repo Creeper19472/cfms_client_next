@@ -30,6 +30,8 @@ async def get_directory(
     from include.ui.util.file_controls import update_file_controls
 
     view.parent_manager.hide_content()
+    view.current_directories_data = []
+    view.current_files_data = []
 
     response = await do_request(
         action="list_directory",
@@ -65,13 +67,6 @@ async def get_directory(
         view.current_parent_id = response["data"]["parent_id"]
 
         await view.parent_manager.sort_bar.controller.apply_sorting()
-
-        # update_file_controls(
-        #     view,
-        #     response["data"]["folders"],
-        #     response["data"]["documents"],
-        #     response["data"]["parent_id"],
-        # )
 
     view.parent_manager.show_content()
 
@@ -109,7 +104,9 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     supports_resume = task_data.get("supports_resume", False)
     # Future: Server can set this based on its capabilities
 
-    file_path = f"{FLET_APP_STORAGE_DATA}/downloads/{filename if filename else task_id[0:17]}"
+    file_path = (
+        f"{FLET_APP_STORAGE_DATA}/downloads/{filename if filename else task_id[0:17]}"
+    )
 
     # Get the download manager service
     download_service = None
