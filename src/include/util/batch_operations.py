@@ -42,7 +42,7 @@ async def batch_delete_items(
         # Check for cancellation before each delete
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="delete_document",
@@ -68,7 +68,7 @@ async def batch_delete_items(
         # Check for cancellation before each delete
         if cancel_event and cancel_event.is_set():
             return
-        
+
         try:
             response = await do_request(
                 action="delete_directory",
@@ -335,6 +335,7 @@ async def batch_move_items(
     file_ids: list[str],
     directory_ids: list[str],
     target_directory_id: Optional[str],
+    cancel_event: Optional[asyncio.Event] = None,
 ) -> AsyncIterator[tuple[str, str, bool, Optional[str]]]:
     """
     Move multiple files and directories to a target directory.
@@ -345,6 +346,8 @@ async def batch_move_items(
         file_ids: List of file IDs to move
         directory_ids: List of directory IDs to move
         target_directory_id: ID of the target directory to move items into (None for root)
+        cancel_event: Optional asyncio.Event to signal cancellation
+
     Yields:
         Tuples of (item_type, item_id, success, error_message)
         - item_type: "file" or "directory"
@@ -355,6 +358,10 @@ async def batch_move_items(
     app_shared = AppShared()
     # Move files first
     for file_id in file_ids:
+        # Check for cancellation before each move
+        if cancel_event and cancel_event.is_set():
+            return
+
         try:
             response = await do_request(
                 action="move_document",
@@ -377,6 +384,10 @@ async def batch_move_items(
 
     # Move directories
     for dir_id in directory_ids:
+        # Check for cancellation before each move
+        if cancel_event and cancel_event.is_set():
+            return
+
         try:
             response = await do_request(
                 action="move_directory",
