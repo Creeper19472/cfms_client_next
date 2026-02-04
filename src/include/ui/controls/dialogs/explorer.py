@@ -12,7 +12,6 @@ from include.controllers.dialogs.directory import (
 )
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.requests import do_request
-import copy
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -769,7 +768,7 @@ class DirectorySelectorDialog(AlertDialog):
         self.selected_directory_id: str | None = None
         self.selection_event = asyncio.Event()
         
-        self.modal = False
+        self.modal = True  # Prevent interaction with main UI during selection
         self.title = ft.Text(_("Select Target Directory"))
         
         # Progress indicator
@@ -857,8 +856,8 @@ class DirectorySelectorDialog(AlertDialog):
     
     def update_button_visibility(self):
         """Update button visibility based on current state."""
-        # Go to Root button: visible if not at root
-        self.go_to_root_button.visible = self.current_directory_id not in (None, "/")
+        # Go to Root button: visible if not at root (root is represented as None)
+        self.go_to_root_button.visible = self.current_directory_id is not None
         self.update()
     
     def update_location_text(self, path: str = "/"):
@@ -978,11 +977,12 @@ class DirectorySelectorDialog(AlertDialog):
         """Navigate to the parent directory.
         
         Args:
-            parent_id: ID of the parent directory
+            parent_id: ID of the parent directory (None for root, "/" is converted to None)
         """
         if self.navigation_stack:
             self.navigation_stack.pop()
-        await self.load_directory(parent_id if parent_id != "/" else None)
+        # Normalize "/" to None for consistency
+        await self.load_directory(None if parent_id == "/" else parent_id)
     
     async def go_to_root_button_click(self, event: ft.Event[ft.TextButton]):
         """Navigate to the root directory."""
