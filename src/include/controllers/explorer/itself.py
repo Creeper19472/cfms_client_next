@@ -619,18 +619,13 @@ class FileExplorerController(BaseController["FileManagerView"]):
             cancelled = True
         
         # Show completion
-        if cancelled:
-            progress_dialog.progress_text.value = _(
-                "Deletion cancelled. Deleted {completed}/{total} items ({failed} failed)"
-            ).format(completed=completed, total=total_items, failed=failed)
-            progress_dialog.progress_text.update()
-        elif failed > 0:
+        if failed > 0:
             progress_dialog.progress_text.value = _("Deletion completed with {failed} error(s)").format(
                 failed=failed
             )
             progress_dialog.progress_text.update()
         
-        progress_dialog.show_completion(failed > 0 or cancelled)
+        progress_dialog.show_completion(failed > 0)
         
         # Exit selection mode and refresh directory
         self.control.file_listview.toggle_selection_mode(False)
