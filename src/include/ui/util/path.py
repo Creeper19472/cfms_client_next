@@ -73,7 +73,7 @@ async def get_directory(
 
     await pm.sort_bar.controller.apply_sorting()
     pm.show_content()
-    
+
     return True
 
 
