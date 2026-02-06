@@ -5,7 +5,7 @@ This module provides a UI component that displays when directory access is denie
 It replaces the normal file list with a clear "Access Denied" message.
 """
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import flet as ft
 
