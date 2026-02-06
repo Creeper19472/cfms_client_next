@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, cast
 from typing import TYPE_CHECKING
 from copy import deepcopy
 
@@ -7,7 +7,11 @@ import flet as ft
 from websockets.asyncio.client import ClientConnection
 from include.classes.shared import AppShared
 from include.controllers.explorer.itself import FileExplorerController
-from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar, SelectionToolbar
+from include.ui.controls.components.explorer.bar import (
+    ExplorerTopBar,
+    FileSortBar,
+    SelectionToolbar,
+)
 from include.ui.controls.components.explorer.access_denied import AccessDeniedView
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import update_file_controls
@@ -73,7 +77,7 @@ class FileListView(ft.ListView):
         self.current_parent_id: str | None = None
         self.current_files_data: list[dict] = []
         self.current_directories_data: list[dict] = []
-        
+
         # Selection mode state
         self.selection_mode: bool = False
         self.selected_file_ids: set[str] = set()
@@ -129,7 +133,7 @@ class FileListView(ft.ListView):
             # Clear selections when exiting selection mode
             self.selected_file_ids.clear()
             self.selected_directory_ids.clear()
-        
+
         # Update all controls to show/hide checkboxes
         update_file_controls(
             self,
@@ -137,12 +141,12 @@ class FileListView(ft.ListView):
             self.current_files_data,
             self.current_parent_id,
         )
-    
+
     def select_all(self):
         """Select all files and directories."""
         self.selected_file_ids = {f["id"] for f in self.current_files_data}
         self.selected_directory_ids = {d["id"] for d in self.current_directories_data}
-        
+
         # Update UI to reflect selections
         update_file_controls(
             self,
@@ -150,12 +154,12 @@ class FileListView(ft.ListView):
             self.current_files_data,
             self.current_parent_id,
         )
-    
+
     def clear_selection(self):
         """Clear all selections."""
         self.selected_file_ids.clear()
         self.selected_directory_ids.clear()
-        
+
         # Update UI to reflect cleared selections
         update_file_controls(
             self,
@@ -163,21 +167,21 @@ class FileListView(ft.ListView):
             self.current_files_data,
             self.current_parent_id,
         )
-    
+
     def toggle_file_selection(self, file_id: str):
         """Toggle selection state of a file."""
         if file_id in self.selected_file_ids:
             self.selected_file_ids.remove(file_id)
         else:
             self.selected_file_ids.add(file_id)
-    
+
     def toggle_directory_selection(self, directory_id: str):
         """Toggle selection state of a directory."""
         if directory_id in self.selected_directory_ids:
             self.selected_directory_ids.remove(directory_id)
         else:
             self.selected_directory_ids.add(directory_id)
-    
+
     def get_selected_count(self) -> int:
         """Get total count of selected items."""
         return len(self.selected_file_ids) + len(self.selected_directory_ids)
@@ -246,11 +250,11 @@ class FileManagerView(ft.Container):
         if self.access_denied_view is not None:
             self.access_denied_view.visible = False
         self.update()
-    
+
     def show_access_denied_view(self, reason: str):
         """
         Display the access denied view instead of the file list.
-        
+
         Args:
             reason: The reason for access denial (from server message)
         """
@@ -258,19 +262,19 @@ class FileManagerView(ft.Container):
         self.file_listview.visible = False
         self.sort_bar.visible = False
         self.progress_ring.visible = False
-        
+
         # Create or update access denied view
         if self.access_denied_view is None:
             self.access_denied_view = AccessDeniedView(self, reason)
             # Add it to the content column
-            self.content.controls.append(self.access_denied_view)
+            cast(ft.Column, self.content).controls.append(self.access_denied_view)
         else:
             # Update the reason text using the proper method
             self.access_denied_view.update_reason(reason)
             self.access_denied_view.visible = True
-        
+
         self.update()
-    
+
     def hide_access_denied_view(self):
         """Hide the access denied view and prepare to show normal content."""
         if self.access_denied_view is not None:

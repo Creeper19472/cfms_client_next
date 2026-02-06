@@ -553,14 +553,14 @@ class FileOverwriteConfirmDialog(AlertDialog):
 
 class BatchProgressDialog(AlertDialog):
     """Base dialog for showing progress of batch operations.
-    
+
     Provides common UI elements and behavior for batch operations:
     - Progress bar
     - Progress text
     - Error column for displaying failed items
     - Cancel/OK button management
     """
-    
+
     def __init__(
         self,
         title: str,
@@ -570,7 +570,7 @@ class BatchProgressDialog(AlertDialog):
         visible=True,
     ):
         """Initialize batch progress dialog.
-        
+
         Args:
             title: Dialog title
             with_cancel: Whether to show a cancel button
@@ -579,36 +579,40 @@ class BatchProgressDialog(AlertDialog):
             visible: Whether dialog is visible initially
         """
         super().__init__(ref=ref, visible=visible)
-        
+
         self.modal = True
         self.scrollable = True
         self.title = ft.Text(title)
-        
+
         self.cancel_event = cancel_event
-        
+
         # Create UI components
         self.progress_bar = ft.ProgressBar(value=0)
         self.progress_text = ft.Text("", text_align=ft.TextAlign.CENTER)
         self.error_column = ft.Column([], scroll=ft.ScrollMode.AUTO)
-        
+
         self.content = ft.Column(
             controls=[self.progress_bar, self.progress_text, self.error_column],
             width=400,
         )
-        
+
         # Create buttons
-        self.ok_button = ft.TextButton(_("OK"), on_click=self.ok_button_click, visible=False)
-        
+        self.ok_button = ft.TextButton(
+            _("OK"), on_click=self.ok_button_click, visible=False
+        )
+
         if with_cancel:
-            self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+            self.cancel_button = ft.TextButton(
+                _("Cancel"), on_click=self.cancel_button_click
+            )
             self.actions = [self.ok_button, self.cancel_button]
         else:
             self.cancel_button = None
             self.actions = [self.ok_button]
-    
+
     def update_progress(self, current: int, total: int, text: str | None = None):
         """Update progress bar and text.
-        
+
         Args:
             current: Number of items completed
             total: Total number of items
@@ -619,20 +623,20 @@ class BatchProgressDialog(AlertDialog):
             self.progress_text.value = text
         self.progress_bar.update()
         self.progress_text.update()
-    
+
     def add_error(self, error_text: str):
         """Add an error message to the error column.
-        
+
         Args:
             error_text: Error message to display
         """
         error_control = ft.Text(error_text)
         self.error_column.controls.append(error_control)
         self.error_column.update()
-    
+
     def show_completion(self, has_errors: bool):
         """Show completion state of the operation.
-        
+
         Args:
             has_errors: Whether any errors occurred
         """
@@ -643,11 +647,11 @@ class BatchProgressDialog(AlertDialog):
             self.update()
         else:
             self.close()
-    
+
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle OK button click."""
         self.close()
-    
+
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle cancel button click."""
         if self.cancel_event:
@@ -659,7 +663,7 @@ class BatchProgressDialog(AlertDialog):
 
 class BatchDeleteConfirmDialog(AlertDialog):
     """Dialog to confirm batch deletion of files and directories."""
-    
+
     def __init__(
         self,
         file_count: int,
@@ -668,28 +672,28 @@ class BatchDeleteConfirmDialog(AlertDialog):
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
-        
+
         self.scrollable = True
         self.title = ft.Text(_("Confirm Delete"))
-        
+
         self.file_count = file_count
         self.directory_count = directory_count
         self.user_confirmed = False
         self.choice_event = asyncio.Event()
-        
+
         # Build confirmation message
         total_count = file_count + directory_count
         if file_count > 0 and directory_count > 0:
-            message = _("Delete {count} items ({file_count} files, {dir_count} directories)?").format(
-                count=total_count,
-                file_count=file_count,
-                dir_count=directory_count
+            message = _(
+                "Delete {count} items ({file_count} files, {dir_count} directories)?"
+            ).format(
+                count=total_count, file_count=file_count, dir_count=directory_count
             )
         elif file_count > 0:
             message = _("Delete {count} file(s)?").format(count=file_count)
         else:
             message = _("Delete {count} directory(ies)?").format(count=directory_count)
-        
+
         self.content = ft.Column(
             controls=[
                 ft.Text(message, size=16),
@@ -701,7 +705,7 @@ class BatchDeleteConfirmDialog(AlertDialog):
             ],
             width=400,
         )
-        
+
         self.delete_button = ft.TextButton(
             _("Delete"),
             on_click=self.delete_button_click,
@@ -710,21 +714,21 @@ class BatchDeleteConfirmDialog(AlertDialog):
             _("Cancel"),
             on_click=self.cancel_button_click,
         )
-        
+
         self.actions = [self.delete_button, self.cancel_button]
-    
+
     async def delete_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle delete button click."""
         self.user_confirmed = True
         self.choice_event.set()
         self.close()
-    
+
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         """Handle cancel button click."""
         self.user_confirmed = False
         self.choice_event.set()
         self.close()
-    
+
     async def wait_for_confirmation(self) -> bool:
         """Wait for the user to confirm or cancel."""
         await self.choice_event.wait()
@@ -733,10 +737,10 @@ class BatchDeleteConfirmDialog(AlertDialog):
 
 class DirectorySelectorDialog(AlertDialog):
     """Dialog for selecting a target directory for batch move operations.
-    
+
     Provides a browsable directory tree interface for selecting a target location.
     """
-    
+
     def __init__(
         self,
         file_listview: "FileManagerView",
@@ -745,7 +749,7 @@ class DirectorySelectorDialog(AlertDialog):
         visible=True,
     ):
         """Initialize directory selector dialog.
-        
+
         Args:
             file_listview: The file manager view
             excluded_directory_ids: List of directory IDs to exclude from selection (e.g., items being moved)
@@ -753,25 +757,25 @@ class DirectorySelectorDialog(AlertDialog):
             visible: Whether dialog is visible initially
         """
         super().__init__(ref=ref, visible=visible)
-        
+
         self.file_listview = file_listview
         self.excluded_directory_ids = excluded_directory_ids or []
         self.app_shared = AppShared()
-        
+
         # Current navigation state
         self.current_directory_id: str | None = file_listview.current_directory_id
         self.navigation_stack: list[tuple[str | None, str]] = []  # [(dir_id, dir_name)]
-        
+
         # User selection
         self.selected_directory_id: str | None = None
         self.selection_event = asyncio.Event()
-        
+
         self.modal = True  # Prevent interaction with main UI during selection
         self.title = ft.Text(_("Select Target Directory"))
-        
+
         # Progress indicator
         self.progress_ring = ft.ProgressRing(visible=True, width=32, height=32)
-        
+
         # Current location indicator (breadcrumb)
         self.location_text = ft.Text(
             _("Current location: /"),
@@ -779,7 +783,7 @@ class DirectorySelectorDialog(AlertDialog):
             weight=ft.FontWeight.BOLD,
             color=ft.Colors.BLUE_400,
         )
-        
+
         # Folder list view
         self.folder_listview = ft.ListView(
             visible=False,
@@ -788,26 +792,26 @@ class DirectorySelectorDialog(AlertDialog):
             spacing=5,
             padding=10,
         )
-        
+
         # Action buttons
         self.select_here_button = ft.Button(
             _("Select Here"),
             icon=ft.Icons.CHECK_CIRCLE,
             on_click=self.select_here_button_click,
         )
-        
+
         self.go_to_root_button = ft.TextButton(
             _("Go to Root"),
             icon=ft.Icons.HOME,
             on_click=self.go_to_root_button_click,
             visible=False,
         )
-        
+
         self.cancel_button = ft.TextButton(
             _("Cancel"),
             on_click=self.cancel_button_click,
         )
-        
+
         # Content layout
         self.content = ft.Column(
             controls=[
@@ -820,18 +824,18 @@ class DirectorySelectorDialog(AlertDialog):
             height=400,
             spacing=10,
         )
-        
+
         self.actions = [
             self.select_here_button,
             self.go_to_root_button,
             self.cancel_button,
         ]
-    
+
     def did_mount(self):
         """Called when dialog is mounted to the page. Loads initial directory."""
         super().did_mount()
         asyncio.create_task(self.load_directory(self.current_directory_id))
-    
+
     def disable_interactions(self):
         """Disable user interactions during async operations."""
         self.select_here_button.disabled = True
@@ -841,7 +845,7 @@ class DirectorySelectorDialog(AlertDialog):
         self.progress_ring.visible = True
         self.modal = True
         self.update()
-    
+
     def enable_interactions(self):
         """Enable user interactions after async operations complete."""
         self.select_here_button.disabled = False
@@ -851,32 +855,32 @@ class DirectorySelectorDialog(AlertDialog):
         self.progress_ring.visible = False
         self.modal = False
         self.update()
-    
+
     def update_button_visibility(self):
         """Update button visibility based on current state."""
         # Go to Root button: visible if not at root (root is represented as None)
         self.go_to_root_button.visible = self.current_directory_id is not None
         self.update()
-    
+
     def update_location_text(self, path: str = "/"):
         """Update the breadcrumb location indicator."""
         self.location_text.value = _("Current location: {path}").format(path=path)
         self.update()
-    
+
     def build_breadcrumb_path(self) -> str:
         """Build a human-readable path from the navigation stack."""
         if not self.navigation_stack:
             return "/"
         return "/" + "/".join(name for _, name in self.navigation_stack)
-    
+
     async def load_directory(self, directory_id: str | None):
         """Load and display folders in the specified directory.
-        
+
         Args:
             directory_id: The ID of the directory to load, or None for root
         """
         self.disable_interactions()
-        
+
         try:
             response = await do_request(
                 action="list_directory",
@@ -884,7 +888,7 @@ class DirectorySelectorDialog(AlertDialog):
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
-            
+
             if (code := response["code"]) != 200:
                 self.send_error(
                     _("Failed to load directory: ({code}) {message}").format(
@@ -893,33 +897,35 @@ class DirectorySelectorDialog(AlertDialog):
                 )
                 self.close()
                 return
-            
+
             data = response["data"]
             folders = data.get("folders", [])
             parent_id = data.get("parent_id")
-            
+
             # Update current directory
             self.current_directory_id = directory_id
-            
+
             # Build breadcrumb path
             path = self.build_breadcrumb_path()
             self.update_location_text(path)
-            
+
             # Clear and populate folder list
             self.folder_listview.controls.clear()
-            
+
             # Add parent directory option if not at root
             if parent_id is not None:
                 parent_item = ft.ListTile(
                     leading=ft.Icon(ft.Icons.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
-                    title=ft.Text(_(".. (Parent Directory)"), weight=ft.FontWeight.BOLD),
+                    title=ft.Text(
+                        _(".. (Parent Directory)"), weight=ft.FontWeight.BOLD
+                    ),
                     on_click=lambda _: asyncio.create_task(
                         self.navigate_to_parent(parent_id)
                     ),
                     hover_color=ft.Colors.with_opacity(0.1, ft.Colors.BLUE),
                 )
                 self.folder_listview.controls.append(parent_item)
-            
+
             # Add folders
             if not folders:
                 # Show message if no subfolders
@@ -937,11 +943,11 @@ class DirectorySelectorDialog(AlertDialog):
                 for folder in folders:
                     folder_id = folder["id"]
                     folder_name = folder["name"]
-                    
+
                     # Skip excluded directories
                     if folder_id in self.excluded_directory_ids:
                         continue
-                    
+
                     folder_item = ft.ListTile(
                         leading=ft.Icon(ft.Icons.FOLDER, color=ft.Colors.BLUE_400),
                         title=ft.Text(folder_name),
@@ -951,29 +957,27 @@ class DirectorySelectorDialog(AlertDialog):
                         hover_color=ft.Colors.with_opacity(0.1, ft.Colors.BLUE),
                     )
                     self.folder_listview.controls.append(folder_item)
-            
+
             self.enable_interactions()
             self.update_button_visibility()
-            
+
         except Exception as e:
-            self.send_error(
-                _("Error loading directory: {error}").format(error=str(e))
-            )
+            self.send_error(_("Error loading directory: {error}").format(error=str(e)))
             self.close()
-    
+
     async def navigate_to_folder(self, folder_id: str, folder_name: str):
         """Navigate into a subfolder.
-        
+
         Args:
             folder_id: ID of the folder to navigate to
             folder_name: Name of the folder (for breadcrumb)
         """
         self.navigation_stack.append((folder_id, folder_name))
         await self.load_directory(folder_id)
-    
+
     async def navigate_to_parent(self, parent_id: str | None):
         """Navigate to the parent directory.
-        
+
         Args:
             parent_id: ID of the parent directory (None for root, "/" is converted to None)
         """
@@ -981,27 +985,27 @@ class DirectorySelectorDialog(AlertDialog):
             self.navigation_stack.pop()
         # Normalize "/" to None for consistency
         await self.load_directory(None if parent_id == "/" else parent_id)
-    
+
     async def go_to_root_button_click(self, event: ft.Event[ft.TextButton]):
         """Navigate to the root directory."""
         self.navigation_stack.clear()
         await self.load_directory(None)
-    
+
     async def select_here_button_click(self, event: ft.Event[ft.Button]):
         """Select the current directory as the target."""
         self.selected_directory_id = self.current_directory_id
         self.selection_event.set()
         self.close()
-    
+
     async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
         """Close the dialog without selecting."""
         self.selected_directory_id = None
         self.selection_event.set()
         self.close()
-    
+
     async def wait_for_selection(self) -> str | None:
         """Wait for the user to select a directory or cancel.
-        
+
         Returns:
             The selected directory ID, or None if cancelled
         """
@@ -1012,11 +1016,11 @@ class DirectorySelectorDialog(AlertDialog):
 class AccessDeniedDialog(AlertDialog):
     """
     Dialog shown when file operations are denied due to insufficient permissions (403).
-    
+
     This dialog provides clear feedback to the user about why their operation failed
     and offers context about the access denial.
     """
-    
+
     def __init__(
         self,
         reason: str,
@@ -1026,7 +1030,7 @@ class AccessDeniedDialog(AlertDialog):
     ):
         """
         Initialize the access denied dialog.
-        
+
         Args:
             reason: The specific reason for access denial (from server message)
             operation: The operation that was denied (e.g., "download", "delete", "access")
@@ -1035,34 +1039,36 @@ class AccessDeniedDialog(AlertDialog):
         """
         super().__init__(ref=ref, visible=visible)
         self.page: ft.Page
-        
+
         self.modal = True
-        self.title = ft.Text(_("Access Denied"))
-        
+        self.title = ft.Text(_("Access Denied"), align=ft.Alignment.CENTER)
+
         # Create content with icon and message
-        self.icon = ft.Icon(
+        self.block_icon = ft.Icon(
             ft.Icons.BLOCK,
             size=48,
             color=ft.Colors.ERROR,
         )
-        
+
         self.message_text = ft.Text(
-            _("You don't have permission to {operation} this resource.").format(
+            _("You don't have permission to {operation} this document.").format(
                 operation=operation
             ),
             size=16,
-            weight=ft.FontWeight.BOLD,
+            text_align=ft.TextAlign.CENTER,
         )
-        
+
         self.reason_text = ft.Text(
             reason,
             size=14,
+            text_align=ft.TextAlign.CENTER,
+            align=ft.Alignment.CENTER,
         )
-        
+
         self.content = ft.Column(
             controls=[
                 ft.Row(
-                    controls=[self.icon],
+                    controls=[self.block_icon],
                     alignment=ft.MainAxisAlignment.CENTER,
                 ),
                 self.message_text,
@@ -1072,15 +1078,16 @@ class AccessDeniedDialog(AlertDialog):
             width=400,
             spacing=10,
             tight=True,
+            alignment=ft.MainAxisAlignment.CENTER,
         )
-        
+
         self.ok_button = ft.TextButton(
             _("OK"),
             on_click=self.ok_button_click,
         )
-        
+
         self.actions = [self.ok_button]
-    
+
     async def ok_button_click(self, event: ft.Event[ft.TextButton]):
         """Close the dialog when OK is clicked."""
         self.close()
