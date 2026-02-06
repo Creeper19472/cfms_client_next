@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.admin.groups import (
     RenameGroupDialog,
     EditGroupPermissionDialog,
@@ -16,7 +16,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class GroupContextMenuController(BaseController["GroupContextMenu"]):
+class GroupContextMenuController(Controller["GroupContextMenu"]):
     def __init__(self, control: "GroupContextMenu") -> None:
         super().__init__(control)
 

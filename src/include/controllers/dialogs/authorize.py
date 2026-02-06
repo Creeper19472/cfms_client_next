@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Literal, Union
 
 import flet as ft
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.util.notifications import send_error, send_success
 from include.ui.util.path import get_directory
 from include.util.requests import do_request_2
@@ -17,7 +17,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class AuthorizeDialogController(BaseController["AuthorizeDialog"]):
+class AuthorizeDialogController(Controller["AuthorizeDialog"]):
     """Controller for handling authorization dialog actions."""
 
     def __init__(self, control: "AuthorizeDialog") -> None:

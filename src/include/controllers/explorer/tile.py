@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from flet import FilePickerFile
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.wait import wait
 from include.ui.controls.dialogs.contextmenu.explorer import (
     GetDirectoryInfoDialog,
@@ -27,7 +27,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class FileContextMenuController(BaseController["FileContextMenu"]):
+class FileContextMenuController(Controller["FileContextMenu"]):
     def __init__(self, control: "FileContextMenu") -> None:
         super().__init__(control)
 
@@ -153,7 +153,7 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
         self.control.page.show_dialog(GetDocumentInfoDialog(self.control.file_id))
 
 
-class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
+class DirectoryContextMenuController(Controller["DirectoryContextMenu"]):
     def __init__(self, control: "DirectoryContextMenu") -> None:
         super().__init__(control)
 

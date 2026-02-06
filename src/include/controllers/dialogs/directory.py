@@ -4,7 +4,7 @@ from include.classes.exceptions.request import (
     CreateDirectoryFailureError,
     RequestFailureError,
 )
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.util.path import get_directory
 from include.util.create import create_directory
 
@@ -20,7 +20,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class CreateDirectoryDialogController(BaseController["CreateDirectoryDialog"]):
+class CreateDirectoryDialogController(Controller["CreateDirectoryDialog"]):
     def __init__(self, control: "CreateDirectoryDialog"):
         super().__init__(control)
 
@@ -42,7 +42,7 @@ class CreateDirectoryDialogController(BaseController["CreateDirectoryDialog"]):
         self.control.close()
 
 
-class OpenDirectoryDialogController(BaseController["OpenDirectoryDialog"]):
+class OpenDirectoryDialogController(Controller["OpenDirectoryDialog"]):
     def __init__(self, control: "OpenDirectoryDialog"):
         super().__init__(control)
 

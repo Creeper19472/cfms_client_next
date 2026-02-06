@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class AddUserAccountDialogController(BaseController["AddUserAccountDialog"]):
+class AddUserAccountDialogController(Controller["AddUserAccountDialog"]):
     def __init__(self, control: "AddUserAccountDialog"):
         super().__init__(control)
 
@@ -51,7 +51,7 @@ class AddUserAccountDialogController(BaseController["AddUserAccountDialog"]):
         self.control.close()
 
 
-class RenameUserNicknameDialogController(BaseController["RenameUserNicknameDialog"]):
+class RenameUserNicknameDialogController(Controller["RenameUserNicknameDialog"]):
     def __init__(self, control: "RenameUserNicknameDialog"):
         super().__init__(control)
 
@@ -80,7 +80,7 @@ class RenameUserNicknameDialogController(BaseController["RenameUserNicknameDialo
         self.control.close()
 
 
-class EditUserGroupDialogController(BaseController["EditUserGroupDialog"]):
+class EditUserGroupDialogController(Controller["EditUserGroupDialog"]):
     def __init__(self, control: "EditUserGroupDialog"):
         super().__init__(control)
 
@@ -160,7 +160,7 @@ class EditUserGroupDialogController(BaseController["EditUserGroupDialog"]):
         self.control.enable_interactions()
 
 
-class ViewUserInfoDialogController(BaseController["ViewUserInfoDialog"]):
+class ViewUserInfoDialogController(Controller["ViewUserInfoDialog"]):
     def __init__(self, control: "ViewUserInfoDialog"):
         super().__init__(control)
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from include.classes.shared import AppShared
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.util.path import get_directory
 from include.util.requests import do_request
 
@@ -19,7 +19,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class RenameDialogController(BaseController["RenameDialog"]):
+class RenameDialogController(Controller["RenameDialog"]):
     def __init__(self, control: "RenameDialog"):
         super().__init__(control)
 

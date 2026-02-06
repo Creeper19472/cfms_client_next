@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.util.requests import do_request_2
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class SearchDialogController(BaseController["SearchDialog"]):
+class SearchDialogController(Controller["SearchDialog"]):
     """Controller for handling search operations."""
 
     def __init__(self, control: "SearchDialog"):

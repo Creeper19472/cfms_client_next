@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, cast
 
 from include.classes.services.download import DownloadManagerService
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
 from include.ui.controls.dialogs.twofa_verify import TwoFactorVerifyDialog
 from include.util.requests import do_request
@@ -16,7 +16,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class LoginFormController(BaseController["LoginForm"]):
+class LoginFormController(Controller["LoginForm"]):
     def __init__(self, control: "LoginForm"):
         super().__init__(control)
 

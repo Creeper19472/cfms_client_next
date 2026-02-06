@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.util.notifications import send_error, send_success
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
@@ -14,7 +14,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class ViewAccessEntriesDialogController(BaseController["ViewAccessEntriesDialog"]):
+class ViewAccessEntriesDialogController(Controller["ViewAccessEntriesDialog"]):
     """Controller for handling view access entries dialog actions."""
 
     def __init__(self, control: "ViewAccessEntriesDialog") -> None:

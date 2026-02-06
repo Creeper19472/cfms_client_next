@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.wait import wait
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
@@ -14,7 +14,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class RevisionDialogController(BaseController["RevisionDialog"]):
+class RevisionDialogController(Controller["RevisionDialog"]):
     """Controller for handling revision operations."""
 
     def __init__(self, control: "RevisionDialog"):

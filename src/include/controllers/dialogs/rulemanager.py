@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any
 import json
 
 from include.classes.shared import AppShared
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class RuleManagerController(BaseController["RuleManager"]):
+class RuleManagerController(Controller["RuleManager"]):
     def __init__(self, control: "RuleManager"):
         super().__init__(control)
 

@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 from include.classes.ui.enum import SortMode, SortOrder
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 
 if TYPE_CHECKING:
     from include.ui.controls.components.explorer.bar import FileSortBar
 
 
-class FileSortBarController(BaseController["FileSortBar"]):
+class FileSortBarController(Controller["FileSortBar"]):
     def __init__(
         self,
         control: "FileSortBar",

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.util.notifications import send_success
 from include.util.requests import do_request
 
@@ -13,7 +13,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class PasswdDialogController(BaseController["PasswdUserDialog"]):
+class PasswdDialogController(Controller["PasswdUserDialog"]):
     def __init__(self, control: "PasswdUserDialog"):
         super().__init__(control)
 

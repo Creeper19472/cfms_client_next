@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.admin.accounts import (
     RenameUserNicknameDialog,
     EditUserGroupDialog,
@@ -18,7 +18,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class UserContextMenuController(BaseController["UserContextMenu"]):
+class UserContextMenuController(Controller["UserContextMenu"]):
     def __init__(self, control: "UserContextMenu") -> None:
         super().__init__(control)
 

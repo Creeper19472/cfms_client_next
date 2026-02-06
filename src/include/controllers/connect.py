@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import flet_permission_handler as fph
 
 from include.constants import PROTOCOL_VERSION
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.util.connect import get_connection
 from include.util.requests import _request
 
@@ -16,7 +16,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class ConnectFormController(BaseController["ConnectForm"]):
+class ConnectFormController(Controller["ConnectForm"]):
     def __init__(self, control: "ConnectForm"):
         super().__init__(control)
 

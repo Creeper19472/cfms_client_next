@@ -6,10 +6,10 @@ from include.classes.shared import AppShared
 
 T = TypeVar("T")
 
-__all__ = ["BaseController"]
+__all__ = ["Controller"]
 
 
-class BaseController(Generic[T]):
+class Controller(Generic[T]):
     """
     Base controller class for managing UI control interactions.
 

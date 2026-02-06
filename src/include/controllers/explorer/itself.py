@@ -7,7 +7,7 @@ import flet as ft
 from websockets import ConnectionClosed
 
 from include.classes.exceptions.request import InvalidResponseError
-from include.controllers.base import BaseController
+from include.controllers.base import Controller
 from include.ui.controls.dialogs.explorer import (
     BatchUploadFileAlertDialog,
     UploadDirectoryAlertDialog,
@@ -34,7 +34,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class FileExplorerController(BaseController["FileManagerView"]):
+class FileExplorerController(Controller["FileManagerView"]):
     def __init__(self, control: "FileManagerView"):
         super().__init__(control)
 
