@@ -69,56 +69,66 @@ class ContextMenu2(ft.ContextMenu):
         self._controls = self._build_controls(value)
 
     def _build_controls(self, menu_items):
-        required_keys = ["icon", "content", "on_click"]
+        """Build and filter popup menu items based on permissions."""
+        required_keys = {"icon", "content", "on_click"}
+        
+        # Filter and validate items
+        filtered_items = self._filter_menu_items(menu_items, required_keys)
+        
+        # Convert to controls
+        return [
+            ft.PopupMenuItem() if item == {} 
+            else self._create_popup_item(item)
+            for item in filtered_items
+        ]
 
-        pending_items = []
+    def _filter_menu_items(self, menu_items: list[dict[str, Any]], required_keys: set) -> list:
+        """Filter menu items by validation and user permissions."""
+        filtered = []
+        
         for item in menu_items:
             if not isinstance(item, dict):
                 raise TypeError("Each item in menu_items must be a dict")
-
+            
+            # Handle divider
             if item == {}:
-                if len(pending_items) != 0 and pending_items[-1] != {}:
-                    pending_items.append(item)
+                if filtered and filtered[-1] != {}:
+                    filtered.append(item)
                 continue
-            elif not all(key in item for key in required_keys):
+            
+            # Validate required keys
+            if not required_keys.issubset(item.keys()):
                 raise ValueError(
-                    "Each item in menu_items must be a dict with keys: "
-                    "'icon', 'content', 'on_click'"
+                    f"Each item must contain keys: {required_keys}"
                 )
-
-            item_require = set(item.get("require", {}))
-            if (item_require & set(self.app_shared.user_permissions)) != item_require:
+            
+            # Check permissions
+            required_perms = set(item.get("require", []))
+            user_perms = set(self.app_shared.user_permissions)
+            if required_perms and not (required_perms & user_perms) == required_perms:
                 continue
+            
+            filtered.append(item)
+        
+        # Remove trailing divider
+        if filtered and filtered[-1] == {}:
+            filtered.pop()
+        
+        return filtered
 
-            pending_items.append(item)
-
-        if pending_items[-1] == {}:
-            pending_items.pop()  # Remove trailing divider if exists
-
-        controls = []
-        for item in pending_items:
-            if item == {}:
-                controls.append(ft.PopupMenuItem())
-                continue
-
-            item_icon = item["icon"]
-            item_content = item["content"]
-            item_on_click = item.get("on_click")
-            item_ref = item.get("ref")  # Optional ref
-
-            if item_on_click is not None and not callable(item_on_click):
-                raise ValueError("'on_click' must be callable")
-
-            controls.append(
-                ft.PopupMenuItem(
-                    icon=item_icon,
-                    content=item_content,
-                    on_click=item_on_click,
-                    ref=item_ref,
-                )
-            )
-
-        return controls
+    def _create_popup_item(self, item: dict[str, Any]) -> ft.PopupMenuItem:
+        """Create a `ft.PopupMenuItem` from item dictionary."""
+        on_click = item.get("on_click")
+        
+        if on_click is not None and not callable(on_click):
+            raise ValueError("'on_click' must be callable")
+        
+        return ft.PopupMenuItem(
+            icon=item["icon"],
+            content=item["content"],
+            on_click=on_click,
+            ref=item.get("ref"),
+        )
 
     async def trigger_open_menu(
         self,
