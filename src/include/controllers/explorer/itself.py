@@ -95,9 +95,14 @@ class FileExplorerController(BaseController["FileManagerView"]):
 
             if isinstance(exc, InvalidResponseError):
                 if (code := exc.response.code) == 403:
-                    self.control.send_error(
-                        _("Upload failed: No permission to upload files")
+                    # Show access denied dialog for 403 errors
+                    from include.ui.controls.dialogs.explorer import AccessDeniedDialog
+                    
+                    dialog = AccessDeniedDialog(
+                        reason=exc.response.message,
+                        operation=_("upload"),
                     )
+                    self.control.page.show_dialog(dialog)
                 else:
                     errmsg = _("Upload failed: ({code}) {message}").format(
                         code=code, message=exc.response.message
