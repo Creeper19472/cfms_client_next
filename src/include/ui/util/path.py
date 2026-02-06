@@ -54,6 +54,13 @@ async def get_directory(
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
 
+        # Special handling for 403 (Access Denied)
+        if code == 403:
+            # Show access denied view instead of snackbar
+            pm.show_access_denied_view(response["message"])
+            return False
+
+        # For other errors, show snackbar
         send_error(
             view.page,
             _("Load failed: ({code}) {message}").format(
@@ -95,6 +102,17 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
         username=_app_shared.username,
         token=_app_shared.token,
     )
+
+    # Handle 403 (Access Denied) with dialog
+    if response["code"] == 403:
+        from include.ui.controls.dialogs.explorer import AccessDeniedDialog
+        
+        dialog = AccessDeniedDialog(
+            reason=response["message"],
+            operation=_("download"),
+        )
+        page.show_dialog(dialog)
+        return
 
     if response["code"] == 404:
         raise FileNotFoundError("Document not found on server")

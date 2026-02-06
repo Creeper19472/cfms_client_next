@@ -46,12 +46,22 @@ class FileContextMenuController(BaseController["FileContextMenu"]):
             token=self.app_shared.token,
         )
         if (code := response["code"]) != 200:
-            send_error(
-                self.control.page,
-                _("Deletion failed: ({code}) {message}").format(
-                    code=code, message=response["message"]
-                ),
-            )
+            # Special handling for 403 (Access Denied)
+            if code == 403:
+                from include.ui.controls.dialogs.explorer import AccessDeniedDialog
+                
+                dialog = AccessDeniedDialog(
+                    reason=response["message"],
+                    operation=_("delete"),
+                )
+                self.control.page.show_dialog(dialog)
+            else:
+                send_error(
+                    self.control.page,
+                    _("Deletion failed: ({code}) {message}").format(
+                        code=code, message=response["message"]
+                    ),
+                )
         else:
             await get_directory(
                 self.control.parent_listview.parent_manager.current_directory_id,
@@ -164,12 +174,22 @@ class DirectoryContextMenuController(BaseController["DirectoryContextMenu"]):
             token=self.app_shared.token,
         )
         if (code := response["code"]) != 200:
-            send_error(
-                self.control.page,
-                _("Deletion failed: ({code}) {message}").format(
-                    code=code, message=response["message"]
-                ),
-            )
+            # Special handling for 403 (Access Denied)
+            if code == 403:
+                from include.ui.controls.dialogs.explorer import AccessDeniedDialog
+                
+                dialog = AccessDeniedDialog(
+                    reason=response["message"],
+                    operation=_("delete"),
+                )
+                self.control.page.show_dialog(dialog)
+            else:
+                send_error(
+                    self.control.page,
+                    _("Deletion failed: ({code}) {message}").format(
+                        code=code, message=response["message"]
+                    ),
+                )
         else:
             await get_directory(
                 self.control.parent_listview.parent_manager.current_directory_id,

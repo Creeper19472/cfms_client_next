@@ -1007,3 +1007,80 @@ class DirectorySelectorDialog(AlertDialog):
         """
         await self.selection_event.wait()
         return self.selected_directory_id
+
+
+class AccessDeniedDialog(AlertDialog):
+    """
+    Dialog shown when file operations are denied due to insufficient permissions (403).
+    
+    This dialog provides clear feedback to the user about why their operation failed
+    and offers context about the access denial.
+    """
+    
+    def __init__(
+        self,
+        reason: str,
+        operation: str = "access",
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        """
+        Initialize the access denied dialog.
+        
+        Args:
+            reason: The specific reason for access denial (from server message)
+            operation: The operation that was denied (e.g., "download", "delete", "access")
+            ref: Optional Flet reference
+            visible: Whether the dialog is initially visible
+        """
+        super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        
+        self.modal = True
+        self.title = ft.Text(_("Access Denied"))
+        
+        # Create content with icon and message
+        self.icon = ft.Icon(
+            ft.Icons.BLOCK,
+            size=48,
+            color=ft.Colors.ERROR,
+        )
+        
+        self.message_text = ft.Text(
+            _("You don't have permission to {operation} this resource.").format(
+                operation=operation
+            ),
+            size=16,
+            weight=ft.FontWeight.BOLD,
+        )
+        
+        self.reason_text = ft.Text(
+            reason,
+            size=14,
+        )
+        
+        self.content = ft.Column(
+            controls=[
+                ft.Row(
+                    controls=[self.icon],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                self.message_text,
+                ft.Divider(),
+                self.reason_text,
+            ],
+            width=400,
+            spacing=10,
+            tight=True,
+        )
+        
+        self.ok_button = ft.TextButton(
+            _("OK"),
+            on_click=self.ok_button_click,
+        )
+        
+        self.actions = [self.ok_button]
+    
+    async def ok_button_click(self, event: ft.Event[ft.TextButton]):
+        """Close the dialog when OK is clicked."""
+        self.close()

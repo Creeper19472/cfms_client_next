@@ -8,6 +8,7 @@ from websockets.asyncio.client import ClientConnection
 from include.classes.shared import AppShared
 from include.controllers.explorer.itself import FileExplorerController
 from include.ui.controls.components.explorer.bar import ExplorerTopBar, FileSortBar, SelectionToolbar
+from include.ui.controls.components.explorer.access_denied import AccessDeniedView
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import update_file_controls
 
@@ -208,6 +209,7 @@ class FileManagerView(ft.Container):
         self.sort_bar = FileSortBar(self, visible=False)
         self.file_listview = FileListView(self, visible=False)
         self.progress_ring = ft.ProgressRing(visible=False)
+        self.access_denied_view: AccessDeniedView | None = None
 
         self.content = ft.Column(
             controls=[
@@ -233,10 +235,44 @@ class FileManagerView(ft.Container):
         self.file_listview.visible = False
         self.sort_bar.visible = False
         self.progress_ring.visible = True
+        if self.access_denied_view is not None:
+            self.access_denied_view.visible = False
         self.update()
 
     def show_content(self):
         self.file_listview.visible = True
         self.sort_bar.visible = True
         self.progress_ring.visible = False
+        if self.access_denied_view is not None:
+            self.access_denied_view.visible = False
+        self.update()
+    
+    def show_access_denied_view(self, reason: str):
+        """
+        Display the access denied view instead of the file list.
+        
+        Args:
+            reason: The reason for access denial (from server message)
+        """
+        # Hide normal content
+        self.file_listview.visible = False
+        self.sort_bar.visible = False
+        self.progress_ring.visible = False
+        
+        # Create or update access denied view
+        if self.access_denied_view is None:
+            self.access_denied_view = AccessDeniedView(self, reason)
+            # Add it to the content column
+            self.content.controls.append(self.access_denied_view)
+        else:
+            # Update the reason text
+            self.access_denied_view.reason_container.content.value = reason
+            self.access_denied_view.visible = True
+        
+        self.update()
+    
+    def hide_access_denied_view(self):
+        """Hide the access denied view and prepare to show normal content."""
+        if self.access_denied_view is not None:
+            self.access_denied_view.visible = False
         self.update()
