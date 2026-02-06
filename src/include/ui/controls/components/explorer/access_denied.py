@@ -97,9 +97,9 @@ class AccessDeniedView(ft.Container):
             _(
                 "According to the server's protocol, you do not have "
                 "permission to access the requested directory. There "
-                "could be various reasons for this. If you have any q"
-                "uestions about this situation, please contact your s"
-                "ystem administrator. This incident will be reported."
+                "could be various reasons for this. If you have any "
+                "questions about this situation, please contact your "
+                "system administrator. This incident will be reported."
             ),
             size=14,
             text_align=ft.TextAlign.CENTER,
