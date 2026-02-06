@@ -3,6 +3,23 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.4
+**Released on:** 2026-02-06
+
+**Title:** Improved UI for Denied Attempts
+
+This version introduces a more aesthetically pleasing UI for when access is 
+denied and fixes some issues.
+
+### Fixed
+- All operations with explicit permission requirements in the context menu 
+now have the necessary restrictions to prevent them from appearing in the 
+user interface of unauthorized users.
+- Dividers appearing at the beginning or end of the context menu will be 
+automatically removed, and multiple adjacent dividers will be automatically 
+reduced to one.
+
+---
 ## v0.5.3
 **Released on:** 2026-02-04
 
@@ -12,7 +29,8 @@ This version introduces a batch move feature.
 
 ### Improved
 - Batch delete operations now support interruption.
-- All batch operations now share a single progress dialog implementation, improving code reusability.
+- All batch operations now share a single progress dialog implementation, 
+improving code reusability.
 
 ---
 ## v0.5.2
