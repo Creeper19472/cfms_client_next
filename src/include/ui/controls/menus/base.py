@@ -70,13 +70,15 @@ class ContextMenu2(ft.ContextMenu):
 
     def _build_controls(self, menu_items):
         required_keys = ["icon", "content", "on_click"]
-        controls = []
+
+        pending_items = []
         for item in menu_items:
             if not isinstance(item, dict):
                 raise TypeError("Each item in menu_items must be a dict")
 
             if item == {}:
-                controls.append(ft.PopupMenuItem())
+                if len(pending_items) != 0 and pending_items[-1] != {}:
+                    pending_items.append(item)
                 continue
             elif not all(key in item for key in required_keys):
                 raise ValueError(
@@ -86,6 +88,17 @@ class ContextMenu2(ft.ContextMenu):
 
             item_require = set(item.get("require", {}))
             if (item_require & set(self.app_shared.user_permissions)) != item_require:
+                continue
+
+            pending_items.append(item)
+
+        if pending_items[-1] == {}:
+            pending_items.pop()  # Remove trailing divider if exists
+
+        controls = []
+        for item in pending_items:
+            if item == {}:
+                controls.append(ft.PopupMenuItem())
                 continue
 
             item_icon = item["icon"]
@@ -104,6 +117,7 @@ class ContextMenu2(ft.ContextMenu):
                     ref=item_ref,
                 )
             )
+
         return controls
 
     async def trigger_open_menu(

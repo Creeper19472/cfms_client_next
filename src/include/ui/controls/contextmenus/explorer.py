@@ -63,11 +63,13 @@ class FileContextMenu(ContextMenu2):
                     "icon": ft.Icons.DELETE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
+                    "require": {"delete_document"},
                 },
                 {
                     "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
+                    "require": {"rename_document"},
                 },
                 {
                     "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
@@ -80,6 +82,7 @@ class FileContextMenu(ContextMenu2):
                     "icon": ft.Icons.LOCK_PERSON_OUTLINED,
                     "content": _("Authorize"),
                     "on_click": self.authorize_button_click,
+                    "require": {"manage_access"},
                 },
                 {
                     "icon": ft.Icons.LIST_ALT,
@@ -196,11 +199,13 @@ class DirectoryContextMenu(ContextMenu2):
                 "icon": ft.Icons.DELETE,
                 "content": _("Delete"),
                 "on_click": self.delete_button_click,
+                "require": {"delete_directory"},
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                 "content": _("Rename"),
                 "on_click": self.rename_button_click,
+                "require": {"rename_directory"},
             },
             {
                 "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
@@ -208,10 +213,12 @@ class DirectoryContextMenu(ContextMenu2):
                 "on_click": self.move_button_click,
                 "require": {"move"},
             },
+            {},
             {
                 "icon": ft.Icons.LOCK_PERSON_OUTLINED,
                 "content": _("Authorize"),
                 "on_click": self.authorize_button_click,
+                "require": {"manage_access"},
             },
             {
                 "icon": ft.Icons.LIST_ALT,
@@ -225,6 +232,7 @@ class DirectoryContextMenu(ContextMenu2):
                 "on_click": self.set_access_rules_button_click,
                 "require": {"set_access_rules"},
             },
+            {},
             {
                 "icon": ft.Icons.INFO_OUTLINED,
                 "content": _("Properties"),
