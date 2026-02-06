@@ -1056,13 +1056,21 @@ class AccessDeniedDialog(AlertDialog):
             ),
             size=16,
             text_align=ft.TextAlign.CENTER,
+            align=ft.Alignment.CENTER,
         )
 
         self.reason_text = ft.Text(
-            reason,
             size=14,
+            color=ft.Colors.GREY_400,
             text_align=ft.TextAlign.CENTER,
             align=ft.Alignment.CENTER,
+            spans=[
+                ft.TextSpan(
+                    _("Reason: "),
+                    style=ft.TextStyle(weight=ft.FontWeight.BOLD),
+                ),
+                ft.TextSpan(reason),
+            ],
         )
 
         self.content = ft.Column(
@@ -1078,7 +1086,6 @@ class AccessDeniedDialog(AlertDialog):
             width=400,
             spacing=10,
             tight=True,
-            alignment=ft.MainAxisAlignment.CENTER,
         )
 
         self.ok_button = ft.TextButton(

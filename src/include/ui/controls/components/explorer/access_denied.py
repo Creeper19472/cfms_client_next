@@ -71,7 +71,7 @@ class AccessDeniedView(ft.Container):
         self.message_text = ft.Text(
             _(
                 "You don't have permission to access this directory. "
-                "The server message is as follows:"
+                "The reasons are as follows:"
             ),
             size=16,
             text_align=ft.TextAlign.CENTER,
