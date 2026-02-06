@@ -265,8 +265,8 @@ class FileManagerView(ft.Container):
             # Add it to the content column
             self.content.controls.append(self.access_denied_view)
         else:
-            # Update the reason text
-            self.access_denied_view.reason_container.content.value = reason
+            # Update the reason text using the proper method
+            self.access_denied_view.update_reason(reason)
             self.access_denied_view.visible = True
         
         self.update()

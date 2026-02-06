@@ -165,3 +165,13 @@ class AccessDeniedView(ft.Container):
         # Try to access the current directory again
         current_dir_id = self.parent_manager.current_directory_id
         await get_directory(current_dir_id, self.parent_manager.file_listview)
+    
+    def update_reason(self, reason: str):
+        """
+        Update the displayed reason for access denial.
+        
+        Args:
+            reason: The new reason text to display
+        """
+        self.reason_container.content.value = reason
+        self.update()
