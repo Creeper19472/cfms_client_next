@@ -2341,3 +2341,51 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
+
+#: User avatar functionality
+msgid "Click to change avatar"
+msgstr "点击更改头像"
+
+#: User avatar functionality
+msgid "Set Avatar"
+msgstr "设置头像"
+
+#: User avatar functionality
+msgid "Document ID"
+msgstr "文档 ID"
+
+#: User avatar functionality
+msgid "Enter the ID of an image document"
+msgstr "输入图片文档的 ID"
+
+#: User avatar functionality
+msgid "Browse Documents"
+msgstr "浏览文档"
+
+#: User avatar functionality
+msgid "Choose an image document to use as your avatar"
+msgstr "选择一个图片文档作为您的头像"
+
+#: User avatar functionality
+msgid "Document browser coming soon. Please enter document ID manually."
+msgstr "文档浏览器即将推出。请手动输入文档 ID。"
+
+#: User avatar functionality
+msgid "Document ID cannot be empty"
+msgstr "文档 ID 不能为空"
+
+#: User avatar functionality
+msgid "Avatar set successfully, but failed to download. Please try again."
+msgstr "头像设置成功，但下载失败。请重试。"
+
+#: User avatar functionality
+msgid "Failed to set avatar. Please check the document ID and try again."
+msgstr "设置头像失败。请检查文档 ID 并重试。"
+
+#: User avatar functionality
+msgid "An error occurred while setting the avatar. Please try again."
+msgstr "设置头像时发生错误。请重试。"
+
+#: User avatar functionality
+msgid "Loading user data..."
+msgstr "正在加载用户数据..."

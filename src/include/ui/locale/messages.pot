@@ -2281,3 +2281,51 @@ msgstr ""
 msgid "Failed to list directory: ({code}) {message}"
 msgstr ""
 
+#: User avatar functionality
+msgid "Click to change avatar"
+msgstr ""
+
+#: User avatar functionality
+msgid "Set Avatar"
+msgstr ""
+
+#: User avatar functionality
+msgid "Document ID"
+msgstr ""
+
+#: User avatar functionality
+msgid "Enter the ID of an image document"
+msgstr ""
+
+#: User avatar functionality
+msgid "Browse Documents"
+msgstr ""
+
+#: User avatar functionality
+msgid "Choose an image document to use as your avatar"
+msgstr ""
+
+#: User avatar functionality
+msgid "Document browser coming soon. Please enter document ID manually."
+msgstr ""
+
+#: User avatar functionality
+msgid "Document ID cannot be empty"
+msgstr ""
+
+#: User avatar functionality
+msgid "Avatar set successfully, but failed to download. Please try again."
+msgstr ""
+
+#: User avatar functionality
+msgid "Failed to set avatar. Please check the document ID and try again."
+msgstr ""
+
+#: User avatar functionality
+msgid "An error occurred while setting the avatar. Please try again."
+msgstr ""
+
+#: User avatar functionality
+msgid "Loading user data..."
+msgstr ""
+
