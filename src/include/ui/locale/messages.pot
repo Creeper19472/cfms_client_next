@@ -2347,6 +2347,3 @@ msgstr ""
 msgid "Failed to load directory: {message}"
 msgstr ""
 
-msgid "Failed to load directory: {message}"
-msgstr ""
-

@@ -276,6 +276,6 @@ class DocumentSelectorDialog(AlertDialog):
         # Close dialog
         self.close()
     
-    async def cancel_button_click(self, event):
+    def cancel_button_click(self, event):
         """Handle cancel button click."""
         self.close()
