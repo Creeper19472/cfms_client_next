@@ -146,9 +146,9 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
 
         # Create cache directory if it doesn't exist
         await aiofiles.os.makedirs(avatars_cache_dir, exist_ok=True)
-        
-        # Delete old cached file if it exists (to ensure fresh download)
-        if await aiofiles.os.path.exists(avatar_file_path):
+
+        # Delete old cached file if it exists and we're forcing download
+        if force_download and await aiofiles.os.path.exists(avatar_file_path):
             await aiofiles.os.remove(avatar_file_path)
 
         # Request download task from server
