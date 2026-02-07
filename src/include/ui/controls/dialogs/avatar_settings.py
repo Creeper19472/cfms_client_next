@@ -38,7 +38,7 @@ class AvatarSettingsDialog(AlertDialog):
         self.progress_ring = ft.ProgressRing(visible=False)
 
         # Browse button - positioned ABOVE the input field
-        self.browse_button = ft.ElevatedButton(
+        self.browse_button = ft.Button(
             _("Browse Documents"),
             on_click=self.browse_documents_click,
             icon=ft.Icons.FOLDER_OPEN,
@@ -112,7 +112,7 @@ class AvatarSettingsDialog(AlertDialog):
         self.error_text.visible = True
         self.update()
 
-    async def browse_documents_click(self, event: ft.Event[ft.TextButton]):
+    async def browse_documents_click(self, event: ft.Event[ft.Button]):
         """Handle browse documents button click."""
         from include.ui.controls.dialogs.document_selector import DocumentSelectorDialog
         
