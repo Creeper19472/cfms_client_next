@@ -27,11 +27,12 @@ class LoginView(ft.Column):
             weight=ft.FontWeight.BOLD,
         )
 
-        # Create avatar preview container (right side)
+        # Create login form and avatar preview
+        self.login_form = LoginForm()
         self.avatar_preview = AvatarPreviewContainer()
-
-        # Create login form (left side)
-        self.login_form = LoginForm(avatar_preview=self.avatar_preview)
+        
+        # Link form to avatar preview for updates
+        self.login_form.avatar_preview = self.avatar_preview
 
         # Create data loading view (hidden initially)
         self.data_loading_view = DataLoadingView(visible=False)

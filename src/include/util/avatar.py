@@ -157,7 +157,7 @@ async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
             server_address=server_address,
             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
             proxy=app_shared.preferences["settings"]["proxy_settings"],
-            max_size=1024**2 * 4,  # 4MB max message size
+            max_size=1024**2 * 10,  # 10MB max message size for high-resolution avatars
             force_ipv4=app_shared.preferences["settings"].get("force_ipv4", False),
         )
 
