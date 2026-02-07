@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.5
+**Released on:** 2026-02-07
+
+**Title:** Avatar Customization
+
+This version introduces the ability to display and modify user avatars, and 
+optimizes the login interface display.
+
+---
 ## v0.5.4
 **Released on:** 2026-02-06
 
