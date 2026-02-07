@@ -168,7 +168,7 @@ class DocumentSelectorDialog(AlertDialog):
                 return
             
             data = response.get("data", {})
-            directories = data.get("directories", [])
+            directories = data.get("folders", [])  # API returns "folders", not "directories"
             documents = data.get("documents", [])
             
             # Update current directory
