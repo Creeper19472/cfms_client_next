@@ -122,11 +122,11 @@ async def download_avatar_file(task_data: dict, username: str, force_download: b
     download_file action to fetch the avatar.
 
     The cache structure is:
-    {FLET_APP_STORAGE_DATA}/avatars/{server_address_hash}/{username}.png
+    {FLET_APP_STORAGE_DATA}/avatars/{server_address_hash}/{username_hash}
 
     Args:
         task_data: Dictionary containing task_id and other file task information
-        username: Username for cache filename (used as {username}.png)
+        username: Username for cache filename
         force_download: If True, re-download even if cached file exists
 
     Returns:
