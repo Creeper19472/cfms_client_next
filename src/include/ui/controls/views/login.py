@@ -19,23 +19,23 @@ class LoginView(ft.Column):
         super().__init__(ref=ref, visible=visible)
         self.alignment = ft.MainAxisAlignment.CENTER
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        
+
         self.welcome_text = ft.Text(
             size=24,
             text_align=ft.TextAlign.CENTER,
             color=const.TEXT_COLOR,
             weight=ft.FontWeight.BOLD,
         )
-        
+
         # Create avatar preview container (right side)
         self.avatar_preview = AvatarPreviewContainer()
-        
+
         # Create login form (left side)
         self.login_form = LoginForm(avatar_preview=self.avatar_preview)
-        
+
         # Create data loading view (hidden initially)
         self.data_loading_view = DataLoadingView(visible=False)
-        
+
         # Main content row with form on left and avatar preview on right
         self.content_row = ft.Row(
             controls=[
@@ -49,7 +49,7 @@ class LoginView(ft.Column):
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
             expand=True,
         )
-        
+
         self.controls = [
             self.welcome_text,
             self.content_row,
@@ -59,20 +59,20 @@ class LoginView(ft.Column):
 
 class AvatarPreviewContainer(ft.Container):
     """Container that shows cached avatar preview based on username input."""
-    
+
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
         self.expand = True
         self.alignment = ft.alignment.center
-        
+
         # Large circular avatar for preview
         self.preview_avatar = ft.CircleAvatar(
             radius=100,
             content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE38),
         )
-        
+
         self.content = self.preview_avatar
-    
+
     def update_preview(self, username: str):
         """Update avatar preview based on username."""
         if not username or not username.strip():
@@ -83,17 +83,17 @@ class AvatarPreviewContainer(ft.Container):
             )
             self.update()
             return
-        
+
         # Try to find cached avatar for this username
         app_shared = AppShared()
-        if app_shared.server_address:
+        if app_shared.server_address and app_shared.server_address.strip():
             server_hash = hashlib.sha256(
                 app_shared.server_address.encode()
             ).hexdigest()[:16]
             avatar_cache_path = os.path.join(
                 FLET_APP_STORAGE_DATA, "avatars", server_hash, f"{username}.png"
             )
-            
+
             if os.path.exists(avatar_cache_path):
                 # Show cached avatar
                 self.preview_avatar.foreground_image_src = avatar_cache_path
@@ -114,31 +114,31 @@ class AvatarPreviewContainer(ft.Container):
                 size=80,
                 weight=ft.FontWeight.BOLD,
             )
-        
+
         self.update()
 
 
 class DataLoadingView(ft.Container):
     """View shown while loading user data after successful login."""
-    
+
     def __init__(self, ref: ft.Ref | None = None, visible=False):
         super().__init__(ref=ref, visible=visible)
         self.alignment = ft.alignment.center
-        
+
         self.progress_ring = ft.ProgressRing()
         self.status_text = ft.Text(
             _("Loading user data..."),
             size=16,
             text_align=ft.TextAlign.CENTER,
         )
-        
+
         # List of loading steps (extensible for future)
         self.steps_column = ft.Column(
             controls=[],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=5,
         )
-        
+
         self.content = ft.Column(
             controls=[
                 self.progress_ring,
@@ -148,7 +148,7 @@ class DataLoadingView(ft.Container):
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=15,
         )
-    
+
     def add_step(self, step_text: str):
         """Add a loading step to the display."""
         self.steps_column.controls.append(
@@ -161,7 +161,7 @@ class DataLoadingView(ft.Container):
             )
         )
         self.update()
-    
+
     def clear_steps(self):
         """Clear all loading steps."""
         self.steps_column.controls.clear()
@@ -277,7 +277,7 @@ class LoginForm(ft.Container):
 
     def send_error(self, message: str):
         send_error(self.page, message)
-    
+
     def username_changed(self, e: ft.ControlEvent):
         """Update avatar preview when username changes."""
         if self.avatar_preview:

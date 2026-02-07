@@ -20,14 +20,14 @@ class AccountBadge(ft.Container):
         self.user_avatar = ft.CircleAvatar(
             content=None,
         )
-        
+
         # Wrap avatar in a clickable container
         self.avatar_button = ft.GestureDetector(
             content=self.user_avatar,
             on_tap=self.on_avatar_click,
             mouse_cursor=ft.MouseCursor.CLICK,
         )
-        
+
         self.username_text = ft.Text(color=ft.Colors.WHITE)
         self.quote_text = ft.Text()
 
@@ -58,10 +58,10 @@ class AccountBadge(ft.Container):
         """Update the avatar display based on current AppShared state."""
         app_shared = AppShared()
         name = app_shared.nickname or app_shared.username
-        
+
         if name is not None:
             self.username_text.value = name
-            
+
             # Check if avatar_path exists and display it
             if app_shared.avatar_path:
                 self.user_avatar.foreground_image_src = app_shared.avatar_path
@@ -74,10 +74,10 @@ class AccountBadge(ft.Container):
             self.username_text.value = _("User")
             self.user_avatar.foreground_image_src = None
             self.user_avatar.content = ft.Icon(ft.Icons.ACCOUNT_CIRCLE)
-    
+
     async def on_avatar_click(self, event: ft.TapEvent):
         """Handle avatar click to open avatar settings dialog."""
         from include.ui.controls.dialogs.avatar_settings import AvatarSettingsDialog
-        
+
         dialog = AvatarSettingsDialog(account_badge=self)
         self.page.show_dialog(dialog)

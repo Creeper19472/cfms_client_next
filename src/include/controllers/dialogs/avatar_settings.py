@@ -22,31 +22,31 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
     async def action_set_avatar(self, document_id: str):
         """
         Set the user's avatar to the specified document ID.
-        
+
         Args:
             document_id: The document ID of the image to use as avatar
         """
         try:
             username = self.app_shared.get_not_none_attribute("username")
-            
+
             # Call the avatar API to set the avatar
             success = await set_user_avatar(username, document_id)
-            
+
             if success:
                 # Update AppShared with new avatar ID
                 self.app_shared.avatar_id = document_id
-                
+
                 # Download the avatar file
                 avatar_path = await download_avatar_file(document_id, username)
-                
+
                 if avatar_path:
                     # Update AppShared with avatar path
                     self.app_shared.avatar_path = avatar_path
-                    
+
                     # Refresh the AccountBadge to show new avatar
                     self.control.account_badge.update_avatar_display()
                     self.control.account_badge.update()
-                    
+
                     # Close the dialog
                     self.control.close()
                 else:
@@ -61,7 +61,7 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
                     _("Failed to set avatar. Please check the document ID and try again.")
                 )
                 self.control.enable_interactions()
-                
+
         except Exception as e:
             # Handle unexpected errors
             self.control.show_error(

@@ -78,7 +78,7 @@ class AvatarSettingsDialog(AlertDialog):
             spacing=10,
             tight=True,
         )
-        
+
         self.actions = [
             self.progress_ring,
             self.set_button,

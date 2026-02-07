@@ -98,7 +98,7 @@ class LoginFormController(Controller["LoginForm"]):
         self.app_shared.user_2fa_enabled = data.get("has_2fa", False)
         self.app_shared.pending_2fa_verification = False
         self.app_shared.user_perference = load_user_preference(username)
-        
+
         # Store avatar_id and download avatar
         self.app_shared.avatar_id = data.get("avatar_id")
         if self.app_shared.avatar_id:
