@@ -14,11 +14,12 @@ t = get_translation()
 _ = t.gettext
 
 
-class LoginView(ft.Column):
+class LoginView(ft.Row):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
         self.alignment = ft.MainAxisAlignment.CENTER
-        self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        self.vertical_alignment = ft.CrossAxisAlignment.CENTER
+        self.expand = True
 
         self.welcome_text = ft.Text(
             size=24,
@@ -37,11 +38,31 @@ class LoginView(ft.Column):
         # Create data loading view (hidden initially)
         self.data_loading_view = DataLoadingView(visible=False)
 
+        # Left side: Login area (avatar + form) with fixed width
+        self.login_area = ft.Container(
+            content=ft.Column(
+                controls=[
+                    self.welcome_text,
+                    self.avatar_preview,
+                    self.login_form,
+                    self.data_loading_view,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            width=450,  # Fixed width for login area
+            alignment=ft.Alignment.CENTER,
+        )
+
+        # Right side: Blank space for future background image
+        self.background_area = ft.Container(
+            expand=True,  # Takes remaining space
+            # Reserved for future background image
+        )
+
         self.controls = [
-            self.welcome_text,
-            self.avatar_preview,
-            self.login_form,
-            self.data_loading_view,
+            self.login_area,
+            self.background_area,
         ]
 
 
