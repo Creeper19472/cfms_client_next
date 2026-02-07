@@ -84,6 +84,8 @@ class AppShared:
         self.token: Optional[str] = None
         self.token_exp: Optional[float] = None
         self.nickname: Optional[str] = None
+        self.avatar_id: Optional[str] = None
+        self.avatar_path: Optional[str] = None
         self.user_permissions: list[str] = []
         self.user_groups: list[str] = []
         self.user_2fa_enabled: bool = False
