@@ -98,23 +98,20 @@ class AvatarPreviewContainer(ft.Container):
                 # Show cached avatar
                 self.preview_avatar.foreground_image_src = avatar_cache_path
                 self.preview_avatar.content = None
-            else:
-                # No cached avatar, show first letter of username
-                self.preview_avatar.foreground_image_src = None
-                self.preview_avatar.content = ft.Text(
-                    username[0].upper(),
-                    size=80,
-                    weight=ft.FontWeight.BOLD,
-                )
-        else:
-            # No server address, show first letter
-            self.preview_avatar.foreground_image_src = None
-            self.preview_avatar.content = ft.Text(
-                username[0].upper(),
-                size=80,
-                weight=ft.FontWeight.BOLD,
-            )
+                self.update()
+                return
 
+        # No cached avatar or no server address, show first letter of username
+        self._set_letter_avatar(username)
+
+    def _set_letter_avatar(self, username: str):
+        """Set avatar to show the first letter of the username."""
+        self.preview_avatar.foreground_image_src = None
+        self.preview_avatar.content = ft.Text(
+            username[0].upper(),
+            size=80,
+            weight=ft.FontWeight.BOLD,
+        )
         self.update()
 
 

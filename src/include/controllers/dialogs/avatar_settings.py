@@ -1,5 +1,6 @@
 """Controller for avatar settings dialog."""
 
+import logging
 from typing import TYPE_CHECKING
 
 from include.controllers.base import Controller
@@ -11,6 +12,8 @@ if TYPE_CHECKING:
 
 t = get_translation()
 _ = t.gettext
+
+logger = logging.getLogger(__name__)
 
 
 class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
@@ -63,8 +66,11 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
                 self.control.enable_interactions()
 
         except Exception as e:
-            # Handle unexpected errors
+            # Log the full exception for debugging
+            logger.exception("Error setting avatar: %s", e)
+
+            # Show a generic error message to the user
             self.control.show_error(
-                _("An error occurred: {error}").format(error=str(e))
+                _("An error occurred while setting the avatar. Please try again.")
             )
             self.control.enable_interactions()
