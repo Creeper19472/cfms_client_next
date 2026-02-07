@@ -26,6 +26,7 @@ class AccountBadge(ft.Container):
             content=self.user_avatar,
             on_tap=self.on_avatar_click,
             mouse_cursor=ft.MouseCursor.CLICK,
+            tooltip=_("Click to change avatar"),
         )
 
         self.username_text = ft.Text(color=ft.Colors.WHITE)
@@ -33,10 +34,7 @@ class AccountBadge(ft.Container):
 
         self.content = ft.Row(
             controls=[
-                ft.Tooltip(
-                    message=_("Click to change avatar"),
-                    content=self.avatar_button,
-                ),
+                self.avatar_button,
                 ft.Column(
                     controls=[
                         self.username_text,

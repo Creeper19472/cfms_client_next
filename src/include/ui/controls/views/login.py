@@ -28,7 +28,7 @@ class LoginView(ft.Column):
         )
 
         # Create login form and avatar preview
-        self.login_form = LoginForm()
+        self.login_form = LoginForm(parent_view=self)
         self.avatar_preview = AvatarPreviewContainer()
         
         # Link form to avatar preview for updates
@@ -64,12 +64,12 @@ class AvatarPreviewContainer(ft.Container):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
         self.expand = True
-        self.alignment = ft.alignment.center
+        self.alignment = ft.Alignment.CENTER
 
         # Large circular avatar for preview
         self.preview_avatar = ft.CircleAvatar(
             radius=100,
-            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE38),
+            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE_38), 
         )
 
         self.content = self.preview_avatar
@@ -121,7 +121,7 @@ class DataLoadingView(ft.Container):
 
     def __init__(self, ref: ft.Ref | None = None, visible=False):
         super().__init__(ref=ref, visible=visible)
-        self.alignment = ft.alignment.center
+        self.alignment = ft.Alignment.CENTER
 
         self.progress_ring = ft.ProgressRing()
         self.status_text = ft.Text(
@@ -169,13 +169,14 @@ class DataLoadingView(ft.Container):
 class LoginForm(ft.Container):
     def __init__(
         self,
+        parent_view: "LoginView",
         avatar_preview: "AvatarPreviewContainer | None" = None,
         ref: ft.Ref | None = None,
         visible=True,
     ):
         super().__init__(ref=ref, visible=visible)
         self.page: ft.Page
-        self.parent: LoginView
+        self.parent_view = parent_view
         self.controller = LoginFormController(self)
         self.app_shared = AppShared()
         self.avatar_preview = avatar_preview
@@ -244,7 +245,7 @@ class LoginForm(ft.Container):
 
     def did_mount(self) -> None:
         self.server_info = self.app_shared.server_info
-        self.parent.welcome_text.value = (
+        self.parent_view.welcome_text.value = (
             f"{self.server_info.get('server_name', 'CFMS Server')}"
         )
 
@@ -276,7 +277,7 @@ class LoginForm(ft.Container):
     def send_error(self, message: str):
         send_error(self.page, message)
 
-    def username_changed(self, e: ft.ControlEvent):
+    def username_changed(self, e: ft.Event[ft.TextField]):
         """Update avatar preview when username changes."""
         if self.avatar_preview:
             username = self.username_field.value or ""
