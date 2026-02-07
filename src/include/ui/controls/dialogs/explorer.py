@@ -11,6 +11,7 @@ from include.controllers.dialogs.directory import (
     OpenDirectoryDialogController,
 )
 from include.ui.controls.dialogs.base import AlertDialog
+from include.ui.controls.dialogs.file_browser import FileBrowserDialog
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -735,11 +736,10 @@ class BatchDeleteConfirmDialog(AlertDialog):
         return self.user_confirmed
 
 
-class DirectorySelectorDialog(AlertDialog):
+class DirectorySelectorDialog(FileBrowserDialog):
     """Dialog for selecting a target directory for batch move operations.
 
-    This is now a wrapper around the unified FileBrowserDialog.
-    Provides a browsable directory tree interface for selecting a target location.
+    This extends the unified FileBrowserDialog with async selection support.
     """
 
     def __init__(
@@ -757,13 +757,10 @@ class DirectorySelectorDialog(AlertDialog):
             ref: Flet reference
             visible: Whether dialog is visible initially
         """
-        # Import here to avoid circular dependency
-        from include.ui.controls.dialogs.file_browser import FileBrowserDialog
-        
-        # Create the unified browser dialog configured for directory selection
-        self._browser = FileBrowserDialog(
+        # Initialize with directory selection configuration
+        super().__init__(
             title=_("Select Target Directory"),
-            on_select_callback=None,  # We'll handle selection internally
+            on_select_callback=None,  # We'll override the selection behavior
             initial_directory_id=file_listview.current_directory_id,
             mode="directories",  # Only show directories
             file_filter=None,
@@ -775,54 +772,29 @@ class DirectorySelectorDialog(AlertDialog):
             visible=visible,
         )
         
-        # Delegate to the browser dialog
-        super().__init__(ref=ref, visible=visible)
-        
-        # Copy essential attributes from browser for compatibility
+        # Store for compatibility
         self.file_listview = file_listview
         self.excluded_directory_ids = excluded_directory_ids or []
         
-        # Selection state for async wait pattern
+        # Override selection handling for async wait pattern
         self.selected_directory_id: str | None = None
         self.selection_event = asyncio.Event()
         
-        # Copy all UI elements from browser
-        self.modal = self._browser.modal
-        self.scrollable = self._browser.scrollable
-        self.title = self._browser.title
-        self.content = self._browser.content
-        self.actions = self._browser.actions
-        
-        # Wire up our selection event to browser's callback
-        original_select_callback = self._browser.on_select_callback
-        def wrapped_callback(item_id, item_name, item_type):
-            self.selected_directory_id = item_id
+        # Override callbacks to use our selection event
+        original_select_click = self.select_here_button.on_click
+        async def wrapped_select_click(event):
+            self.selected_directory_id = self.current_directory_id
             self.selection_event.set()
-            if original_select_callback:
-                original_select_callback(item_id, item_name, item_type)
+            self.close()
         
-        # Wire up cancel to set event
-        original_cancel = self._browser.cancel_button_click
-        def wrapped_cancel(event):
+        original_cancel_click = self.cancel_button.on_click
+        def wrapped_cancel_click(event):
             self.selected_directory_id = None
             self.selection_event.set()
-            original_cancel(event)
+            self.close()
         
-        self._browser.on_select_callback = wrapped_callback
-        self._browser.cancel_button_click = wrapped_cancel
-    
-    def did_mount(self):
-        """Called when dialog is mounted to the page."""
-        super().did_mount()
-        self._browser.did_mount()
-    
-    def disable_interactions(self):
-        """Disable user interactions during async operations."""
-        self._browser.disable_interactions()
-    
-    def enable_interactions(self):
-        """Enable user interactions after async operations complete."""
-        self._browser.enable_interactions()
+        self.select_here_button.on_click = wrapped_select_click
+        self.cancel_button.on_click = wrapped_cancel_click
     
     async def wait_for_selection(self) -> str | None:
         """Wait for the user to select a directory or cancel.
