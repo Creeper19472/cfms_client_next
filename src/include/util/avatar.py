@@ -110,9 +110,6 @@ async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
     Returns:
         Local file path to the downloaded avatar, or None on error
 
-    Raises:
-        None - Returns None on any error instead of raising exceptions
-
     Example:
         >>> avatar_path = await download_avatar_file("img_123456", "john_doe")
         >>> if avatar_path:
@@ -166,11 +163,13 @@ async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
 
         try:
             # Download the file using the existing transfer mechanism
-            # receive_file_from_server yields progress updates, we just consume them
+            # receive_file_from_server yields progress updates (stage, *data)
+            # For avatars, we silently consume progress for simplicity
+            # Future enhancement: expose progress via optional callback parameter
             async for _ in receive_file_from_server(
                 transfer_conn, task_id, avatar_file_path
             ):
-                pass  # Ignore progress updates for avatars
+                pass  # Progress updates are consumed but not exposed
 
             # Verify the file was downloaded successfully
             if await aiofiles.os.path.exists(avatar_file_path):
