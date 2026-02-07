@@ -1,6 +1,5 @@
 """Utilities for managing user avatars."""
 
-import hashlib
 import os
 from typing import Optional
 
