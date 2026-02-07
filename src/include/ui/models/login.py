@@ -10,8 +10,6 @@ class LoginModel(Model):
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.CENTER
     horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    padding = 20
-    spacing = 10
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)

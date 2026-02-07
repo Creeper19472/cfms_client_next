@@ -21,7 +21,7 @@ from include.classes.services.favorites_validation import FavoritesValidationSer
 from include.util.locale import set_translation
 
 # Window configuration constants
-DEFAULT_WINDOW_WIDTH = 1024
+DEFAULT_WINDOW_WIDTH = 1366
 DEFAULT_WINDOW_HEIGHT = 768
 
 import logging

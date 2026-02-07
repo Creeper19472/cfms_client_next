@@ -18,7 +18,7 @@ class LoginView(ft.Row):
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
         self.alignment = ft.MainAxisAlignment.CENTER
-        self.vertical_alignment = ft.CrossAxisAlignment.CENTER
+        self.vertical_alignment = ft.CrossAxisAlignment.STRETCH
         self.expand = True
 
         self.welcome_text = ft.Text(
@@ -50,14 +50,20 @@ class LoginView(ft.Row):
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 alignment=ft.MainAxisAlignment.CENTER,
             ),
-            width=450,  # Fixed width for login area
             alignment=ft.Alignment.CENTER,
+            margin=10,
         )
+
+        if not AppShared().is_mobile:
+            self.login_area.width = 450  # Fixed width for login area
 
         # Right side: Blank space for future background image
         self.background_area = ft.Container(
+            ft.Image("astronomy.jpg", fit=ft.BoxFit.COVER),
             expand=True,  # Takes remaining space
-            # Reserved for future background image
+            margin=-10,
+            bgcolor="#2E2E2E",  # ft.Colors.GREY_500,
+            visible=not AppShared().is_mobile,
         )
 
         self.controls = [
@@ -76,7 +82,8 @@ class AvatarPreviewContainer(ft.Container):
         # Medium circular avatar for preview above login form
         self.preview_avatar = ft.CircleAvatar(
             radius=60,
-            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38), 
+            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38),
+            bgcolor=ft.Colors.TRANSPARENT,
         )
 
         self.content = self.preview_avatar
