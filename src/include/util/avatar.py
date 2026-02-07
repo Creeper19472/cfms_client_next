@@ -40,9 +40,8 @@ async def get_user_avatar(username: str) -> Optional[str]:
         >>> if avatar_id:
         ...     print(f"Avatar ID: {avatar_id}")
     """
-    app_shared = AppShared()
-    
     try:
+        app_shared = AppShared()
         response: Response = await do_request_2(
             action="get_user_avatar",
             data={"username": username},
@@ -84,9 +83,8 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
         >>> if success:
         ...     print("Avatar updated successfully")
     """
-    app_shared = AppShared()
-    
     try:
+        app_shared = AppShared()
         response: Response = await do_request_2(
             action="set_user_avatar",
             data={
