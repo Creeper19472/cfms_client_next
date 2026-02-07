@@ -73,6 +73,8 @@ class AccountBadge(ft.Container):
             self.user_avatar.foreground_image_src = None
             self.user_avatar.content = ft.Icon(ft.Icons.ACCOUNT_CIRCLE)
 
+        self.update()
+
     async def on_avatar_click(self, event: ft.TapEvent):
         """Handle avatar click to open avatar settings dialog."""
         from include.ui.controls.dialogs.avatar_settings import AvatarSettingsDialog
