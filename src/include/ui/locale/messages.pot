@@ -2329,3 +2329,9 @@ msgstr ""
 msgid "Loading user data..."
 msgstr ""
 
+msgid "Downloading avatar..."
+msgstr ""
+
+msgid "Loading tasks..."
+msgstr ""
+

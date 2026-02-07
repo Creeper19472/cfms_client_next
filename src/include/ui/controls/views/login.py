@@ -27,33 +27,20 @@ class LoginView(ft.Column):
             weight=ft.FontWeight.BOLD,
         )
 
-        # Create login form and avatar preview
-        self.login_form = LoginForm(parent_view=self)
+        # Avatar preview positioned above the login form
         self.avatar_preview = AvatarPreviewContainer()
-        
-        # Link form to avatar preview for updates
+
+        # Create login form
+        self.login_form = LoginForm(parent_view=self)
         self.login_form.avatar_preview = self.avatar_preview
 
         # Create data loading view (hidden initially)
         self.data_loading_view = DataLoadingView(visible=False)
 
-        # Main content row with form on left and avatar preview on right
-        self.content_row = ft.Row(
-            controls=[
-                ft.Container(
-                    content=self.login_form,
-                    width=400,
-                ),
-                self.avatar_preview,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            expand=True,
-        )
-
         self.controls = [
             self.welcome_text,
-            self.content_row,
+            self.avatar_preview,
+            self.login_form,
             self.data_loading_view,
         ]
 
@@ -63,13 +50,12 @@ class AvatarPreviewContainer(ft.Container):
 
     def __init__(self, ref: ft.Ref | None = None, visible=True):
         super().__init__(ref=ref, visible=visible)
-        self.expand = True
         self.alignment = ft.Alignment.CENTER
 
-        # Large circular avatar for preview
+        # Medium circular avatar for preview above login form
         self.preview_avatar = ft.CircleAvatar(
-            radius=100,
-            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE_38), 
+            radius=60,
+            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38), 
         )
 
         self.content = self.preview_avatar
@@ -110,7 +96,7 @@ class AvatarPreviewContainer(ft.Container):
         self.preview_avatar.foreground_image_src = None
         self.preview_avatar.content = ft.Text(
             username[0].upper(),
-            size=80,
+            size=50,
             weight=ft.FontWeight.BOLD,
         )
         self.update()

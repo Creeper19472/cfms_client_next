@@ -2389,3 +2389,9 @@ msgstr "设置头像时发生错误。请重试。"
 #: User avatar functionality
 msgid "Loading user data..."
 msgstr "正在加载用户数据..."
+
+msgid "Downloading avatar..."
+msgstr "正在下载头像..."
+
+msgid "Loading tasks..."
+msgstr "正在加载任务..."
