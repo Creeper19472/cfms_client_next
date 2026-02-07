@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from include.classes.shared import AppShared
 from include.controllers.dialogs.avatar_settings import AvatarSettingsDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
