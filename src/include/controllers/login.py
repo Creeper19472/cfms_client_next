@@ -114,7 +114,8 @@ class LoginFormController(Controller["LoginForm"]):
             if self.app_shared.avatar_id:
                 parent_view.data_loading_view.set_status(_("Downloading avatar..."))
                 from include.util.avatar import download_avatar_file
-                avatar_path = await download_avatar_file(self.app_shared.avatar_id, username)
+                # Force download on login to ensure avatar is up-to-date
+                avatar_path = await download_avatar_file(self.app_shared.avatar_id, username, force_download=True)
                 self.app_shared.avatar_path = avatar_path
                 if avatar_path:
                     # Update the avatar preview with the downloaded avatar

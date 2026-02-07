@@ -102,13 +102,13 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
         return False
 
 
-async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
+async def download_avatar_file(file_id: str, username: str, force_download: bool = False) -> Optional[str]:
     """
     Download an avatar file from the server and cache it locally.
 
     Downloads the avatar file using the existing file transfer mechanism and
     caches it in the avatars directory. If the file already exists in the cache,
-    returns the cached path immediately without downloading.
+    returns the cached path immediately without downloading (unless force_download is True).
 
     The cache structure is:
     {FLET_APP_STORAGE_DATA}/avatars/{server_address_hash}/{username}.png
@@ -116,6 +116,7 @@ async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
     Args:
         file_id: Document ID of the avatar file on the server
         username: Username for cache filename (used as {username}.png)
+        force_download: If True, re-download even if cached file exists
 
     Returns:
         Local file path to the downloaded avatar, or None on error
@@ -139,12 +140,16 @@ async def download_avatar_file(file_id: str, username: str) -> Optional[str]:
         )
         avatar_file_path = os.path.join(avatars_cache_dir, f"{username}.png")
 
-        # Check if avatar is already cached
-        if await aiofiles.os.path.exists(avatar_file_path):
+        # Check if avatar is already cached (unless force_download)
+        if not force_download and await aiofiles.os.path.exists(avatar_file_path):
             return avatar_file_path
 
         # Create cache directory if it doesn't exist
         await aiofiles.os.makedirs(avatars_cache_dir, exist_ok=True)
+        
+        # Delete old cached file if it exists (to ensure fresh download)
+        if await aiofiles.os.path.exists(avatar_file_path):
+            await aiofiles.os.remove(avatar_file_path)
 
         # Request download task from server
         response: Response = await do_request_2(

@@ -39,8 +39,8 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
                 # Update AppShared with new avatar ID
                 self.app_shared.avatar_id = document_id
 
-                # Download the avatar file
-                avatar_path = await download_avatar_file(document_id, username)
+                # Download the avatar file (force download to replace cached version)
+                avatar_path = await download_avatar_file(document_id, username, force_download=True)
 
                 if avatar_path:
                     # Update AppShared with avatar path
