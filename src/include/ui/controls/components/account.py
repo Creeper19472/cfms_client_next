@@ -1,3 +1,4 @@
+import os
 import flet as ft
 
 from include.classes.shared import AppShared
@@ -62,7 +63,7 @@ class AccountBadge(ft.Container):
             self.username_text.value = name
 
             # Check if avatar_path exists and display it
-            if app_shared.avatar_path:
+            if app_shared.avatar_path and os.path.exists(app_shared.avatar_path):
                 # BUG: Flets seem to cache image data, causing images not updating
                 # now use base64 encoding to force update, but this is not ideal.
                 with open(app_shared.avatar_path, "rb") as img_file:

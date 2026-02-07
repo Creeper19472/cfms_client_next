@@ -1,6 +1,7 @@
 """Controller for avatar settings dialog."""
 
 import logging
+import os
 from typing import TYPE_CHECKING
 
 from include.controllers.base import Controller
@@ -44,7 +45,7 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
                     # Download the avatar file (force download to replace cached version)
                     avatar_path = await download_avatar_file(task_data, username, force_download=True)
 
-                    if avatar_path:
+                    if avatar_path and os.path.exists(avatar_path):
                         # Update AppShared with avatar path
                         self.app_shared.avatar_path = avatar_path
 

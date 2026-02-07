@@ -1,4 +1,5 @@
 import base64
+import os
 from typing import TYPE_CHECKING, cast
 
 from include.classes.services.download import DownloadManagerService
@@ -122,7 +123,7 @@ class LoginFormController(Controller["LoginForm"]):
                     task_data, username, force_download=True
                 )
                 self.app_shared.avatar_path = avatar_path
-                if avatar_path:
+                if avatar_path and os.path.exists(avatar_path):
                     # Update the avatar preview with the downloaded avatar
                     with open(avatar_path, "rb") as f:
                         avatar_base64 = base64.b64encode(f.read()).decode("utf-8")
