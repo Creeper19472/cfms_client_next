@@ -20,12 +20,16 @@ __all__ = [
 ]
 
 
-async def get_user_avatar(username: str) -> Optional[str]:
+async def get_user_avatar(username: str) -> Optional[dict]:
     """
-    Get the avatar_id for a specific user.
+    Get the avatar task data for a specific user.
 
-    Sends a request to the server to retrieve the avatar ID for the given username.
-    Returns None if the user has no avatar set (empty string response).
+    Sends a request to the server to retrieve the user's avatar file task data.
+    Returns None if the user has no avatar set (404) or if an error occurs.
+    
+    When status code is 200, the response contains task_data with file task
+    information in the same format as get_document, which can be used to
+    download the avatar file.
     
     Requires authentication - uses current user's credentials from AppShared.
 
@@ -33,12 +37,12 @@ async def get_user_avatar(username: str) -> Optional[str]:
         username: Username to get avatar for
 
     Returns:
-        Avatar file ID string, or None if no avatar is set or on error
+        Dictionary containing task_data, or None if no avatar is set (404) or on error
 
     Example:
-        >>> avatar_id = await get_user_avatar("john_doe")
-        >>> if avatar_id:
-        ...     print(f"Avatar ID: {avatar_id}")
+        >>> task_data = await get_user_avatar("john_doe")
+        >>> if task_data:
+        ...     print(f"Task ID: {task_data.get('task_id')}")
     """
     try:
         app_shared = AppShared()
@@ -50,11 +54,14 @@ async def get_user_avatar(username: str) -> Optional[str]:
         )
 
         if response.code == 200:
-            avatar_id = response.data.get("avatar_id", "")
-            # Server returns empty string if no avatar is set
-            return avatar_id if avatar_id else None
+            # Server returns task_data with file task information
+            task_data = response.data.get("task_data")
+            return task_data if task_data else None
+        elif response.code == 404:
+            # No avatar set for this user
+            return None
         else:
-            # Log error but don't raise - return None to indicate no avatar
+            # Other error codes - return None
             return None
 
     except Exception:
@@ -102,7 +109,7 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
         return False
 
 
-async def download_avatar_file(file_id: str, username: str, force_download: bool = False) -> Optional[str]:
+async def download_avatar_file(task_data: dict, username: str, force_download: bool = False) -> Optional[str]:
     """
     Download an avatar file from the server and cache it locally.
 
@@ -110,14 +117,15 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
     caches it in the avatars directory. If the file already exists in the cache,
     returns the cached path immediately without downloading (unless force_download is True).
 
-    Since avatar_id is a file_id, we use download_file action directly without
-    needing to call get_document first.
+    Uses task_data from get_user_avatar response, which contains file task information
+    in the same format as get_document. The task_id from this data is used with
+    download_file action to fetch the avatar.
 
     The cache structure is:
     {FLET_APP_STORAGE_DATA}/avatars/{server_address_hash}/{username}.png
 
     Args:
-        file_id: File ID of the avatar file on the server
+        task_data: Dictionary containing task_id and other file task information
         username: Username for cache filename (used as {username}.png)
         force_download: If True, re-download even if cached file exists
 
@@ -125,14 +133,20 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
         Local file path to the downloaded avatar, or None on error
 
     Example:
-        >>> avatar_path = await download_avatar_file("img_123456", "john_doe")
-        >>> if avatar_path:
-        ...     # Display avatar from avatar_path
-        ...     print(f"Avatar saved to: {avatar_path}")
+        >>> task_data = await get_user_avatar("john_doe")
+        >>> if task_data:
+        ...     avatar_path = await download_avatar_file(task_data, "john_doe")
+        ...     if avatar_path:
+        ...         print(f"Avatar saved to: {avatar_path}")
     """
     app_shared = AppShared()
 
     try:
+        # Extract task_id from task_data
+        task_id = task_data.get("task_id")
+        if not task_id:
+            return None
+
         # Get server address hash for cache directory
         server_address = app_shared.get_not_none_attribute("server_address")
         server_hash = hashlib.sha256(server_address.encode()).hexdigest()[:16]
@@ -155,7 +169,7 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
             await aiofiles.os.remove(avatar_file_path)
 
         # Create a new connection for file transfer
-        # Since avatar_id is a file_id, use it directly as task_id for download_file
+        # Use task_id from task_data for download_file action
         transfer_conn = await get_connection(
             server_address=server_address,
             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
@@ -166,11 +180,11 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
 
         try:
             # Download the file using the existing transfer mechanism
-            # For avatars, file_id can be used directly as task_id
+            # Use task_id from get_user_avatar response
             # receive_file_from_server yields progress updates (stage, *data)
             # For avatars, we silently consume progress for simplicity
             async for _ in receive_file_from_server(
-                transfer_conn, file_id, avatar_file_path
+                transfer_conn, task_id, avatar_file_path
             ):
                 pass  # Progress updates are consumed but not exposed
 

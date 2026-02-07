@@ -109,13 +109,15 @@ class LoginFormController(Controller["LoginForm"]):
             parent_view.avatar_preview.visible = True
             parent_view.update()
 
-            # Store avatar_id and download avatar
-            self.app_shared.avatar_id = data.get("avatar_id")
-            if self.app_shared.avatar_id:
-                parent_view.data_loading_view.set_status(_("Downloading avatar..."))
-                from include.util.avatar import download_avatar_file
-                # Force download on login to ensure avatar is up-to-date
-                avatar_path = await download_avatar_file(self.app_shared.avatar_id, username, force_download=True)
+            # Get and download avatar if available
+            parent_view.data_loading_view.set_status(_("Downloading avatar..."))
+            from include.util.avatar import get_user_avatar, download_avatar_file
+            
+            # Get avatar task data from server
+            task_data = await get_user_avatar(username)
+            if task_data:
+                # Download avatar using task_data (force download on login to ensure up-to-date)
+                avatar_path = await download_avatar_file(task_data, username, force_download=True)
                 self.app_shared.avatar_path = avatar_path
                 if avatar_path:
                     # Update the avatar preview with the downloaded avatar

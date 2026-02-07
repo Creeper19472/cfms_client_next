@@ -36,26 +36,34 @@ class AvatarSettingsDialogController(Controller["AvatarSettingsDialog"]):
             success = await set_user_avatar(username, document_id)
 
             if success:
-                # Update AppShared with new avatar ID
-                self.app_shared.avatar_id = document_id
+                # Get avatar task data from server
+                from include.util.avatar import get_user_avatar
+                task_data = await get_user_avatar(username)
 
-                # Download the avatar file (force download to replace cached version)
-                avatar_path = await download_avatar_file(document_id, username, force_download=True)
+                if task_data:
+                    # Download the avatar file (force download to replace cached version)
+                    avatar_path = await download_avatar_file(task_data, username, force_download=True)
 
-                if avatar_path:
-                    # Update AppShared with avatar path
-                    self.app_shared.avatar_path = avatar_path
+                    if avatar_path:
+                        # Update AppShared with avatar path
+                        self.app_shared.avatar_path = avatar_path
 
-                    # Refresh the AccountBadge to show new avatar
-                    self.control.account_badge.update_avatar_display()
-                    self.control.account_badge.update()
+                        # Refresh the AccountBadge to show new avatar
+                        self.control.account_badge.update_avatar_display()
+                        self.control.account_badge.update()
 
-                    # Close the dialog
-                    self.control.close()
+                        # Close the dialog
+                        self.control.close()
+                    else:
+                        # Avatar was set on server but download failed
+                        self.control.show_error(
+                            _("Avatar set successfully, but failed to download. Please try again.")
+                        )
+                        self.control.enable_interactions()
                 else:
-                    # Avatar was set on server but download failed
+                    # Failed to get avatar task data
                     self.control.show_error(
-                        _("Avatar set successfully, but failed to download. Please try again.")
+                        _("Avatar set successfully, but failed to retrieve avatar data. Please try again.")
                     )
                     self.control.enable_interactions()
             else:
