@@ -112,7 +112,7 @@ class LoginFormController(Controller["LoginForm"]):
             # Store avatar_id and download avatar
             self.app_shared.avatar_id = data.get("avatar_id")
             if self.app_shared.avatar_id:
-                parent_view.data_loading_view.add_step(_("Downloading avatar..."))
+                parent_view.data_loading_view.set_status(_("Downloading avatar..."))
                 from include.util.avatar import download_avatar_file
                 avatar_path = await download_avatar_file(self.app_shared.avatar_id, username)
                 self.app_shared.avatar_path = avatar_path
@@ -124,7 +124,7 @@ class LoginFormController(Controller["LoginForm"]):
 
             # Reload download tasks for the logged-in user
             if download_service:
-                parent_view.data_loading_view.add_step(_("Loading tasks..."))
+                parent_view.data_loading_view.set_status(_("Loading tasks..."))
                 await download_service.reload_tasks_for_user()
 
             self.control.clear_fields()
@@ -132,7 +132,7 @@ class LoginFormController(Controller["LoginForm"]):
             # Reset visibility for next login
             self.control.visible = True
             parent_view.data_loading_view.visible = False
-            parent_view.data_loading_view.clear_steps()
+            parent_view.data_loading_view.clear_status()
         
         self.control.page.run_task(self.control.page.push_route, "/home")
 

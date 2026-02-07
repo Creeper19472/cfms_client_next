@@ -116,39 +116,23 @@ class DataLoadingView(ft.Container):
             text_align=ft.TextAlign.CENTER,
         )
 
-        # List of loading steps (extensible for future)
-        self.steps_column = ft.Column(
-            controls=[],
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            spacing=5,
-        )
-
         self.content = ft.Column(
             controls=[
                 self.progress_ring,
                 self.status_text,
-                self.steps_column,
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=15,
         )
 
-    def add_step(self, step_text: str):
-        """Add a loading step to the display."""
-        self.steps_column.controls.append(
-            ft.Row(
-                controls=[
-                    ft.Icon(ft.Icons.CHECK_CIRCLE, color=ft.Colors.GREEN, size=16),
-                    ft.Text(step_text, size=12),
-                ],
-                spacing=5,
-            )
-        )
+    def set_status(self, status_text: str):
+        """Set the current loading status text."""
+        self.status_text.value = status_text
         self.update()
 
-    def clear_steps(self):
-        """Clear all loading steps."""
-        self.steps_column.controls.clear()
+    def clear_status(self):
+        """Reset status text to default."""
+        self.status_text.value = _("Loading user data...")
         self.update()
 
 

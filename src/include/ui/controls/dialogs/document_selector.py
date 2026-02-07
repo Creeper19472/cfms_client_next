@@ -200,20 +200,22 @@ class DocumentSelectorDialog(AlertDialog):
             # Add documents (only image files)
             for document in documents:
                 doc_id = document.get("id")
-                doc_name = document.get("name", "Unnamed")
-                file_type = document.get("type", "").lower()
+                doc_title = document.get("title", "Unnamed")
                 
-                # Filter to only show image files
-                if file_type in ["jpg", "jpeg", "png", "gif", "bmp", "webp", "image"]:
-                    doc_tile = ft.ListTile(
-                        leading=ft.Icon(ft.Icons.IMAGE, color=ft.Colors.GREEN_400),
-                        title=ft.Text(doc_name),
-                        subtitle=ft.Text(f"ID: {doc_id}", size=11, color=ft.Colors.GREY_500),
-                        on_click=lambda e, d_id=doc_id, d_name=doc_name: self.select_document(
-                            d_id, d_name
-                        ),
-                    )
-                    self.items_listview.controls.append(doc_tile)
+                # Filter to only show image files based on file extension
+                # Extract extension from filename
+                if "." in doc_title:
+                    extension = doc_title.rsplit(".", 1)[-1].lower()
+                    if extension in ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"]:
+                        doc_tile = ft.ListTile(
+                            leading=ft.Icon(ft.Icons.IMAGE, color=ft.Colors.GREEN_400),
+                            title=ft.Text(doc_title),
+                            subtitle=ft.Text(f"ID: {doc_id}", size=11, color=ft.Colors.GREY_500),
+                            on_click=lambda e, d_id=doc_id, d_name=doc_title: self.select_document(
+                                d_id, d_name
+                            ),
+                        )
+                        self.items_listview.controls.append(doc_tile)
             
             # Show message if no items
             if not self.items_listview.controls:
