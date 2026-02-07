@@ -110,11 +110,14 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
     caches it in the avatars directory. If the file already exists in the cache,
     returns the cached path immediately without downloading (unless force_download is True).
 
+    Since avatar_id is a file_id, we use download_file action directly without
+    needing to call get_document first.
+
     The cache structure is:
     {FLET_APP_STORAGE_DATA}/avatars/{server_address_hash}/{username}.png
 
     Args:
-        file_id: Document ID of the avatar file on the server
+        file_id: File ID of the avatar file on the server
         username: Username for cache filename (used as {username}.png)
         force_download: If True, re-download even if cached file exists
 
@@ -151,23 +154,8 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
         if force_download and await aiofiles.os.path.exists(avatar_file_path):
             await aiofiles.os.remove(avatar_file_path)
 
-        # Request download task from server
-        response: Response = await do_request_2(
-            action="get_document",
-            data={"document_id": file_id},
-            username=app_shared.username,
-            token=app_shared.token,
-        )
-
-        if response.code != 200:
-            return None
-
-        task_data = response.data.get("task_data", {})
-        task_id = task_data.get("task_id")
-        if not task_id:
-            return None
-
         # Create a new connection for file transfer
+        # Since avatar_id is a file_id, use it directly as task_id for download_file
         transfer_conn = await get_connection(
             server_address=server_address,
             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
@@ -178,11 +166,11 @@ async def download_avatar_file(file_id: str, username: str, force_download: bool
 
         try:
             # Download the file using the existing transfer mechanism
+            # For avatars, file_id can be used directly as task_id
             # receive_file_from_server yields progress updates (stage, *data)
             # For avatars, we silently consume progress for simplicity
-            # Future enhancement: expose progress via optional callback parameter
             async for _ in receive_file_from_server(
-                transfer_conn, task_id, avatar_file_path
+                transfer_conn, file_id, avatar_file_path
             ):
                 pass  # Progress updates are consumed but not exposed
 
