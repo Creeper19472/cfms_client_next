@@ -83,7 +83,7 @@ class AvatarPreviewContainer(ft.Container):
         self.preview_avatar = ft.CircleAvatar(
             radius=60,
             content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38),
-            bgcolor=ft.Colors.TRANSPARENT,
+            # bgcolor=ft.Colors.TRANSPARENT,
         )
 
         self.content = self.preview_avatar
