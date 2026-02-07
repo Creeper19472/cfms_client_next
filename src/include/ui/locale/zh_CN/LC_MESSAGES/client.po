@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-06 15:02+0800\n"
+"POT-Creation-Date: 2026-02-07 19:47+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -84,6 +84,24 @@ msgstr "已成功为 {target} 授权访问"
 #: .\include\controllers\dialogs\authorize.py:176
 msgid "Authorization failed: {error}"
 msgstr "授权失败：{error}"
+
+#: .\include\controllers\dialogs\avatar_settings.py:60
+msgid "Avatar set successfully, but failed to download. Please try again."
+msgstr "头像设置成功，但下载失败。请重试。"
+
+#: .\include\controllers\dialogs\avatar_settings.py:66
+msgid ""
+"Avatar set successfully, but failed to retrieve avatar data. Please try "
+"again."
+msgstr "头像设置成功，但获取头像数据失败。请重试。"
+
+#: .\include\controllers\dialogs\avatar_settings.py:72
+msgid "Failed to set avatar. Please check the document ID and try again."
+msgstr "设置头像失败。请检查文档 ID 并重试。"
+
+#: .\include\controllers\dialogs\avatar_settings.py:82
+msgid "An error occurred while setting the avatar. Please try again."
+msgstr "设置头像时发生错误。请重试。"
 
 #: .\include\controllers\dialogs\directory.py:64
 msgid "Get directory failed: "
@@ -424,13 +442,21 @@ msgstr "成功为 {filename} 上传了新的修订版本"
 msgid "Failed to upload new revision: {error}"
 msgstr "上传新的修订版本失败：{error}"
 
-#: .\include\controllers\login.py:65
+#: .\include\controllers\login.py:66
 msgid "Password must be changed before login."
 msgstr "在登录前必须修改密码。"
 
-#: .\include\controllers\login.py:72
+#: .\include\controllers\login.py:73
 msgid "Login failed: ({code}) {message}"
 msgstr "登录失败：({code}) {message}"
+
+#: .\include\controllers\login.py:114
+msgid "Downloading avatar"
+msgstr "正在下载头像"
+
+#: .\include\controllers\login.py:137
+msgid "Loading tasks"
+msgstr "正在载入任务"
 
 #: .\include\ui\controls\buttons\upgrade.py:14
 msgid "Check for Updates"
@@ -473,7 +499,11 @@ msgstr ""
 "虽然此阶段的应用程序仍在测试中，但已经变得相对稳定，更适合普通用户尝试。在发"
 "布一个或多个版本后，应用程序可能会进入稳定版本。"
 
-#: .\include\ui\controls\components\account.py:47
+#: .\include\ui\controls\components\account.py:30
+msgid "Click to change avatar"
+msgstr "点击更改头像"
+
+#: .\include\ui\controls\components\account.py:79
 #: .\include\ui\controls\dialogs\authorize.py:93
 msgid "User"
 msgstr "用户"
@@ -522,15 +552,15 @@ msgstr "下载"
 
 #: .\include\ui\controls\components\explorer\bar.py:64
 #: .\include\ui\controls\components\visualmgr\editor.py:608
-#: .\include\ui\controls\contextmenus\explorer.py:74
-#: .\include\ui\controls\contextmenus\explorer.py:207
+#: .\include\ui\controls\contextmenus\explorer.py:76
+#: .\include\ui\controls\contextmenus\explorer.py:212
 #: .\include\ui\controls\dialogs\authorize.py:123
 msgid "Move"
 msgstr "移动"
 
 #: .\include\ui\controls\components\explorer\bar.py:70
 #: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:197
+#: .\include\ui\controls\contextmenus\explorer.py:200
 #: .\include\ui\controls\contextmenus\group.py:50
 #: .\include\ui\controls\contextmenus\management.py:57
 #: .\include\ui\controls\dialogs\explorer.py:710
@@ -549,11 +579,13 @@ msgstr "删除"
 #: .\include\ui\controls\dialogs\admin\groups.py:130
 #: .\include\ui\controls\dialogs\admin\groups.py:207
 #: .\include\ui\controls\dialogs\authorize.py:187
+#: .\include\ui\controls\dialogs\avatar_settings.py:61
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
 #: .\include\ui\controls\dialogs\contextmenu\move.py:101
 #: .\include\ui\controls\dialogs\dev.py:39
+#: .\include\ui\controls\dialogs\document_selector.py:80
 #: .\include\ui\controls\dialogs\explorer.py:56
 #: .\include\ui\controls\dialogs\explorer.py:119
 #: .\include\ui\controls\dialogs\explorer.py:165
@@ -837,46 +869,46 @@ msgstr ""
 "这是一个专为互联网上机密信息的安全传输和保密而设计的管理系统，旨在通过程序化"
 "方法确保流程合规性。"
 
-#: .\include\ui\controls\contextmenus\explorer.py:69
-#: .\include\ui\controls\contextmenus\explorer.py:202
+#: .\include\ui\controls\contextmenus\explorer.py:70
+#: .\include\ui\controls\contextmenus\explorer.py:206
 #: .\include\ui\controls\contextmenus\group.py:55
 #: .\include\ui\controls\dialogs\admin\accounts.py:225
 msgid "Rename"
 msgstr "重命名"
 
-#: .\include\ui\controls\contextmenus\explorer.py:81
-#: .\include\ui\controls\contextmenus\explorer.py:213
+#: .\include\ui\controls\contextmenus\explorer.py:83
+#: .\include\ui\controls\contextmenus\explorer.py:219
 #: .\include\ui\controls\dialogs\authorize.py:183
 msgid "Authorize"
 msgstr "授权"
 
-#: .\include\ui\controls\contextmenus\explorer.py:86
+#: .\include\ui\controls\contextmenus\explorer.py:89
 msgid "View access entries"
 msgstr "查看访问条目"
 
-#: .\include\ui\controls\contextmenus\explorer.py:92
+#: .\include\ui\controls\contextmenus\explorer.py:95
 msgid "Set permissions"
 msgstr "设置权限"
 
-#: .\include\ui\controls\contextmenus\explorer.py:99
+#: .\include\ui\controls\contextmenus\explorer.py:102
 msgid "Upload new version"
 msgstr "上传新版本"
 
-#: .\include\ui\controls\contextmenus\explorer.py:104
+#: .\include\ui\controls\contextmenus\explorer.py:107
 msgid "View Revisions"
 msgstr "查看修订版本"
 
-#: .\include\ui\controls\contextmenus\explorer.py:111
-#: .\include\ui\controls\contextmenus\explorer.py:230
+#: .\include\ui\controls\contextmenus\explorer.py:114
+#: .\include\ui\controls\contextmenus\explorer.py:238
 #: .\include\ui\controls\contextmenus\management.py:77
 msgid "Properties"
 msgstr "属性"
 
-#: .\include\ui\controls\contextmenus\explorer.py:218
+#: .\include\ui\controls\contextmenus\explorer.py:225
 msgid "View Access Entries"
 msgstr "查看访问条目"
 
-#: .\include\ui\controls\contextmenus\explorer.py:224
+#: .\include\ui\controls\contextmenus\explorer.py:231
 #: .\include\ui\controls\contextmenus\group.py:60
 msgid "Set Permissions"
 msgstr "设置权限"
@@ -940,7 +972,7 @@ msgstr "创建用户"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:140
 #: .\include\ui\controls\dialogs\password_confirm.py:46
-#: .\include\ui\controls\views\login.py:48
+#: .\include\ui\controls\views\login.py:195
 msgid "Password"
 msgstr "密码"
 
@@ -950,7 +982,7 @@ msgstr "昵称"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:152
 #: .\include\ui\controls\views\admin\audit.py:37
-#: .\include\ui\controls\views\login.py:55
+#: .\include\ui\controls\views\login.py:202
 msgid "Username"
 msgstr "用户名"
 
@@ -1107,6 +1139,35 @@ msgstr "请输入用户名或组名"
 msgid "End time must be after start time"
 msgstr "结束时间必须晚于开始时间"
 
+#: .\include\ui\controls\dialogs\avatar_settings.py:35
+#: .\include\ui\controls\dialogs\avatar_settings.py:57
+msgid "Set Avatar"
+msgstr "设置头像"
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:42
+msgid "Browse Documents"
+msgstr "浏览文档"
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:49
+msgid "Document ID"
+msgstr "文档 ID"
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:50
+msgid "Enter the ID of an image document"
+msgstr "输入图片文档的 ID"
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:73
+msgid "Choose an image document to use as your avatar"
+msgstr "选择一个图片文档作为您的头像"
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:75
+msgid "Or enter document ID manually:"
+msgstr "或手动输入文档 ID："
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:137
+msgid "Document ID cannot be empty"
+msgstr "文档 ID 不能为空"
+
 #: .\include\ui\controls\dialogs\backup_codes.py:31
 msgid "Save Your Backup Codes"
 msgstr "保存您的备份代码"
@@ -1194,11 +1255,14 @@ msgid "Move Here"
 msgstr "移动到此处"
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:94
+#: .\include\ui\controls\dialogs\document_selector.py:73
 #: .\include\ui\controls\dialogs\explorer.py:804
 msgid "Go to Root"
 msgstr "返回根目录"
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:167
+#: .\include\ui\controls\dialogs\document_selector.py:57
+#: .\include\ui\controls\dialogs\document_selector.py:187
 #: .\include\ui\controls\dialogs\explorer.py:867
 msgid "Current location: {path}"
 msgstr "当前位置：{path}"
@@ -1219,6 +1283,7 @@ msgid "No subfolders available"
 msgstr "无可用子文件夹"
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:262
+#: .\include\ui\controls\dialogs\document_selector.py:248
 #: .\include\ui\controls\dialogs\explorer.py:965
 msgid "Error loading directory: {error}"
 msgstr "加载目录时出错：{error}"
@@ -1251,6 +1316,18 @@ msgstr "结果"
 #: .\include\ui\controls\dialogs\dev.py:53
 msgid "Request name must be specified"
 msgstr "必须指定请求名称"
+
+#: .\include\ui\controls\dialogs\document_selector.py:50
+msgid "Select Image Document"
+msgstr "选择图片文档"
+
+#: .\include\ui\controls\dialogs\document_selector.py:161
+msgid "Failed to load directory: {message}"
+msgstr "加载目录失败：{message}"
+
+#: .\include\ui\controls\dialogs\document_selector.py:236
+msgid "No image documents found in this directory"
+msgstr "此目录中没有找到图片文档"
 
 #: .\include\ui\controls\dialogs\explorer.py:39
 msgid "Create Directory"
@@ -1397,7 +1474,7 @@ msgid "Confirm"
 msgstr "确认"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:120
-#: .\include\ui\controls\views\login.py:141
+#: .\include\ui\controls\views\login.py:295
 msgid "Password cannot be empty"
 msgstr "密码不能为空"
 
@@ -1823,16 +1900,21 @@ msgstr "无效的服务器地址"
 msgid "File Management"
 msgstr "文件管理"
 
-#: .\include\ui\controls\views\login.py:66
-#: .\include\ui\controls\views\login.py:77
+#: .\include\ui\controls\views\login.py:142
+#: .\include\ui\controls\views\login.py:163
+msgid "Loading user data"
+msgstr "正在加载用户数据"
+
+#: .\include\ui\controls\views\login.py:214
+#: .\include\ui\controls\views\login.py:225
 msgid "Login"
 msgstr "登录"
 
-#: .\include\ui\controls\views\login.py:71
+#: .\include\ui\controls\views\login.py:219
 msgid "Disconnect"
 msgstr "断开连接"
 
-#: .\include\ui\controls\views\login.py:139
+#: .\include\ui\controls\views\login.py:293
 msgid "Username cannot be empty"
 msgstr "用户名不能为空"
 
@@ -2341,69 +2423,3 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
-
-#: User avatar functionality
-msgid "Click to change avatar"
-msgstr "点击更改头像"
-
-#: User avatar functionality
-msgid "Set Avatar"
-msgstr "设置头像"
-
-#: User avatar functionality
-msgid "Document ID"
-msgstr "文档 ID"
-
-#: User avatar functionality
-msgid "Enter the ID of an image document"
-msgstr "输入图片文档的 ID"
-
-#: User avatar functionality
-msgid "Browse Documents"
-msgstr "浏览文档"
-
-#: User avatar functionality
-msgid "Choose an image document to use as your avatar"
-msgstr "选择一个图片文档作为您的头像"
-
-#: User avatar functionality
-msgid "Document browser coming soon. Please enter document ID manually."
-msgstr "文档浏览器即将推出。请手动输入文档 ID。"
-
-#: User avatar functionality
-msgid "Document ID cannot be empty"
-msgstr "文档 ID 不能为空"
-
-#: User avatar functionality
-msgid "Avatar set successfully, but failed to download. Please try again."
-msgstr "头像设置成功，但下载失败。请重试。"
-
-#: User avatar functionality
-msgid "Failed to set avatar. Please check the document ID and try again."
-msgstr "设置头像失败。请检查文档 ID 并重试。"
-
-#: User avatar functionality
-msgid "An error occurred while setting the avatar. Please try again."
-msgstr "设置头像时发生错误。请重试。"
-
-#: User avatar functionality
-msgid "Loading user data..."
-msgstr "正在加载用户数据..."
-
-msgid "Downloading avatar..."
-msgstr "正在下载头像..."
-
-msgid "Loading tasks..."
-msgstr "正在加载任务..."
-
-msgid "Or enter document ID manually:"
-msgstr "或手动输入文档 ID："
-
-msgid "Select Image Document"
-msgstr "选择图片文档"
-
-msgid "No image documents found in this directory"
-msgstr "此目录中没有找到图片文档"
-
-msgid "Failed to load directory: {message}"
-msgstr "加载目录失败：{message}"

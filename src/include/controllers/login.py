@@ -1,3 +1,4 @@
+import base64
 from typing import TYPE_CHECKING, cast
 
 from include.classes.services.download import DownloadManagerService
@@ -101,7 +102,7 @@ class LoginFormController(Controller["LoginForm"]):
 
         # Store parent_view reference for cleaner code
         parent_view = self.control.parent_view
-        
+
         try:
             # Hide login form and show loading view
             self.control.visible = False
@@ -110,24 +111,30 @@ class LoginFormController(Controller["LoginForm"]):
             parent_view.update()
 
             # Get and download avatar if available
-            parent_view.data_loading_view.set_status(_("Downloading avatar..."))
+            parent_view.data_loading_view.set_status(_("Downloading avatar"))
             from include.util.avatar import get_user_avatar, download_avatar_file
-            
+
             # Get avatar task data from server
             task_data = await get_user_avatar(username)
             if task_data:
                 # Download avatar using task_data (force download on login to ensure up-to-date)
-                avatar_path = await download_avatar_file(task_data, username, force_download=True)
+                avatar_path = await download_avatar_file(
+                    task_data, username, force_download=True
+                )
                 self.app_shared.avatar_path = avatar_path
                 if avatar_path:
                     # Update the avatar preview with the downloaded avatar
-                    parent_view.avatar_preview.preview_avatar.foreground_image_src = avatar_path
+                    with open(avatar_path, "rb") as f:
+                        avatar_base64 = base64.b64encode(f.read()).decode("utf-8")
+                        parent_view.avatar_preview.preview_avatar.foreground_image_src = (
+                            f"data:image/png;base64,{avatar_base64}"
+                        )
                     parent_view.avatar_preview.preview_avatar.content = None
                     parent_view.avatar_preview.update()
 
             # Reload download tasks for the logged-in user
             if download_service:
-                parent_view.data_loading_view.set_status(_("Loading tasks..."))
+                parent_view.data_loading_view.set_status(_("Loading tasks"))
                 await download_service.reload_tasks_for_user()
 
             self.control.clear_fields()
@@ -136,7 +143,7 @@ class LoginFormController(Controller["LoginForm"]):
             self.control.visible = True
             parent_view.data_loading_view.visible = False
             parent_view.data_loading_view.clear_status()
-        
+
         self.control.page.run_task(self.control.page.push_route, "/home")
 
     async def _verify_2fa_code(self, code: str, is_recovery_code: bool = False) -> bool:

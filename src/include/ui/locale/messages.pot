@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-06 15:02+0800\n"
+"POT-Creation-Date: 2026-02-07 19:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,6 +86,22 @@ msgstr ""
 
 #: .\include\controllers\dialogs\authorize.py:176
 msgid "Authorization failed: {error}"
+msgstr ""
+
+#: .\include\controllers\dialogs\avatar_settings.py:60
+msgid "Avatar set successfully, but failed to download. Please try again."
+msgstr ""
+
+#: .\include\controllers\dialogs\avatar_settings.py:66
+msgid "Avatar set successfully, but failed to retrieve avatar data. Please try again."
+msgstr ""
+
+#: .\include\controllers\dialogs\avatar_settings.py:72
+msgid "Failed to set avatar. Please check the document ID and try again."
+msgstr ""
+
+#: .\include\controllers\dialogs\avatar_settings.py:82
+msgid "An error occurred while setting the avatar. Please try again."
 msgstr ""
 
 #: .\include\controllers\dialogs\directory.py:64
@@ -427,12 +443,20 @@ msgstr ""
 msgid "Failed to upload new revision: {error}"
 msgstr ""
 
-#: .\include\controllers\login.py:65
+#: .\include\controllers\login.py:66
 msgid "Password must be changed before login."
 msgstr ""
 
-#: .\include\controllers\login.py:72
+#: .\include\controllers\login.py:73
 msgid "Login failed: ({code}) {message}"
+msgstr ""
+
+#: .\include\controllers\login.py:114
+msgid "Downloading avatar"
+msgstr ""
+
+#: .\include\controllers\login.py:137
+msgid "Loading tasks"
 msgstr ""
 
 #: .\include\ui\controls\buttons\upgrade.py:14
@@ -467,7 +491,11 @@ msgstr ""
 msgid "Although the application at this stage is still in testing, it has become relatively stable and is more suitable for general users to try. After one or more versions are released, the application may enter a stable version."
 msgstr ""
 
-#: .\include\ui\controls\components\account.py:47
+#: .\include\ui\controls\components\account.py:30
+msgid "Click to change avatar"
+msgstr ""
+
+#: .\include\ui\controls\components\account.py:79
 #: .\include\ui\controls\dialogs\authorize.py:93
 msgid "User"
 msgstr ""
@@ -508,15 +536,15 @@ msgstr ""
 
 #: .\include\ui\controls\components\explorer\bar.py:64
 #: .\include\ui\controls\components\visualmgr\editor.py:608
-#: .\include\ui\controls\contextmenus\explorer.py:74
-#: .\include\ui\controls\contextmenus\explorer.py:207
+#: .\include\ui\controls\contextmenus\explorer.py:76
+#: .\include\ui\controls\contextmenus\explorer.py:212
 #: .\include\ui\controls\dialogs\authorize.py:123
 msgid "Move"
 msgstr ""
 
 #: .\include\ui\controls\components\explorer\bar.py:70
 #: .\include\ui\controls\contextmenus\explorer.py:64
-#: .\include\ui\controls\contextmenus\explorer.py:197
+#: .\include\ui\controls\contextmenus\explorer.py:200
 #: .\include\ui\controls\contextmenus\group.py:50
 #: .\include\ui\controls\contextmenus\management.py:57
 #: .\include\ui\controls\dialogs\explorer.py:710
@@ -535,11 +563,13 @@ msgstr ""
 #: .\include\ui\controls\dialogs\admin\groups.py:130
 #: .\include\ui\controls\dialogs\admin\groups.py:207
 #: .\include\ui\controls\dialogs\authorize.py:187
+#: .\include\ui\controls\dialogs\avatar_settings.py:61
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
 #: .\include\ui\controls\dialogs\contextmenu\move.py:101
 #: .\include\ui\controls\dialogs\dev.py:39
+#: .\include\ui\controls\dialogs\document_selector.py:80
 #: .\include\ui\controls\dialogs\explorer.py:56
 #: .\include\ui\controls\dialogs\explorer.py:119
 #: .\include\ui\controls\dialogs\explorer.py:165
@@ -815,46 +845,46 @@ msgstr ""
 msgid "This is a management system specifically designed for the secure transmission and confidentiality of confidential information over the internet, aiming to ensure process compliance through a procedural approach."
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:69
-#: .\include\ui\controls\contextmenus\explorer.py:202
+#: .\include\ui\controls\contextmenus\explorer.py:70
+#: .\include\ui\controls\contextmenus\explorer.py:206
 #: .\include\ui\controls\contextmenus\group.py:55
 #: .\include\ui\controls\dialogs\admin\accounts.py:225
 msgid "Rename"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:81
-#: .\include\ui\controls\contextmenus\explorer.py:213
+#: .\include\ui\controls\contextmenus\explorer.py:83
+#: .\include\ui\controls\contextmenus\explorer.py:219
 #: .\include\ui\controls\dialogs\authorize.py:183
 msgid "Authorize"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:86
+#: .\include\ui\controls\contextmenus\explorer.py:89
 msgid "View access entries"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:92
+#: .\include\ui\controls\contextmenus\explorer.py:95
 msgid "Set permissions"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:99
+#: .\include\ui\controls\contextmenus\explorer.py:102
 msgid "Upload new version"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:104
+#: .\include\ui\controls\contextmenus\explorer.py:107
 msgid "View Revisions"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:111
-#: .\include\ui\controls\contextmenus\explorer.py:230
+#: .\include\ui\controls\contextmenus\explorer.py:114
+#: .\include\ui\controls\contextmenus\explorer.py:238
 #: .\include\ui\controls\contextmenus\management.py:77
 msgid "Properties"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:218
+#: .\include\ui\controls\contextmenus\explorer.py:225
 msgid "View Access Entries"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:224
+#: .\include\ui\controls\contextmenus\explorer.py:231
 #: .\include\ui\controls\contextmenus\group.py:60
 msgid "Set Permissions"
 msgstr ""
@@ -919,7 +949,7 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:140
 #: .\include\ui\controls\dialogs\password_confirm.py:46
-#: .\include\ui\controls\views\login.py:48
+#: .\include\ui\controls\views\login.py:195
 msgid "Password"
 msgstr ""
 
@@ -929,7 +959,7 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:152
 #: .\include\ui\controls\views\admin\audit.py:37
-#: .\include\ui\controls\views\login.py:55
+#: .\include\ui\controls\views\login.py:202
 msgid "Username"
 msgstr ""
 
@@ -1086,6 +1116,35 @@ msgstr ""
 msgid "End time must be after start time"
 msgstr ""
 
+#: .\include\ui\controls\dialogs\avatar_settings.py:35
+#: .\include\ui\controls\dialogs\avatar_settings.py:57
+msgid "Set Avatar"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:42
+msgid "Browse Documents"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:49
+msgid "Document ID"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:50
+msgid "Enter the ID of an image document"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:73
+msgid "Choose an image document to use as your avatar"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:75
+msgid "Or enter document ID manually:"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\avatar_settings.py:137
+msgid "Document ID cannot be empty"
+msgstr ""
+
 #: .\include\ui\controls\dialogs\backup_codes.py:31
 msgid "Save Your Backup Codes"
 msgstr ""
@@ -1169,11 +1228,14 @@ msgid "Move Here"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:94
+#: .\include\ui\controls\dialogs\document_selector.py:73
 #: .\include\ui\controls\dialogs\explorer.py:804
 msgid "Go to Root"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:167
+#: .\include\ui\controls\dialogs\document_selector.py:57
+#: .\include\ui\controls\dialogs\document_selector.py:187
 #: .\include\ui\controls\dialogs\explorer.py:867
 msgid "Current location: {path}"
 msgstr ""
@@ -1194,6 +1256,7 @@ msgid "No subfolders available"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:262
+#: .\include\ui\controls\dialogs\document_selector.py:248
 #: .\include\ui\controls\dialogs\explorer.py:965
 msgid "Error loading directory: {error}"
 msgstr ""
@@ -1225,6 +1288,18 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\dev.py:53
 msgid "Request name must be specified"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\document_selector.py:50
+msgid "Select Image Document"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\document_selector.py:161
+msgid "Failed to load directory: {message}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\document_selector.py:236
+msgid "No image documents found in this directory"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\explorer.py:39
@@ -1372,7 +1447,7 @@ msgid "Confirm"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\password_confirm.py:120
-#: .\include\ui\controls\views\login.py:141
+#: .\include\ui\controls\views\login.py:295
 msgid "Password cannot be empty"
 msgstr ""
 
@@ -1794,16 +1869,21 @@ msgstr ""
 msgid "File Management"
 msgstr ""
 
-#: .\include\ui\controls\views\login.py:66
-#: .\include\ui\controls\views\login.py:77
+#: .\include\ui\controls\views\login.py:142
+#: .\include\ui\controls\views\login.py:163
+msgid "Loading user data"
+msgstr ""
+
+#: .\include\ui\controls\views\login.py:214
+#: .\include\ui\controls\views\login.py:225
 msgid "Login"
 msgstr ""
 
-#: .\include\ui\controls\views\login.py:71
+#: .\include\ui\controls\views\login.py:219
 msgid "Disconnect"
 msgstr ""
 
-#: .\include\ui\controls\views\login.py:139
+#: .\include\ui\controls\views\login.py:293
 msgid "Username cannot be empty"
 msgstr ""
 
@@ -2279,71 +2359,5 @@ msgstr ""
 
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
-msgstr ""
-
-#: User avatar functionality
-msgid "Click to change avatar"
-msgstr ""
-
-#: User avatar functionality
-msgid "Set Avatar"
-msgstr ""
-
-#: User avatar functionality
-msgid "Document ID"
-msgstr ""
-
-#: User avatar functionality
-msgid "Enter the ID of an image document"
-msgstr ""
-
-#: User avatar functionality
-msgid "Browse Documents"
-msgstr ""
-
-#: User avatar functionality
-msgid "Choose an image document to use as your avatar"
-msgstr ""
-
-#: User avatar functionality
-msgid "Document browser coming soon. Please enter document ID manually."
-msgstr ""
-
-#: User avatar functionality
-msgid "Document ID cannot be empty"
-msgstr ""
-
-#: User avatar functionality
-msgid "Avatar set successfully, but failed to download. Please try again."
-msgstr ""
-
-#: User avatar functionality
-msgid "Failed to set avatar. Please check the document ID and try again."
-msgstr ""
-
-#: User avatar functionality
-msgid "An error occurred while setting the avatar. Please try again."
-msgstr ""
-
-#: User avatar functionality
-msgid "Loading user data..."
-msgstr ""
-
-msgid "Downloading avatar..."
-msgstr ""
-
-msgid "Loading tasks..."
-msgstr ""
-
-msgid "Or enter document ID manually:"
-msgstr ""
-
-msgid "Select Image Document"
-msgstr ""
-
-msgid "No image documents found in this directory"
-msgstr ""
-
-msgid "Failed to load directory: {message}"
 msgstr ""
 

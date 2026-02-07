@@ -76,7 +76,7 @@ class AvatarPreviewContainer(ft.Container):
     """Container that shows cached avatar preview based on username input."""
 
     def __init__(self, ref: ft.Ref | None = None, visible=True):
-        super().__init__(ref=ref, visible=visible)
+        super().__init__(ref=ref, visible=visible, margin=ft.Margin(top=10))
         self.alignment = ft.Alignment.CENTER
 
         # Medium circular avatar for preview above login form
@@ -134,12 +134,12 @@ class DataLoadingView(ft.Container):
     """View shown while loading user data after successful login."""
 
     def __init__(self, ref: ft.Ref | None = None, visible=False):
-        super().__init__(ref=ref, visible=visible)
+        super().__init__(ref=ref, visible=visible, margin=ft.Margin(top=20))
         self.alignment = ft.Alignment.CENTER
 
         self.progress_ring = ft.ProgressRing()
         self.status_text = ft.Text(
-            _("Loading user data..."),
+            _("Loading user data"),
             size=16,
             text_align=ft.TextAlign.CENTER,
         )
@@ -160,7 +160,7 @@ class DataLoadingView(ft.Container):
 
     def clear_status(self):
         """Reset status text to default."""
-        self.status_text.value = _("Loading user data...")
+        self.status_text.value = _("Loading user data")
         self.update()
 
 
