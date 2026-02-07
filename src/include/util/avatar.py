@@ -26,6 +26,8 @@ async def get_user_avatar(username: str) -> Optional[str]:
 
     Sends a request to the server to retrieve the avatar ID for the given username.
     Returns None if the user has no avatar set (empty string response).
+    
+    Requires authentication - uses current user's credentials from AppShared.
 
     Args:
         username: Username to get avatar for
@@ -38,10 +40,14 @@ async def get_user_avatar(username: str) -> Optional[str]:
         >>> if avatar_id:
         ...     print(f"Avatar ID: {avatar_id}")
     """
+    app_shared = AppShared()
+    
     try:
         response: Response = await do_request_2(
             action="get_user_avatar",
             data={"username": username},
+            username=app_shared.username,
+            token=app_shared.token,
         )
 
         if response.code == 200:
@@ -63,6 +69,8 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
 
     Sends a request to the server to update the user's avatar to the specified
     document ID. The document must exist and be an image file.
+    
+    Requires authentication - uses current user's credentials from AppShared.
 
     Args:
         username: Username to set avatar for
@@ -76,6 +84,8 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
         >>> if success:
         ...     print("Avatar updated successfully")
     """
+    app_shared = AppShared()
+    
     try:
         response: Response = await do_request_2(
             action="set_user_avatar",
@@ -83,6 +93,8 @@ async def set_user_avatar(username: str, document_id: str) -> bool:
                 "username": username,
                 "document_id": document_id,
             },
+            username=app_shared.username,
+            token=app_shared.token,
         )
 
         return response.code == 200
