@@ -171,7 +171,9 @@ class LoginFormController(Controller["LoginForm"]):
             response = await do_request("login", request_data)
 
             if response["code"] == 200:
-                await self._complete_login(username, response["data"])
+                self.control.page.run_task(
+                    self._complete_login, username, response["data"]
+                )
                 return True
             else:
                 return False
