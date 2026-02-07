@@ -193,7 +193,7 @@ class DocumentSelectorDialog(AlertDialog):
             if directory_id is not None and self.navigation_stack:
                 parent_button = ft.ListTile(
                     leading=ft.Icon(ft.Icons.FOLDER_OPEN, color=ft.Colors.AMBER_700),
-                    title=ft.Text(".. (Parent Directory)"),
+                    title=ft.Text(_(".. (Parent Directory)")),
                     on_click=self.go_to_parent_click,
                 )
                 self.items_listview.controls.append(parent_button)
