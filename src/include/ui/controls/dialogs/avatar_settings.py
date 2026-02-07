@@ -31,10 +31,18 @@ class AvatarSettingsDialog(AlertDialog):
         self.controller = AvatarSettingsDialogController(self)
 
         self.modal = False
+        self.scrollable = True  # Make dialog scrollable
         self.title = ft.Text(_("Set Avatar"))
 
         # Progress ring for loading state
         self.progress_ring = ft.ProgressRing(visible=False)
+
+        # Browse button - positioned ABOVE the input field
+        self.browse_button = ft.ElevatedButton(
+            _("Browse Documents"),
+            on_click=self.browse_documents_click,
+            icon=ft.Icons.FOLDER_OPEN,
+        )
 
         # Document ID input field
         self.document_id_field = ft.TextField(
@@ -42,13 +50,6 @@ class AvatarSettingsDialog(AlertDialog):
             hint_text=_("Enter the ID of an image document"),
             on_submit=self.set_avatar_click,
             expand=True,
-        )
-
-        # Browse button (placeholder for now)
-        self.browse_button = ft.TextButton(
-            _("Browse Documents"),
-            on_click=self.browse_documents_click,
-            icon=ft.Icons.FOLDER_OPEN,
         )
 
         # Action buttons
@@ -70,8 +71,9 @@ class AvatarSettingsDialog(AlertDialog):
         self.content = ft.Column(
             controls=[
                 ft.Text(_("Choose an image document to use as your avatar")),
+                self.browse_button,  # Browse button is now ABOVE the input field
+                ft.Text(_("Or enter document ID manually:")),
                 self.document_id_field,
-                self.browse_button,
                 self.error_text,
             ],
             width=400,
@@ -112,8 +114,16 @@ class AvatarSettingsDialog(AlertDialog):
 
     async def browse_documents_click(self, event: ft.Event[ft.TextButton]):
         """Handle browse documents button click."""
-        # Placeholder for future document browser integration
-        self.show_error(_("Document browser coming soon. Please enter document ID manually."))
+        from include.ui.controls.dialogs.document_selector import DocumentSelectorDialog
+        
+        # Create and show document selector dialog
+        def on_document_selected(document_id: str, document_name: str):
+            """Callback when user selects a document."""
+            self.document_id_field.value = document_id
+            self.document_id_field.update()
+        
+        selector_dialog = DocumentSelectorDialog(on_select_callback=on_document_selected)
+        self.page.show_dialog(selector_dialog)
 
     async def set_avatar_click(
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]

@@ -2335,3 +2335,18 @@ msgstr ""
 msgid "Loading tasks..."
 msgstr ""
 
+msgid "Or enter document ID manually:"
+msgstr ""
+
+msgid "Select Image Document"
+msgstr ""
+
+msgid "No image documents found in this directory"
+msgstr ""
+
+msgid "Failed to load directory: {message}"
+msgstr ""
+
+msgid "Failed to load directory: {message}"
+msgstr ""
+

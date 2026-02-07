@@ -2395,3 +2395,15 @@ msgstr "正在下载头像..."
 
 msgid "Loading tasks..."
 msgstr "正在加载任务..."
+
+msgid "Or enter document ID manually:"
+msgstr "或手动输入文档 ID："
+
+msgid "Select Image Document"
+msgstr "选择图片文档"
+
+msgid "No image documents found in this directory"
+msgstr "此目录中没有找到图片文档"
+
+msgid "Failed to load directory: {message}"
+msgstr "加载目录失败：{message}"
