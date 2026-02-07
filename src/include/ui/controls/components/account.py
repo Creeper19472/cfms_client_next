@@ -57,32 +57,21 @@ class AccountBadge(ft.Container):
         app_shared = AppShared()
         name = app_shared.nickname or app_shared.username
 
-        # Create a new CircleAvatar instead of modifying the existing one
         if name is not None:
             self.username_text.value = name
 
             # Check if avatar_path exists and display it
             if app_shared.avatar_path:
-                new_avatar = ft.CircleAvatar(
-                    foreground_image_src=app_shared.avatar_path,
-                    content=None,
-                )
+                self.user_avatar.foreground_image_src = app_shared.avatar_path
+                self.user_avatar.content = None
             else:
                 # Fallback to letter-based avatar
-                new_avatar = ft.CircleAvatar(
-                    foreground_image_src=None,
-                    content=ft.Text(name[0].upper()),
-                )
+                self.user_avatar.foreground_image_src = None
+                self.user_avatar.content = ft.Text(name[0].upper())
         else:
             self.username_text.value = _("User")
-            new_avatar = ft.CircleAvatar(
-                foreground_image_src=None,
-                content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE),
-            )
-
-        # Replace the old avatar with the new one
-        self.user_avatar = new_avatar
-        self.avatar_button.content = new_avatar
+            self.user_avatar.foreground_image_src = None
+            self.user_avatar.content = ft.Icon(ft.Icons.ACCOUNT_CIRCLE)
 
         self.update()
 
