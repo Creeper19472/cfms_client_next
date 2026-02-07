@@ -127,7 +127,7 @@ class LoginFormController(Controller["LoginForm"]):
                     with open(avatar_path, "rb") as f:
                         avatar_base64 = base64.b64encode(f.read()).decode("utf-8")
                         parent_view.avatar_preview.preview_avatar.foreground_image_src = (
-                            f"data:image/png;base64,{avatar_base64}"
+                            f"data:image;base64,{avatar_base64}"
                         )
                     parent_view.avatar_preview.preview_avatar.content = None
                     parent_view.avatar_preview.update()

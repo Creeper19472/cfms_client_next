@@ -68,7 +68,7 @@ class AccountBadge(ft.Container):
                 with open(app_shared.avatar_path, "rb") as img_file:
                     base64_str = base64.b64encode(img_file.read()).decode()
                     self.user_avatar.foreground_image_src = (
-                        f"data:image/png;base64,{base64_str}"
+                        f"data:image;base64,{base64_str}"
                     )
                 self.user_avatar.content = None
             else:
