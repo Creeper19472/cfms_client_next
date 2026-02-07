@@ -10,6 +10,7 @@ from include.classes.shared import AppShared
 from include.classes.response import Response
 from include.constants import FLET_APP_STORAGE_DATA
 from include.util.connect import get_connection
+from include.util.hash import get_server_hash, get_username_hash
 from include.util.requests import do_request_2
 from include.util.transfer import receive_file_from_server
 
@@ -149,13 +150,16 @@ async def download_avatar_file(task_data: dict, username: str, force_download: b
 
         # Get server address hash for cache directory
         server_address = app_shared.get_not_none_attribute("server_address")
-        server_hash = hashlib.sha256(server_address.encode()).hexdigest()[:16]
+        server_hash = get_server_hash(server_address)
 
+        # Get username hash
+        username_hash = get_username_hash(username)
+        
         # Build cache directory path
         avatars_cache_dir = os.path.join(
             FLET_APP_STORAGE_DATA, "avatars", server_hash
         )
-        avatar_file_path = os.path.join(avatars_cache_dir, f"{username}.png")
+        avatar_file_path = os.path.join(avatars_cache_dir, username_hash)
 
         # Check if avatar is already cached (unless force_download)
         if not force_download and await aiofiles.os.path.exists(avatar_file_path):

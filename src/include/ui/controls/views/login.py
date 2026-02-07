@@ -7,6 +7,7 @@ from include.classes.shared import AppShared
 from include.constants import FLET_APP_STORAGE_DATA
 from include.controllers.login import LoginFormController
 from include.ui.util.notifications import send_error
+from include.util.hash import get_server_hash, get_username_hash
 from include.util.locale import get_translation
 import include.ui.constants as const
 
@@ -102,11 +103,10 @@ class AvatarPreviewContainer(ft.Container):
         # Try to find cached avatar for this username
         app_shared = AppShared()
         if app_shared.server_address and app_shared.server_address.strip():
-            server_hash = hashlib.sha256(
-                app_shared.server_address.encode()
-            ).hexdigest()[:16]
+            server_hash = get_server_hash(app_shared.server_address)
+            username_hash = get_username_hash(username)
             avatar_cache_path = os.path.join(
-                FLET_APP_STORAGE_DATA, "avatars", server_hash, f"{username}.png"
+                FLET_APP_STORAGE_DATA, "avatars", server_hash, username_hash
             )
 
             if os.path.exists(avatar_cache_path):
