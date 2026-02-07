@@ -3,6 +3,7 @@ import flet as ft
 from include.classes.shared import AppShared
 from include.ui.util.quotes import get_quote
 from include.util.locale import get_translation
+import base64
 
 t = get_translation()
 _ = t.gettext
@@ -62,7 +63,13 @@ class AccountBadge(ft.Container):
 
             # Check if avatar_path exists and display it
             if app_shared.avatar_path:
-                self.user_avatar.foreground_image_src = app_shared.avatar_path
+                # BUG: Flets seem to cache image data, causing images not updating
+                # now use base64 encoding to force update, but this is not ideal.
+                with open(app_shared.avatar_path, "rb") as img_file:
+                    base64_str = base64.b64encode(img_file.read()).decode()
+                    self.user_avatar.foreground_image_src = (
+                        f"data:image/png;base64,{base64_str}"
+                    )
                 self.user_avatar.content = None
             else:
                 # Fallback to letter-based avatar

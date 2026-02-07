@@ -66,7 +66,7 @@ class AvatarPreviewContainer(ft.Container):
             # No username, show default icon
             self.preview_avatar.foreground_image_src = None
             self.preview_avatar.content = ft.Icon(
-                ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE38
+                ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE_38
             )
             self.update()
             return
