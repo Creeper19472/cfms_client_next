@@ -99,37 +99,40 @@ class LoginFormController(Controller["LoginForm"]):
         self.app_shared.pending_2fa_verification = False
         self.app_shared.user_perference = load_user_preference(username)
 
-        # Hide login form and show loading view
-        self.control.visible = False
+        # Store parent_view reference for cleaner code
         parent_view = self.control.parent_view
-        parent_view.data_loading_view.visible = True
-        parent_view.avatar_preview.visible = True
-        parent_view.update()
-
-        # Store avatar_id and download avatar
-        self.app_shared.avatar_id = data.get("avatar_id")
-        if self.app_shared.avatar_id:
-            parent_view.data_loading_view.add_step(_("Downloading avatar..."))
-            from include.util.avatar import download_avatar_file
-            avatar_path = await download_avatar_file(self.app_shared.avatar_id, username)
-            self.app_shared.avatar_path = avatar_path
-            if avatar_path:
-                # Update the avatar preview with the downloaded avatar
-                parent_view.avatar_preview.preview_avatar.foreground_image_src = avatar_path
-                parent_view.avatar_preview.preview_avatar.content = None
-                parent_view.avatar_preview.update()
-
-        # Reload download tasks for the logged-in user
-        if download_service:
-            parent_view.data_loading_view.add_step(_("Loading tasks..."))
-            await download_service.reload_tasks_for_user()
-
-        self.control.clear_fields()
         
-        # Reset visibility for next login
-        self.control.visible = True
-        parent_view.data_loading_view.visible = False
-        parent_view.data_loading_view.clear_steps()
+        try:
+            # Hide login form and show loading view
+            self.control.visible = False
+            parent_view.data_loading_view.visible = True
+            parent_view.avatar_preview.visible = True
+            parent_view.update()
+
+            # Store avatar_id and download avatar
+            self.app_shared.avatar_id = data.get("avatar_id")
+            if self.app_shared.avatar_id:
+                parent_view.data_loading_view.add_step(_("Downloading avatar..."))
+                from include.util.avatar import download_avatar_file
+                avatar_path = await download_avatar_file(self.app_shared.avatar_id, username)
+                self.app_shared.avatar_path = avatar_path
+                if avatar_path:
+                    # Update the avatar preview with the downloaded avatar
+                    parent_view.avatar_preview.preview_avatar.foreground_image_src = avatar_path
+                    parent_view.avatar_preview.preview_avatar.content = None
+                    parent_view.avatar_preview.update()
+
+            # Reload download tasks for the logged-in user
+            if download_service:
+                parent_view.data_loading_view.add_step(_("Loading tasks..."))
+                await download_service.reload_tasks_for_user()
+
+            self.control.clear_fields()
+        finally:
+            # Reset visibility for next login
+            self.control.visible = True
+            parent_view.data_loading_view.visible = False
+            parent_view.data_loading_view.clear_steps()
         
         self.control.page.run_task(self.control.page.push_route, "/home")
 
