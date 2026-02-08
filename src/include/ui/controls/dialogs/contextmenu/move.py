@@ -1,10 +1,8 @@
 import copy
 from typing import TYPE_CHECKING
-import asyncio
 
 import flet as ft
 
-from include.classes.shared import AppShared
 from include.ui.controls.dialogs.file_browser import FileBrowserDialog
 from include.ui.util.notifications import send_error, send_success
 from include.util.requests import do_request
@@ -34,7 +32,7 @@ class MoveDialog(FileBrowserDialog):
         visible=True,
     ):
         """Initialize move dialog.
-        
+
         Args:
             object_type: Type of object to move ("document" or "directory")
             object_id: ID of the object to move
@@ -48,7 +46,7 @@ class MoveDialog(FileBrowserDialog):
         self.original_parent_id = copy.deepcopy(
             file_listview.parent_manager.current_directory_id
         )
-        
+
         # Set display name based on object type
         match self.object_type:
             case "document":
@@ -57,13 +55,15 @@ class MoveDialog(FileBrowserDialog):
                 self.object_display_name = _("Directory")
             case _:
                 raise ValueError(f"Invalid object_type: {self.object_type}")
-        
+
         # Determine exclusions: if moving a directory, exclude it from the tree
         excluded_ids = [object_id] if object_type == "directory" else []
-        
+
         # Initialize parent with directory browser configuration
         super().__init__(
-            title=_("Move {display_name}").format(display_name=self.object_display_name),
+            title=_("Move {display_name}").format(
+                display_name=self.object_display_name
+            ),
             on_select_callback=None,  # We'll override the select behavior
             initial_directory_id=file_listview.parent_manager.current_directory_id,
             mode="directories",  # Only show directories
@@ -75,18 +75,18 @@ class MoveDialog(FileBrowserDialog):
             ref=ref,
             visible=visible,
         )
-        
+
         # Override the select button click to perform move operation
         self.select_here_button.on_click = self.move_here_button_click
-        
+
         # Update button visibility logic - only show Move Here if different from original
         self._update_move_button_visibility()
-    
+
     def _update_move_button_visibility(self):
         """Update Move Here button visibility based on current location."""
         # Override parent's enable_interactions to update button visibility
         original_enable = super().enable_interactions
-        
+
         def custom_enable():
             original_enable()
             # Show Move Here button only if current directory differs from original
@@ -94,15 +94,18 @@ class MoveDialog(FileBrowserDialog):
                 self.current_directory_id != self.original_parent_id
             )
             # Go to Root button: visible if not at root
-            self.go_to_root_button.visible = self.current_directory_id not in (None, "/")
+            self.go_to_root_button.visible = self.current_directory_id not in (
+                None,
+                "/",
+            )
             self.update()
-        
+
         self.enable_interactions = custom_enable
-    
+
     async def move_here_button_click(self, event: ft.Event[ft.Button]):
         """Execute the move operation to the current directory."""
         yield self.disable_interactions()
-        
+
         try:
             if self.object_type == "document":
                 action = "move_document"
@@ -118,14 +121,14 @@ class MoveDialog(FileBrowserDialog):
                 }
             else:
                 raise ValueError(f"Invalid object_type: {self.object_type}")
-            
+
             response = await do_request(
                 action=action,
                 data=data,
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
-            
+
             if (code := response["code"]) != 200:
                 send_error(
                     self.page,
@@ -143,13 +146,13 @@ class MoveDialog(FileBrowserDialog):
                 )
                 # Refresh the file list view
                 from include.ui.util.path import get_directory
-                
+
                 await get_directory(
                     self.file_listview.parent_manager.current_directory_id,
                     self.file_listview,
                 )
                 self.close()
-        
+
         except Exception as e:
             send_error(
                 self.page,
