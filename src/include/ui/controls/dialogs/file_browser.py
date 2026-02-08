@@ -209,6 +209,7 @@ class FileBrowserDialog(AlertDialog):
             data = response.get("data", {})
             directories = data.get("folders", [])
             documents = data.get("documents", [])
+            parent_id = data.get("parent_id")  # Get parent_id from API response
             
             # Update current directory
             self.current_directory_id = directory_id
@@ -229,11 +230,17 @@ class FileBrowserDialog(AlertDialog):
             self.items_listview.controls.clear()
             
             # Add parent directory navigation if not at root
-            if directory_id is not None and self.navigation_stack:
+            # Use parent_id from API response to determine if parent exists
+            if parent_id is not None:
+                # Normalize "/" to None for consistency
+                normalized_parent_id = None if parent_id == "/" else parent_id
+                
                 parent_button = ft.ListTile(
                     leading=ft.Icon(ft.Icons.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
                     title=ft.Text(_(".. (Parent Directory)"), weight=ft.FontWeight.BOLD),
-                    on_click=self.go_to_parent_click,
+                    on_click=lambda e, pid=normalized_parent_id: asyncio.create_task(
+                        self.navigate_to_parent(pid)
+                    ),
                     hover_color=ft.Colors.with_opacity(0.1, ft.Colors.BLUE),
                 )
                 self.items_listview.controls.append(parent_button)
@@ -328,8 +335,21 @@ class FileBrowserDialog(AlertDialog):
         # Load new directory
         await self.load_directory(directory_id)
     
+    async def navigate_to_parent(self, parent_id: Optional[str]):
+        """Navigate to parent directory using parent_id from API.
+        
+        Args:
+            parent_id: ID of the parent directory (None for root)
+        """
+        # If we have a navigation stack, pop from it to stay in sync
+        if self.navigation_stack:
+            self.navigation_stack.pop()
+        
+        # Load the parent directory
+        await self.load_directory(parent_id)
+    
     async def go_to_parent_click(self, event):
-        """Navigate to parent directory."""
+        """Navigate to parent directory (legacy method for navigation stack)."""
         if self.navigation_stack:
             # Pop from stack and navigate
             parent_id, _ = self.navigation_stack.pop()
