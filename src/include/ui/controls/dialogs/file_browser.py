@@ -49,6 +49,7 @@ class FileBrowserDialog(AlertDialog):
         show_select_button: bool = False,
         select_button_text: str = None,
         select_button_icon: str = None,
+        show_breadcrumb: bool = True,
         ref: ft.Ref | None = None,
         visible: bool = True,
     ):
@@ -66,6 +67,7 @@ class FileBrowserDialog(AlertDialog):
             show_select_button: Whether to show a button to select current directory
             select_button_text: Text for the select button (default: "Select Here")
             select_button_icon: Icon for the select button (default: CHECK_CIRCLE)
+            show_breadcrumb: Whether to show breadcrumb path (default: True)
             ref: Flet reference
             visible: Whether dialog is visible initially
         """
@@ -79,6 +81,7 @@ class FileBrowserDialog(AlertDialog):
         self.file_filter = file_filter
         self.excluded_directory_ids = excluded_directory_ids or []
         self.show_select_button = show_select_button
+        self.show_breadcrumb = show_breadcrumb
         
         # Current navigation state
         self.current_directory_id: Optional[str] = initial_directory_id
@@ -131,14 +134,20 @@ class FileBrowserDialog(AlertDialog):
             on_click=self.cancel_button_click,
         )
         
-        # Content layout
-        self.content = ft.Column(
-            controls=[
+        # Content layout - conditionally include breadcrumb based on configuration
+        content_controls = []
+        if self.show_breadcrumb:
+            content_controls.extend([
                 self.location_text,
                 ft.Divider(),
-                self.progress_ring,
-                self.items_listview,
-            ],
+            ])
+        content_controls.extend([
+            self.progress_ring,
+            self.items_listview,
+        ])
+        
+        self.content = ft.Column(
+            controls=content_controls,
             width=550,
             height=400,
             spacing=10,
@@ -214,17 +223,28 @@ class FileBrowserDialog(AlertDialog):
             # Update current directory
             self.current_directory_id = directory_id
             
-            # Update location text
-            if directory_id is None:
-                location = "/"
-                self.go_to_root_button.visible = False
-            else:
-                # Build path from navigation stack
-                path_parts = [name for _, name in self.navigation_stack]
-                location = "/" + "/".join(path_parts) if path_parts else "/"
-                self.go_to_root_button.visible = True
+            # Update go to root button visibility
+            self.go_to_root_button.visible = directory_id is not None
             
-            self.location_text.value = _("Current location: {path}").format(path=location)
+            # Update location text (breadcrumb) if enabled
+            if self.show_breadcrumb:
+                if directory_id is None:
+                    # At root - we know the complete path
+                    location = "/"
+                else:
+                    # Build path from navigation stack
+                    path_parts = [name for _, name in self.navigation_stack]
+                    
+                    if path_parts:
+                        # We have navigation history - show the constructed path
+                        location = "/" + "/".join(path_parts)
+                    else:
+                        # Navigation stack is empty (dialog opened in subdirectory)
+                        # We don't have enough info to show the complete path
+                        # Show a more honest indicator
+                        location = _("(current directory)")
+                
+                self.location_text.value = _("Current location: {path}").format(path=location)
             
             # Clear and populate items list
             self.items_listview.controls.clear()

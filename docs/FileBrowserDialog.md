@@ -118,6 +118,7 @@ page.show_dialog(browser)
 | `show_select_button` | bool | False | Show button to select current directory |
 | `select_button_text` | str | "Select Here" | Text for select button |
 | `select_button_icon` | str | CHECK_CIRCLE | Icon for select button |
+| `show_breadcrumb` | bool | True | Show breadcrumb path (only shows when path can be fully constructed) |
 | `ref` | ft.Ref | None | Flet reference |
 | `visible` | bool | True | Initial visibility |
 
@@ -126,6 +127,15 @@ page.show_dialog(browser)
 - **`"files"`**: Show only files (and navigation controls)
 - **`"directories"`**: Show only directories (folders)
 - **`"both"`**: Show both files and directories (default)
+
+### Breadcrumb Display Behavior
+
+The breadcrumb path indicator (`show_breadcrumb`) has intelligent display logic:
+- **At root**: Always shows "/" (complete path known)
+- **After navigation within dialog**: Shows constructed path like "/folder1/folder2" (complete path known from navigation history)
+- **Opened in subdirectory**: Shows "(current directory)" instead of misleading "/" (incomplete path - only current location known, not full path from root)
+
+This prevents showing inaccurate path information when the dialog is opened directly in a subdirectory and hasn't navigated anywhere yet.
 
 ## Architecture
 
