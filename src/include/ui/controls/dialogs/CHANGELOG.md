@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.5.6
+**Released on:** 2026-02-08
+
+**Title:** Unified File Browser Dialog
+
+This version introduces a unified file browser dialog box to improve code 
+reusability and maintainability.
+
+---
 ## v0.5.5
 **Released on:** 2026-02-07
 
