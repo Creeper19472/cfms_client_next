@@ -776,20 +776,16 @@ class DirectorySelectorDialog(FileBrowserDialog):
         self.file_listview = file_listview
         self.excluded_directory_ids = excluded_directory_ids or []
         
-        # Override selection handling for async wait pattern
-        self.selected_directory_id: str | None = None
-        self.selection_event = asyncio.Event()
-        
-        # Override callbacks to use our selection event
-        original_select_click = self.select_here_button.on_click
+        # Override callbacks to use base class selection mechanism
         async def wrapped_select_click(event):
-            self.selected_directory_id = self.current_directory_id
+            # Use base class selected_item_id
+            self.selected_item_id = self.current_directory_id
             self.selection_event.set()
             self.close()
         
-        original_cancel_click = self.cancel_button.on_click
         def wrapped_cancel_click(event):
-            self.selected_directory_id = None
+            # Use base class selected_item_id
+            self.selected_item_id = None
             self.selection_event.set()
             self.close()
         
@@ -803,7 +799,7 @@ class DirectorySelectorDialog(FileBrowserDialog):
             The selected directory ID, or None if cancelled
         """
         await self.selection_event.wait()
-        return self.selected_directory_id
+        return self.selected_item_id
 
 
 class AccessDeniedDialog(AlertDialog):

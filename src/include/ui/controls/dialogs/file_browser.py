@@ -198,8 +198,12 @@ class FileBrowserDialog(AlertDialog):
         """Load and display contents of a directory.
 
         Args:
-            directory_id: ID of directory to load (None for root)
+            directory_id: ID of directory to load (None for root, "/" treated as None)
         """
+        # Normalize "/" to None for consistent root handling
+        if directory_id == "/":
+            directory_id = None
+        
         self.disable_interactions()
 
         try:
@@ -232,12 +236,15 @@ class FileBrowserDialog(AlertDialog):
             # Update current directory
             self.current_directory_id = directory_id
 
+            # Check if we're at root (directory_id is None)
+            is_root = directory_id is None
+            
             # Update go to root button visibility
-            self.go_to_root_button.visible = directory_id is not None
+            self.go_to_root_button.visible = not is_root
 
             # Update location text (breadcrumb) if enabled
             if self.show_breadcrumb:
-                if directory_id is None:
+                if is_root:
                     # At root - we know the complete path
                     location = "/"
                 else:
