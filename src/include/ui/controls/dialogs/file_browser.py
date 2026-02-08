@@ -50,6 +50,7 @@ class FileBrowserDialog(AlertDialog):
         select_button_text: Optional[str] = None,
         select_button_icon: Optional[ft.IconData] = None,
         show_breadcrumb: bool = True,
+        modal: bool = False,
         ref: ft.Ref | None = None,
         visible: bool = True,
     ):
@@ -68,15 +69,17 @@ class FileBrowserDialog(AlertDialog):
             select_button_text: Text for the select button (default: "Select Here")
             select_button_icon: Icon for the select button (default: Icons.CHECK_CIRCLE)
             show_breadcrumb: Whether to show breadcrumb path (default: True)
+            modal: Whether dialog should be initially modal (default: False)
             ref: Flet reference
             visible: Whether dialog is visible initially
         """
-        super().__init__(ref=ref, visible=visible)
+        super().__init__(ref=ref, visible=visible, modal=modal)
 
         self.on_select_callback = on_select_callback
         self.app_shared = AppShared()
 
         # Configuration
+        self.initially_modal = modal
         self.mode = mode
         self.file_filter = file_filter
         self.excluded_directory_ids = excluded_directory_ids or []
@@ -188,9 +191,7 @@ class FileBrowserDialog(AlertDialog):
         self.cancel_button.disabled = False
         self.items_listview.visible = True
         self.progress_ring.visible = False
-        self.modal = (
-            self.show_select_button
-        )  # Keep modal if waiting for directory selection
+        self.modal = self.initially_modal  # Reset to initial modal state
         self.update()
 
     async def load_directory(self, directory_id: Optional[str]):
@@ -383,13 +384,6 @@ class FileBrowserDialog(AlertDialog):
 
         # Load the parent directory
         await self.load_directory(parent_id)
-
-    async def go_to_parent_click(self, event):
-        """Navigate to parent directory (legacy method for navigation stack)."""
-        if self.navigation_stack:
-            # Pop from stack and navigate
-            parent_id, _ = self.navigation_stack.pop()
-            await self.load_directory(parent_id)
 
     async def go_to_root_button_click(self, event):
         """Navigate to root directory."""
