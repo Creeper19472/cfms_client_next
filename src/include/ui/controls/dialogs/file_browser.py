@@ -91,6 +91,10 @@ class FileBrowserDialog(AlertDialog):
         self.navigation_stack: list[tuple[Optional[str], str]] = (
             []
         )  # [(dir_id, dir_name)]
+        
+        # Track if we started from root to determine if we can show complete paths
+        # If we opened in a subdirectory, we don't know the full path from root
+        self.started_from_root: Optional[bool] = None  # Will be set in did_mount
 
         # Selection state (for async wait pattern)
         self.selected_item_id: Optional[str] = None
@@ -239,6 +243,10 @@ class FileBrowserDialog(AlertDialog):
             # Check if we're at root (directory_id is None)
             is_root = directory_id is None
             
+            # Track if we started from root (only set once on first load)
+            if self.started_from_root is None:
+                self.started_from_root = is_root
+            
             # Update go to root button visibility
             self.go_to_root_button.visible = not is_root
 
@@ -251,11 +259,13 @@ class FileBrowserDialog(AlertDialog):
                     # Build path from navigation stack
                     path_parts = [name for _, name in self.navigation_stack]
 
-                    if path_parts:
-                        # We have navigation history - show the constructed path
+                    # Only show constructed path if we started from root
+                    # Otherwise we don't have the full path from root
+                    if path_parts and self.started_from_root:
+                        # We have navigation history AND started from root - show constructed path
                         location = "/" + "/".join(path_parts)
                     else:
-                        # Navigation stack is empty (dialog opened in subdirectory)
+                        # Navigation stack is empty OR we didn't start from root
                         # We don't have enough info to show the complete path
                         # Show a more honest indicator
                         location = _("(current directory)")

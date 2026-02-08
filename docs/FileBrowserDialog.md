@@ -130,12 +130,15 @@ page.show_dialog(browser)
 
 ### Breadcrumb Display Behavior
 
-The breadcrumb path indicator (`show_breadcrumb`) has intelligent display logic:
-- **At root**: Always shows "/" (complete path known)
-- **After navigation within dialog**: Shows constructed path like "/folder1/folder2" (complete path known from navigation history)
-- **Opened in subdirectory**: Shows "(current directory)" instead of misleading "/" (incomplete path - only current location known, not full path from root)
+The breadcrumb path indicator (`show_breadcrumb`) has intelligent display logic to ensure accuracy:
 
-This prevents showing inaccurate path information when the dialog is opened directly in a subdirectory and hasn't navigated anywhere yet.
+- **At root**: Always shows "/" (complete path known)
+- **Started from root, then navigated**: Shows constructed path like "/folder1/folder2" (complete path known from navigation history)
+- **Opened in subdirectory**: Shows "(current directory)" for all locations (incomplete path - only current location known, not full path from root)
+  - This applies even when navigating deeper from the subdirectory
+  - Example: Open in `/unknown/path/` → navigate to `folder3` → still shows "(current directory)" because we don't know the full path is `/unknown/path/folder3/`
+
+This prevents showing inaccurate path information when the dialog is opened directly in a subdirectory. The dialog tracks whether it started from root to determine if it can show complete paths.
 
 ## Architecture
 
