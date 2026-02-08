@@ -57,7 +57,7 @@ class LoginView(ft.Row):
         if not AppShared().is_mobile:
             self.login_area.width = 450  # Fixed width for login area
 
-        # Right side: Blank space for future background image
+        # Right side
         self.background_area = ft.Container(
             ft.Image("astronomy.jpg", fit=ft.BoxFit.COVER),
             expand=True,  # Takes remaining space
