@@ -117,7 +117,7 @@ page.show_dialog(browser)
 | `excluded_directory_ids` | list[str] | [] | Directory IDs to exclude from display |
 | `show_select_button` | bool | False | Show button to select current directory |
 | `select_button_text` | str | "Select Here" | Text for select button |
-| `select_button_icon` | str | CHECK_CIRCLE | Icon for select button |
+| `select_button_icon` | ft.IconData | ft.Icons.CHECK_CIRCLE | Icon for select button |
 | `show_breadcrumb` | bool | True | Show breadcrumb path (only shows when path can be fully constructed) |
 | `ref` | ft.Ref | None | Flet reference |
 | `visible` | bool | True | Initial visibility |
