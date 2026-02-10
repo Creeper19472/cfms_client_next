@@ -12,6 +12,9 @@ from typing import TYPE_CHECKING, Callable, Optional
 import flet as ft
 
 from include.classes.shared import AppShared
+from include.ui.controls.components.common.access_denied_content import (
+    AccessDeniedContent,
+)
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
 from include.util.requests import do_request
@@ -97,6 +100,9 @@ class FileBrowserDialog(AlertDialog):
         # Selection state (for async wait pattern)
         self.selected_item_id: Optional[str] = None
         self.selection_event = asyncio.Event()
+        
+        # Store the original content height for restoring after access denied UI
+        self.original_content_height: Optional[int] = None
 
         self.modal = True
         self.scrollable = True
@@ -163,6 +169,9 @@ class FileBrowserDialog(AlertDialog):
             height=400,
             spacing=10,
         )
+        
+        # Store the original height for later restoration
+        self.original_content_height = 400
 
         # Build actions list based on configuration
         actions = []
@@ -196,6 +205,38 @@ class FileBrowserDialog(AlertDialog):
         self.modal = self.initially_modal  # Reset to initial modal state
         self.update()
 
+    def _show_access_denied(self, reason: str):
+        """Show access denied interface in the dialog.
+        
+        Args:
+            reason: The specific reason for access denial (from server message)
+        """
+        # Remove fixed height so the Back button touches the bottom
+        self.content.height = None
+        
+        # Create access denied content with compact mode and back button
+        access_denied = AccessDeniedContent(
+            reason=reason,
+            show_back_button=True,
+            on_back_click=self._handle_back_from_access_denied,
+            compact_mode=True,  # Use compact mode for dialog
+        )
+        
+        self.items_listview.controls = [access_denied]
+    
+    async def _handle_back_from_access_denied(self, event):
+        """Handle back button click from access denied screen."""
+        # If we have a navigation stack, go back to the previous directory
+        if self.navigation_stack:
+            # Pop the failed directory from stack
+            previous_dir_id, _ = self.navigation_stack.pop()
+            
+            # Load the previous directory
+            await self.load_directory(previous_dir_id)
+        else:
+            # If no history, try to go to root
+            await self.load_directory(None)
+
     async def load_directory(self, directory_id: Optional[str]):
         """Load and display contents of a directory.
 
@@ -218,15 +259,19 @@ class FileBrowserDialog(AlertDialog):
             )
 
             if response.get("code") != 200:
-                # Show error in dialog
-                self.items_listview.controls = [
-                    ft.Text(
-                        _("Failed to load directory: {message}").format(
-                            message=response.get("message", "Unknown error")
-                        ),
-                        color=ft.Colors.ERROR,
-                    )
-                ]
+                # Check if this is an access denied error (403)
+                if response.get("code") == 403:
+                    self._show_access_denied(response.get("message", "Access denied"))
+                else:
+                    # Show generic error for other errors
+                    self.items_listview.controls = [
+                        ft.Text(
+                            _("Failed to load directory: {message}").format(
+                                message=response.get("message", "Unknown error")
+                            ),
+                            color=ft.Colors.ERROR,
+                        )
+                    ]
                 self.enable_interactions()
                 return
 
@@ -269,6 +314,10 @@ class FileBrowserDialog(AlertDialog):
                 self.location_text.value = _("Current location: {path}").format(
                     path=location
                 )
+
+            # Restore fixed height when leaving access denied UI
+            if self.original_content_height is not None:
+                self.content.height = self.original_content_height
 
             # Clear and populate items list
             self.items_listview.controls.clear()
