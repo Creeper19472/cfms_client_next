@@ -205,8 +205,6 @@ class FileBrowserDialog(AlertDialog):
         Args:
             reason: The specific reason for access denial (from server message)
         """
-        self.items_listview.controls.clear()
-        
         # Create access denied content with compact mode and back button
         access_denied = AccessDeniedContent(
             reason=reason,
@@ -215,7 +213,7 @@ class FileBrowserDialog(AlertDialog):
             compact_mode=True,  # Use compact mode for dialog
         )
         
-        self.items_listview.controls.append(access_denied)
+        self.items_listview.controls = [access_denied]
     
     async def _handle_back_from_access_denied(self, event):
         """Handle back button click from access denied screen."""

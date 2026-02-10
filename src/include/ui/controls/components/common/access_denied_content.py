@@ -88,7 +88,7 @@ class AccessDeniedContent(ft.Column):
         )
         self.reason_container = ft.Container(
             content=self.reason_text,
-            padding=10 if compact_mode else 10,
+            padding=10,
             border=ft.Border(
                 top=ft.BorderSide(1, ft.Colors.GREY_700),
                 bottom=ft.BorderSide(1, ft.Colors.GREY_700),
@@ -132,7 +132,7 @@ class AccessDeniedContent(ft.Column):
 
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
-                content=_("Go Back"),
+                text=_("Go Back"),
                 icon=ft.Icons.ARROW_BACK,
                 on_click=on_back_click,
             )
@@ -150,7 +150,7 @@ class AccessDeniedContent(ft.Column):
         self.controls = controls
         self.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.spacing = 0
-        self.scroll = ft.ScrollMode.AUTO if compact_mode else ft.ScrollMode.AUTO
+        self.scroll = ft.ScrollMode.AUTO
 
     def update_reason(self, reason: str):
         """
