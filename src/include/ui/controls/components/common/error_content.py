@@ -32,7 +32,7 @@ class ErrorContent(ft.Column):
         on_retry_click: Optional[Callable] = None,
         on_back_click: Optional[Callable] = None,
         compact_mode: bool = False,
-        ref: ft.Ref | None = None,
+        ref: Optional[ft.Ref] = None,
     ):
         """
         Initialize the error content.
@@ -131,7 +131,7 @@ class ErrorContent(ft.Column):
         
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
-                content=_("Go Back"),
+                text=_("Go Back"),
                 icon=ft.Icons.ARROW_BACK,
                 on_click=on_back_click,
             )
@@ -139,7 +139,7 @@ class ErrorContent(ft.Column):
 
         if show_retry_button and on_retry_click:
             self.retry_button = ft.Button(
-                content=_("Retry"),
+                text=_("Retry"),
                 icon=ft.Icons.REFRESH,
                 on_click=on_retry_click,
             )

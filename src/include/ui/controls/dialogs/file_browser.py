@@ -254,10 +254,15 @@ class FileBrowserDialog(AlertDialog):
         await self.load_directory(self.current_directory_id)
 
     async def _handle_back_from_error(self, event):
-        """Handle back button click from error screen."""
+        """Handle back button click from error screen.
+        
+        Note: The navigation stack contains successfully loaded directories.
+        When a directory fails to load, the stack still contains the previous
+        directory we came from, so we can safely pop and navigate back.
+        """
         # If we have a navigation stack, go back to the previous directory
         if self.navigation_stack:
-            # Pop the failed directory from stack
+            # Pop the previous directory from stack
             previous_dir_id, _ = self.navigation_stack.pop()
 
             # Load the previous directory
@@ -308,7 +313,7 @@ class FileBrowserDialog(AlertDialog):
                     # Show error UI with retry and back options for other errors
                     self._show_error(
                         error_code=response.get("code", 0),
-                        error_message=response.get("message", "Unknown error")
+                        error_message=response.get("message", _("Unknown error"))
                     )
                 self.enable_interactions()
                 return
