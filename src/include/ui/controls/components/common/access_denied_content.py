@@ -81,7 +81,7 @@ class AccessDeniedContent(ft.Column):
 
         # Create reason text (scrollable in case of long messages)
         self.reason_text = ft.Text(
-            reason,
+            self.reason_value,
             size=reason_size,
             text_align=ft.TextAlign.CENTER,
             color=ft.Colors.GREY_400,
@@ -132,7 +132,7 @@ class AccessDeniedContent(ft.Column):
 
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
-                text=_("Go Back"),
+                content=_("Go Back"),
                 icon=ft.Icons.ARROW_BACK,
                 on_click=on_back_click,
             )
