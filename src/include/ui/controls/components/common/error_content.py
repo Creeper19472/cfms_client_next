@@ -131,7 +131,7 @@ class ErrorContent(ft.Column):
         
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
-                text=_("Go Back"),
+                content=_("Go Back"),
                 icon=ft.Icons.ARROW_BACK,
                 on_click=on_back_click,
             )
@@ -139,7 +139,7 @@ class ErrorContent(ft.Column):
 
         if show_retry_button and on_retry_click:
             self.retry_button = ft.Button(
-                text=_("Retry"),
+                content=_("Retry"),
                 icon=ft.Icons.REFRESH,
                 on_click=on_retry_click,
             )
@@ -251,7 +251,7 @@ class ErrorContent(ft.Column):
         
         # Update icon and title
         icon, title_text = self._get_icon_and_title(error_code)
-        self.icon.name = icon
+        self.icon.icon = icon
         self.title_text.value = title_text
         
         # Update message texts
