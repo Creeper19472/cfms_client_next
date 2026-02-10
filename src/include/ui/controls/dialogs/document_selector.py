@@ -62,7 +62,7 @@ class DocumentSelectorDialog(FileBrowserDialog):
             title=_("Select Image Document"),
             on_select_callback=wrapped_callback,
             initial_directory_id=None,
-            mode="files",  # Only show files
+            mode="both",
             file_filter=is_image_file,  # Filter to image files only
             show_select_button=False,  # No directory selection needed
             ref=ref,
