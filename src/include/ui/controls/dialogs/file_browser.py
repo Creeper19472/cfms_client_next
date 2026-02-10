@@ -7,7 +7,7 @@ flexible component.
 """
 
 import asyncio
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional, cast
 
 import flet as ft
 
@@ -94,13 +94,13 @@ class FileBrowserDialog(AlertDialog):
         self.navigation_stack: list[tuple[Optional[str], str]] = (
             []
         )  # [(dir_id, dir_name)]
-        
+
         self.reached_root: Optional[bool] = False
 
         # Selection state (for async wait pattern)
         self.selected_item_id: Optional[str] = None
         self.selection_event = asyncio.Event()
-        
+
         # Store the original content height for restoring after access denied UI
         self.original_content_height: Optional[int] = None
 
@@ -169,7 +169,7 @@ class FileBrowserDialog(AlertDialog):
             height=400,
             spacing=10,
         )
-        
+
         # Store the original height for later restoration
         self.original_content_height = 400
 
@@ -207,13 +207,13 @@ class FileBrowserDialog(AlertDialog):
 
     def _show_access_denied(self, reason: str):
         """Show access denied interface in the dialog.
-        
+
         Args:
             reason: The specific reason for access denial (from server message)
         """
         # Remove fixed height so the Back button touches the bottom
-        self.content.height = None
-        
+        cast(ft.Column, self.content).height = None
+
         # Create access denied content with compact mode and back button
         access_denied = AccessDeniedContent(
             reason=reason,
@@ -221,16 +221,16 @@ class FileBrowserDialog(AlertDialog):
             on_back_click=self._handle_back_from_access_denied,
             compact_mode=True,  # Use compact mode for dialog
         )
-        
+
         self.items_listview.controls = [access_denied]
-    
+
     async def _handle_back_from_access_denied(self, event):
         """Handle back button click from access denied screen."""
         # If we have a navigation stack, go back to the previous directory
         if self.navigation_stack:
             # Pop the failed directory from stack
             previous_dir_id, _ = self.navigation_stack.pop()
-            
+
             # Load the previous directory
             await self.load_directory(previous_dir_id)
         else:
@@ -246,7 +246,7 @@ class FileBrowserDialog(AlertDialog):
         # Normalize "/" to None for consistent root handling
         if directory_id == "/":
             directory_id = None
-        
+
         self.disable_interactions()
 
         try:
@@ -285,10 +285,10 @@ class FileBrowserDialog(AlertDialog):
 
             # Check if we're at root (directory_id is None)
             is_root = directory_id is None
-            
+
             # Track if we reached root
             self.reached_root = self.reached_root or is_root
-            
+
             # Update go to root button visibility
             self.go_to_root_button.visible = not is_root
 
@@ -317,7 +317,7 @@ class FileBrowserDialog(AlertDialog):
 
             # Restore fixed height when leaving access denied UI
             if self.original_content_height is not None:
-                self.content.height = self.original_content_height
+                cast(ft.Column, self.content).height = self.original_content_height
 
             # Clear and populate items list
             self.items_listview.controls.clear()
