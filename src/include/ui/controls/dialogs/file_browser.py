@@ -15,6 +15,7 @@ from include.classes.shared import AppShared
 from include.ui.controls.components.common.access_denied_content import (
     AccessDeniedContent,
 )
+from include.ui.controls.components.common.error_content import ErrorContent
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
 from include.util.requests import do_request
@@ -224,18 +225,67 @@ class FileBrowserDialog(AlertDialog):
 
         self.items_listview.controls = [access_denied]
 
-    async def _handle_back_from_access_denied(self, event):
-        """Handle back button click from access denied screen."""
+    def _show_error(self, error_code: int, error_message: str):
+        """Show error interface in the dialog with retry and back options.
+
+        Args:
+            error_code: HTTP error code (e.g., 404, 500)
+            error_message: The error message from server
+        """
+        # Remove fixed height so the action buttons touch the bottom
+        cast(ft.Column, self.content).height = None
+
+        # Create error content with compact mode, retry and back buttons
+        error_content = ErrorContent(
+            error_code=error_code,
+            error_message=error_message,
+            show_retry_button=True,
+            show_back_button=True,
+            on_retry_click=self._handle_retry_from_error,
+            on_back_click=self._handle_back_from_error,
+            compact_mode=True,  # Use compact mode for dialog
+        )
+
+        self.items_listview.controls = [error_content]
+
+    async def _handle_retry_from_error(self, event):
+        """Handle retry button click from error screen."""
+        # Retry loading the current directory
+        await self.load_directory(self.current_directory_id)
+
+    async def _navigate_back_from_error_screen(self, event):
+        """Navigate back from any error screen (403 or other errors).
+        
+        This is a shared helper for both _handle_back_from_error and
+        _handle_back_from_access_denied to avoid code duplication.
+        
+        Note: The navigation stack contains successfully loaded directories.
+        When a directory fails to load, the stack still contains the previous
+        directory we came from, so we can safely pop and navigate back.
+        
+        Edge case: If the previous directory also fails to load (e.g., due to
+        network issues), a new error screen will be shown with its own back
+        button, allowing continued navigation or retry until a working directory
+        is found or the user cancels.
+        """
         # If we have a navigation stack, go back to the previous directory
         if self.navigation_stack:
-            # Pop the failed directory from stack
+            # Pop the previous directory from stack
             previous_dir_id, _ = self.navigation_stack.pop()
 
-            # Load the previous directory
+            # Load the previous directory (may show another error if it also fails)
             await self.load_directory(previous_dir_id)
         else:
             # If no history, try to go to root
             await self.load_directory(None)
+
+    async def _handle_back_from_error(self, event):
+        """Handle back button click from error screen."""
+        await self._navigate_back_from_error_screen(event)
+
+    async def _handle_back_from_access_denied(self, event):
+        """Handle back button click from access denied screen."""
+        await self._navigate_back_from_error_screen(event)
 
     async def load_directory(self, directory_id: Optional[str]):
         """Load and display contents of a directory.
@@ -263,15 +313,11 @@ class FileBrowserDialog(AlertDialog):
                 if response.get("code") == 403:
                     self._show_access_denied(response.get("message", "Access denied"))
                 else:
-                    # Show generic error for other errors
-                    self.items_listview.controls = [
-                        ft.Text(
-                            _("Failed to load directory: {message}").format(
-                                message=response.get("message", "Unknown error")
-                            ),
-                            color=ft.Colors.ERROR,
-                        )
-                    ]
+                    # Show error UI with retry and back options for other errors
+                    self._show_error(
+                        error_code=response.get("code", 0),
+                        error_message=response.get("message", _("Unknown error"))
+                    )
                 self.enable_interactions()
                 return
 
@@ -401,13 +447,11 @@ class FileBrowserDialog(AlertDialog):
             self.enable_interactions()
 
         except Exception as e:
-            # Show error
-            self.items_listview.controls = [
-                ft.Text(
-                    _("Error loading directory: {error}").format(error=str(e)),
-                    color=ft.Colors.ERROR,
-                )
-            ]
+            # Show error UI with retry and back options
+            self._show_error(
+                error_code=0,  # 0 indicates a client-side exception
+                error_message=str(e)
+            )
             self.enable_interactions()
 
     def _get_empty_message(self) -> str:
