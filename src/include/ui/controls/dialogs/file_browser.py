@@ -259,13 +259,18 @@ class FileBrowserDialog(AlertDialog):
         Note: The navigation stack contains successfully loaded directories.
         When a directory fails to load, the stack still contains the previous
         directory we came from, so we can safely pop and navigate back.
+        
+        Edge case: If the previous directory also fails to load (e.g., due to
+        network issues), a new error screen will be shown with its own back
+        button, allowing continued navigation or retry until a working directory
+        is found or the user cancels.
         """
         # If we have a navigation stack, go back to the previous directory
         if self.navigation_stack:
             # Pop the previous directory from stack
             previous_dir_id, _ = self.navigation_stack.pop()
 
-            # Load the previous directory
+            # Load the previous directory (may show another error if it also fails)
             await self.load_directory(previous_dir_id)
         else:
             # If no history, try to go to root
