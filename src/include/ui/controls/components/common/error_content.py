@@ -5,7 +5,7 @@ This module provides a reusable UI component for displaying error messages
 with retry and navigation options. It supports both compact and full-screen modes.
 """
 
-from typing import Callable, Optional
+from typing import Callable
 
 import flet as ft
 
@@ -29,10 +29,10 @@ class ErrorContent(ft.Column):
         error_message: str,
         show_retry_button: bool = True,
         show_back_button: bool = True,
-        on_retry_click: Optional[Callable] = None,
-        on_back_click: Optional[Callable] = None,
+        on_retry_click: Callable | None = None,
+        on_back_click: Callable | None = None,
         compact_mode: bool = False,
-        ref: Optional[ft.Ref] = None,
+        ref: ft.Ref | None = None,
     ):
         """
         Initialize the error content.

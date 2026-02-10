@@ -253,8 +253,11 @@ class FileBrowserDialog(AlertDialog):
         # Retry loading the current directory
         await self.load_directory(self.current_directory_id)
 
-    async def _handle_back_from_error(self, event):
-        """Handle back button click from error screen.
+    async def _navigate_back_from_error_screen(self, event):
+        """Navigate back from any error screen (403 or other errors).
+        
+        This is a shared helper for both _handle_back_from_error and
+        _handle_back_from_access_denied to avoid code duplication.
         
         Note: The navigation stack contains successfully loaded directories.
         When a directory fails to load, the stack still contains the previous
@@ -276,18 +279,13 @@ class FileBrowserDialog(AlertDialog):
             # If no history, try to go to root
             await self.load_directory(None)
 
+    async def _handle_back_from_error(self, event):
+        """Handle back button click from error screen."""
+        await self._navigate_back_from_error_screen(event)
+
     async def _handle_back_from_access_denied(self, event):
         """Handle back button click from access denied screen."""
-        # If we have a navigation stack, go back to the previous directory
-        if self.navigation_stack:
-            # Pop the failed directory from stack
-            previous_dir_id, _ = self.navigation_stack.pop()
-
-            # Load the previous directory
-            await self.load_directory(previous_dir_id)
-        else:
-            # If no history, try to go to root
-            await self.load_directory(None)
+        await self._navigate_back_from_error_screen(event)
 
     async def load_directory(self, directory_id: Optional[str]):
         """Load and display contents of a directory.
