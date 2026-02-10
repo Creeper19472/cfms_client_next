@@ -163,43 +163,67 @@ class ErrorContent(ft.Column):
         self.spacing = 0
         self.scroll = ft.ScrollMode.AUTO
 
+    _ERROR_METADATA = {
+        0: {
+            "icon": ft.Icons.ERROR,
+            "title": "Connection Error",
+            "description": "Could not connect to the server or an unexpected error occurred.",
+        },
+        404: {
+            "icon": ft.Icons.SEARCH_OFF,
+            "title": "Not Found",
+            "description": "The requested directory or file could not be found.",
+        },
+        500: {
+            "icon": ft.Icons.ERROR_OUTLINE,
+            "title": "Server Error",
+            "description": "The server encountered an internal error.",
+        },
+        502: {
+            "icon": ft.Icons.ERROR_OUTLINE,
+            "title": "Server Error",
+            "description": "The server received an invalid response from upstream.",
+        },
+        503: {
+            "icon": ft.Icons.ERROR_OUTLINE,
+            "title": "Server Error",
+            "description": "The server is temporarily unavailable.",
+        },
+        400: {
+            "icon": ft.Icons.WARNING,
+            "title": "Bad Request",
+            "description": "The request was invalid or malformed.",
+        },
+        401: {
+            "icon": ft.Icons.LOCK_CLOCK,
+            "title": "Unauthorized",
+            "description": "Your session may have expired. Please try again.",
+        },
+        408: {
+            "icon": ft.Icons.TIMER_OFF,
+            "title": "Request Timeout",
+            "description": "The request took too long to complete.",
+        },
+        "default": {
+            "icon": ft.Icons.ERROR,
+            "title": "Error",
+            "description": "An error occurred while processing your request.",
+        },
+    }
+
+    def _get_error_metadata(self, error_code: int) -> dict:
+        """Return metadata for the given error code, falling back to a default."""
+        return self._ERROR_METADATA.get(error_code, self._ERROR_METADATA["default"])
+
     def _get_icon_and_title(self, error_code: int) -> tuple[ft.IconData, str]:
         """Get appropriate icon and title for error code."""
-        if error_code == 0:
-            return ft.Icons.ERROR, _("Connection Error")
-        elif error_code == 404:
-            return ft.Icons.SEARCH_OFF, _("Not Found")
-        elif error_code in (500, 502, 503):
-            return ft.Icons.ERROR_OUTLINE, _("Server Error")
-        elif error_code == 400:
-            return ft.Icons.WARNING, _("Bad Request")
-        elif error_code == 401:
-            return ft.Icons.LOCK_CLOCK, _("Unauthorized")
-        elif error_code == 408:
-            return ft.Icons.TIMER_OFF, _("Request Timeout")
-        else:
-            return ft.Icons.ERROR, _("Error")
+        meta = self._get_error_metadata(error_code)
+        return meta["icon"], _(meta["title"])
 
     def _get_description(self, error_code: int) -> str:
         """Get user-friendly description for error code."""
-        if error_code == 0:
-            return _("Could not connect to the server or an unexpected error occurred.")
-        elif error_code == 404:
-            return _("The requested directory or file could not be found.")
-        elif error_code == 500:
-            return _("The server encountered an internal error.")
-        elif error_code == 502:
-            return _("The server received an invalid response from upstream.")
-        elif error_code == 503:
-            return _("The server is temporarily unavailable.")
-        elif error_code == 400:
-            return _("The request was invalid or malformed.")
-        elif error_code == 401:
-            return _("Your session may have expired. Please try again.")
-        elif error_code == 408:
-            return _("The request took too long to complete.")
-        else:
-            return _("An error occurred while processing your request.")
+        meta = self._get_error_metadata(error_code)
+        return _(meta["description"])
 
     def _get_additional_info(self, error_code: int, compact_mode: bool) -> str:
         """Get additional information text based on error code and mode."""
