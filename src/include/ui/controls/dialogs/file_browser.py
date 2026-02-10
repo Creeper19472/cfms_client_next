@@ -100,6 +100,9 @@ class FileBrowserDialog(AlertDialog):
         # Selection state (for async wait pattern)
         self.selected_item_id: Optional[str] = None
         self.selection_event = asyncio.Event()
+        
+        # Store the original content height for restoring after access denied UI
+        self.original_content_height: Optional[int] = None
 
         self.modal = True
         self.scrollable = True
@@ -166,6 +169,9 @@ class FileBrowserDialog(AlertDialog):
             height=400,
             spacing=10,
         )
+        
+        # Store the original height for later restoration
+        self.original_content_height = 400
 
         # Build actions list based on configuration
         actions = []
@@ -205,6 +211,9 @@ class FileBrowserDialog(AlertDialog):
         Args:
             reason: The specific reason for access denial (from server message)
         """
+        # Remove fixed height so the Back button touches the bottom
+        self.content.height = None
+        
         # Create access denied content with compact mode and back button
         access_denied = AccessDeniedContent(
             reason=reason,
@@ -305,6 +314,10 @@ class FileBrowserDialog(AlertDialog):
                 self.location_text.value = _("Current location: {path}").format(
                     path=location
                 )
+
+            # Restore fixed height when leaving access denied UI
+            if self.original_content_height is not None:
+                self.content.height = self.original_content_height
 
             # Clear and populate items list
             self.items_listview.controls.clear()
