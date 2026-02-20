@@ -46,6 +46,7 @@ class AppShared:
         service_manager (Optional["ServiceManager"]): The service manager instance.
         floating_upgrade_button (Optional["FloatingUpgradeButton"]): Reference to the upgrade button.
         user_perference (Optional[UserPreference]): The user's preferences.
+        dek (Optional[bytes]): In-memory Data Encryption Key for config encryption.
         preferences (dict): Loaded user preferences from disk.
     Methods:
         server_address_hash: Returns the hashed server address for caching purposes.
@@ -99,6 +100,9 @@ class AppShared:
 
         # User preferences
         self.user_perference: Optional[UserPreference] = None
+
+        # In-memory Data Encryption Key for user config encryption (never persisted)
+        self.dek: Optional[bytes] = None
 
         # Load preferences
         if not os.path.exists(PREFERENCES_PATH):

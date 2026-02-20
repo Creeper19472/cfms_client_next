@@ -454,7 +454,11 @@ msgstr "登录失败：({code}) {message}"
 msgid "Downloading avatar"
 msgstr "正在下载头像"
 
-#: .\include\controllers\login.py:138
+#: .\include\controllers\login.py:134
+msgid "Setting up encryption"
+msgstr "正在设置加密"
+
+#: .\include\controllers\login.py:151
 msgid "Loading tasks"
 msgstr "正在载入任务"
 

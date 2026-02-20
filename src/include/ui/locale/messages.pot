@@ -455,7 +455,11 @@ msgstr ""
 msgid "Downloading avatar"
 msgstr ""
 
-#: .\include\controllers\login.py:138
+#: .\include\controllers\login.py:134
+msgid "Setting up encryption"
+msgstr ""
+
+#: .\include\controllers\login.py:151
 msgid "Loading tasks"
 msgstr ""
 

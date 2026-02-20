@@ -8,6 +8,7 @@ from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
 from include.ui.controls.dialogs.twofa_verify import TwoFactorVerifyDialog
 from include.util.requests import do_request
 from include.util.userpref import load_user_preference
+from include.util.kdf import generate_dek, encrypt_dek, decrypt_dek
 
 if TYPE_CHECKING:
     from include.ui.controls.views.login import LoginForm
@@ -40,7 +41,7 @@ class LoginFormController(Controller["LoginForm"]):
 
         if (code := response["code"]) == 200:
             # Regular login without 2FA
-            await self._complete_login(username, response["data"])
+            await self._complete_login(username, response["data"], password)
 
         elif code == 202:
             # Server indicates 2FA verification is required
@@ -76,7 +77,7 @@ class LoginFormController(Controller["LoginForm"]):
                 )
             )
 
-    async def _complete_login(self, username: str, data: dict):
+    async def _complete_login(self, username: str, data: dict, password: str = ""):
         """Complete the login process after authentication."""
         # Save current user's tasks before switching users
         # This prevents data loss when switching between users
@@ -99,7 +100,6 @@ class LoginFormController(Controller["LoginForm"]):
         self.app_shared.user_groups = data["groups"]
         self.app_shared.user_2fa_enabled = data.get("has_2fa", False)
         self.app_shared.pending_2fa_verification = False
-        self.app_shared.user_perference = load_user_preference(username)
 
         # Store parent_view reference for cleaner code
         parent_view = self.control.parent_view
@@ -110,6 +110,13 @@ class LoginFormController(Controller["LoginForm"]):
             parent_view.data_loading_view.visible = True
             parent_view.avatar_preview.visible = True
             parent_view.update()
+
+            # ── DEK setup ──────────────────────────────────────────────────────
+            parent_view.data_loading_view.set_status(_("Setting up encryption"))
+            await self._setup_dek(data, password)
+
+            # Load user preferences (uses DEK from AppShared automatically)
+            self.app_shared.user_perference = load_user_preference(username)
 
             # Get and download avatar if available
             parent_view.data_loading_view.set_status(_("Downloading avatar"))
@@ -147,6 +154,63 @@ class LoginFormController(Controller["LoginForm"]):
 
         self.control.page.run_task(self.control.page.push_route, "/home")
 
+    async def _setup_dek(self, login_data: dict, password: str) -> None:
+        """Derive or generate the Data Encryption Key and store it in AppShared.
+
+        If the server returned a ``preference_dek`` in the login response the
+        encrypted DEK is decrypted with the password-derived KEK.  Otherwise a
+        new DEK is generated, encrypted, uploaded to the server, and registered
+        as the preference DEK.
+
+        Failures are silently ignored so that a server that does not yet support
+        the keyring feature does not prevent login.
+
+        Args:
+            login_data: The ``data`` dict from the successful login response.
+            password:   The user's login password (used only for KEK derivation;
+                        never stored).
+        """
+        if not password:
+            return
+
+        try:
+            preference_dek = login_data.get("preference_dek")
+            if preference_dek:
+                # Server already has an encrypted DEK for this user – decrypt it.
+                encrypted_dek_str: str = preference_dek["key_content"]
+                self.app_shared.dek = decrypt_dek(encrypted_dek_str, password)
+            else:
+                # First login with keyring support: generate and upload the DEK.
+                dek = generate_dek()
+                encrypted_dek_str = encrypt_dek(dek, password)
+
+                # Upload the encrypted DEK to the server's keyring.
+                upload_response = await do_request(
+                    "upload_user_key",
+                    {"content": encrypted_dek_str, "label": "preference_dek"},
+                )
+                if upload_response.get("code") != 200:
+                    return
+
+                key_id: str = upload_response["data"]["id"]
+
+                # Mark it as the preference DEK so future logins return it.
+                set_pref_response = await do_request(
+                    "set_user_preference_dek",
+                    {"id": key_id},
+                )
+                if set_pref_response.get("code") != 200:
+                    return
+
+                self.app_shared.dek = dek
+        except Exception:
+            # Non-fatal: encryption is best-effort; login still succeeds.
+            import logging
+            logging.getLogger(__name__).warning(
+                "DEK setup failed; configuration will not be encrypted this session",
+                exc_info=True,
+            )
+
     async def _verify_2fa_code(self, code: str, is_recovery_code: bool = False) -> bool:
         """
         Verify 2FA code and complete login.
@@ -173,7 +237,7 @@ class LoginFormController(Controller["LoginForm"]):
 
             if response["code"] == 200:
                 self.control.page.run_task(
-                    self._complete_login, username, response["data"]
+                    self._complete_login, username, response["data"], password
                 )
                 return True
             else:
