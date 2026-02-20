@@ -2,7 +2,7 @@
 
 Design:
 - The user's login password is used to derive a Key Encryption Key (KEK) via
-  PBKDF2-HMAC-SHA256 (NIST SP 800-132, 600 000 iterations).
+  PBKDF2-HMAC-SHA256 (NIST SP 800-132, 1 000 000 iterations).
 - A random 256-bit Data Encryption Key (DEK) is generated once per user and
   encrypted with the KEK using AES-256-GCM (authenticated encryption).
 - The encrypted DEK is stored server-side as ``key_content`` inside the user's
