@@ -100,6 +100,8 @@ class LoginFormController(Controller["LoginForm"]):
         self.app_shared.user_groups = data["groups"]
         self.app_shared.user_2fa_enabled = data.get("has_2fa", False)
         self.app_shared.pending_2fa_verification = False
+        # Clear any stale DEK from a previous session before setting up the new one
+        self.app_shared.dek = None
 
         # Store parent_view reference for cleaner code
         parent_view = self.control.parent_view
@@ -188,6 +190,8 @@ class LoginFormController(Controller["LoginForm"]):
                 upload_response = await do_request(
                     "upload_user_key",
                     {"content": encrypted_dek_str, "label": "preference_dek"},
+                    username=self.app_shared.username,
+                    token=self.app_shared.token,
                 )
                 if upload_response.get("code") != 200:
                     return
@@ -198,6 +202,8 @@ class LoginFormController(Controller["LoginForm"]):
                 set_pref_response = await do_request(
                     "set_user_preference_dek",
                     {"id": key_id},
+                    username=self.app_shared.username,
+                    token=self.app_shared.token,
                 )
                 if set_pref_response.get("code") != 200:
                     return
