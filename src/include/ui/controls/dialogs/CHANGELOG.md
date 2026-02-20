@@ -3,6 +3,16 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.6.0
+**Released on:** 2026-02-20
+
+**Title:** User Preference File Encryption
+
+This version adds compatibility with protocol version 9, allowing encryption of 
+local user profiles through interaction with the server. This version also 
+introduces a useful feature for randomly generating passwords.
+
+---
 ## v0.5.8
 **Released on:** 2026-02-11
 

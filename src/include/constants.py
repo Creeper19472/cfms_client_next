@@ -33,8 +33,8 @@ GITHUB_REPO = "Creeper19472/cfms_client_next"
 
 # Version Information
 CHANNEL = ChannelType.STABLE
-BUILD_VERSION = "v0.5.8"
-MODIFIED = "20260211"
+BUILD_VERSION = "v0.6.0"
+MODIFIED = "20260220"
 
 # Default update channel for user preferences
 DEFAULT_UPDATE_CHANNEL = ChannelType.STABLE
@@ -45,7 +45,7 @@ else:
     APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL.value} NEXT"
 
 # Protocol
-PROTOCOL_VERSION = 8
+PROTOCOL_VERSION = 9
 
 # Integrated CA Certificate for SSL
 INTEGRATED_CA_CERT = """
