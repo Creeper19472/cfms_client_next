@@ -3,14 +3,18 @@ import json
 from typing import Optional
 from include.classes.shared import AppShared
 from include.classes.preferences import UserPreference
+from include.classes.exceptions.config import CorruptedEncryptedConfigError
 from include.constants import USER_PREFERENCES_PATH
 from include.util.kdf import encrypt_config, decrypt_config, is_encrypted_config
 
 
+def get_user_preference_path(username: str) -> str:
+    """Return the filesystem path for *username*'s preference file."""
+    return f"{USER_PREFERENCES_PATH}/{AppShared().server_address_hash}_{username}.json"
+
+
 def load_user_preference(username: str) -> UserPreference:
-    pref_path = (
-        f"{USER_PREFERENCES_PATH}/{AppShared().server_address_hash}_{username}.json"
-    )
+    pref_path = get_user_preference_path(username)
 
     if not os.path.exists(pref_path):
         return UserPreference(favourites={"files": {}, "directories": {}})
@@ -27,7 +31,9 @@ def load_user_preference(username: str) -> UserPreference:
             plaintext = decrypt_config(raw, dek)
             data: dict = json.loads(plaintext.decode("utf-8"))
         except (ValueError, json.JSONDecodeError):
-            return UserPreference(favourites={"files": {}, "directories": {}})
+            # DEK is present but decryption failed — the file was encrypted
+            # with a different (old) DEK, e.g. after a server reset.
+            raise CorruptedEncryptedConfigError(pref_path)
     else:
         try:
             data = json.loads(raw.decode("utf-8"))
@@ -44,9 +50,7 @@ def load_user_preference(username: str) -> UserPreference:
 
 
 def save_user_preference(username: str, preferences: UserPreference) -> None:
-    pref_path = (
-        f"{USER_PREFERENCES_PATH}/{AppShared().server_address_hash}_{username}.json"
-    )
+    pref_path = get_user_preference_path(username)
     os.makedirs(os.path.dirname(pref_path), exist_ok=True)
 
     data = {

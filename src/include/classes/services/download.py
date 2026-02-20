@@ -9,6 +9,7 @@ from websockets.asyncio.client import ClientConnection
 
 from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
+from include.classes.exceptions.config import CorruptedEncryptedConfigError
 from include.classes.services.base import BaseService
 from include.constants import FLET_APP_STORAGE_DATA
 from include.util.connect import get_connection
@@ -540,8 +541,13 @@ class DownloadManagerService(BaseService):
                         "Task file is encrypted but DEK is not available; skipping load"
                     )
                     return
-                plaintext = decrypt_config(raw, dek)
-                tasks_data = json.loads(plaintext.decode("utf-8"))
+                try:
+                    plaintext = decrypt_config(raw, dek)
+                    tasks_data = json.loads(plaintext.decode("utf-8"))
+                except (ValueError, json.JSONDecodeError):
+                    # DEK present but decryption failed — file was encrypted with
+                    # a different (old) DEK, e.g. after a server reset.
+                    raise CorruptedEncryptedConfigError(persistence_file)
             else:
                 tasks_data = json.loads(raw.decode("utf-8"))
                 # Migrate plain-JSON file to encrypted format when DEK is available
@@ -590,6 +596,8 @@ class DownloadManagerService(BaseService):
                 f"Loaded {len(self.tasks)} tasks from disk (file: {os.path.basename(persistence_file)})"
             )
 
+        except CorruptedEncryptedConfigError:
+            raise
         except Exception as e:
             self.logger.error(f"Failed to load tasks: {e}", exc_info=True)
 

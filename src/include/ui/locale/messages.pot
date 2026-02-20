@@ -2469,3 +2469,28 @@ msgstr ""
 msgid "Failed to list directory: ({code}) {message}"
 msgstr ""
 
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:48
+msgid "Configuration Cannot Be Decrypted"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:55
+msgid ""
+"The local configuration file is encrypted with a key that is no longer "
+"available on the server (the server may have been reset). "
+"The file cannot be decrypted."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:62
+msgid ""
+"You can delete the unreadable file and continue with the default "
+"configuration, or cancel the login to keep the file intact."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:73
+msgid "Delete and Continue"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:79
+msgid "Cancel Login"
+msgstr ""

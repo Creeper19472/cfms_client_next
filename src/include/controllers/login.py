@@ -2,9 +2,12 @@ import base64
 import os
 from typing import TYPE_CHECKING, cast
 
+from include.classes.exceptions.config import CorruptedEncryptedConfigError
+from include.classes.preferences import UserPreference
 from include.classes.services.download import DownloadManagerService
 from include.controllers.base import Controller
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
+from include.ui.controls.dialogs.corrupted_config import CorruptedConfigDialog
 from include.ui.controls.dialogs.twofa_verify import TwoFactorVerifyDialog
 from include.util.requests import do_request
 from include.util.userpref import load_user_preference
@@ -118,7 +121,15 @@ class LoginFormController(Controller["LoginForm"]):
             await self._setup_dek(data, password)
 
             # Load user preferences (uses DEK from AppShared automatically)
-            self.app_shared.user_perference = load_user_preference(username)
+            try:
+                self.app_shared.user_perference = load_user_preference(username)
+            except CorruptedEncryptedConfigError as exc:
+                if not await self._handle_corrupted_config(exc.file_path):
+                    return  # user cancelled login
+                # User chose to delete — continue with defaults
+                self.app_shared.user_perference = UserPreference(
+                    favourites={"files": {}, "directories": {}}
+                )
 
             # Get and download avatar if available
             parent_view.data_loading_view.set_status(_("Downloading avatar"))
@@ -145,7 +156,12 @@ class LoginFormController(Controller["LoginForm"]):
             # Reload download tasks for the logged-in user
             if download_service:
                 parent_view.data_loading_view.set_status(_("Loading tasks"))
-                await download_service.reload_tasks_for_user()
+                try:
+                    await download_service.reload_tasks_for_user()
+                except CorruptedEncryptedConfigError as exc:
+                    if not await self._handle_corrupted_config(exc.file_path):
+                        return  # user cancelled login
+                    # User chose to delete — tasks stay empty, which is already the case
 
             self.control.clear_fields()
         finally:
@@ -155,6 +171,36 @@ class LoginFormController(Controller["LoginForm"]):
             parent_view.data_loading_view.clear_status()
 
         self.control.page.run_task(self.control.page.push_route, "/home")
+
+    async def _handle_corrupted_config(self, file_path: str) -> bool:
+        """Show a dialog when an encrypted config file cannot be decrypted.
+
+        Presents the user with two choices:
+        - Delete the corrupted file and continue with default configuration.
+        - Cancel the login, leaving the file intact.
+
+        Args:
+            file_path: Path to the unreadable encrypted file.
+
+        Returns:
+            ``True`` if the user chose to delete the file (caller should
+            continue with defaults); ``False`` if the user cancelled (caller
+            should abort login).
+        """
+        import asyncio
+
+        decision_event = asyncio.Event()
+        dialog = CorruptedConfigDialog(decision_event)
+        self.control.page.show_dialog(dialog)
+        await decision_event.wait()
+
+        if dialog.user_confirmed:
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+            return True
+        return False
 
     async def _setup_dek(self, login_data: dict, password: str) -> None:
         """Derive or generate the Data Encryption Key and store it in AppShared.
