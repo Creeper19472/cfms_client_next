@@ -12,6 +12,7 @@ Design:
 """
 
 import base64
+import binascii
 import hashlib
 import json
 import os
@@ -100,7 +101,9 @@ def decrypt_dek(encrypted_dek_str: str, password: str) -> bytes:
         The original 32-byte DEK.
 
     Raises:
-        ValueError: If the payload format is unsupported or authentication fails.
+        ValueError: If the payload format is unsupported, a required field is
+                    missing or malformed, the KDF is unknown, or authentication
+                    fails (wrong password / corrupted data).
     """
     try:
         payload = json.loads(encrypted_dek_str)
@@ -112,12 +115,28 @@ def decrypt_dek(encrypted_dek_str: str, password: str) -> bytes:
             f"Unsupported encrypted DEK version: {payload.get('v')!r}"
         )
 
-    salt = base64.b64decode(payload["salt"])
-    nonce = base64.b64decode(payload["nonce"])
-    tag = base64.b64decode(payload["tag"])
-    ct = base64.b64decode(payload["ct"])
+    try:
+        kdf_name: str = payload["kdf"]
+        iterations: int = int(payload["iter"])
+        salt = base64.b64decode(payload["salt"])
+        nonce = base64.b64decode(payload["nonce"])
+        tag = base64.b64decode(payload["tag"])
+        ct = base64.b64decode(payload["ct"])
+    except (KeyError, TypeError, binascii.Error) as exc:
+        raise ValueError(f"Malformed encrypted DEK payload: {exc}") from exc
 
-    kek = _derive_kek(password, salt)
+    if kdf_name != "pbkdf2_hmac_sha256":
+        raise ValueError(f"Unsupported KDF: {kdf_name!r}")
+    if iterations <= 0:
+        raise ValueError(f"Invalid iteration count: {iterations}")
+
+    kek = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt,
+        iterations,
+        dklen=_KEY_SIZE,
+    )
     cipher = AES.new(kek, AES.MODE_GCM, nonce=nonce, mac_len=_TAG_SIZE)
     try:
         return cipher.decrypt_and_verify(ct, tag)

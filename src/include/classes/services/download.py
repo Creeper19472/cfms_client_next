@@ -446,11 +446,29 @@ class DownloadManagerService(BaseService):
 
     @staticmethod
     def _write_tasks_file(path: str, data: dict, dek: "bytes | None") -> None:
-        """Serialise *data* to *path*, encrypting with *dek* when provided."""
+        """Serialise *data* to *path*, encrypting with *dek* when provided.
+
+        When *dek* is ``None``, plaintext is written only if the existing file
+        is not already encrypted.  If an encrypted file exists but no DEK is
+        available, the file is left unchanged to prevent data loss and a
+        security downgrade.
+        """
         plaintext = json.dumps(data, separators=(",", ":")).encode("utf-8")
-        raw = encrypt_config(plaintext, dek) if dek is not None else plaintext
-        with open(path, "wb") as f:
-            f.write(raw)
+        if dek is not None:
+            raw = encrypt_config(plaintext, dek)
+            with open(path, "wb") as f:
+                f.write(raw)
+        else:
+            # Do not overwrite an existing encrypted file when no DEK is available.
+            if os.path.exists(path):
+                try:
+                    with open(path, "rb") as existing_file:
+                        if is_encrypted_config(existing_file.read()):
+                            return
+                except OSError:
+                    return
+            with open(path, "wb") as f:
+                f.write(plaintext)
 
     async def _save_tasks(self):
         """Save tasks to disk for persistence."""

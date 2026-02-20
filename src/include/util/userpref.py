@@ -39,7 +39,7 @@ def load_user_preference(username: str) -> UserPreference:
 
     return UserPreference(
         theme=data.get("theme", "light"),
-        favourites=data.get("favourites", {}),
+        favourites=_normalize_favourites(data.get("favourites")),
     )
 
 
@@ -56,12 +56,35 @@ def save_user_preference(username: str, preferences: UserPreference) -> None:
     _write_pref_file(pref_path, data, AppShared().dek)
 
 
+def _normalize_favourites(raw) -> dict:
+    """Return a favourites dict that always contains ``files`` and ``directories`` keys."""
+    if not isinstance(raw, dict):
+        return {"files": {}, "directories": {}}
+    return {
+        "files": raw.get("files", {}) if isinstance(raw.get("files"), dict) else {},
+        "directories": raw.get("directories", {}) if isinstance(raw.get("directories"), dict) else {},
+    }
+
+
 def _write_pref_file(path: str, data: dict, dek: Optional[bytes]) -> None:
-    """Write *data* to *path*, encrypted when *dek* is provided."""
+    """Write *data* to *path*, encrypted when *dek* is provided.
+
+    When *dek* is ``None``, plaintext is written only if the existing file is
+    not already encrypted.  If an encrypted file exists but no DEK is available,
+    the file is left unchanged to prevent data loss and a security downgrade.
+    """
     plaintext = json.dumps(data, separators=(",", ":")).encode("utf-8")
     if dek is not None:
         with open(path, "wb") as f:
             f.write(encrypt_config(plaintext, dek))
     else:
+        # Do not overwrite an existing encrypted file when no DEK is available.
+        if os.path.exists(path):
+            try:
+                with open(path, "rb") as existing_file:
+                    if is_encrypted_config(existing_file.read()):
+                        return
+            except OSError:
+                return
         with open(path, "wb") as f:
             f.write(plaintext)
