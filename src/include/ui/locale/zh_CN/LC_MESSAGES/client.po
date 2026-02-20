@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-11 11:15+0800\n"
+"POT-Creation-Date: 2026-02-20 23:49+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -442,23 +442,23 @@ msgstr "成功为 {filename} 上传了新的修订版本"
 msgid "Failed to upload new revision: {error}"
 msgstr "上传新的修订版本失败：{error}"
 
-#: .\include\controllers\login.py:67
+#: .\include\controllers\login.py:71
 msgid "Password must be changed before login."
 msgstr "在登录前必须修改密码。"
 
-#: .\include\controllers\login.py:74
+#: .\include\controllers\login.py:78
 msgid "Login failed: ({code}) {message}"
 msgstr "登录失败：({code}) {message}"
 
-#: .\include\controllers\login.py:115
-msgid "Downloading avatar"
-msgstr "正在下载头像"
-
-#: .\include\controllers\login.py:134
+#: .\include\controllers\login.py:120
 msgid "Setting up encryption"
 msgstr "正在设置加密"
 
-#: .\include\controllers\login.py:151
+#: .\include\controllers\login.py:135
+msgid "Downloading avatar"
+msgstr "正在下载头像"
+
+#: .\include\controllers\login.py:158
 msgid "Loading tasks"
 msgstr "正在载入任务"
 
@@ -638,7 +638,9 @@ msgid ""
 "A connection error or unexpected exception occurred. Please check your "
 "network connection and try again. If the problem persists, contact your "
 "system administrator."
-msgstr "发生连接错误或意外异常。请检查您的网络连接并重试。如果问题仍然存在，请联系您的系统管理员。"
+msgstr ""
+"发生连接错误或意外异常。请检查您的网络连接并重试。如果问题仍然存在，请联系您"
+"的系统管理员。"
 
 #: .\include\ui\controls\components\common\error_content.py:247
 msgid ""
@@ -646,14 +648,16 @@ msgid ""
 "temporary issue. Please wait a moment and try again. If the problem "
 "persists, contact your system administrator."
 msgstr ""
-"服务器出现技术故障。这种问题通常是暂时的。请稍等片刻后重试。"
-"如果问题仍然存在，请联系您的系统管理员。"
+"服务器出现技术故障。这种问题通常是暂时的。请稍等片刻后重试。如果问题仍然存"
+"在，请联系您的系统管理员。"
 
 #: .\include\ui\controls\components\common\error_content.py:253
 msgid ""
 "The requested resource could not be found on the server. It may have been "
 "moved, renamed, or deleted. Please verify the path and try again."
-msgstr "未在服务器上找到请求的资源。该资源可能已被移动、重命名或删除。请检查路径并重试。"
+msgstr ""
+"未在服务器上找到请求的资源。该资源可能已被移动、重命名或删除。请检查路径并重"
+"试。"
 
 #: .\include\ui\controls\components\common\error_content.py:259
 msgid ""
@@ -1386,6 +1390,33 @@ msgstr "{display_name} 移动成功"
 #: .\include\ui\controls\dialogs\contextmenu\move.py:159
 msgid "Error moving {display_name}: {error}"
 msgstr "移动 {display_name} 时出错：{error}"
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:38
+msgid "Configuration Cannot Be Decrypted"
+msgstr "配置文件无法解密"
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:48
+msgid ""
+"The local configuration file is encrypted with a key that is no longer "
+"available on the server (the server may have been reset). The file cannot be "
+"decrypted."
+msgstr ""
+"本地配置文件使用的密钥已在服务器上不可用（服务器可能已被重置），因此无法解密"
+"该文件。"
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:56
+msgid ""
+"You can delete the unreadable file and continue with the default "
+"configuration, or cancel the login to keep the file intact."
+msgstr "您可以删除无法读取的文件并以默认配置继续，或取消登录以保留该文件。"
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:70
+msgid "Delete and Continue"
+msgstr "删除并继续"
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:76
+msgid "Cancel Login"
+msgstr "取消登录"
 
 #: .\include\ui\controls\dialogs\dev.py:24
 msgid "Request Name"
@@ -2544,30 +2575,3 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:48
-msgid "Configuration Cannot Be Decrypted"
-msgstr "配置文件无法解密"
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:55
-msgid ""
-"The local configuration file is encrypted with a key that is no longer "
-"available on the server (the server may have been reset). "
-"The file cannot be decrypted."
-msgstr ""
-"本地配置文件使用的密钥已在服务器上不可用（服务器可能已被重置），"
-"因此无法解密该文件。"
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:62
-msgid ""
-"You can delete the unreadable file and continue with the default "
-"configuration, or cancel the login to keep the file intact."
-msgstr "您可以删除无法读取的文件并以默认配置继续，或取消登录以保留该文件。"
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:73
-msgid "Delete and Continue"
-msgstr "删除并继续"
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:79
-msgid "Cancel Login"
-msgstr "取消登录"

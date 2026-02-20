@@ -82,12 +82,12 @@ class CorruptedConfigDialog(AlertDialog):
             self.delete_button,
         ]
 
-    async def _on_delete_click(self, e: ft.ControlEvent):
+    async def _on_delete_click(self, e: ft.Event[ft.Button]):
         self.user_confirmed = True
         self.close()
         self.decision_event.set()
 
-    async def _on_cancel_click(self, e: ft.ControlEvent):
+    async def _on_cancel_click(self, e: ft.Event[ft.TextButton]):
         self.user_confirmed = False
         self.close()
         self.decision_event.set()

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-11 11:15+0800\n"
+"POT-Creation-Date: 2026-02-20 23:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -443,23 +443,23 @@ msgstr ""
 msgid "Failed to upload new revision: {error}"
 msgstr ""
 
-#: .\include\controllers\login.py:67
+#: .\include\controllers\login.py:71
 msgid "Password must be changed before login."
 msgstr ""
 
-#: .\include\controllers\login.py:74
+#: .\include\controllers\login.py:78
 msgid "Login failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\login.py:115
-msgid "Downloading avatar"
-msgstr ""
-
-#: .\include\controllers\login.py:134
+#: .\include\controllers\login.py:120
 msgid "Setting up encryption"
 msgstr ""
 
-#: .\include\controllers\login.py:151
+#: .\include\controllers\login.py:135
+msgid "Downloading avatar"
+msgstr ""
+
+#: .\include\controllers\login.py:158
 msgid "Loading tasks"
 msgstr ""
 
@@ -1345,6 +1345,26 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\contextmenu\move.py:159
 msgid "Error moving {display_name}: {error}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:38
+msgid "Configuration Cannot Be Decrypted"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:48
+msgid "The local configuration file is encrypted with a key that is no longer available on the server (the server may have been reset). The file cannot be decrypted."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:56
+msgid "You can delete the unreadable file and continue with the default configuration, or cancel the login to keep the file intact."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:70
+msgid "Delete and Continue"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\corrupted_config.py:76
+msgid "Cancel Login"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\dev.py:24
@@ -2469,28 +2489,3 @@ msgstr ""
 msgid "Failed to list directory: ({code}) {message}"
 msgstr ""
 
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:48
-msgid "Configuration Cannot Be Decrypted"
-msgstr ""
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:55
-msgid ""
-"The local configuration file is encrypted with a key that is no longer "
-"available on the server (the server may have been reset). "
-"The file cannot be decrypted."
-msgstr ""
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:62
-msgid ""
-"You can delete the unreadable file and continue with the default "
-"configuration, or cancel the login to keep the file intact."
-msgstr ""
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:73
-msgid "Delete and Continue"
-msgstr ""
-
-#: .\include\ui\controls\dialogs\corrupted_config.py:79
-msgid "Cancel Login"
-msgstr ""
