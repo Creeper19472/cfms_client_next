@@ -151,7 +151,7 @@ When adding new features or making significant changes:
 - **Repository**: Creeper19472/cfms_client_next
 - **Framework**: Flet (Python UI framework)
 - **Python Version**: ≥3.12
-- **Protocol Version**: 4
+- **Protocol Version**: 9
 - **Current Version**: 0.2.36
 
 ## Related Documentation
