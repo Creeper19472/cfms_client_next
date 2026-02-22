@@ -9,6 +9,7 @@ from include.ui.controls.dialogs.search import SearchDialog
 from include.ui.util.file_controls import get_directory
 from include.controllers.explorer.bar import FileSortBarController
 from include.util.locale import get_translation
+from include.ui.controls.components.rulemanager import RuleManager
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
@@ -180,9 +181,14 @@ class ExplorerTopBar(ft.Row):
                 ft.Row(
                     controls=[
                         ft.IconButton(
+                            ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
+                            on_click=self.on_set_root_permissions_click,
+                            tooltip=_("Set root directory permissions"),
+                        ),
+                        ft.IconButton(
                             ft.Icons.FOLDER_OPEN_OUTLINED,
                             on_click=self.on_open_folder_button_click,
-                        )
+                        ),
                     ],
                 ),
             ],
@@ -225,6 +231,9 @@ class ExplorerTopBar(ft.Row):
 
     async def on_open_folder_button_click(self, event: ft.Event[ft.IconButton]):
         self.page.show_dialog(OpenDirectoryDialog(self.parent_view))
+
+    async def on_set_root_permissions_click(self, event: ft.Event[ft.IconButton]):
+        self.page.show_dialog(RuleManager("/", "directory"))
 
     async def on_search_button_click(self, event: ft.Event[ft.IconButton]):
         """Handle search button click."""

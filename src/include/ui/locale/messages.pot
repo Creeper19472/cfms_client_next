@@ -738,6 +738,10 @@ msgstr ""
 msgid "Select items"
 msgstr ""
 
+#: .\include\ui\controls\components\explorer\bar.py:186
+msgid "Set root directory permissions"
+msgstr ""
+
 #: .\include\ui\controls\components\explorer\bar.py:173
 #: .\include\ui\controls\dialogs\authorize.py:74
 #: .\include\ui\controls\dialogs\search.py:131

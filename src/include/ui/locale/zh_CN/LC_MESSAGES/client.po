@@ -771,6 +771,10 @@ msgstr "选择了 {count} 个项目"
 msgid "Select items"
 msgstr "选择项目"
 
+#: .\include\ui\controls\components\explorer\bar.py:186
+msgid "Set root directory permissions"
+msgstr "设置根目录权限"
+
 #: .\include\ui\controls\components\explorer\bar.py:173
 #: .\include\ui\controls\dialogs\authorize.py:74
 #: .\include\ui\controls\dialogs\search.py:131
