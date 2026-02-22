@@ -5,7 +5,7 @@ from include.classes.exceptions.request import (
     RequestFailureError,
 )
 from include.controllers.base import Controller
-from include.ui.util.path import get_directory
+from include.ui.controls.explorer.path import get_directory
 from include.util.create import create_directory
 
 if TYPE_CHECKING:

@@ -12,13 +12,13 @@ from include.ui.controls.dialogs.contextmenu.move import MoveDialog
 from include.ui.controls.dialogs.authorize import AuthorizeDialog
 from include.ui.controls.dialogs.view_access_entries import ViewAccessEntriesDialog
 from include.ui.controls.components.rulemanager import RuleManager
-from include.ui.util.path import get_directory, get_document
+from include.ui.controls.explorer.path import get_directory, get_document
 from include.util.requests import do_request, do_request_2
 from include.ui.util.notifications import send_error, send_info
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
-    from include.ui.controls.contextmenus.explorer import (
+    from include.ui.controls.explorer.contextmenus import (
         FileContextMenu,
         DirectoryContextMenu,
     )

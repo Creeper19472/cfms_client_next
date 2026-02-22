@@ -3,7 +3,7 @@ import flet as ft
 
 from include.ui.controls.components.homepage import HomeView, HomeNavigationBar
 from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
-from include.ui.controls.views.explorer import FileManagerView
+from include.ui.controls.explorer.view import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.controls.views.tasks import TasksView
 

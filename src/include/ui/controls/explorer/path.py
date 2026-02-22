@@ -10,7 +10,7 @@ from include.util.requests import do_request
 from include.classes.services.download import DownloadManagerService
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 from include.util.locale import get_translation
 
@@ -27,7 +27,7 @@ async def get_directory(
     _raise_on_error=False,
     _set_new_root=False,
 ) -> bool:
-    from include.ui.util.file_controls import update_file_controls
+    from include.ui.controls.explorer.file_controls import update_file_controls
 
     pm = view.parent_manager
     pm.hide_content()

@@ -7,14 +7,14 @@ import flet as ft
 from websockets.asyncio.client import ClientConnection
 from include.classes.shared import AppShared
 from include.controllers.explorer.itself import FileExplorerController
-from include.ui.controls.components.explorer.bar import (
+from include.ui.controls.explorer.components.bar import (
     ExplorerTopBar,
     FileSortBar,
     SelectionToolbar,
 )
-from include.ui.controls.components.explorer.access_denied import AccessDeniedView
+from include.ui.controls.explorer.components.access_denied import AccessDeniedView
 from include.ui.util.notifications import send_error
-from include.ui.util.file_controls import update_file_controls
+from include.ui.controls.explorer.file_controls import update_file_controls
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel

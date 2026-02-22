@@ -135,7 +135,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                 await self.action_load_revisions()
                 
                 # Optionally refresh the file listview to show the updated document
-                from include.ui.util.path import get_directory
+                from include.ui.controls.explorer.path import get_directory
                 await get_directory(
                     id=self.control.parent_listview.parent_manager.current_directory_id,
                     view=self.control.parent_listview,

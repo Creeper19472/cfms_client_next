@@ -15,7 +15,7 @@ from include.ui.controls.dialogs.file_browser import FileBrowserDialog
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileManagerView
+    from include.ui.controls.explorer.view import FileManagerView
 
 from include.util.locale import get_translation
 

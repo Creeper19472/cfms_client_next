@@ -8,7 +8,7 @@ from include.ui.util.notifications import send_error, send_success
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 from include.util.locale import get_translation
 
@@ -145,7 +145,7 @@ class MoveDialog(FileBrowserDialog):
                     ),
                 )
                 # Refresh the file list view
-                from include.ui.util.path import get_directory
+                from include.ui.controls.explorer.path import get_directory
 
                 await get_directory(
                     self.file_listview.parent_manager.current_directory_id,

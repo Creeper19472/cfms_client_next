@@ -5,7 +5,7 @@ import flet as ft
 
 from include.classes.shared import AppShared
 from include.controllers.base import Controller
-from include.ui.util.path import get_directory
+from include.ui.controls.explorer.path import get_directory
 from include.util.requests import do_request
 
 if TYPE_CHECKING:

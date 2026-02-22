@@ -17,7 +17,7 @@ from include.ui.controls.dialogs.explorer import (
     DirectorySelectorDialog,
 )
 from include.ui.util.choice import normalize_always_choice
-from include.ui.util.path import get_directory
+from include.ui.controls.explorer.path import get_directory
 from include.util.connect import get_connection
 from include.util.create import create_directory
 from include.util.tree import build_directory_tree
@@ -26,7 +26,7 @@ from include.util.transfer import batch_upload_file_to_server, upload_file_to_se
 from include.util.batch_operations import batch_delete_items, batch_download_items, batch_move_items
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileManagerView
+    from include.ui.controls.explorer.view import FileManagerView
 
 from include.util.locale import get_translation
 

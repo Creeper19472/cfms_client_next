@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from include.controllers.base import Controller
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 
 class FileListViewController(Controller["FileListView"]):

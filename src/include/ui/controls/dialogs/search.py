@@ -10,7 +10,7 @@ from include.controllers.dialogs.search import SearchDialogController
 from include.ui.controls.dialogs.base import AlertDialog
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileManagerView
+    from include.ui.controls.explorer.view import FileManagerView
 
 from include.util.locale import get_translation
 
@@ -53,7 +53,7 @@ class SearchResultDirectoryTile(ft.ListTile):
         # Close the search dialog
         self.dialog.close()
         # Navigate to the directory
-        from include.ui.util.file_controls import get_directory
+        from include.ui.controls.explorer.file_controls import get_directory
 
         if await get_directory(
             id=self.directory_id,
@@ -100,7 +100,7 @@ class SearchResultFileTile(ft.ListTile):
         # Close the search dialog
         self.dialog.close()
         # Navigate to the parent directory (or root if parent_id is None)
-        from include.ui.util.file_controls import get_directory
+        from include.ui.controls.explorer.file_controls import get_directory
 
         if await get_directory(
             id=self.parent_id,

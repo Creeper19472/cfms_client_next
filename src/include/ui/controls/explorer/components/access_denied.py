@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileManagerView
+    from include.ui.controls.explorer.view import FileManagerView
 
 from include.util.locale import get_translation
 
@@ -149,7 +149,7 @@ class AccessDeniedView(ft.Container):
 
     async def back_button_click(self, event: ft.Event[ft.Button]):
         """Navigate back to the previous directory."""
-        from include.ui.util.path import get_directory
+        from include.ui.controls.explorer.path import get_directory
 
         # Get the parent directory ID
         parent_id = self.parent_manager.file_listview.current_parent_id
@@ -180,7 +180,7 @@ class AccessDeniedView(ft.Container):
 
     async def refresh_button_click(self, event: ft.Event[ft.OutlinedButton]):
         """Try to access the directory again."""
-        from include.ui.util.path import get_directory
+        from include.ui.controls.explorer.path import get_directory
 
         # Hide this view and show loading
         self.visible = False

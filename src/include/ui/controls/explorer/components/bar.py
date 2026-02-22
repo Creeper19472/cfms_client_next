@@ -6,12 +6,12 @@ from include.ui.controls.dialogs.explorer import (
     OpenDirectoryDialog,
 )
 from include.ui.controls.dialogs.search import SearchDialog
-from include.ui.util.file_controls import get_directory
+from include.ui.controls.explorer.file_controls import get_directory
 from include.controllers.explorer.bar import FileSortBarController
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileManagerView
+    from include.ui.controls.explorer.view import FileManagerView
 
 t = get_translation()
 _ = t.gettext

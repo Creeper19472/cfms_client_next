@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import flet as ft
 
-from include.ui.controls.contextmenus.explorer import DirectoryContextMenu, FileContextMenu
-from include.ui.util.path import get_directory
+from include.ui.controls.explorer.contextmenus import DirectoryContextMenu, FileContextMenu
+from include.ui.controls.explorer.path import get_directory
 
 from include.util.locale import get_translation
 
@@ -11,7 +11,7 @@ t = get_translation()
 _ = t.gettext
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 # __all__ = ["get_directory"]
 
@@ -49,7 +49,7 @@ def update_file_controls(
     # Check if in selection mode
     if view.selection_mode:
         # In selection mode, create tiles directly without context menus
-        from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
+        from include.ui.controls.explorer.components.tile import DirectoryTile, FileTile
         
         def on_directory_selection_changed(dir_id: str, is_selected: bool):
             """Handle directory selection change."""

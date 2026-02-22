@@ -5,7 +5,7 @@ from include.classes.ui.enum import SortMode, SortOrder
 from include.controllers.base import Controller
 
 if TYPE_CHECKING:
-    from include.ui.controls.components.explorer.bar import FileSortBar
+    from include.ui.controls.explorer.components.bar import FileSortBar
 
 
 class FileSortBarController(Controller["FileSortBar"]):

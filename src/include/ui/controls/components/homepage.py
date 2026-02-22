@@ -4,11 +4,11 @@ import flet as ft
 
 from include.classes.shared import AppShared
 from include.classes.services.favorites_validation import FavoritesValidationService
-from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
-from include.ui.controls.views.explorer import FileManagerView
-from include.ui.util.file_controls import get_directory
+from include.ui.controls.explorer.components.tile import DirectoryTile, FileTile
+from include.ui.controls.explorer.view import FileManagerView
+from include.ui.controls.explorer.file_controls import get_directory
 from include.ui.util.notifications import send_error
-from include.ui.util.path import get_document
+from include.ui.controls.explorer.path import get_document
 
 
 if TYPE_CHECKING:

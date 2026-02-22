@@ -11,7 +11,7 @@ from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 t = get_translation()
 _ = t.gettext

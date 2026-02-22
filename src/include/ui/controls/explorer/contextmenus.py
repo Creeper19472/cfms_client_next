@@ -9,12 +9,12 @@ from include.controllers.explorer.tile import (
     DirectoryContextMenuController,
 )
 
-from include.ui.controls.components.explorer.tile import FileTile, DirectoryTile
+from include.ui.controls.explorer.components.tile import FileTile, DirectoryTile
 from include.ui.controls.menus.base import ContextMenu2
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
-    from include.ui.controls.views.explorer import FileListView
+    from include.ui.controls.explorer.view import FileListView
 
 t = get_translation()
 _ = t.gettext
