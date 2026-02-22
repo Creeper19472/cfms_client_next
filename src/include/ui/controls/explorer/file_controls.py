@@ -22,8 +22,6 @@ def update_file_controls(
     documents: list[dict],
     parent_id: str | None = None,
 ):
-    view.controls = []  # reset
-
     async def parent_button_click(event: ft.Event[ft.ListTile]):
         view.parent_manager.current_directory_id = (
             None if parent_id == "/" else parent_id
@@ -31,26 +29,23 @@ def update_file_controls(
         if await get_directory(view.parent_manager.current_directory_id, view=view):
             view.parent_manager.indicator.back()
 
-    if (
-        parent_id != None
+    # Toggle parent button visibility declaratively (no rebuild, just show/hide)
+    show_parent = (
+        parent_id is not None
         and view.parent_manager.current_directory_id
         != view.parent_manager.root_directory_id
-    ):
-        # print("parent_id: ", parent_id)
-        view.controls = [
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.ARROW_BACK),
-                title=ft.Text("<...>"),
-                subtitle=ft.Text(_("Parent directory")),
-                on_click=parent_button_click,
-            )
-        ]
+    )
+    view._parent_button.visible = show_parent
+    view._parent_button.on_click = parent_button_click if show_parent else None
+
+    # Rebuild the dynamic item controls (directory/file list changes on navigation)
+    items: list[ft.Control] = []
 
     # Check if in selection mode
     if view.selection_mode:
         # In selection mode, create tiles directly without context menus
         from include.ui.controls.explorer.components.tile import DirectoryTile, FileTile
-        
+
         def on_directory_selection_changed(dir_id: str, is_selected: bool):
             """Handle directory selection change."""
             if is_selected:
@@ -60,7 +55,7 @@ def update_file_controls(
             # Update selection toolbar count
             count = view.get_selected_count()
             view.parent_manager.selection_toolbar.update_selection_count(count)
-        
+
         def on_file_selection_changed(file_id: str, is_selected: bool):
             """Handle file selection change."""
             if is_selected:
@@ -70,8 +65,8 @@ def update_file_controls(
             # Update selection toolbar count
             count = view.get_selected_count()
             view.parent_manager.selection_toolbar.update_selection_count(count)
-        
-        view.controls.extend(
+
+        items.extend(
             [
                 DirectoryTile(
                     dir_name=folder["name"],
@@ -84,7 +79,7 @@ def update_file_controls(
                 for folder in folders
             ]
         )
-        view.controls.extend(
+        items.extend(
             [
                 FileTile(
                     filename=document["title"],
@@ -100,7 +95,7 @@ def update_file_controls(
         )
     else:
         # Normal mode with context menus
-        view.controls.extend(
+        items.extend(
             [
                 DirectoryContextMenu(
                     parent_listview=view,
@@ -111,7 +106,7 @@ def update_file_controls(
                 for folder in folders
             ]
         )
-        view.controls.extend(
+        items.extend(
             [
                 FileContextMenu(
                     parent_listview=view,
@@ -123,4 +118,7 @@ def update_file_controls(
                 for document in documents
             ]
         )
+
+    # Keep the pre-created parent button at index 0; replace only the item controls
+    view.controls = [view._parent_button] + items
     view.update()

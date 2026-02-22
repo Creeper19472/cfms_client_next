@@ -6,7 +6,7 @@ from include.ui.controls.dialogs.explorer import (
     OpenDirectoryDialog,
 )
 from include.ui.controls.dialogs.search import SearchDialog
-from include.ui.controls.explorer.file_controls import get_directory
+from include.ui.controls.explorer.path import get_directory
 from include.controllers.explorer.bar import FileSortBarController
 from include.util.locale import get_translation
 

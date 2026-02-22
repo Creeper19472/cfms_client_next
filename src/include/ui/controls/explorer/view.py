@@ -1,4 +1,4 @@
-from typing import Optional, cast
+from typing import Optional
 from typing import TYPE_CHECKING
 from copy import deepcopy
 
@@ -82,6 +82,15 @@ class FileListView(ft.ListView):
         self.selection_mode: bool = False
         self.selected_file_ids: set[str] = set()
         self.selected_directory_ids: set[str] = set()
+
+        # Pre-created parent directory button (declarative: visibility is toggled, not rebuilt)
+        self._parent_button = ft.ListTile(
+            leading=ft.Icon(ft.Icons.ARROW_BACK),
+            title=ft.Text("<...>"),
+            subtitle=ft.Text(_("Parent directory")),
+            visible=False,
+        )
+        self.controls = [self._parent_button]
 
     def sort_files(
         self,
@@ -213,7 +222,8 @@ class FileManagerView(ft.Container):
         self.sort_bar = FileSortBar(self, visible=False)
         self.file_listview = FileListView(self, visible=False)
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.access_denied_view: AccessDeniedView | None = None
+        # Pre-created with visible=False; visibility is toggled declaratively (not appended lazily)
+        self.access_denied_view = AccessDeniedView(self, "", visible=False)
 
         self.content = ft.Column(
             controls=[
@@ -226,6 +236,7 @@ class FileManagerView(ft.Container):
                 # File list, initially hidden until loading is complete
                 self.sort_bar,
                 self.file_listview,
+                self.access_denied_view,
             ],
         )
 
@@ -239,16 +250,14 @@ class FileManagerView(ft.Container):
         self.file_listview.visible = False
         self.sort_bar.visible = False
         self.progress_ring.visible = True
-        if self.access_denied_view is not None:
-            self.access_denied_view.visible = False
+        self.access_denied_view.visible = False
         self.update()
 
     def show_content(self):
         self.file_listview.visible = True
         self.sort_bar.visible = True
         self.progress_ring.visible = False
-        if self.access_denied_view is not None:
-            self.access_denied_view.visible = False
+        self.access_denied_view.visible = False
         self.update()
 
     def show_access_denied_view(self, reason: str):
@@ -258,25 +267,14 @@ class FileManagerView(ft.Container):
         Args:
             reason: The reason for access denial (from server message)
         """
-        # Hide normal content
         self.file_listview.visible = False
         self.sort_bar.visible = False
         self.progress_ring.visible = False
-
-        # Create or update access denied view
-        if self.access_denied_view is None:
-            self.access_denied_view = AccessDeniedView(self, reason)
-            # Add it to the content column
-            cast(ft.Column, self.content).controls.append(self.access_denied_view)
-        else:
-            # Update the reason text using the proper method
-            self.access_denied_view.update_reason(reason)
-            self.access_denied_view.visible = True
-
+        self.access_denied_view.reason_text.value = reason
+        self.access_denied_view.visible = True
         self.update()
 
     def hide_access_denied_view(self):
         """Hide the access denied view and prepare to show normal content."""
-        if self.access_denied_view is not None:
-            self.access_denied_view.visible = False
+        self.access_denied_view.visible = False
         self.update()
