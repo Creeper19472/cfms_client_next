@@ -49,15 +49,11 @@ class ManagementNavigationBar(ft.NavigationBar):
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
 
-        if abs(e.control.selected_index - self.last_selected_index) > 1:
-            # If the user is jumping more than 1 page, use no animation for better UX
-            await self.parent_view.pageview.jump_to_page(e.control.selected_index)
-        else:
-            await self.parent_view.pageview.go_to_page(
-                e.control.selected_index,
-                animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
-                animation_duration=ft.Duration(milliseconds=400),
-            )
+        await self.parent_view.pageview.go_to_page(
+            e.control.selected_index,
+            animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+            animation_duration=ft.Duration(milliseconds=400),
+        )
 
         self.last_selected_index = self.selected_index
 

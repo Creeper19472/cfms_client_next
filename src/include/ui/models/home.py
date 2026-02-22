@@ -34,7 +34,6 @@ class HomeModel(Model):
         )
 
         self.controls = [
-
             self.pageview,
         ]
         self.navigation_bar = HomeNavigationBar(
