@@ -2601,20 +2601,56 @@ msgid "Block User"
 msgstr "封禁用户"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Reason"
-msgstr "原因"
+msgid "Block Types"
+msgstr "封禁类型"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Expires (YYYY-MM-DD HH:MM:SS, leave blank for permanent)"
-msgstr "到期时间（格式：YYYY-MM-DD HH:MM:SS，留空表示永久）"
+msgid "(No target selected)"
+msgstr "（未选择目标）"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Browse..."
+msgstr "浏览..."
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Select Directory"
+msgstr "选择目录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Select Document"
+msgstr "选择文档"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Expiry"
+msgstr "到期时间"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Set expiry time"
+msgstr "设置到期时间"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Pick Date"
+msgstr "选择日期"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Pick Time"
+msgstr "选择时间"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
 msgid "Block"
 msgstr "封禁"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Invalid date format. Please use YYYY-MM-DD HH:MM:SS."
-msgstr "日期格式无效，请使用 YYYY-MM-DD HH:MM:SS 格式。"
+msgid "Please select at least one block type."
+msgstr "请至少选择一种封禁类型。"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Please select a target."
+msgstr "请选择一个目标。"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Please set a valid expiry date and time."
+msgstr "请设置有效的到期日期和时间。"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
 msgid "User Blocks"
@@ -2625,16 +2661,20 @@ msgid "No active blocks found."
 msgstr "未找到有效的封禁记录。"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Effective block: blocked since {since}, expires {expires}"
-msgstr "有效封禁：封禁开始于 {since}，到期时间：{expires}"
+msgid "Effective block: from {since}, expires {expires}"
+msgstr "有效封禁：开始于 {since}，到期时间：{expires}"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
 msgid "{count} underlying record(s)"
 msgstr "共 {count} 条记录"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Created: {created} | Expires: {expires} | ID: {id}"
-msgstr "创建时间：{created} | 到期时间：{expires} | 记录ID：{id}"
+msgid "Types: {types} | Target: {target}"
+msgstr "类型：{types} | 目标：{target}"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Created: {created} | Active from: {not_before} | Expires: {expires} | ID: {id}"
+msgstr "创建时间：{created} | 生效时间：{not_before} | 到期时间：{expires} | 记录ID：{id}"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
 msgid "Revoke"
@@ -2645,8 +2685,8 @@ msgid "Permanent"
 msgstr "永久"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "(No reason provided)"
-msgstr "（未提供原因）"
+msgid "Immediate"
+msgstr "立即生效"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py
 msgid "Close"

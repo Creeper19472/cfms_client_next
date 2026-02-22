@@ -244,20 +244,40 @@ class BlockUserDialogController(Controller["BlockUserDialog"]):
         super().__init__(control)
 
     async def action_block_user(self):
-        reason = self.control.reason_field.value or ""
-        expires_str = self.control.expires_field.value.strip() if self.control.expires_field.value else ""
+        # Get block types from SegmentedButton
+        block_types = list(self.control.block_types_button.selected)
+        if not block_types:
+            self.control.send_error(_("Please select at least one block type."))
+            self.control.enable_interactions()
+            return
 
-        data: dict = {"username": self.control.username, "reason": reason}
-        if expires_str:
-            try:
-                expires_ts = datetime.fromisoformat(expires_str).timestamp()
-            except ValueError:
+        # Build target dict
+        target_type = self.control.target_type_radio.value
+        target: dict = {"type": target_type}
+        if target_type != "all":
+            if not self.control.target_id:
+                self.control.send_error(_("Please select a target."))
+                self.control.enable_interactions()
+                return
+            target["id"] = self.control.target_id
+
+        data: dict = {
+            "username": self.control.username,
+            "block_types": block_types,
+            "target": target,
+        }
+
+        # Add not_after if expiry is enabled
+        if self.control.expires_enabled_checkbox.value:
+            date_val = self.control.date_picker.value
+            time_val = self.control.time_picker.value
+            if date_val is None or time_val is None:
                 self.control.send_error(
-                    _("Invalid date format. Please use YYYY-MM-DD HH:MM:SS.")
+                    _("Please set a valid expiry date and time.")
                 )
                 self.control.enable_interactions()
                 return
-            data["expires"] = expires_ts
+            data["not_after"] = datetime.combine(date_val, time_val).timestamp()
 
         response = await do_request(
             action="block_user",
@@ -305,7 +325,7 @@ class ListUserBlocksDialogController(Controller["ListUserBlocksDialog"]):
     async def action_revoke_block(self, block_id: str):
         response = await do_request(
             action="unblock_user",
-            data={"username": self.control.username, "block_id": block_id},
+            data={"block_id": block_id},
             username=self.app_shared.username,
             token=self.app_shared.token,
         )
