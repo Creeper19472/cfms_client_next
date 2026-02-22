@@ -8,7 +8,7 @@ description: Expert in WebSocket-based client-server communication for CFMS Clie
 CFMS Client NEXT communicates with the CFMS server exclusively through **WebSocket** connections. The protocol is JSON-based with a structured request/response pattern, supporting authentication, file transfers, and various document management operations.
 
 ### Protocol Version
-Current protocol version: **4** (defined in `include/constants.py`)
+Current protocol version: **9** (defined in `include/constants.py`)
 
 ## Connection Architecture
 
@@ -22,22 +22,24 @@ async def get_connection(
     disable_ssl_enforcement: bool = False,
     max_size: int = 2**20,  # 1MB default message size
     proxy: str | Literal[True] | None = True,
+    force_ipv4: bool = False,
 ) -> ClientConnection
 ```
 
 **Features**:
-- SSL/TLS support with integrated CA certificates
+- SSL/TLS support with CA certificate directory
 - Optional SSL verification bypass for development
 - Proxy support (system proxy, custom proxy, or none)
 - Configurable maximum message size
+- IPv4-only mode via `force_ipv4` parameter
 
 **SSL Configuration**:
 ```python
 ssl_context = ssl.create_default_context()
 
 if not disable_ssl_enforcement:
-    # Production: Use integrated CA certificate
-    ssl_context.load_verify_locations(cadata=INTEGRATED_CA_CERT)
+    # Production: Use CA certificate directory
+    ssl_context.load_verify_locations(capath=f"{ROOT_PATH}/include/ca/")
     ssl_context.check_hostname = True
     ssl_context.verify_mode = ssl.CERT_REQUIRED
 else:
@@ -46,9 +48,9 @@ else:
     ssl_context.verify_mode = ssl.CERT_NONE
 ```
 
-**Integrated CA Certificate**:
-- Defined in `include/constants.py` as `INTEGRATED_CA_CERT`
-- Contains both root and intermediate CA certificates
+**CA Certificate Directory**:
+- Located at `include/ca/` relative to `ROOT_PATH`
+- Contains root and intermediate CA certificates as PEM files
 - Used for validating CFMS server certificates
 
 ### Connection State Management
@@ -85,18 +87,20 @@ Standard request structure:
         "key1": "value1",
         "key2": "value2"
     },
-    "message": "optional message string",
     "username": "user123",
-    "token": "auth_token_here"
+    "token": "auth_token_here",
+    "timestamp": 1234567890.123,
+    "nonce": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
 **Key Fields**:
 - `action` (required): Command/operation name
 - `data` (optional): Operation-specific payload
-- `message` (optional): Additional message context
 - `username` (optional): User identifier (from AppShared if not provided)
 - `token` (optional): Authentication token (from AppShared if not provided)
+- `timestamp`: Unix timestamp added automatically by `_request()`
+- `nonce`: UUID4 string added automatically by `_request()` to prevent replay attacks
 
 ### Response Format
 
@@ -386,9 +390,10 @@ for attempt in range(max_retries):
             raise
         # Reconnect
         conn = await get_connection(
-            server_address=app_shared.server_address,
+            server_address=app_shared.get_not_none_attribute("server_address"),
             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
             proxy=app_shared.preferences["settings"]["proxy_settings"],
+            force_ipv4=app_shared.preferences["settings"].get("force_ipv4", False),
         )
         app_shared.conn = conn
         continue
@@ -403,12 +408,14 @@ Always use `do_request()` or `do_request_2()` which include retry logic, rather 
 **Proxy Configuration**:
 - Stored in `AppShared.preferences["settings"]["proxy_settings"]`
 - Types: `True` (system proxy), `"http://proxy:port"` (custom), `None` (no proxy)
+- Custom proxy string stored separately in `"custom_proxy"` preference key
 
 **Usage**:
 ```python
 conn = await get_connection(
     server_address="wss://server.example.com",
-    proxy=app_shared.preferences["settings"]["proxy_settings"]
+    proxy=app_shared.preferences["settings"]["proxy_settings"],
+    force_ipv4=app_shared.preferences["settings"].get("force_ipv4", False),
 )
 ```
 
@@ -440,8 +447,7 @@ conn = await get_connection(
 
 ### Password Handling
 - Never send plaintext passwords
-- Hash passwords before transmission (typically SHA256 or similar)
-- Server performs additional hashing/salting
+- Hash passwords? No — passwords are sent as plaintext over the encrypted WebSocket channel; the server handles hashing
 
 ### File Encryption
 - Server may encrypt files with AES-256-CBC
@@ -451,6 +457,7 @@ conn = await get_connection(
 ## Debugging
 
 ### Developer Tools
+- **Ctrl+W**: Toggle semantics debugger
 - **Ctrl+Q**: Open `DevRequestDialog` for manual request testing
 - Allows sending arbitrary JSON requests
 - Useful for testing new protocol commands

@@ -7,11 +7,12 @@ description: Expert in authentication, authorization, security practices, and SS
 
 CFMS Client NEXT implements a comprehensive security model including:
 - WebSocket communication over SSL/TLS
-- Token-based authentication
+- Token-based authentication with optional two-factor authentication (TOTP)
 - Role-based access control (RBAC)
 - AES file encryption for transfers
 - SHA256 hash verification
-- Integrated CA certificate validation
+- CA certificate validation via a bundled CA directory
+- Per-user Data Encryption Key (DEK) for config encryption
 
 ## Authentication System
 
@@ -30,50 +31,51 @@ CFMS Client NEXT implements a comprehensive security model including:
    ```
 
 2. **Password Processing**:
-   - Never send plaintext passwords
-   - Hash password client-side (typically SHA256 or similar)
-   - Server performs additional hashing/salting
+   - Passwords are sent to the server as-is over the encrypted WebSocket connection
+   - The server handles hashing and salting server-side
 
 3. **Login Request**:
    ```python
-   response = await do_request_2(
-       action="login",
-       data={
+   response = await do_request(
+       "login",
+       {
            "username": username,
-           "password": password_hash,
-       }
+           "password": password,  # sent as plaintext over the encrypted channel
+       },
    )
    ```
 
 4. **Response Handling**:
    ```python
-   if response.code == 200:
-       # Success - extract auth data
-       token = response.data["token"]
-       token_exp = response.data["exp"]  # Unix timestamp
-       nickname = response.data.get("nickname", username)
-       permissions = response.data.get("permissions", [])
-       groups = response.data.get("groups", [])
-       
-       # Store in AppShared
-       app_shared = AppShared()
-       app_shared.username = username
-       app_shared.token = token
-       app_shared.token_exp = token_exp
-       app_shared.nickname = nickname
-       app_shared.user_permissions = permissions
-       app_shared.user_groups = groups
-       
-       # Navigate to home
-       await page.push_route("/home")
-       
-   elif response.code == 401:
-       # Invalid credentials
-       show_error(_("Invalid username or password"))
-       
-   elif response.code == 403:
-       # Account locked or disabled
-       show_error(_("Account is locked or disabled"))
+   if (code := response["code"]) == 200:
+       # Regular login without 2FA
+       await _complete_login(username, response["data"], password)
+
+   elif code == 202:
+       # 2FA verification required
+       # Show TwoFactorVerifyDialog and await user code entry
+       ...
+
+   elif code == 403:
+       # Password must be changed before login
+       page.show_dialog(PasswdUserDialog(username, tip=_("Password must be changed before login.")))
+
+   else:
+       show_error(_("Login failed: ({code}) {message}").format(
+           code=code, message=response["message"]
+       ))
+   ```
+
+   After successful authentication (`code == 200`), the `_complete_login` helper stores data in `AppShared`:
+   ```python
+   app_shared.username = username
+   app_shared.nickname = data.get("nickname")
+   app_shared.token = data["token"]
+   app_shared.token_exp = data.get("exp")
+   app_shared.user_permissions = data["permissions"]
+   app_shared.user_groups = data["groups"]
+   app_shared.user_2fa_enabled = data.get("has_2fa", False)
+   app_shared.pending_2fa_verification = False
    ```
 
 ### Token Management
@@ -245,10 +247,10 @@ def has_permission(permission: str) -> bool:
 
 ### Certificate Validation
 
-**Integrated CA Certificate**:
-Location: `include/constants.py` - `INTEGRATED_CA_CERT`
+**CA Certificate Directory**:
+Location: `include/ca/` directory (relative to `ROOT_PATH`)
 
-Contains:
+Contains PEM-encoded certificates:
 1. CFMS Validation Root CA (self-signed root)
 2. CFMS Intermediate CA (signed by root)
 
@@ -263,7 +265,7 @@ ssl_context = ssl.create_default_context()
 
 if not disable_ssl_enforcement:
     # Production mode: Strict validation
-    ssl_context.load_verify_locations(cadata=INTEGRATED_CA_CERT)
+    ssl_context.load_verify_locations(capath=f"{ROOT_PATH}/include/ca/")
     ssl_context.check_hostname = True
     ssl_context.verify_mode = ssl.CERT_REQUIRED
 else:
@@ -377,17 +379,15 @@ final_chunk = unpad(decrypted_chunk, AES.block_size)
 
 ### Password Change
 
-**UI**: Password change dialog (`include/ui/controls/dialogs/passwd.py`)
+**UI**: Password change dialog (`include/ui/controls/dialogs/admin/accounts.py` - `PasswdUserDialog`)
 **Controller**: `include/controllers/dialogs/passwd.py`
 
 **Process**:
 1. User enters old password
 2. User enters new password (twice for confirmation)
 3. Client validates: new password meets requirements
-4. Client hashes both passwords
-5. Send change request
-6. Server validates old password
-7. Server updates password
+4. Send change request with plaintext passwords over the encrypted channel
+5. Server validates old password and updates with hashing/salting
 
 ```python
 async def change_password(old_pass: str, new_pass: str) -> bool:
@@ -396,16 +396,12 @@ async def change_password(old_pass: str, new_pass: str) -> bool:
         show_error(_("Password must be at least 8 characters"))
         return False
     
-    # Hash passwords
-    old_hash = hashlib.sha256(old_pass.encode()).hexdigest()
-    new_hash = hashlib.sha256(new_pass.encode()).hexdigest()
-    
-    # Request
+    # Request (passwords sent as plaintext over encrypted connection)
     response = await do_request_2(
         action="change_password",
         data={
-            "old_password": old_hash,
-            "new_password": new_hash,
+            "old_password": old_pass,
+            "new_password": new_pass,
         }
     )
     
@@ -437,7 +433,7 @@ async def change_password(old_pass: str, new_pass: str) -> bool:
 
 ### General Security
 
-1. **Never Store Plaintext Passwords**: Always hash before storing/transmitting
+1. **Never Store Plaintext Passwords**: Passwords are transmitted over the encrypted WebSocket channel and never stored on disk; the server handles hashing and salting
 2. **Use HTTPS/WSS Only**: No unencrypted connections in production
 3. **Validate All Inputs**: Both client and server side
 4. **Handle Errors Securely**: Don't leak sensitive info in error messages
@@ -568,10 +564,33 @@ async def handle_login_failure():
 2. Deploy update to all clients
 3. Revoke compromised certificates
 
+## Two-Factor Authentication (2FA)
+
+CFMS Client NEXT supports TOTP-based two-factor authentication.
+
+**Key Attributes in AppShared**:
+```python
+user_2fa_enabled: bool           # Whether the user has 2FA enabled
+pending_2fa_verification: bool   # Whether 2FA verification is pending for current login
+```
+
+**Login with 2FA**:
+- When the server returns `code == 202`, 2FA verification is required
+- The server response `data["method"]` indicates the method (currently `"totp"`)
+- `TwoFactorVerifyDialog` is shown to collect the TOTP code or recovery code
+- The 2FA code is submitted with another login request including `"2fa_token"` in the data
+
+**Setup/Management UI**:
+- `include/ui/models/settings/twofa.py`: 2FA settings model
+- `include/ui/controls/dialogs/twofa_setup.py`: Setup dialog
+- `include/ui/controls/dialogs/twofa_verify.py`: Verification dialog
+- `include/ui/controls/dialogs/backup_codes.py`: Backup codes dialog
+- `include/util/twofa.py`: 2FA utility functions
+- `include/classes/twofa.py`: 2FA data classes
+
 ## Future Security Enhancements
 
 Potential improvements:
-- Multi-factor authentication (MFA)
 - Biometric authentication (mobile)
 - Hardware security key support (FIDO2)
 - End-to-end encryption for files

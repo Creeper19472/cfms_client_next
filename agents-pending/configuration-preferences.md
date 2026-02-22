@@ -11,7 +11,7 @@ CFMS Client NEXT uses a dual-layer configuration system:
 
 ## AppShared Singleton
 
-**Location**: `include/classes/config.py`
+**Location**: `include/classes/shared.py`
 
 The `AppShared` class is a thread-safe singleton managing all global application state.
 
@@ -75,37 +75,57 @@ username: Optional[str]                # Current logged-in user
 token: Optional[str]                   # Authentication token
 token_exp: Optional[float]             # Token expiration (Unix timestamp)
 nickname: Optional[str]                # Display name
+avatar_id: Optional[str]               # User avatar identifier
+avatar_path: Optional[str]             # Local path to cached avatar
 user_permissions: list[str]            # Permission strings
 user_groups: list[str]                 # Group memberships
+user_2fa_enabled: bool                 # Whether the user has 2FA enabled
+pending_2fa_verification: bool         # Whether 2FA verification is pending
 ```
 
 #### Services and Connections
 ```python
 conn: Optional[ClientConnection]       # Active WebSocket connection
 ph_service: Optional[PermissionHandler] # Mobile permissions service
+service_manager: Optional[ServiceManager]  # Background services manager
+floating_upgrade_button: Optional[FloatingUpgradeButton]  # Upgrade button reference
 ```
 
-#### User Preferences
+#### Runtime Flags
+```python
+is_mobile: bool                        # Whether running on mobile
+is_production: bool                    # Whether running from packaged runtime
+```
+
+#### User Preferences and Encryption
 ```python
 preferences: dict                      # Loaded from YAML file
-user_perference: Optional[UserPreference]  # Typed preference wrapper (legacy)
+user_perference: Optional[UserPreference]  # Typed preference wrapper
+dek: Optional[bytes]                   # In-memory Data Encryption Key (never persisted)
 ```
 
 ### Helper Methods
 
 ```python
-def get_not_none_attribute(self, attr_name: str) -> Any:
-    """Get attribute, raising error if None."""
-    value = getattr(self, attr_name, None)
-    if value is None:
-        raise ValueError(f"{attr_name} is not set")
-    return value
+def get_not_none_attribute(self, name: str) -> Any:
+    """Get attribute, asserting it is not None."""
+    _attr = getattr(self, name)
+    assert _attr is not None, f"Attribute '{name}' must not be None"
+    return _attr
+
+def dump_preferences(self) -> None:
+    """Save current preferences to disk."""
+    with open(PREFERENCES_PATH, "w", encoding="utf-8") as f:
+        yaml.safe_dump(self.preferences, f)
 ```
 
 Usage:
 ```python
 app_shared = AppShared()
-conn = app_shared.get_not_none_attribute("conn")  # Raises if conn is None
+conn = app_shared.get_not_none_attribute("conn")  # Raises AssertionError if conn is None
+
+# Save preferences (use this instead of manual YAML writes)
+app_shared.dump_preferences()
 ```
 
 ### Usage Pattern
@@ -132,38 +152,20 @@ if app_shared.token and app_shared.username:
 
 **Location**: `{FLET_APP_STORAGE_DATA}/preferences.yaml`
 
-Path constant: `include/classes/config.py` - `PREFERENCES_PATH`
+Path constant: `include/classes/shared.py` - `PREFERENCES_PATH`
 
 ### Preferences Structure
 
+The default preferences written by `_init_preferences()`:
+
 ```yaml
 settings:
-  language: "zh_CN"  # or "en", "en_US", etc.
-  
-  proxy_settings: null  # or "http://proxy:port" or true (system proxy)
-  
-  connection:
-    default_server: "wss://server.example.com"
-    remember_server: true
-    auto_connect: false
-    
-  safety:
-    verify_ssl: true
-    allow_untrusted_servers: false
-    
-  ui:
-    theme: "dark"  # or "light", "system"
-    font_size: 14
-    animations_enabled: true
-    
-  notifications:
-    enabled: true
-    sound_enabled: false
-    
-  advanced:
-    max_upload_size: 104857600  # 100MB in bytes
-    concurrent_uploads: 3
-    chunk_size: 8192
+  language: "zh_CN"               # or "en", etc.
+  proxy_settings: null            # null = no proxy, true = system proxy, "http://proxy:port" = custom
+  custom_proxy: ""                # Custom proxy URL string
+  enable_conn_history_logging: false  # Whether to log connection history
+  force_ipv4: false               # Force IPv4 connections only
+  update_channel: "stable"        # Update channel: "stable", "beta", "alpha"
 ```
 
 ### Initialization
@@ -179,20 +181,20 @@ with open(PREFERENCES_PATH, "r", encoding="utf-8") as file:
 
 **`_init_preferences()` method**:
 ```python
-def _init_preferences(self):
-    """Create default preferences file."""
-    default_prefs = {
+def _init_preferences(self) -> None:
+    """Initialize preferences file with default values."""
+    default_preferences = {
         "settings": {
             "language": "zh_CN",
             "proxy_settings": None,
-            # ... other defaults
+            "custom_proxy": "",
+            "enable_conn_history_logging": False,
+            "force_ipv4": False,
+            "update_channel": DEFAULT_UPDATE_CHANNEL.value,
         }
     }
-    
-    os.makedirs(os.path.dirname(PREFERENCES_PATH), exist_ok=True)
-    
-    with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
-        yaml.dump(default_prefs, file, default_flow_style=False)
+    with open(PREFERENCES_PATH, "w", encoding="utf-8") as f:
+        yaml.safe_dump(default_preferences, f)
 ```
 
 ### Accessing Preferences
@@ -206,8 +208,8 @@ language = app_shared.preferences.get("settings", {}).get("language", "zh_CN")
 # Get proxy settings
 proxy = app_shared.preferences["settings"]["proxy_settings"]
 
-# Get nested settings
-auto_connect = app_shared.preferences.get("settings", {}).get("connection", {}).get("auto_connect", False)
+# Get force_ipv4 flag
+force_ipv4 = app_shared.preferences["settings"].get("force_ipv4", False)
 ```
 
 ### Modifying Preferences
@@ -218,18 +220,8 @@ app_shared = AppShared()
 # Modify in memory
 app_shared.preferences["settings"]["language"] = "en"
 
-# Persist to file
-with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
-    yaml.dump(app_shared.preferences, file, default_flow_style=False)
-```
-
-**Helper function** (recommended to create):
-```python
-async def save_preferences():
-    """Save current preferences to file."""
-    app_shared = AppShared()
-    with open(PREFERENCES_PATH, "w", encoding="utf-8") as file:
-        yaml.dump(app_shared.preferences, file, default_flow_style=False)
+# Persist to file using the built-in method
+app_shared.dump_preferences()
 ```
 
 ## Settings UI
@@ -243,6 +235,8 @@ Settings pages organized by category:
 - `connection.py`: Connection settings (server URL, proxy, SSL)
 - `language.py`: Language/locale settings
 - `safety.py`: Security settings
+- `twofa.py`: Two-factor authentication settings
+- `updates.py`: Update channel settings
 
 Each settings page:
 1. Displays current preference values
@@ -396,17 +390,22 @@ USER_PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/user_preferences"
 ### Version Information
 
 ```python
-CHANNEL = "alpha"  # or "beta", "stable"
-BUILD_VERSION = "v0.2.36"
-MODIFIED = "20251119"  # YYYYMMDD format
-APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL} NEXT"
-# Result: "0.2.36.20251119_alpha NEXT"
+from include.classes.version import ChannelType
+
+CHANNEL = ChannelType.STABLE  # ChannelType.STABLE, .BETA, or .ALPHA
+BUILD_VERSION = "v0.6.1"
+MODIFIED = "20260221"  # YYYYMMDD format
+
+if CHANNEL == ChannelType.STABLE:
+    APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED} NEXT"
+else:
+    APP_VERSION = f"{BUILD_VERSION[1:]}.{MODIFIED}_{CHANNEL.value} NEXT"
 ```
 
 ### Protocol Version
 
 ```python
-PROTOCOL_VERSION = 4
+PROTOCOL_VERSION = 9
 ```
 
 Used for:
@@ -421,17 +420,14 @@ DEFAULT_WINDOW_TITLE = "CFMS Client"
 GITHUB_REPO = "Creeper19472/cfms_client_next"
 ```
 
-### Integrated CA Certificate
+### CA Certificate Directory
+
+SSL certificates for server validation are stored in the `include/ca/` directory
+relative to `ROOT_PATH`. The directory path is used via `capath` in the SSL context:
 
 ```python
-INTEGRATED_CA_CERT = """
------BEGIN CERTIFICATE-----
-...
------END CERTIFICATE-----
-"""
+ssl_context.load_verify_locations(capath=f"{ROOT_PATH}/include/ca/")
 ```
-
-Multi-line string containing PEM-encoded certificates.
 
 ## State Persistence Strategies
 
