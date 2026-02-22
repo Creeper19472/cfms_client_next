@@ -29,7 +29,7 @@ class RuleManagerController(Controller["RuleManager"]):
             case _:
                 raise ValueError(f"Invalid object type '{self.control.object_type}'")
 
-        self.control.content_textfield.visible = False
+        self.control.source_editor.visible = False
         self.control.lock_edit()
 
         info_resp = await do_request(
@@ -39,18 +39,18 @@ class RuleManagerController(Controller["RuleManager"]):
             token=self.app_shared.token,
         )
         if info_resp["code"] != 200:
-            self.control.content_textfield.value = (
+            self.control.source_editor.value = (
                 f"Failed to fetch current rules: {info_resp['message']}"
             )
         else:
             self.control.cached_access_rules = info_resp["data"]["rules"]
             self.control.inherit_checkbox.value = info_resp["data"]["inherit"]
-            self.control.content_textfield.value = json.dumps(
+            self.control.source_editor.value = json.dumps(
                 self.control.cached_access_rules, indent=4
             )
             self.control.unlock_edit()
 
-        self.control.content_textfield.visible = True
+        self.control.source_editor.visible = True
         self.control.update()
 
         self.control.visual_editor.set_rule_data(self.control.cached_access_rules)

@@ -3,6 +3,7 @@ from typing import Any
 import json
 
 import flet as ft
+import flet_code_editor as fce
 
 from include.controllers.dialogs.rulemanager import (
     RuleManagerController,
@@ -39,14 +40,12 @@ class RuleManager(AlertDialog):
         )
 
         self.progress_ring = ft.ProgressRing(visible=False)
-        self.content_textfield = ft.TextField(
-            label=_("Rule Content"),
-            multiline=True,
-            min_lines=16,
-            # max_lines=16,
+        self.source_editor = fce.CodeEditor(
+            language=fce.CodeLanguage.JSON,
             expand=True,
             expand_loose=True,
         )
+        self.error_text = ft.Text(color=ft.Colors.ERROR, visible=False)
         self.content_info = ft.Markdown(
             _(
                 "For rule format documentation, please refer to [CFMS Server Documentation]"
@@ -81,7 +80,8 @@ class RuleManager(AlertDialog):
                                 ft.Container(
                                     ft.Column(
                                         controls=[
-                                            self.content_textfield,
+                                            self.source_editor,
+                                            self.error_text,
                                             self.content_info,
                                         ],
                                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -100,7 +100,7 @@ class RuleManager(AlertDialog):
                 on_change=self.on_editor_change,
             ),
             width=720,
-            height=540,
+            # height=540,
         )
         self.actions = [
             ft.Row(
@@ -126,15 +126,15 @@ class RuleManager(AlertDialog):
     async def on_editor_change(self, event: ft.Event[ft.Tabs]):
         if event.control.selected_index == 0:
             # Switch to visual editor
-            self.content_textfield.error = None
+            self.show_source_error()
             try:
                 rules_data = (
-                    json.loads(self.content_textfield.value)
-                    if self.content_textfield.value
+                    json.loads(self.source_editor.value)
+                    if self.source_editor.value
                     else {}
                 )
             except json.decoder.JSONDecodeError:
-                self.content_textfield.error = _("The submitted rule is not valid JSON")
+                self.show_source_error(_("The submitted rule is not valid JSON"))
                 self.update()
                 return
 
@@ -152,17 +152,23 @@ class RuleManager(AlertDialog):
         super().did_mount()
         self.page.run_task(self.controller.fetch_rule)
 
-    def will_unmount(self): ...
+    def show_source_error(self, msg: str = ""):
+        """
+        This function clears previous error texts and shows the new one.
+        """
+        self.error_text.value = msg
+        self.error_text.visible = bool(msg)
+        self.update()
 
     def lock_edit(self):
-        self.content_textfield.disabled = True
+        self.source_editor.disabled = True
         self.progress_ring.visible = True
         self.submit_button.visible = False
-        self.content_textfield.error = None
+        self.show_source_error()
         self.update()
 
     def unlock_edit(self):
-        self.content_textfield.disabled = False
+        self.source_editor.disabled = False
         self.progress_ring.visible = False
         self.submit_button.visible = True
         self.update()
@@ -170,9 +176,7 @@ class RuleManager(AlertDialog):
     def sync_editor_data(self):
         if self.visual_editor.modified:
             self.cached_access_rules = deepcopy(self.visual_editor.dict_data)
-            self.content_textfield.value = json.dumps(
-                self.cached_access_rules, indent=4
-            )
+            self.source_editor.value = json.dumps(self.cached_access_rules, indent=4)
             self.update()
 
     async def submit_button_click(self, event: ft.Event[ft.TextButton]):
@@ -183,14 +187,14 @@ class RuleManager(AlertDialog):
         try:
             data = {
                 "access_rules": (
-                    json.loads(self.content_textfield.value)
-                    if self.content_textfield.value
+                    json.loads(self.source_editor.value)
+                    if self.source_editor.value
                     else {}
                 ),
                 "inherit_parent": self.inherit_checkbox.value,
             }
         except json.decoder.JSONDecodeError:
-            self.content_textfield.error = _("The submitted rule is not valid JSON")
+            self.show_source_error(_("The submitted rule is not valid JSON"))
             self.unlock_edit()
             return
 

@@ -23,6 +23,7 @@ dependencies = [
   "pyotp",
   "pillow",
   "qrcode",
+  "flet-code-editor>=0.80.6.dev7651",
 ]
 
 [tool.flet]
