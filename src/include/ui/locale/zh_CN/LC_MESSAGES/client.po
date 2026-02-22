@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-20 23:49+0800\n"
+"POT-Creation-Date: 2026-02-23 00:31+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -52,7 +52,7 @@ msgstr "请在设置中允许应用访问您的文件。"
 msgid "Failed to delete user group: ({code}) {message}"
 msgstr "删除用户组失败：({code}) {message}"
 
-#: .\include\controllers\contextmenus\management.py:37
+#: .\include\controllers\contextmenus\management.py:39
 msgid "Failed to delete user: ({code}) {message}"
 msgstr "删除用户失败：({code}) {message}"
 
@@ -107,59 +107,84 @@ msgstr "设置头像时发生错误。请重试。"
 msgid "Get directory failed: "
 msgstr "获取目录失败："
 
-#: .\include\controllers\dialogs\management.py:44
+#: .\include\controllers\dialogs\management.py:46
 msgid "Create user failed: ({code}) {message}"
 msgstr "创建用户失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\management.py:73
+#: .\include\controllers\dialogs\management.py:75
 msgid "Rename user nickname failed: ({code}) {message}"
 msgstr "重命名用户昵称失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\management.py:100
+#: .\include\controllers\dialogs\management.py:102
 msgid "Change user group failed: ({code}) {message}"
 msgstr "更改用户组失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\management.py:123
+#: .\include\controllers\dialogs\management.py:125
 msgid "Failed to fetch user group list: ({code}) {message}"
 msgstr "拉取用户组列表失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\management.py:143
-#: .\include\controllers\dialogs\management.py:184
+#: .\include\controllers\dialogs\management.py:145
+#: .\include\controllers\dialogs\management.py:186
 msgid "Failed to fetch user info: ({code}) {message}"
 msgstr "拉取用户信息失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\management.py:191
+#: .\include\controllers\dialogs\management.py:193
 msgid "Username: {username}"
 msgstr "用户名：{username}"
 
-#: .\include\controllers\dialogs\management.py:196
+#: .\include\controllers\dialogs\management.py:198
 msgid "User nickname: {nickname}"
 msgstr "用户昵称：{nickname}"
 
-#: .\include\controllers\dialogs\management.py:200
+#: .\include\controllers\dialogs\management.py:202
+#: .\include\ui\controls\dialogs\admin\accounts.py:818
 msgid "(None)"
 msgstr "（无）"
 
-#: .\include\controllers\dialogs\management.py:205
+#: .\include\controllers\dialogs\management.py:207
 msgid "User permissions: {permissions}"
 msgstr "用户权限：{permissions}"
 
-#: .\include\controllers\dialogs\management.py:210
+#: .\include\controllers\dialogs\management.py:212
 msgid "User groups: {groups}"
 msgstr "用户组：{groups}"
 
-#: .\include\controllers\dialogs\management.py:213
+#: .\include\controllers\dialogs\management.py:215
 msgid "User registration time: {created_time}"
 msgstr "用户注册时间：{created_time}"
 
-#: .\include\controllers\dialogs\management.py:220
+#: .\include\controllers\dialogs\management.py:222
 #: .\include\ui\controls\contextmenus\management.py:39
 msgid "Last login: {last_login}"
 msgstr "最后登录于：{last_login}"
 
-#: .\include\controllers\dialogs\management.py:227
+#: .\include\controllers\dialogs\management.py:229
 msgid "Password last changed: {passwd_changed_time}"
 msgstr "密码上次更改时间：{passwd_changed_time}"
+
+#: .\include\controllers\dialogs\management.py:250
+msgid "Please select at least one block type."
+msgstr "请至少选择一种封禁类型。"
+
+#: .\include\controllers\dialogs\management.py:259
+msgid "Please select a target."
+msgstr "请选择一个目标。"
+
+#: .\include\controllers\dialogs\management.py:276
+msgid "Please set a valid expiry date and time."
+msgstr "请设置有效的到期日期和时间。"
+
+#: .\include\controllers\dialogs\management.py:290
+msgid "Failed to block user: ({code}) {message}"
+msgstr "封禁用户失败：({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:314
+msgid "Failed to fetch user blocks: ({code}) {message}"
+msgstr "获取封禁记录失败：({code}) {message}"
+
+#: .\include\controllers\dialogs\management.py:334
+msgid "Failed to revoke block: ({code}) {message}"
+msgstr "解除封禁失败：({code}) {message}"
 
 #: .\include\controllers\dialogs\menus.py:59
 #: .\include\ui\controls\dialogs\admin\groups.py:179
@@ -198,15 +223,15 @@ msgstr "父级目录ID：{parent_id}"
 msgid "Access rules: {access_rules}"
 msgstr "访问规则：{access_rules}"
 
-#: .\include\controllers\dialogs\passwd.py:38
+#: .\include\controllers\dialogs\passwd.py:40
 msgid "Change password failed: {message}"
 msgstr "修改密码失败：{message}"
 
-#: .\include\controllers\dialogs\passwd.py:48
+#: .\include\controllers\dialogs\passwd.py:50
 msgid "You have been logged out, please restart the application manually"
 msgstr "您已登出，请手动重启应用"
 
-#: .\include\controllers\dialogs\passwd.py:55
+#: .\include\controllers\dialogs\passwd.py:57
 msgid "Password for user '{username}' changed successfully."
 msgstr "用户 '{username}' 的密码已成功更改。"
 
@@ -686,6 +711,7 @@ msgstr "下载"
 #: .\include\ui\controls\components\visualmgr\editor.py:608
 #: .\include\ui\controls\contextmenus\explorer.py:76
 #: .\include\ui\controls\contextmenus\explorer.py:212
+#: .\include\ui\controls\dialogs\admin\accounts.py:470
 #: .\include\ui\controls\dialogs\authorize.py:123
 msgid "Move"
 msgstr "移动"
@@ -702,11 +728,12 @@ msgstr "删除"
 
 #: .\include\ui\controls\components\explorer\bar.py:76
 #: .\include\ui\controls\components\rulemanager.py:111
-#: .\include\ui\controls\dialogs\admin\accounts.py:82
-#: .\include\ui\controls\dialogs\admin\accounts.py:162
-#: .\include\ui\controls\dialogs\admin\accounts.py:228
-#: .\include\ui\controls\dialogs\admin\accounts.py:285
-#: .\include\ui\controls\dialogs\admin\accounts.py:381
+#: .\include\ui\controls\dialogs\admin\accounts.py:93
+#: .\include\ui\controls\dialogs\admin\accounts.py:186
+#: .\include\ui\controls\dialogs\admin\accounts.py:252
+#: .\include\ui\controls\dialogs\admin\accounts.py:309
+#: .\include\ui\controls\dialogs\admin\accounts.py:405
+#: .\include\ui\controls\dialogs\admin\accounts.py:532
 #: .\include\ui\controls\dialogs\admin\groups.py:49
 #: .\include\ui\controls\dialogs\admin\groups.py:130
 #: .\include\ui\controls\dialogs\admin\groups.py:207
@@ -797,59 +824,59 @@ msgstr "ID：{dir_id}\n"
 msgid "Created at: {created_at}"
 msgstr "创建于：{created_at}"
 
-#: .\include\ui\controls\components\homepage.py:34
+#: .\include\ui\controls\components\homepage.py:39
 msgid "Files"
 msgstr "文件"
 
-#: .\include\ui\controls\components\homepage.py:36
+#: .\include\ui\controls\components\homepage.py:41
 msgid "Tasks"
 msgstr "任务"
 
-#: .\include\ui\controls\components\homepage.py:38
+#: .\include\ui\controls\components\homepage.py:43
 msgid "Home"
 msgstr "主页"
 
-#: .\include\ui\controls\components\homepage.py:39
+#: .\include\ui\controls\components\homepage.py:44
 msgid "More"
 msgstr "更多"
 
-#: .\include\ui\controls\components\homepage.py:41
+#: .\include\ui\controls\components\homepage.py:46
 #: .\include\ui\controls\components\visualmgr\editor.py:613
 #: .\include\ui\controls\dialogs\authorize.py:128
 msgid "Manage"
 msgstr "管理"
 
-#: .\include\ui\controls\components\homepage.py:99
+#: .\include\ui\controls\components\homepage.py:100
 msgid "Welcome to Confidential Document Management System (CFMS)"
 msgstr "欢迎访问 保密文档管理系统（CFMS）"
 
-#: .\include\ui\controls\components\homepage.py:104
+#: .\include\ui\controls\components\homepage.py:105
 msgid ""
 "The sunset glow and the lone wild duck fly together, autumn water shares the "
 "same color with the vast sky."
 msgstr "落霞与孤鹜齐飞，秋水共长天一色。"
 
-#: .\include\ui\controls\components\homepage.py:140
+#: .\include\ui\controls\components\homepage.py:141
 msgid "ID: {id} (No longer exists)"
 msgstr "ID：{id}（不再存在）"
 
-#: .\include\ui\controls\components\homepage.py:216
+#: .\include\ui\controls\components\homepage.py:217
 msgid "This document no longer exists on the server."
 msgstr "此文档在服务器上不再存在。"
 
-#: .\include\ui\controls\components\homepage.py:239
+#: .\include\ui\controls\components\homepage.py:240
 msgid "Failed to download document: ({code}) {message}"
 msgstr "文档下载失败：({code}) {message}"
 
-#: .\include\ui\controls\components\homepage.py:247
+#: .\include\ui\controls\components\homepage.py:248
 msgid "Failed to download document: {error}"
 msgstr "文档下载失败：{error}"
 
-#: .\include\ui\controls\components\homepage.py:297
+#: .\include\ui\controls\components\homepage.py:298
 msgid "You have not favorited any documents or folders yet."
 msgstr "您尚未收藏任何文档或文件夹。"
 
-#: .\include\ui\controls\components\homepage.py:317
+#: .\include\ui\controls\components\homepage.py:318
 msgid "Favorites"
 msgstr "收藏"
 
@@ -870,8 +897,8 @@ msgstr ""
 "doc.readthedocs.io/zh-cn/latest/access_control.html)。"
 
 #: .\include\ui\controls\components\rulemanager.py:59
-#: .\include\ui\controls\dialogs\admin\accounts.py:79
-#: .\include\ui\controls\dialogs\admin\accounts.py:282
+#: .\include\ui\controls\dialogs\admin\accounts.py:90
+#: .\include\ui\controls\dialogs\admin\accounts.py:306
 #: .\include\ui\controls\dialogs\admin\groups.py:127
 #: .\include\ui\controls\dialogs\admin\groups.py:206
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:67
@@ -906,7 +933,9 @@ msgid "Add Rule Group"
 msgstr "添加规则组"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\views\tasks.py:460
+#: .\include\ui\controls\dialogs\admin\accounts.py:480
+#: .\include\ui\controls\dialogs\admin\accounts.py:779
+#: .\include\ui\controls\views\tasks.py:462
 msgid "All"
 msgstr "全部"
 
@@ -921,7 +950,7 @@ msgid "Match Mode"
 msgstr "匹配模式"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:102
-#: .\include\ui\models\manage.py:28
+#: .\include\ui\models\manage.py:36
 msgid "Groups"
 msgstr "用户组"
 
@@ -977,11 +1006,13 @@ msgid "Rule Group #{index}"
 msgstr "规则组 #{index}"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:598
+#: .\include\ui\controls\dialogs\admin\accounts.py:460
 #: .\include\ui\controls\dialogs\authorize.py:113
 msgid "Read"
 msgstr "读取"
 
 #: .\include\ui\controls\components\visualmgr\editor.py:603
+#: .\include\ui\controls\dialogs\admin\accounts.py:465
 #: .\include\ui\controls\dialogs\authorize.py:118
 msgid "Write"
 msgstr "写入"
@@ -1002,7 +1033,7 @@ msgstr ""
 #: .\include\ui\controls\contextmenus\explorer.py:70
 #: .\include\ui\controls\contextmenus\explorer.py:206
 #: .\include\ui\controls\contextmenus\group.py:55
-#: .\include\ui\controls\dialogs\admin\accounts.py:225
+#: .\include\ui\controls\dialogs\admin\accounts.py:249
 msgid "Rename"
 msgstr "重命名"
 
@@ -1052,6 +1083,7 @@ msgid "Members: {members}"
 msgstr "成员：{members}"
 
 #: .\include\ui\controls\contextmenus\management.py:43
+#: .\include\ui\controls\dialogs\admin\accounts.py:789
 msgid "(Unknown)"
 msgstr "（未知）"
 
@@ -1067,76 +1099,201 @@ msgstr "编辑用户组"
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:44
+#: .\include\ui\controls\contextmenus\management.py:83
+#: .\include\ui\controls\dialogs\admin\accounts.py:447
+msgid "Block User"
+msgstr "封禁用户"
+
+#: .\include\ui\controls\contextmenus\management.py:89
+msgid "View/Revoke Blocks"
+msgstr "查看/解除封禁"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:49
 msgid "{action_type} User Password"
 msgstr "{action_type}用户密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:45
+#: .\include\ui\controls\dialogs\admin\accounts.py:50
 msgid "Change"
 msgstr "更改"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:45
+#: .\include\ui\controls\dialogs\admin\accounts.py:50
 msgid "Reset"
 msgstr "重置"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:52
+#: .\include\ui\controls\dialogs\admin\accounts.py:57
 msgid "Old Password"
 msgstr "旧密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:60
+#: .\include\ui\controls\dialogs\admin\accounts.py:65
 msgid "New Password"
 msgstr "新密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:68
+#: .\include\ui\controls\dialogs\admin\accounts.py:74
+msgid "Generate a random password"
+msgstr "生成随机密码"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:79
 msgid "Bypass password requirements"
 msgstr "跳过密码要求"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:73
+#: .\include\ui\controls\dialogs\admin\accounts.py:84
 msgid "Force user to update password after next login"
 msgstr "强制用户在下次登录后更新密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:135
+#: .\include\ui\controls\dialogs\admin\accounts.py:159
 #: .\include\ui\controls\dialogs\admin\groups.py:32
 msgid "Create User"
 msgstr "创建用户"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:140
+#: .\include\ui\controls\dialogs\admin\accounts.py:164
 #: .\include\ui\controls\dialogs\password_confirm.py:46
 #: .\include\ui\controls\views\login.py:196
 msgid "Password"
 msgstr "密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:147
+#: .\include\ui\controls\dialogs\admin\accounts.py:171
 msgid "Nickname"
 msgstr "昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:152
+#: .\include\ui\controls\dialogs\admin\accounts.py:176
 #: .\include\ui\controls\views\admin\audit.py:37
 #: .\include\ui\controls\views\login.py:203
 msgid "Username"
 msgstr "用户名"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:158
+#: .\include\ui\controls\dialogs\admin\accounts.py:182
 #: .\include\ui\controls\dialogs\admin\groups.py:46
 #: .\include\ui\controls\dialogs\explorer.py:53
 msgid "Create"
 msgstr "创建"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:215
+#: .\include\ui\controls\dialogs\admin\accounts.py:239
 msgid "Rename User Nickname"
 msgstr "重命名用户昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:220
+#: .\include\ui\controls\dialogs\admin\accounts.py:244
 msgid "User's New Nickname"
 msgstr "用户的新昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:293
+#: .\include\ui\controls\dialogs\admin\accounts.py:317
 msgid "Change User Group"
 msgstr "更改用户组"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:370
+#: .\include\ui\controls\dialogs\admin\accounts.py:394
 msgid "User Details"
 msgstr "用户详情"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:481
+#: .\include\ui\controls\dialogs\authorize.py:44
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:46
+#: .\include\ui\controls\dialogs\contextmenu\move.py:55
+#: .\include\ui\controls\dialogs\view_access_entries.py:44
+msgid "Directory"
+msgstr "目录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:482
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
+#: .\include\ui\controls\dialogs\contextmenu\move.py:53
+msgid "Document"
+msgstr "文档"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:489
+#: .\include\ui\controls\dialogs\admin\accounts.py:621
+msgid "(No target selected)"
+msgstr "（未选择目标）"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:492
+msgid "Browse..."
+msgstr "浏览..."
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:501
+msgid "Set expiry time"
+msgstr "设置到期时间"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:515
+msgid "Pick Date"
+msgstr "选择日期"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:521
+msgid "Pick Time"
+msgstr "选择时间"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:530
+msgid "Block"
+msgstr "封禁"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:537
+msgid "Block Types"
+msgstr "封禁类型"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:540
+#: .\include\ui\controls\views\admin\audit.py:39
+msgid "Target"
+msgstr "目标"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:547
+msgid "Expiry"
+msgstr "到期时间"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:643
+msgid "Select Directory"
+msgstr "选择目录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:650
+msgid "Select Document"
+msgstr "选择文档"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:685
+msgid "User Blocks"
+msgstr "用户封禁记录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:697
+#: .\include\ui\controls\dialogs\revision.py:164
+#: .\include\ui\controls\dialogs\search.py:212
+#: .\include\ui\controls\dialogs\view_access_entries.py:112
+msgid "Close"
+msgstr "关闭"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:727
+msgid "No active blocks found."
+msgstr "未找到有效的封禁记录。"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:743
+#: .\include\ui\controls\dialogs\admin\accounts.py:796
+msgid "Permanent"
+msgstr "永久"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:752
+#: .\include\ui\controls\dialogs\admin\accounts.py:803
+msgid "Immediate"
+msgstr "立即生效"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:758
+msgid "Effective block: from {since}, expires {expires}"
+msgstr "有效封禁：开始于 {since}，到期时间：{expires}"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:765
+msgid "{count} underlying record(s)"
+msgstr "共 {count} 条记录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:807
+#: .\include\ui\controls\dialogs\view_access_entries.py:207
+msgid "Revoke"
+msgstr "解除"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:816
+msgid "Types: {types} | Target: {target}"
+msgstr "类型：{types} | 目标：{target}"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:824
+msgid ""
+"ID: {id}\n"
+"Created: {created}\n"
+"Period: {not_before} - {expires}"
+msgstr ""
+"ID：{id}\n"
+"创建于：{created}\n"
+"期限：{not_before} - {expires}"
 
 #: .\include\ui\controls\dialogs\admin\groups.py:37
 msgid "Display Name"
@@ -1182,13 +1339,6 @@ msgstr "拉取用户组信息失败：({code}) {message}"
 #: .\include\ui\controls\dialogs\view_access_entries.py:42
 msgid "File"
 msgstr "文件"
-
-#: .\include\ui\controls\dialogs\authorize.py:44
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:46
-#: .\include\ui\controls\dialogs\contextmenu\move.py:55
-#: .\include\ui\controls\dialogs\view_access_entries.py:44
-msgid "Directory"
-msgstr "目录"
 
 #: .\include\ui\controls\dialogs\authorize.py:50
 msgid "Authorize Access to {display_name}"
@@ -1325,11 +1475,6 @@ msgstr "每个代码只能使用一次。"
 #: .\include\ui\controls\dialogs\backup_codes.py:90
 msgid "Store these codes safely - they won't be shown again!"
 msgstr "请安全保存这些代码 - 它们不会再次显示！"
-
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
-#: .\include\ui\controls\dialogs\contextmenu\move.py:53
-msgid "Document"
-msgstr "文档"
 
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:52
 msgid "Rename {display_name}"
@@ -1668,15 +1813,9 @@ msgstr "正在加载修订版本..."
 
 #: .\include\ui\controls\dialogs\revision.py:157
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:549
+#: .\include\ui\controls\views\tasks.py:551
 msgid "Refresh"
 msgstr "刷新"
-
-#: .\include\ui\controls\dialogs\revision.py:164
-#: .\include\ui\controls\dialogs\search.py:212
-#: .\include\ui\controls\dialogs\view_access_entries.py:112
-msgid "Close"
-msgstr "关闭"
 
 #: .\include\ui\controls\dialogs\revision.py:223
 msgid "No revisions found."
@@ -1942,10 +2081,6 @@ msgstr "无效日期"
 msgid "No expiry"
 msgstr "无过期时间"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:207
-msgid "Revoke"
-msgstr "撤销"
-
 #: .\include\ui\controls\dialogs\wait.py:28
 msgid "In Progress"
 msgstr "进行中"
@@ -1994,10 +2129,6 @@ msgstr "加载失败：({code}) {message}"
 #: .\include\ui\controls\views\admin\audit.py:36
 msgid "Action"
 msgstr "操作"
-
-#: .\include\ui\controls\views\admin\audit.py:39
-msgid "Target"
-msgstr "目标"
 
 #: .\include\ui\controls\views\admin\audit.py:43
 msgid "Data"
@@ -2070,16 +2201,16 @@ msgstr "断开连接"
 msgid "Username cannot be empty"
 msgstr "用户名不能为空"
 
-#: .\include\ui\controls\views\more.py:42
+#: .\include\ui\controls\views\more.py:41
 msgid "Change Password"
 msgstr "修改密码"
 
-#: .\include\ui\controls\views\more.py:47
+#: .\include\ui\controls\views\more.py:46
 #: .\include\ui\models\settings\overview.py:24
 msgid "Settings"
 msgstr "设置"
 
-#: .\include\ui\controls\views\more.py:52 .\include\ui\models\about.py:51
+#: .\include\ui\controls\views\more.py:51 .\include\ui\models\about.py:51
 msgid "About"
 msgstr "关于"
 
@@ -2092,12 +2223,12 @@ msgid "Delete file and task"
 msgstr "删除文件和任务"
 
 #: .\include\ui\controls\views\tasks.py:87
-#: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:351
 msgid "Pause"
 msgstr "暂停"
 
 #: .\include\ui\controls\views\tasks.py:89
-#: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:351
 msgid "Resume"
 msgstr "恢复"
 
@@ -2105,103 +2236,103 @@ msgstr "恢复"
 msgid "File missing"
 msgstr "文件缺失"
 
-#: .\include\ui\controls\views\tasks.py:246
+#: .\include\ui\controls\views\tasks.py:248
 msgid "Pending"
 msgstr "等待中"
 
-#: .\include\ui\controls\views\tasks.py:247
+#: .\include\ui\controls\views\tasks.py:249
 msgid "Downloading"
 msgstr "下载中"
 
-#: .\include\ui\controls\views\tasks.py:248
-#: .\include\ui\controls\views\tasks.py:462
+#: .\include\ui\controls\views\tasks.py:250
+#: .\include\ui\controls\views\tasks.py:464
 msgid "Paused"
 msgstr "已暂停"
 
-#: .\include\ui\controls\views\tasks.py:249
+#: .\include\ui\controls\views\tasks.py:251
 msgid "Decrypting"
 msgstr "解密中"
 
-#: .\include\ui\controls\views\tasks.py:250
+#: .\include\ui\controls\views\tasks.py:252
 msgid "Verifying"
 msgstr "验证中"
 
-#: .\include\ui\controls\views\tasks.py:251
-#: .\include\ui\controls\views\tasks.py:464
+#: .\include\ui\controls\views\tasks.py:253
+#: .\include\ui\controls\views\tasks.py:466
 msgid "Completed"
 msgstr "已完成"
 
-#: .\include\ui\controls\views\tasks.py:252
-#: .\include\ui\controls\views\tasks.py:465
+#: .\include\ui\controls\views\tasks.py:254
+#: .\include\ui\controls\views\tasks.py:467
 msgid "Failed"
 msgstr "失败"
 
-#: .\include\ui\controls\views\tasks.py:253
+#: .\include\ui\controls\views\tasks.py:255
 msgid "Cancelled"
 msgstr "已取消"
 
-#: .\include\ui\controls\views\tasks.py:254
-#: .\include\ui\controls\views\tasks.py:463
+#: .\include\ui\controls\views\tasks.py:256
+#: .\include\ui\controls\views\tasks.py:465
 msgid "Scheduled"
 msgstr "已计划"
 
-#: .\include\ui\controls\views\tasks.py:256
+#: .\include\ui\controls\views\tasks.py:258
 msgid "Unknown"
 msgstr "未知"
 
-#: .\include\ui\controls\views\tasks.py:270
+#: .\include\ui\controls\views\tasks.py:272
 msgid "Download completed"
 msgstr "下载完成"
 
-#: .\include\ui\controls\views\tasks.py:285
+#: .\include\ui\controls\views\tasks.py:287
 msgid "Waiting to start..."
 msgstr "等待开始..."
 
-#: .\include\ui\controls\views\tasks.py:409
+#: .\include\ui\controls\views\tasks.py:411
 msgid "Failed to open file: {error}"
 msgstr "打开文件失败：{error}"
 
-#: .\include\ui\controls\views\tasks.py:431
+#: .\include\ui\controls\views\tasks.py:433
 msgid "Failed to delete: {error}"
 msgstr "删除失败：{error}"
 
-#: .\include\ui\controls\views\tasks.py:457
+#: .\include\ui\controls\views\tasks.py:459
 msgid "Filter"
 msgstr "筛选"
 
-#: .\include\ui\controls\views\tasks.py:461
+#: .\include\ui\controls\views\tasks.py:463
 msgid "Active"
 msgstr "活动"
 
-#: .\include\ui\controls\views\tasks.py:489
+#: .\include\ui\controls\views\tasks.py:491
 msgid "No download tasks"
 msgstr "无下载任务"
 
-#: .\include\ui\controls\views\tasks.py:508
+#: .\include\ui\controls\views\tasks.py:510
 msgid "Download Tasks"
 msgstr "下载任务"
 
-#: .\include\ui\controls\views\tasks.py:517
+#: .\include\ui\controls\views\tasks.py:519
 msgid "More actions"
 msgstr "更多操作"
 
-#: .\include\ui\controls\views\tasks.py:520
+#: .\include\ui\controls\views\tasks.py:522
 msgid "Pause all active"
 msgstr "暂停所有活动任务"
 
-#: .\include\ui\controls\views\tasks.py:525
+#: .\include\ui\controls\views\tasks.py:527
 msgid "Resume all paused"
 msgstr "恢复所有已暂停任务"
 
-#: .\include\ui\controls\views\tasks.py:530
+#: .\include\ui\controls\views\tasks.py:532
 msgid "Cancel all pending"
 msgstr "取消所有等待任务"
 
-#: .\include\ui\controls\views\tasks.py:536
+#: .\include\ui\controls\views\tasks.py:538
 msgid "Clear completed"
 msgstr "清除已完成"
 
-#: .\include\ui\controls\views\tasks.py:541
+#: .\include\ui\controls\views\tasks.py:543
 msgid "Clear failed"
 msgstr "清除失败"
 
@@ -2309,15 +2440,15 @@ msgstr "基本信息"
 msgid "Environment Variables"
 msgstr "环境变量"
 
-#: .\include\ui\models\manage.py:24
+#: .\include\ui\models\manage.py:32
 msgid "Accounts"
 msgstr "账户"
 
-#: .\include\ui\models\manage.py:33
+#: .\include\ui\models\manage.py:41
 msgid "Logs"
 msgstr "日志"
 
-#: .\include\ui\models\manage.py:66
+#: .\include\ui\models\manage.py:76
 msgid "Management"
 msgstr "管理"
 
@@ -2575,119 +2706,3 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
-
-#: .\include\controllers\contextmenus\management.py
-msgid "Failed to block user: ({code}) {message}"
-msgstr "封禁用户失败：({code}) {message}"
-
-#: .\include\controllers\contextmenus\management.py
-msgid "Failed to revoke block: ({code}) {message}"
-msgstr "解除封禁失败：({code}) {message}"
-
-#: .\include\controllers\contextmenus\management.py
-msgid "Failed to fetch user blocks: ({code}) {message}"
-msgstr "获取封禁记录失败：({code}) {message}"
-
-#: .\include\ui\controls\contextmenus\management.py
-msgid "Block User"
-msgstr "封禁用户"
-
-#: .\include\ui\controls\contextmenus\management.py
-msgid "View/Revoke Blocks"
-msgstr "查看/解除封禁"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Block User"
-msgstr "封禁用户"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Block Types"
-msgstr "封禁类型"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "(No target selected)"
-msgstr "（未选择目标）"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Browse..."
-msgstr "浏览..."
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Select Directory"
-msgstr "选择目录"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Select Document"
-msgstr "选择文档"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Expiry"
-msgstr "到期时间"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Set expiry time"
-msgstr "设置到期时间"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Pick Date"
-msgstr "选择日期"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Pick Time"
-msgstr "选择时间"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Block"
-msgstr "封禁"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Please select at least one block type."
-msgstr "请至少选择一种封禁类型。"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Please select a target."
-msgstr "请选择一个目标。"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Please set a valid expiry date and time."
-msgstr "请设置有效的到期日期和时间。"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "User Blocks"
-msgstr "用户封禁记录"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "No active blocks found."
-msgstr "未找到有效的封禁记录。"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Effective block: from {since}, expires {expires}"
-msgstr "有效封禁：开始于 {since}，到期时间：{expires}"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "{count} underlying record(s)"
-msgstr "共 {count} 条记录"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Types: {types} | Target: {target}"
-msgstr "类型：{types} | 目标：{target}"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Created: {created} | Active from: {not_before} | Expires: {expires} | ID: {id}"
-msgstr "创建时间：{created} | 生效时间：{not_before} | 到期时间：{expires} | 记录ID：{id}"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Revoke"
-msgstr "解除"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Permanent"
-msgstr "永久"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Immediate"
-msgstr "立即生效"
-
-#: .\include\ui\controls\dialogs\admin\accounts.py
-msgid "Close"
-msgstr "关闭"

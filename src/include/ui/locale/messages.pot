@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-20 23:49+0800\n"
+"POT-Creation-Date: 2026-02-23 00:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,7 +55,7 @@ msgstr ""
 msgid "Failed to delete user group: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\contextmenus\management.py:37
+#: .\include\controllers\contextmenus\management.py:39
 msgid "Failed to delete user: ({code}) {message}"
 msgstr ""
 
@@ -108,58 +108,83 @@ msgstr ""
 msgid "Get directory failed: "
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:44
+#: .\include\controllers\dialogs\management.py:46
 msgid "Create user failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:73
+#: .\include\controllers\dialogs\management.py:75
 msgid "Rename user nickname failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:100
+#: .\include\controllers\dialogs\management.py:102
 msgid "Change user group failed: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:123
+#: .\include\controllers\dialogs\management.py:125
 msgid "Failed to fetch user group list: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:143
-#: .\include\controllers\dialogs\management.py:184
+#: .\include\controllers\dialogs\management.py:145
+#: .\include\controllers\dialogs\management.py:186
 msgid "Failed to fetch user info: ({code}) {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:191
+#: .\include\controllers\dialogs\management.py:193
 msgid "Username: {username}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:196
+#: .\include\controllers\dialogs\management.py:198
 msgid "User nickname: {nickname}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:200
+#: .\include\controllers\dialogs\management.py:202
+#: .\include\ui\controls\dialogs\admin\accounts.py:818
 msgid "(None)"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:205
+#: .\include\controllers\dialogs\management.py:207
 msgid "User permissions: {permissions}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:210
+#: .\include\controllers\dialogs\management.py:212
 msgid "User groups: {groups}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:213
+#: .\include\controllers\dialogs\management.py:215
 msgid "User registration time: {created_time}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:220
+#: .\include\controllers\dialogs\management.py:222
 #: .\include\ui\controls\contextmenus\management.py:39
 msgid "Last login: {last_login}"
 msgstr ""
 
-#: .\include\controllers\dialogs\management.py:227
+#: .\include\controllers\dialogs\management.py:229
 msgid "Password last changed: {passwd_changed_time}"
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:250
+msgid "Please select at least one block type."
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:259
+msgid "Please select a target."
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:276
+msgid "Please set a valid expiry date and time."
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:290
+msgid "Failed to block user: ({code}) {message}"
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:314
+msgid "Failed to fetch user blocks: ({code}) {message}"
+msgstr ""
+
+#: .\include\controllers\dialogs\management.py:334
+msgid "Failed to revoke block: ({code}) {message}"
 msgstr ""
 
 #: .\include\controllers\dialogs\menus.py:59
@@ -199,15 +224,15 @@ msgstr ""
 msgid "Access rules: {access_rules}"
 msgstr ""
 
-#: .\include\controllers\dialogs\passwd.py:38
+#: .\include\controllers\dialogs\passwd.py:40
 msgid "Change password failed: {message}"
 msgstr ""
 
-#: .\include\controllers\dialogs\passwd.py:48
+#: .\include\controllers\dialogs\passwd.py:50
 msgid "You have been logged out, please restart the application manually"
 msgstr ""
 
-#: .\include\controllers\dialogs\passwd.py:55
+#: .\include\controllers\dialogs\passwd.py:57
 msgid "Password for user '{username}' changed successfully."
 msgstr ""
 
@@ -653,6 +678,7 @@ msgstr ""
 #: .\include\ui\controls\components\visualmgr\editor.py:608
 #: .\include\ui\controls\contextmenus\explorer.py:76
 #: .\include\ui\controls\contextmenus\explorer.py:212
+#: .\include\ui\controls\dialogs\admin\accounts.py:470
 #: .\include\ui\controls\dialogs\authorize.py:123
 msgid "Move"
 msgstr ""
@@ -669,11 +695,12 @@ msgstr ""
 
 #: .\include\ui\controls\components\explorer\bar.py:76
 #: .\include\ui\controls\components\rulemanager.py:111
-#: .\include\ui\controls\dialogs\admin\accounts.py:82
-#: .\include\ui\controls\dialogs\admin\accounts.py:162
-#: .\include\ui\controls\dialogs\admin\accounts.py:228
-#: .\include\ui\controls\dialogs\admin\accounts.py:285
-#: .\include\ui\controls\dialogs\admin\accounts.py:381
+#: .\include\ui\controls\dialogs\admin\accounts.py:93
+#: .\include\ui\controls\dialogs\admin\accounts.py:186
+#: .\include\ui\controls\dialogs\admin\accounts.py:252
+#: .\include\ui\controls\dialogs\admin\accounts.py:309
+#: .\include\ui\controls\dialogs\admin\accounts.py:405
+#: .\include\ui\controls\dialogs\admin\accounts.py:532
 #: .\include\ui\controls\dialogs\admin\groups.py:49
 #: .\include\ui\controls\dialogs\admin\groups.py:130
 #: .\include\ui\controls\dialogs\admin\groups.py:207
@@ -767,57 +794,57 @@ msgstr ""
 msgid "Created at: {created_at}"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:34
+#: .\include\ui\controls\components\homepage.py:39
 msgid "Files"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:36
+#: .\include\ui\controls\components\homepage.py:41
 msgid "Tasks"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:38
+#: .\include\ui\controls\components\homepage.py:43
 msgid "Home"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:39
+#: .\include\ui\controls\components\homepage.py:44
 msgid "More"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:41
+#: .\include\ui\controls\components\homepage.py:46
 #: .\include\ui\controls\components\visualmgr\editor.py:613
 #: .\include\ui\controls\dialogs\authorize.py:128
 msgid "Manage"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:99
+#: .\include\ui\controls\components\homepage.py:100
 msgid "Welcome to Confidential Document Management System (CFMS)"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:104
+#: .\include\ui\controls\components\homepage.py:105
 msgid "The sunset glow and the lone wild duck fly together, autumn water shares the same color with the vast sky."
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:140
+#: .\include\ui\controls\components\homepage.py:141
 msgid "ID: {id} (No longer exists)"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:216
+#: .\include\ui\controls\components\homepage.py:217
 msgid "This document no longer exists on the server."
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:239
+#: .\include\ui\controls\components\homepage.py:240
 msgid "Failed to download document: ({code}) {message}"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:247
+#: .\include\ui\controls\components\homepage.py:248
 msgid "Failed to download document: {error}"
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:297
+#: .\include\ui\controls\components\homepage.py:298
 msgid "You have not favorited any documents or folders yet."
 msgstr ""
 
-#: .\include\ui\controls\components\homepage.py:317
+#: .\include\ui\controls\components\homepage.py:318
 msgid "Favorites"
 msgstr ""
 
@@ -834,8 +861,8 @@ msgid "For rule format documentation, please refer to [CFMS Server Documentation
 msgstr ""
 
 #: .\include\ui\controls\components\rulemanager.py:59
-#: .\include\ui\controls\dialogs\admin\accounts.py:79
-#: .\include\ui\controls\dialogs\admin\accounts.py:282
+#: .\include\ui\controls\dialogs\admin\accounts.py:90
+#: .\include\ui\controls\dialogs\admin\accounts.py:306
 #: .\include\ui\controls\dialogs\admin\groups.py:127
 #: .\include\ui\controls\dialogs\admin\groups.py:206
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:67
@@ -870,7 +897,9 @@ msgid "Add Rule Group"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\views\tasks.py:460
+#: .\include\ui\controls\dialogs\admin\accounts.py:480
+#: .\include\ui\controls\dialogs\admin\accounts.py:779
+#: .\include\ui\controls\views\tasks.py:462
 msgid "All"
 msgstr ""
 
@@ -885,7 +914,7 @@ msgid "Match Mode"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:102
-#: .\include\ui\models\manage.py:28
+#: .\include\ui\models\manage.py:36
 msgid "Groups"
 msgstr ""
 
@@ -941,11 +970,13 @@ msgid "Rule Group #{index}"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:598
+#: .\include\ui\controls\dialogs\admin\accounts.py:460
 #: .\include\ui\controls\dialogs\authorize.py:113
 msgid "Read"
 msgstr ""
 
 #: .\include\ui\controls\components\visualmgr\editor.py:603
+#: .\include\ui\controls\dialogs\admin\accounts.py:465
 #: .\include\ui\controls\dialogs\authorize.py:118
 msgid "Write"
 msgstr ""
@@ -961,7 +992,7 @@ msgstr ""
 #: .\include\ui\controls\contextmenus\explorer.py:70
 #: .\include\ui\controls\contextmenus\explorer.py:206
 #: .\include\ui\controls\contextmenus\group.py:55
-#: .\include\ui\controls\dialogs\admin\accounts.py:225
+#: .\include\ui\controls\dialogs\admin\accounts.py:249
 msgid "Rename"
 msgstr ""
 
@@ -1012,6 +1043,7 @@ msgid "Members: {members}"
 msgstr ""
 
 #: .\include\ui\controls\contextmenus\management.py:43
+#: .\include\ui\controls\dialogs\admin\accounts.py:789
 msgid "(Unknown)"
 msgstr ""
 
@@ -1027,75 +1059,197 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:44
+#: .\include\ui\controls\contextmenus\management.py:83
+#: .\include\ui\controls\dialogs\admin\accounts.py:447
+msgid "Block User"
+msgstr ""
+
+#: .\include\ui\controls\contextmenus\management.py:89
+msgid "View/Revoke Blocks"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:49
 msgid "{action_type} User Password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:45
+#: .\include\ui\controls\dialogs\admin\accounts.py:50
 msgid "Change"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:45
+#: .\include\ui\controls\dialogs\admin\accounts.py:50
 msgid "Reset"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:52
+#: .\include\ui\controls\dialogs\admin\accounts.py:57
 msgid "Old Password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:60
+#: .\include\ui\controls\dialogs\admin\accounts.py:65
 msgid "New Password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:68
+#: .\include\ui\controls\dialogs\admin\accounts.py:74
+msgid "Generate a random password"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:79
 msgid "Bypass password requirements"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:73
+#: .\include\ui\controls\dialogs\admin\accounts.py:84
 msgid "Force user to update password after next login"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:135
+#: .\include\ui\controls\dialogs\admin\accounts.py:159
 #: .\include\ui\controls\dialogs\admin\groups.py:32
 msgid "Create User"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:140
+#: .\include\ui\controls\dialogs\admin\accounts.py:164
 #: .\include\ui\controls\dialogs\password_confirm.py:46
 #: .\include\ui\controls\views\login.py:196
 msgid "Password"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:147
+#: .\include\ui\controls\dialogs\admin\accounts.py:171
 msgid "Nickname"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:152
+#: .\include\ui\controls\dialogs\admin\accounts.py:176
 #: .\include\ui\controls\views\admin\audit.py:37
 #: .\include\ui\controls\views\login.py:203
 msgid "Username"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:158
+#: .\include\ui\controls\dialogs\admin\accounts.py:182
 #: .\include\ui\controls\dialogs\admin\groups.py:46
 #: .\include\ui\controls\dialogs\explorer.py:53
 msgid "Create"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:215
+#: .\include\ui\controls\dialogs\admin\accounts.py:239
 msgid "Rename User Nickname"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:220
+#: .\include\ui\controls\dialogs\admin\accounts.py:244
 msgid "User's New Nickname"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:293
+#: .\include\ui\controls\dialogs\admin\accounts.py:317
 msgid "Change User Group"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:370
+#: .\include\ui\controls\dialogs\admin\accounts.py:394
 msgid "User Details"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:481
+#: .\include\ui\controls\dialogs\authorize.py:44
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:46
+#: .\include\ui\controls\dialogs\contextmenu\move.py:55
+#: .\include\ui\controls\dialogs\view_access_entries.py:44
+msgid "Directory"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:482
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
+#: .\include\ui\controls\dialogs\contextmenu\move.py:53
+msgid "Document"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:489
+#: .\include\ui\controls\dialogs\admin\accounts.py:621
+msgid "(No target selected)"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:492
+msgid "Browse..."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:501
+msgid "Set expiry time"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:515
+msgid "Pick Date"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:521
+msgid "Pick Time"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:530
+msgid "Block"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:537
+msgid "Block Types"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:540
+#: .\include\ui\controls\views\admin\audit.py:39
+msgid "Target"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:547
+msgid "Expiry"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:643
+msgid "Select Directory"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:650
+msgid "Select Document"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:685
+msgid "User Blocks"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:697
+#: .\include\ui\controls\dialogs\revision.py:164
+#: .\include\ui\controls\dialogs\search.py:212
+#: .\include\ui\controls\dialogs\view_access_entries.py:112
+msgid "Close"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:727
+msgid "No active blocks found."
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:743
+#: .\include\ui\controls\dialogs\admin\accounts.py:796
+msgid "Permanent"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:752
+#: .\include\ui\controls\dialogs\admin\accounts.py:803
+msgid "Immediate"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:758
+msgid "Effective block: from {since}, expires {expires}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:765
+msgid "{count} underlying record(s)"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:807
+#: .\include\ui\controls\dialogs\view_access_entries.py:207
+msgid "Revoke"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:816
+msgid "Types: {types} | Target: {target}"
+msgstr ""
+
+#: .\include\ui\controls\dialogs\admin\accounts.py:824
+msgid ""
+"ID: {id}\n"
+"Created: {created}\n"
+"Period: {not_before} - {expires}"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\groups.py:37
@@ -1141,13 +1295,6 @@ msgstr ""
 #: .\include\ui\controls\dialogs\authorize.py:42
 #: .\include\ui\controls\dialogs\view_access_entries.py:42
 msgid "File"
-msgstr ""
-
-#: .\include\ui\controls\dialogs\authorize.py:44
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:46
-#: .\include\ui\controls\dialogs\contextmenu\move.py:55
-#: .\include\ui\controls\dialogs\view_access_entries.py:44
-msgid "Directory"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\authorize.py:50
@@ -1280,11 +1427,6 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\backup_codes.py:90
 msgid "Store these codes safely - they won't be shown again!"
-msgstr ""
-
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
-#: .\include\ui\controls\dialogs\contextmenu\move.py:53
-msgid "Document"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\contextmenu\explorer.py:52
@@ -1617,14 +1759,8 @@ msgstr ""
 
 #: .\include\ui\controls\dialogs\revision.py:157
 #: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:549
+#: .\include\ui\controls\views\tasks.py:551
 msgid "Refresh"
-msgstr ""
-
-#: .\include\ui\controls\dialogs\revision.py:164
-#: .\include\ui\controls\dialogs\search.py:212
-#: .\include\ui\controls\dialogs\view_access_entries.py:112
-msgid "Close"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\revision.py:223
@@ -1886,10 +2022,6 @@ msgstr ""
 msgid "No expiry"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:207
-msgid "Revoke"
-msgstr ""
-
 #: .\include\ui\controls\dialogs\wait.py:28
 msgid "In Progress"
 msgstr ""
@@ -1938,10 +2070,6 @@ msgstr ""
 
 #: .\include\ui\controls\views\admin\audit.py:36
 msgid "Action"
-msgstr ""
-
-#: .\include\ui\controls\views\admin\audit.py:39
-msgid "Target"
 msgstr ""
 
 #: .\include\ui\controls\views\admin\audit.py:43
@@ -2015,16 +2143,16 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr ""
 
-#: .\include\ui\controls\views\more.py:42
+#: .\include\ui\controls\views\more.py:41
 msgid "Change Password"
 msgstr ""
 
-#: .\include\ui\controls\views\more.py:47
+#: .\include\ui\controls\views\more.py:46
 #: .\include\ui\models\settings\overview.py:24
 msgid "Settings"
 msgstr ""
 
-#: .\include\ui\controls\views\more.py:52 .\include\ui\models\about.py:51
+#: .\include\ui\controls\views\more.py:51 .\include\ui\models\about.py:51
 msgid "About"
 msgstr ""
 
@@ -2037,12 +2165,12 @@ msgid "Delete file and task"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:87
-#: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:351
 msgid "Pause"
 msgstr ""
 
 #: .\include\ui\controls\views\tasks.py:89
-#: .\include\ui\controls\views\tasks.py:349
+#: .\include\ui\controls\views\tasks.py:351
 msgid "Resume"
 msgstr ""
 
@@ -2050,103 +2178,103 @@ msgstr ""
 msgid "File missing"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:246
+#: .\include\ui\controls\views\tasks.py:248
 msgid "Pending"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:247
+#: .\include\ui\controls\views\tasks.py:249
 msgid "Downloading"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:248
-#: .\include\ui\controls\views\tasks.py:462
+#: .\include\ui\controls\views\tasks.py:250
+#: .\include\ui\controls\views\tasks.py:464
 msgid "Paused"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:249
+#: .\include\ui\controls\views\tasks.py:251
 msgid "Decrypting"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:250
+#: .\include\ui\controls\views\tasks.py:252
 msgid "Verifying"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:251
-#: .\include\ui\controls\views\tasks.py:464
+#: .\include\ui\controls\views\tasks.py:253
+#: .\include\ui\controls\views\tasks.py:466
 msgid "Completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:252
-#: .\include\ui\controls\views\tasks.py:465
+#: .\include\ui\controls\views\tasks.py:254
+#: .\include\ui\controls\views\tasks.py:467
 msgid "Failed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:253
+#: .\include\ui\controls\views\tasks.py:255
 msgid "Cancelled"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:254
-#: .\include\ui\controls\views\tasks.py:463
+#: .\include\ui\controls\views\tasks.py:256
+#: .\include\ui\controls\views\tasks.py:465
 msgid "Scheduled"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:256
+#: .\include\ui\controls\views\tasks.py:258
 msgid "Unknown"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:270
+#: .\include\ui\controls\views\tasks.py:272
 msgid "Download completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:285
+#: .\include\ui\controls\views\tasks.py:287
 msgid "Waiting to start..."
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:409
+#: .\include\ui\controls\views\tasks.py:411
 msgid "Failed to open file: {error}"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:431
+#: .\include\ui\controls\views\tasks.py:433
 msgid "Failed to delete: {error}"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:457
+#: .\include\ui\controls\views\tasks.py:459
 msgid "Filter"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:461
+#: .\include\ui\controls\views\tasks.py:463
 msgid "Active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:489
+#: .\include\ui\controls\views\tasks.py:491
 msgid "No download tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:508
+#: .\include\ui\controls\views\tasks.py:510
 msgid "Download Tasks"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:517
+#: .\include\ui\controls\views\tasks.py:519
 msgid "More actions"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:520
+#: .\include\ui\controls\views\tasks.py:522
 msgid "Pause all active"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:525
+#: .\include\ui\controls\views\tasks.py:527
 msgid "Resume all paused"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:530
+#: .\include\ui\controls\views\tasks.py:532
 msgid "Cancel all pending"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:536
+#: .\include\ui\controls\views\tasks.py:538
 msgid "Clear completed"
 msgstr ""
 
-#: .\include\ui\controls\views\tasks.py:541
+#: .\include\ui\controls\views\tasks.py:543
 msgid "Clear failed"
 msgstr ""
 
@@ -2246,15 +2374,15 @@ msgstr ""
 msgid "Environment Variables"
 msgstr ""
 
-#: .\include\ui\models\manage.py:24
+#: .\include\ui\models\manage.py:32
 msgid "Accounts"
 msgstr ""
 
-#: .\include\ui\models\manage.py:33
+#: .\include\ui\models\manage.py:41
 msgid "Logs"
 msgstr ""
 
-#: .\include\ui\models\manage.py:66
+#: .\include\ui\models\manage.py:76
 msgid "Management"
 msgstr ""
 
