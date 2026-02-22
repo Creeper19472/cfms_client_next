@@ -8,11 +8,11 @@ authors = [
     { name = "Creeper19472", email = "creeper19472@crpteam.club" }
 ]
 dependencies = [
-  "flet>=0.80.0",
-  "flet_permission_handler>=0.80.0",
+  "flet>=0.80.6.dev7651",
+  "flet_permission_handler>=0.80.6.dev7651",
   "flet-open-file @ git+https://github.com/creeper19472/flet-open-file",
   "flet_model @ git+https://github.com/creeper19472/Flet-Model",
-  "flet-datatable2>=0.80.0",
+  "flet-datatable2>=0.80.6.dev7651",
   "websockets",
   "pycryptodome",
   "cffi",
@@ -46,7 +46,7 @@ url = "gh:cfms-dev/flet-build-template"
 
 [dependency-groups]
 dev = [
-    "flet[all]>=0.80.0",
+    "flet[all]>=0.80.6.dev7651",
 ]
 
 [tool.uv]
@@ -56,7 +56,7 @@ prerelease = "allow"
 package-mode = false
 
 [tool.poetry.group.dev.dependencies]
-flet = {extras = ["all"], version = "0.80.0"}
+flet = {extras = ["all"], version = "0.80.6.dev7651"}
 
 [tool.flet.android.permission] # --android-permissions
 "android.permission.READ_EXTERNAL_STORAGE" = true
