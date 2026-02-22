@@ -53,7 +53,7 @@ class SearchResultDirectoryTile(ft.ListTile):
         # Close the search dialog
         self.dialog.close()
         # Navigate to the directory
-        from include.ui.controls.explorer.file_controls import get_directory
+        from include.ui.controls.explorer.path import get_directory
 
         if await get_directory(
             id=self.directory_id,
@@ -100,7 +100,7 @@ class SearchResultFileTile(ft.ListTile):
         # Close the search dialog
         self.dialog.close()
         # Navigate to the parent directory (or root if parent_id is None)
-        from include.ui.controls.explorer.file_controls import get_directory
+        from include.ui.controls.explorer.path import get_directory
 
         if await get_directory(
             id=self.parent_id,

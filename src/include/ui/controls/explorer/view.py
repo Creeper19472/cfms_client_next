@@ -1,6 +1,5 @@
 from typing import Optional
 from typing import TYPE_CHECKING
-from copy import deepcopy
 
 import flet as ft
 
@@ -12,9 +11,9 @@ from include.ui.controls.explorer.components.bar import (
     FileSortBar,
     SelectionToolbar,
 )
-from include.ui.controls.explorer.components.access_denied import AccessDeniedView
+from include.ui.controls.explorer.state import ExplorerState
+from include.ui.controls.explorer.file_controls import ExplorerBody
 from include.ui.util.notifications import send_error
-from include.ui.controls.explorer.file_controls import update_file_controls
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -63,137 +62,103 @@ class FilePathIndicator(ft.Column):
 
 
 class FileListView(ft.ListView):
+    """Thin proxy that exposes the legacy ``FileListView`` interface.
+
+    All data and selection state now lives in the parent ``FileManagerView``'s
+    ``ExplorerState`` observable.  Attribute access on this object is delegated
+    to the state so that existing controllers and dialogs keep working without
+    modification.
+    """
+
     def __init__(
         self,
         parent_manager: "FileManagerView",
         ref: ft.Ref | None = None,
-        visible=True,
     ):
-        super().__init__(ref=ref, visible=visible, expand=True)
-        self.parent: ft.Column
+        super().__init__(ref=ref, expand=True)
         self.parent_manager = parent_manager
 
-        # The variables should be updated when loading new directory
-        self.current_parent_id: str | None = None
-        self.current_files_data: list[dict] = []
-        self.current_directories_data: list[dict] = []
+    # ── State proxies ──────────────────────────────────────────────────────
 
-        # Selection mode state
-        self.selection_mode: bool = False
-        self.selected_file_ids: set[str] = set()
-        self.selected_directory_ids: set[str] = set()
+    @property
+    def current_parent_id(self) -> str | None:
+        return self.parent_manager.state.parent_id
 
-        # Pre-created parent directory button (declarative: visibility is toggled, not rebuilt)
-        self._parent_button = ft.ListTile(
-            leading=ft.Icon(ft.Icons.ARROW_BACK),
-            title=ft.Text("<...>"),
-            subtitle=ft.Text(_("Parent directory")),
-            visible=False,
-        )
-        self.controls = [self._parent_button]
+    @current_parent_id.setter
+    def current_parent_id(self, value: str | None) -> None:
+        self.parent_manager.state.parent_id = value
+
+    @property
+    def current_files_data(self) -> list[dict]:
+        return self.parent_manager.state.files
+
+    @current_files_data.setter
+    def current_files_data(self, value: list[dict]) -> None:
+        self.parent_manager.state.files = value
+
+    @property
+    def current_directories_data(self) -> list[dict]:
+        return self.parent_manager.state.directories
+
+    @current_directories_data.setter
+    def current_directories_data(self, value: list[dict]) -> None:
+        self.parent_manager.state.directories = value
+
+    @property
+    def selection_mode(self) -> bool:
+        return self.parent_manager.state.selection_mode
+
+    @selection_mode.setter
+    def selection_mode(self, value: bool) -> None:
+        self.parent_manager.state.selection_mode = value
+
+    @property
+    def selected_file_ids(self) -> set[str]:
+        return self.parent_manager.state.selected_file_ids
+
+    @selected_file_ids.setter
+    def selected_file_ids(self, value: set[str]) -> None:
+        self.parent_manager.state.selected_file_ids = value
+
+    @property
+    def selected_directory_ids(self) -> set[str]:
+        return self.parent_manager.state.selected_directory_ids
+
+    @selected_directory_ids.setter
+    def selected_directory_ids(self, value: set[str]) -> None:
+        self.parent_manager.state.selected_directory_ids = value
+
+    # ── Forwarded actions (update state; ExplorerBody re-renders) ──────────
 
     def sort_files(
         self,
         sort_mode: SortMode = SortMode.BY_NAME,
         sort_order: SortOrder = SortOrder.ASCENDING,
-    ):
-        """
-        Sort the files and directories in the list view.
+    ) -> None:
+        """Update sort state; ``ExplorerBody`` re-renders with the new order."""
+        self.parent_manager.state.sort_mode = sort_mode
+        self.parent_manager.state.sort_order = sort_order
 
-        This function actually copies the data and sorts them, then
-        calls `update_file_controls()` to show the new order.
-        """
-
-        _working_files_data = deepcopy(self.current_files_data)
-        _working_directories_data = deepcopy(self.current_directories_data)
-
-        match sort_mode:
-            case SortMode.BY_NAME:
-                dir_key_func = lambda x: x["name"].lower()
-                file_key_func = lambda x: x["title"].lower()
-            case SortMode.BY_LAST_MODIFIED:
-                dir_key_func = file_key_func = lambda x: x.get("last_modified", 0)
-            case SortMode.BY_CREATED_AT:
-                dir_key_func = file_key_func = lambda x: x.get("created_time", 0)
-            case SortMode.BY_SIZE:
-                dir_key_func = file_key_func = lambda x: x.get("size", 0)
-            case SortMode.BY_TYPE:
-                dir_key_func = lambda x: 0
-                file_key_func = lambda x: x["title"].split(".")[-1].lower()
-            case _:
-                dir_key_func = lambda x: x["name"].lower()
-                file_key_func = lambda x: x["title"].lower()
-
-        reverse = sort_order == SortOrder.DESCENDING
-        _working_files_data.sort(key=file_key_func, reverse=reverse)
-        _working_directories_data.sort(key=dir_key_func, reverse=reverse)
-
-        update_file_controls(
-            self,
-            _working_directories_data,
-            _working_files_data,
-            self.current_parent_id,
-        )
-
-    def toggle_selection_mode(self, enabled: bool):
-        """Enable or disable selection mode."""
-        self.selection_mode = enabled
+    def toggle_selection_mode(self, enabled: bool) -> None:
+        """Toggle selection mode; clears selections when disabling."""
         if not enabled:
-            # Clear selections when exiting selection mode
-            self.selected_file_ids.clear()
-            self.selected_directory_ids.clear()
+            self.parent_manager.state.clear_selection()
+        self.parent_manager.state.selection_mode = enabled
 
-        # Update all controls to show/hide checkboxes
-        update_file_controls(
-            self,
-            self.current_directories_data,
-            self.current_files_data,
-            self.current_parent_id,
-        )
+    def select_all(self) -> None:
+        self.parent_manager.state.select_all()
 
-    def select_all(self):
-        """Select all files and directories."""
-        self.selected_file_ids = {f["id"] for f in self.current_files_data}
-        self.selected_directory_ids = {d["id"] for d in self.current_directories_data}
+    def clear_selection(self) -> None:
+        self.parent_manager.state.clear_selection()
 
-        # Update UI to reflect selections
-        update_file_controls(
-            self,
-            self.current_directories_data,
-            self.current_files_data,
-            self.current_parent_id,
-        )
+    def toggle_file_selection(self, file_id: str) -> None:
+        self.parent_manager.state.toggle_file_selection(file_id)
 
-    def clear_selection(self):
-        """Clear all selections."""
-        self.selected_file_ids.clear()
-        self.selected_directory_ids.clear()
-
-        # Update UI to reflect cleared selections
-        update_file_controls(
-            self,
-            self.current_directories_data,
-            self.current_files_data,
-            self.current_parent_id,
-        )
-
-    def toggle_file_selection(self, file_id: str):
-        """Toggle selection state of a file."""
-        if file_id in self.selected_file_ids:
-            self.selected_file_ids.remove(file_id)
-        else:
-            self.selected_file_ids.add(file_id)
-
-    def toggle_directory_selection(self, directory_id: str):
-        """Toggle selection state of a directory."""
-        if directory_id in self.selected_directory_ids:
-            self.selected_directory_ids.remove(directory_id)
-        else:
-            self.selected_directory_ids.add(directory_id)
+    def toggle_directory_selection(self, directory_id: str) -> None:
+        self.parent_manager.state.toggle_directory_selection(directory_id)
 
     def get_selected_count(self) -> int:
-        """Get total count of selected items."""
-        return len(self.selected_file_ids) + len(self.selected_directory_ids)
+        return self.parent_manager.state.get_selected_count()
 
 
 class FileManagerView(ft.Container):
@@ -209,72 +174,87 @@ class FileManagerView(ft.Container):
         self.alignment = ft.Alignment.TOP_CENTER
         self.expand = True
 
-        # View variable definitions
-        self.root_directory_id: str | None = None
-        self.previous_directory_id: str | None = None
-        self.current_directory_id: str | None = None
+        # Observable model — single source of truth for all explorer state.
+        # Assigning to its fields triggers automatic re-rendering of ExplorerBody.
+        self.state = ExplorerState()
+
         self.conn: ClientConnection
 
-        # Components
+        # Persistent UI elements (not driven by ExplorerBody)
         self.indicator = FilePathIndicator("/")
         self.top_bar = ExplorerTopBar(self)
+
+        # Compatibility stubs — still referenced by external controllers but
+        # no longer rendered in the column; state mutations are the real mechanism.
+        self.file_listview = FileListView(self)
         self.selection_toolbar = SelectionToolbar(self, visible=False)
         self.sort_bar = FileSortBar(self, visible=False)
-        self.file_listview = FileListView(self, visible=False)
-        self.progress_ring = ft.ProgressRing(visible=False)
-        # Pre-created with visible=False; visibility is toggled declaratively (not appended lazily)
-        self.access_denied_view = AccessDeniedView(self, "", visible=False)
 
         self.content = ft.Column(
             controls=[
                 ft.Text(_("File Management"), size=24, weight=ft.FontWeight.BOLD),
                 self.indicator,
                 self.top_bar,
+                # Kept in the tree so that page is set and .update() calls in
+                # existing controllers don't fail; always stays visible=False
+                # because ExplorerBody renders the selection bar from state.
                 self.selection_toolbar,
                 ft.Divider(),
-                self.progress_ring,
-                # File list, initially hidden until loading is complete
-                self.sort_bar,
-                self.file_listview,
-                self.access_denied_view,
+                # ExplorerBody is a @ft.component: it re-renders automatically
+                # whenever self.state changes, producing the correct UI for the
+                # current loading / access-denied / content state.
+                ExplorerBody(self.state, self),
             ],
+            expand=True,
         )
+
+    # ── Navigation state proxies (backward-compat for controllers) ─────────
+
+    @property
+    def current_directory_id(self) -> str | None:
+        return self.state.current_directory_id
+
+    @current_directory_id.setter
+    def current_directory_id(self, value: str | None) -> None:
+        self.state.current_directory_id = value
+
+    @property
+    def root_directory_id(self) -> str | None:
+        return self.state.root_directory_id
+
+    @root_directory_id.setter
+    def root_directory_id(self, value: str | None) -> None:
+        self.state.root_directory_id = value
+
+    # ── Lifecycle ──────────────────────────────────────────────────────────
 
     def build(self):
         self.conn = self.app_shared.get_not_none_attribute("conn")
 
+    # ── Helper ────────────────────────────────────────────────────────────
+
     def send_error(self, msg: str):
         send_error(self.page, msg)
 
-    def hide_content(self):
-        self.file_listview.visible = False
-        self.sort_bar.visible = False
-        self.progress_ring.visible = True
-        self.access_denied_view.visible = False
-        self.update()
+    # ── State-mutation helpers (replace the old imperative visibility toggles)
 
-    def show_content(self):
-        self.file_listview.visible = True
-        self.sort_bar.visible = True
-        self.progress_ring.visible = False
-        self.access_denied_view.visible = False
-        self.update()
+    def hide_content(self) -> None:
+        """Show loading indicator — state change triggers ExplorerBody re-render."""
+        self.state.is_loading = True
+        self.state.is_access_denied = False
 
-    def show_access_denied_view(self, reason: str):
-        """
-        Display the access denied view instead of the file list.
+    def show_content(self) -> None:
+        """Show file list — state change triggers ExplorerBody re-render."""
+        self.state.is_loading = False
+        self.state.is_access_denied = False
 
-        Args:
-            reason: The reason for access denial (from server message)
-        """
-        self.file_listview.visible = False
-        self.sort_bar.visible = False
-        self.progress_ring.visible = False
-        self.access_denied_view.reason_text.value = reason
-        self.access_denied_view.visible = True
-        self.update()
+    def show_access_denied_view(self, reason: str) -> None:
+        """Show the access-denied message — state change triggers ExplorerBody re-render."""
+        self.state.is_loading = False
+        self.state.is_access_denied = True
+        self.state.access_denied_reason = reason
 
-    def hide_access_denied_view(self):
-        """Hide the access denied view and prepare to show normal content."""
-        self.access_denied_view.visible = False
-        self.update()
+    def hide_access_denied_view(self) -> None:
+        """Hide the access-denied message — state change triggers ExplorerBody re-render."""
+        self.state.is_access_denied = False
+

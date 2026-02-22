@@ -231,15 +231,8 @@ class ExplorerTopBar(ft.Row):
         self.page.show_dialog(SearchDialog(self.parent_view))
     
     async def on_selection_toggle_click(self, event: ft.Event[ft.IconButton]):
-        """Handle selection mode toggle button click."""
-        # Enable selection mode
-        self.parent_view.file_listview.toggle_selection_mode(True)
-        
-        # Show selection toolbar
-        self.parent_view.selection_toolbar.visible = True
-        self.parent_view.selection_toolbar.update_selection_count(0)
-        self.parent_view.selection_toolbar.update()
-        
+        """Enable selection mode — state mutation triggers ExplorerBody re-render."""
+        self.parent_view.state.selection_mode = True
         # Hide this toggle button while in selection mode
         self.selection_toggle_button.visible = False
         self.update()

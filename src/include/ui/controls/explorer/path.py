@@ -27,12 +27,10 @@ async def get_directory(
     _raise_on_error=False,
     _set_new_root=False,
 ) -> bool:
-    from include.ui.controls.explorer.file_controls import update_file_controls
-
     pm = view.parent_manager
-    pm.hide_content()
-    view.current_directories_data = []
-    view.current_files_data = []
+    # State mutation: ExplorerBody re-renders showing the progress indicator
+    pm.state.is_loading = True
+    pm.state.is_access_denied = False
 
     response = await do_request(
         action="list_directory",
@@ -43,24 +41,23 @@ async def get_directory(
 
     code = response["code"]
     if code != 200:
-        update_file_controls(view, [], [], None)
+        # Clear stale content so the component renders an empty list
+        pm.state.files = []
+        pm.state.directories = []
+        pm.state.parent_id = None
 
         if _raise_on_error:
-            pm.progress_ring.visible = False
-            pm.progress_ring.update()
-            view.visible = True
-            view.update()
+            pm.state.is_loading = False
             if fallback is not None:
                 await get_directory(fallback, view)
             raise RequestFailureError("Get directory failed", response)
 
         # Special handling for 403 (Access Denied)
         if code == 403:
-            # Show access denied view instead of snackbar
             pm.show_access_denied_view(response["message"])
             return False
 
-        # For other errors, show snackbar
+        # For other errors, show snackbar and transition to empty content
         send_error(
             view.page,
             _("Load failed: ({code}) {message}").format(
@@ -71,15 +68,15 @@ async def get_directory(
         return False
 
     if _set_new_root:
-        pm.root_directory_id = id
+        pm.state.root_directory_id = id
 
-    pm.current_directory_id = id
-    view.current_directories_data = response["data"]["folders"]
-    view.current_files_data = response["data"]["documents"]
-    view.current_parent_id = response["data"]["parent_id"]
-
-    await pm.sort_bar.controller.apply_sorting()
-    pm.show_content()
+    # Update state — ExplorerBody automatically re-renders with the new data
+    pm.state.current_directory_id = id
+    pm.state.files = response["data"]["documents"]
+    pm.state.directories = response["data"]["folders"]
+    pm.state.parent_id = response["data"]["parent_id"]
+    pm.state.is_loading = False
+    pm.state.is_access_denied = False
 
     return True
 
