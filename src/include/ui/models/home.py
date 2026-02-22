@@ -34,7 +34,7 @@ class HomeModel(Model):
         )
 
         self.controls = [
-            # ft.SafeArea(ft.Container()),
+
             self.pageview,
         ]
         self.navigation_bar = HomeNavigationBar(

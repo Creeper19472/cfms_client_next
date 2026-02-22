@@ -19,7 +19,7 @@ class ManagementNavigationBar(ft.NavigationBar):
         self,
         parent_view: "ManageModel",
         views: list[ft.Control] = [],
-        initial_selected_index=0,
+        initial_selected_index: int = 0,
     ):
         self.parent_view = parent_view
 
@@ -58,7 +58,7 @@ class ManagementNavigationBar(ft.NavigationBar):
                 animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
                 animation_duration=ft.Duration(milliseconds=400),
             )
-        
+
         self.last_selected_index = self.selected_index
 
 
@@ -86,10 +86,14 @@ class ManageModel(Model):
             ManageGroupsView(self),
             AuditLogView(self),
         ]
-        self.pageview = ft.PageView(self.stored_views, expand=True)
+        self.pageview = ft.PageView(
+            self.stored_views,
+            expand=True,
+            selected_index=INITIAL_VIEW_INDEX,
+        )
 
         self.controls = [self.pageview]
-        self.navigation_bar = ManagementNavigationBar(self, self.controls)
+        self.navigation_bar = ManagementNavigationBar(self, self.stored_views)
 
         # self.floating_action_button = ft.FloatingActionButton(
         #     icon=ft.Icons.LOCK, on_click=apply_lockdown
