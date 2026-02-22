@@ -21,13 +21,18 @@ _ = t.gettext
 
 
 class HomeNavigationBar(ft.NavigationBar):
-    def __init__(self, parent_view: "HomeModel", views: list[ft.Control] = []):
+    def __init__(
+        self,
+        parent_view: "HomeModel",
+        views: list[ft.Control] = [],
+        initial_selected_index: int = 2,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
         self.parent_view = parent_view
         self.app_shared = AppShared()
 
-        self.last_selected_index = (
-            2  # Setting default to initially selected page works better
-        )
+        self.last_selected_index = initial_selected_index  # Setting default to initially selected page works better
         self.views = views
 
         nav_destinations = [
@@ -44,22 +49,13 @@ class HomeNavigationBar(ft.NavigationBar):
 
         super().__init__(
             nav_destinations,
-            selected_index=2,
+            selected_index=initial_selected_index,
             on_change=self.on_change_item,
-            # visible=False
+            ref=ref,
+            visible=visible,
         )
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
-        def show_view(index):
-            for view in self.views:
-                if self.views.index(view) == index:
-                    view.visible = True
-                    view.did_mount()
-                else:
-                    view.visible = False
-
-        yield show_view(e.control.selected_index)
-
         if e.control.selected_index == 0:
             assert type(self.views[0]) == FileManagerView
             await get_directory(
@@ -69,9 +65,18 @@ class HomeNavigationBar(ft.NavigationBar):
             assert type(self.page) == ft.Page
             await self.page.push_route("/home/manage")
             self.selected_index = self.last_selected_index
-            yield show_view(self.selected_index)
             self.update()
             return
+
+        if abs(e.control.selected_index - self.last_selected_index) > 1:
+            # If the user is jumping more than 1 page, use no animation for better UX
+            await self.parent_view.pageview.jump_to_page(e.control.selected_index)
+        else:
+            await self.parent_view.pageview.go_to_page(
+                e.control.selected_index,
+                animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+                animation_duration=ft.Duration(milliseconds=400),
+            )
 
         self.last_selected_index = self.selected_index
 

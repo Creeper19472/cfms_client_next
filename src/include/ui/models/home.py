@@ -7,6 +7,8 @@ from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.controls.views.tasks import TasksView
 
+INITIAL_VIEW_INDEX = 2
+
 
 @route("home")
 class HomeModel(Model):
@@ -19,16 +21,26 @@ class HomeModel(Model):
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
-        self.homeview = HomeView(visible=True)
+        self.stored_views = [
+            FileManagerView(parent_model=self),
+            TasksView(parent_model=self),
+            HomeView(),
+            MoreView(self),
+        ]
+        self.pageview = ft.PageView(
+            self.stored_views,
+            expand=True,
+            selected_index=INITIAL_VIEW_INDEX,
+        )
+
         self.controls = [
-            ft.SafeArea(ft.Container()),
-            FileManagerView(parent_model=self, visible=False),
-            TasksView(parent_model=self, visible=False),
-            self.homeview,
-            MoreView(self, visible=False),
+            # ft.SafeArea(ft.Container()),
+            self.pageview,
         ]
         self.navigation_bar = HomeNavigationBar(
-            parent_view=self, views=self.controls[1:]
+            parent_view=self,
+            views=self.stored_views,
+            initial_selected_index=INITIAL_VIEW_INDEX,
         )
         self.file_picker: ft.FilePicker
 

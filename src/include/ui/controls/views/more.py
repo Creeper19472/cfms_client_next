@@ -24,7 +24,6 @@ class MoreView(ft.Container):
         self.padding = 10
         self.alignment = ft.Alignment.TOP_CENTER
         self.expand = True
-        self.visible = False
 
         self.app_shared = AppShared()
 
