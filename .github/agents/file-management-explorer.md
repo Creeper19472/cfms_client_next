@@ -417,12 +417,12 @@ Supports uploading entire directory structures:
 3. Upload all files maintaining structure
 4. Show hierarchical progress
 
-**Utility**: `build_directory_tree()` (`include/util/path.py`)
+**Utility**: `build_directory_tree()` (`include/util/tree.py`)
 
 ## Path Utilities
 
 ### Path Manipulation
-**Location**: `include/util/path.py`
+**Location**: `include/util/tree.py`
 
 Functions for working with file paths and directory structures:
 - `build_directory_tree()`: Recursively build tree from filesystem

@@ -11,7 +11,7 @@ CFMS Client NEXT uses **GNU gettext** for internationalization, supporting multi
 
 Currently supported:
 - **Chinese (Simplified)**: `zh_CN` (default)
-- **English**: `en` or `en_US`
+- **English**: `en` (fallback; uses `NullTranslations` if no `.mo` file found)
 
 Translation files located in: `include/ui/locale/`
 
@@ -28,15 +28,13 @@ Translation files located in: `include/ui/locale/`
 ```
 include/ui/locale/
 ├── messages.pot          # Translation template
-├── en/
-│   └── LC_MESSAGES/
-│       ├── messages.po   # English translations
-│       └── messages.mo   # Compiled English
 └── zh_CN/
     └── LC_MESSAGES/
-        ├── messages.po   # Chinese translations
-        └── messages.mo   # Compiled Chinese
+        ├── client.po     # Chinese translations
+        └── client.mo     # Compiled Chinese
 ```
+
+Note: The gettext domain is `"client"` (not `"messages"`), so the files are named `client.po` / `client.mo`.
 
 ### Locale Path Configuration
 
@@ -53,26 +51,30 @@ LOCALE_PATH = f"{ROOT_PATH}/include/ui/locale"
 
 **Location**: `include/util/locale.py`
 
-```python
-_translation = None  # Global translation instance
+The translation system uses a `DelegatingTranslation` singleton proxy that supports live language switching at runtime:
 
-def set_translation(language: str):
-    """Set the global translation instance."""
-    global _translation
-    _translation = gettext.translation(
-        "messages",
+```python
+class DelegatingTranslation(gettext.NullTranslations):
+    """Singleton translation proxy that delegates to an internal real translation."""
+    # Thread-safe singleton; delegates gettext/ngettext calls to internal real translation
+
+def create_translation(language: str = "en", fallback: bool = True):
+    """Create a gettext translation for the given language."""
+    return gettext.translation(
+        "client",                # domain name
         localedir=LOCALE_PATH,
         languages=[language],
-        fallback=True  # Fallback to default if language not found
+        fallback=fallback,
     )
 
+def set_translation(language: str = "en", fallback: bool = True):
+    """Update the global DelegatingTranslation to a new language."""
+    translation = create_translation(language, fallback)
+    DelegatingTranslation().set_real(translation)
+
 def get_translation():
-    """Get the global translation instance."""
-    global _translation
-    if _translation is None:
-        # Default to Chinese
-        set_translation("zh_CN")
-    return _translation
+    """Get the singleton DelegatingTranslation instance."""
+    return DelegatingTranslation()
 ```
 
 **Usage Pattern**:
@@ -94,9 +96,8 @@ formatted = _("Welcome, {username}").format(username=user)
 async def main(page: ft.Page):
     # Load language preference
     try:
-        app_shared = AppShared()
-        preferred_language = app_shared.preferences.get("settings", {}).get(
-            "language", "zh_CN"
+        preferred_language = (
+            AppShared().preferences.get("settings", {}).get("language", "zh_CN")
         )
         
         # Set environment variable for gettext
@@ -106,7 +107,7 @@ async def main(page: ft.Page):
         set_translation(preferred_language)
         
     except Exception as e:
-        warnings.warn(f"Failed to load language preferences: {e}")
+        warnings.warn(f"Failed to load language preferences: {e}", RuntimeWarning)
         os.environ["LANGUAGE"] = "zh_CN"
     
     # Import UI components AFTER setting locale
@@ -115,6 +116,20 @@ async def main(page: ft.Page):
 ```
 
 **Critical**: UI imports must come **after** `set_translation()` to ensure all strings use the correct language.
+
+## Dynamic Language Switching
+
+Because `get_translation()` returns a `DelegatingTranslation` proxy singleton, language can be changed at runtime without restarting:
+
+```python
+# Switch language at runtime
+set_translation("en")  # All subsequent _() calls use English
+
+# All existing references to get_translation() automatically pick up the new language
+# because they delegate through the same singleton proxy
+```
+
+Existing `t = get_translation()` references do **not** need to be updated — they will automatically use the new translation since they hold a reference to the singleton proxy.
 
 ## Using Translations in Code
 
@@ -198,20 +213,16 @@ xgettext --language=Python \
 
 Or using `pygettext`:
 ```bash
-find src -name "*.py" -exec pygettext -d messages -o src/include/ui/locale/messages.pot {} +
+find src -name "*.py" -exec pygettext -d client -o src/include/ui/locale/messages.pot {} +
 ```
 
 ### 2. Update Translation Files
 
 Update existing `.po` files with new strings:
 ```bash
-# For each language
+# For Chinese (Simplified)
 msgmerge --update \
-         src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po \
-         src/include/ui/locale/messages.pot
-
-msgmerge --update \
-         src/include/ui/locale/en/LC_MESSAGES/messages.po \
+         src/include/ui/locale/zh_CN/LC_MESSAGES/client.po \
          src/include/ui/locale/messages.pot
 ```
 
@@ -219,9 +230,9 @@ msgmerge --update \
 
 Edit `.po` files manually or with translation tools:
 
-**Example `messages.po`**:
+**Example `client.po`**:
 ```po
-# src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
+# src/include/ui/locale/zh_CN/LC_MESSAGES/client.po
 msgid ""
 msgstr ""
 "Project-Id-Version: CFMS Client NEXT\n"
@@ -253,18 +264,15 @@ msgstr[0] "已选择 {count} 个文件"
 
 Compile `.po` to binary `.mo`:
 ```bash
-# For each language
-msgfmt src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po \
-       -o src/include/ui/locale/zh_CN/LC_MESSAGES/messages.mo
-
-msgfmt src/include/ui/locale/en/LC_MESSAGES/messages.po \
-       -o src/include/ui/locale/en/LC_MESSAGES/messages.mo
+# For Chinese (Simplified)
+msgfmt src/include/ui/locale/zh_CN/LC_MESSAGES/client.po \
+       -o src/include/ui/locale/zh_CN/LC_MESSAGES/client.mo
 ```
 
 ### 5. Test
 
 - Change language preference in settings
-- Restart application
+- The `DelegatingTranslation` proxy allows switching at runtime (no restart required)
 - Verify all strings appear in correct language
 
 ## Language Settings UI
@@ -324,25 +332,19 @@ class LanguageSettingsModel(Model):
         )
 ```
 
-### Dynamic Language Switching (Advanced)
+### Dynamic Language Switching
 
-For live language switching without restart:
+The `DelegatingTranslation` proxy enables live language switching at runtime:
 ```python
-async def switch_language(new_language: str):
-    """Switch language at runtime."""
-    # Update translation
-    set_translation(new_language)
-    
-    # Update environment
-    os.environ["LANGUAGE"] = new_language
-    
-    # Rebuild all UI components
-    # This is complex and may require page reload
-    await page.clean_async()
-    await initialize_ui()
+# Switch language at runtime (no restart required)
+set_translation("en")
+os.environ["LANGUAGE"] = "en"
+
+# All code using get_translation() will immediately use the new language
+# because DelegatingTranslation is a singleton proxy
 ```
 
-**Note**: Full UI rebuild is complex. Recommend restart for language changes.
+**Note**: While the translation system supports runtime switching, any UI strings already rendered need to be rebuilt/refreshed to show the new language. New dialogs/pages opened after switching will use the new language.
 
 ## Best Practices
 
@@ -537,7 +539,7 @@ def check_missing_translations(language: str):
     """Check for missing translations in a language."""
     import polib
     
-    po_file = f"src/include/ui/locale/{language}/LC_MESSAGES/messages.po"
+    po_file = f"src/include/ui/locale/{language}/LC_MESSAGES/client.po"
     po = polib.pofile(po_file)
     
     missing = [entry.msgid for entry in po if not entry.msgstr]
@@ -559,7 +561,7 @@ def check_missing_translations(language: str):
 msggrep --statistics src/include/ui/locale/messages.pot
 
 # Count translated strings
-msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
+msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/client.po
 ```
 
 ## Adding a New Language
@@ -574,7 +576,7 @@ msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
 2. **Initialize Translation File**:
    ```bash
    msginit --input=src/include/ui/locale/messages.pot \
-           --output=src/include/ui/locale/fr/LC_MESSAGES/messages.po \
+           --output=src/include/ui/locale/fr/LC_MESSAGES/client.po \
            --locale=fr_FR
    ```
 
@@ -590,8 +592,8 @@ msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
 
 5. **Compile**:
    ```bash
-   msgfmt src/include/ui/locale/fr/LC_MESSAGES/messages.po \
-          -o src/include/ui/locale/fr/LC_MESSAGES/messages.mo
+   msgfmt src/include/ui/locale/fr/LC_MESSAGES/client.po \
+          -o src/include/ui/locale/fr/LC_MESSAGES/client.mo
    ```
 
 6. **Add to Language Dropdown**:
@@ -601,7 +603,7 @@ msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
 
 7. **Test**:
    - Change language to French
-   - Restart and verify
+   - Use `set_translation("fr")` or restart and verify
 
 ## Troubleshooting
 
@@ -616,10 +618,10 @@ msggrep --statistics src/include/ui/locale/zh_CN/LC_MESSAGES/messages.po
 **Solutions**:
 ```bash
 # Recompile .mo files
-msgfmt messages.po -o messages.mo
+msgfmt client.po -o client.mo
 
 # Check for missing translations
-msgfmt --check messages.po
+msgfmt --check client.po
 
 # Verify language code
 echo $LANGUAGE

@@ -52,8 +52,12 @@ include/ui/
 │   │   ├── login.py          # Login view
 │   │   ├── explorer.py       # File explorer view
 │   │   ├── more.py           # More/settings view
+│   │   ├── tasks.py          # Tasks/downloads view
 │   │   └── admin/            # Admin views
-│   └── placeholder.py        # Placeholder components
+│   │       ├── account.py    # Account management view
+│   │       ├── audit.py      # Audit log view
+│   │       └── group.py      # Group management view
+├── issues/                   # Known UI framework issues/workarounds
 ├── models/                   # Route models (Flet-Model)
 │   ├── connect.py            # @route("connect")
 │   ├── login.py              # @route("login")
@@ -65,10 +69,13 @@ include/ui/
 │   │   ├── overview.py       # Settings overview
 │   │   ├── connection.py     # Connection settings
 │   │   ├── language.py       # Language settings
-│   │   └── safety.py         # Safety settings
+│   │   ├── safety.py         # Safety settings
+│   │   ├── twofa.py          # 2FA settings
+│   │   └── updates.py        # Updates settings
 │   └── wizards/
 │       └── welcome.py        # Welcome wizard
 └── util/                     # UI utility functions
+    ├── choice.py             # Choice/selection helpers
     ├── file_controls.py      # File list UI helpers
     ├── group_controls.py     # Group UI helpers
     ├── notifications.py      # Snackbar/notification helpers
@@ -115,7 +122,7 @@ class ConnectToServerModel(Model):
 - Often reference a controller for business logic
 
 **Controllers** (`include/controllers/`):
-- Extend `BaseController[T]` where T is the view type
+- Extend `Controller[T]` where T is the view type
 - Handle user interactions and business logic
 - Access AppShared singleton for state
 
@@ -238,6 +245,13 @@ class BatchUploadFileAlertDialog(AlertDialog):
 
 ### Theme Configuration (main.py)
 ```python
+# Window configuration
+DEFAULT_WINDOW_WIDTH = 1366
+DEFAULT_WINDOW_HEIGHT = 768
+page.window.width = DEFAULT_WINDOW_WIDTH
+page.window.height = DEFAULT_WINDOW_HEIGHT
+page.window.resizable = False  # Set to not app_shared.is_production after AppShared init
+
 page.theme_mode = ft.ThemeMode.DARK
 page.theme = ft.Theme(
     scrollbar_theme=ft.ScrollbarTheme(thickness=0.0),
@@ -258,6 +272,8 @@ page.decoration = ft.BoxDecoration(
     )
 )
 ```
+
+**Note**: `page.window.resizable` is set to `not app_shared.is_production` after `AppShared` is initialized. In production (packaged) builds, the window is non-resizable. In development builds, it is resizable.
 
 ### Common Layout Patterns
 
@@ -428,7 +444,10 @@ menu_items = [
 
 ## Known UI Framework Issues
 
-The `include/issues/` directory contains workarounds for known Flet bugs:
+The `include/ui/issues/` directory contains workarounds for known Flet bugs:
+- `ani.py`: Animation-related issues
+- `daterange.py`: Date range picker issues
+- `ph.py`: Permission handler issues
 - Check this directory before assuming a UI bug is your code
 - Contribute workarounds for newly discovered issues
 - Document the Flet version where the issue was observed
