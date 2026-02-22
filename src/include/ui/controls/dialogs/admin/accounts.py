@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 import asyncio
 from datetime import datetime
 
@@ -451,7 +451,7 @@ class BlockUserDialog(AlertDialog):
         # --- Block types ---
         self.block_types_button = ft.SegmentedButton(
             selected_icon=ft.Icon(ft.Icons.BLOCK),
-            selected={"read", "write", "move"},
+            selected=["read", "write", "move"],
             allow_empty_selection=False,
             allow_multiple_selection=True,
             segments=[
@@ -527,9 +527,7 @@ class BlockUserDialog(AlertDialog):
             now.strftime("%Y-%m-%d %H:%M"), visible=False, size=12
         )
 
-        self.submit_button = ft.TextButton(
-            _("Block"), on_click=self.request_block_user
-        )
+        self.submit_button = ft.TextButton(_("Block"), on_click=self.request_block_user)
         self.cancel_button = ft.TextButton(
             _("Cancel"), on_click=self.cancel_button_click
         )
@@ -549,22 +547,12 @@ class BlockUserDialog(AlertDialog):
                 ft.Text(_("Expiry"), weight=ft.FontWeight.BOLD),
                 self.expires_enabled_checkbox,
                 ft.Row(
-                    [
-                        ft.Column(
-                            [self.date_button, self.expires_text],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            spacing=4,
-                        ),
-                        ft.Column(
-                            [self.time_button],
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            spacing=4,
-                        ),
-                    ],
+                    [self.date_button, self.time_button],
                     spacing=20,
                     alignment=ft.MainAxisAlignment.CENTER,
                     wrap=True,
                 ),
+                self.expires_text,
             ],
             width=480,
             alignment=ft.MainAxisAlignment.CENTER,
@@ -591,7 +579,11 @@ class BlockUserDialog(AlertDialog):
     def _update_expires_text(self):
         date_val = self.date_picker.value
         time_val = self.time_picker.value
-        date_str = date_val.strftime("%Y-%m-%d") if date_val else datetime.now().strftime("%Y-%m-%d")
+        date_str = (
+            date_val.strftime("%Y-%m-%d")
+            if date_val
+            else datetime.now().strftime("%Y-%m-%d")
+        )
         time_str = time_val.strftime("%H:%M") if time_val else "00:00"
         self.expires_text.value = f"{date_str} {time_str}"
 
@@ -750,9 +742,9 @@ class ListUserBlocksDialog(AlertDialog):
         if permanent:
             effective_expires_str = _("Permanent")
         else:
-            effective_expires_str = _dt.fromtimestamp(max_not_after).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            effective_expires_str = _dt.fromtimestamp(
+                cast(float, max_not_after)
+            ).strftime("%Y-%m-%d %H:%M:%S")
 
         not_before_str = (
             _dt.fromtimestamp(min_not_before).strftime("%Y-%m-%d %H:%M:%S")
@@ -822,12 +814,18 @@ class ListUserBlocksDialog(AlertDialog):
                     leading=ft.Icon(ft.Icons.BLOCK),
                     title=ft.Text(
                         _("Types: {types} | Target: {target}").format(
-                            types=", ".join(block_types) if block_types else _("(None)"),
+                            types=(
+                                ", ".join(block_types) if block_types else _("(None)")
+                            ),
                             target=target_str,
                         )
                     ),
                     subtitle=ft.Text(
-                        _("Created: {created} | Active from: {not_before} | Expires: {expires} | ID: {id}").format(
+                        _(
+                            "ID: {id}\n"
+                            "Created: {created}\n"
+                            "Period: {not_before} - {expires}"
+                        ).format(
                             created=timestamp_str,
                             not_before=block_not_before_str,
                             expires=expires_str,
@@ -835,6 +833,7 @@ class ListUserBlocksDialog(AlertDialog):
                         )
                     ),
                     trailing=revoke_button,
+                    is_three_line=True,
                 )
             )
 
