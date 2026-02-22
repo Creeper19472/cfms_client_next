@@ -82,7 +82,7 @@ class UserContextMenu(ContextMenu2):
                     "icon": ft.Icons.BLOCK,
                     "content": _("Block User"),
                     "on_click": self.block_user_button_click,
-                    "require": {"block_user"},
+                    "require": {"block"},
                 },
                 {
                     "icon": ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
