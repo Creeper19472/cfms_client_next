@@ -77,6 +77,19 @@ class UserContextMenu(ContextMenu2):
                     "content": _("Properties"),
                     "on_click": self.properties_button_click,
                 },
+                {},
+                {
+                    "icon": ft.Icons.BLOCK,
+                    "content": _("Block User"),
+                    "on_click": self.block_user_button_click,
+                    "require": {"block_user"},
+                },
+                {
+                    "icon": ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
+                    "content": _("View/Revoke Blocks"),
+                    "on_click": self.list_blocks_button_click,
+                    "require": {"list_user_blocks"},
+                },
             ],
         )
 
@@ -97,3 +110,9 @@ class UserContextMenu(ContextMenu2):
 
     async def properties_button_click(self, event: ft.Event[ft.PopupMenuItem]) -> None:
         self.page.run_task(self.controller.action_view_user_info)
+
+    async def block_user_button_click(self, event: ft.Event[ft.PopupMenuItem]) -> None:
+        self.page.run_task(self.controller.action_block_user)
+
+    async def list_blocks_button_click(self, event: ft.Event[ft.PopupMenuItem]) -> None:
+        self.page.run_task(self.controller.action_list_user_blocks)

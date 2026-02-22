@@ -12,6 +12,8 @@ if TYPE_CHECKING:
         RenameUserNicknameDialog,
         EditUserGroupDialog,
         ViewUserInfoDialog,
+        BlockUserDialog,
+        ListUserBlocksDialog,
     )
 
 from include.util.locale import get_translation
@@ -235,3 +237,82 @@ class ViewUserInfoDialogController(Controller["ViewUserInfoDialog"]):
             self.control.info_listview.visible = True
 
         self.control.update()
+
+
+class BlockUserDialogController(Controller["BlockUserDialog"]):
+    def __init__(self, control: "BlockUserDialog"):
+        super().__init__(control)
+
+    async def action_block_user(self):
+        reason = self.control.reason_field.value or ""
+        expires_str = self.control.expires_field.value.strip() if self.control.expires_field.value else ""
+
+        data: dict = {"username": self.control.username, "reason": reason}
+        if expires_str:
+            try:
+                expires_ts = datetime.fromisoformat(expires_str).timestamp()
+            except ValueError:
+                self.control.send_error(
+                    _("Invalid date format. Please use YYYY-MM-DD HH:MM:SS.")
+                )
+                self.control.enable_interactions()
+                return
+            data["expires"] = expires_ts
+
+        response = await do_request(
+            action="block_user",
+            data=data,
+            username=self.app_shared.username,
+            token=self.app_shared.token,
+        )
+        if (code := response["code"]) != 200:
+            self.control.send_error(
+                _("Failed to block user: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
+            self.control.enable_interactions()
+        else:
+            self.control.close()
+
+
+class ListUserBlocksDialogController(Controller["ListUserBlocksDialog"]):
+    def __init__(self, control: "ListUserBlocksDialog"):
+        super().__init__(control)
+
+    async def action_refresh_blocks(self):
+        self.control.disable_interactions()
+
+        response = await do_request(
+            action="list_user_blocks",
+            data={"username": self.control.username},
+            username=self.app_shared.username,
+            token=self.app_shared.token,
+        )
+        if (code := response["code"]) != 200:
+            self.control.send_error(
+                _("Failed to fetch user blocks: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
+            self.control.enable_interactions()
+            return
+
+        blocks: list[dict] = response["data"].get("blocks", [])
+        self.control.build_block_list(blocks)
+        self.control.enable_interactions()
+
+    async def action_revoke_block(self, block_id: str):
+        response = await do_request(
+            action="unblock_user",
+            data={"username": self.control.username, "block_id": block_id},
+            username=self.app_shared.username,
+            token=self.app_shared.token,
+        )
+        if (code := response["code"]) != 200:
+            self.control.send_error(
+                _("Failed to revoke block: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                )
+            )
+        await self.action_refresh_blocks()

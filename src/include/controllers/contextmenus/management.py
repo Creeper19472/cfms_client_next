@@ -5,6 +5,8 @@ from include.ui.controls.dialogs.admin.accounts import (
     EditUserGroupDialog,
     ViewUserInfoDialog,
     PasswdUserDialog,
+    BlockUserDialog,
+    ListUserBlocksDialog,
 )
 from include.ui.controls.dialogs.wait import wait
 from include.ui.util.notifications import send_error
@@ -62,3 +64,9 @@ class UserContextMenuController(Controller["UserContextMenu"]):
 
     async def action_view_user_info(self):
         self.control.page.show_dialog(ViewUserInfoDialog(self.control.username))
+
+    async def action_block_user(self):
+        self.control.page.show_dialog(BlockUserDialog(self.control.username))
+
+    async def action_list_user_blocks(self):
+        self.control.page.show_dialog(ListUserBlocksDialog(self.control.username))

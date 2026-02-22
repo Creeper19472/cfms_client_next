@@ -9,6 +9,8 @@ from include.controllers.dialogs.management import (
     EditUserGroupDialogController,
     RenameUserNicknameDialogController,
     ViewUserInfoDialogController,
+    BlockUserDialogController,
+    ListUserBlocksDialogController,
 )
 from include.controllers.dialogs.passwd import PasswdDialogController
 from include.ui.controls.dialogs.base import AlertDialog
@@ -423,3 +425,229 @@ class ViewUserInfoDialog(AlertDialog):
 
     async def refresh_button_click(self, event: ft.Event[ft.IconButton]):
         self.page.run_task(self.controller.action_refresh_user_info)
+
+
+class BlockUserDialog(AlertDialog):
+    def __init__(
+        self,
+        username: str,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.username = username
+        self.controller = BlockUserDialogController(self)
+
+        self.modal = False
+        self.scrollable = True
+        self.title = ft.Text(_("Block User"))
+
+        self.progress_ring = ft.ProgressRing(visible=False)
+
+        self.reason_field = ft.TextField(
+            label=_("Reason"),
+            on_submit=self.request_block_user,
+            expand=True,
+        )
+        self.expires_field = ft.TextField(
+            label=_("Expires (YYYY-MM-DD HH:MM:SS, leave blank for permanent)"),
+            on_submit=self.request_block_user,
+            expand=True,
+        )
+
+        self.submit_button = ft.TextButton(
+            _("Block"), on_click=self.request_block_user
+        )
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
+
+        self.content = ft.Column(
+            controls=[self.reason_field, self.expires_field],
+            width=400,
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True,
+            scroll=ft.ScrollMode.AUTO,
+        )
+        self.actions = [
+            self.progress_ring,
+            self.submit_button,
+            self.cancel_button,
+        ]
+
+    def disable_interactions(self):
+        self.reason_field.disabled = True
+        self.expires_field.disabled = True
+        self.submit_button.visible = False
+        self.cancel_button.disabled = True
+        self.progress_ring.visible = True
+        self.modal = True
+
+    def enable_interactions(self):
+        self.reason_field.disabled = False
+        self.expires_field.disabled = False
+        self.submit_button.visible = True
+        self.cancel_button.disabled = False
+        self.progress_ring.visible = False
+        self.modal = False
+        self.update()
+
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        self.close()
+
+    async def request_block_user(
+        self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
+    ):
+        self.disable_interactions()
+        self.page.run_task(self.controller.action_block_user)
+
+
+class ListUserBlocksDialog(AlertDialog):
+    def __init__(
+        self,
+        username: str,
+        ref: ft.Ref | None = None,
+        visible=True,
+    ):
+        super().__init__(ref=ref, visible=visible)
+        self.page: ft.Page
+        self.username = username
+        self.controller = ListUserBlocksDialogController(self)
+
+        self.modal = False
+        self.scrollable = True
+        self.title = ft.Row(
+            controls=[
+                ft.Text(_("User Blocks")),
+                ft.IconButton(
+                    ft.Icons.REFRESH,
+                    on_click=self.refresh_button_click,
+                ),
+            ]
+        )
+
+        self.progress_ring = ft.ProgressRing(visible=True)
+        self.blocks_listview = ft.ListView(visible=False, expand=True)
+
+        self.cancel_button = ft.TextButton(
+            _("Close"), on_click=self.cancel_button_click
+        )
+
+        self.content = ft.Column(
+            controls=[self.progress_ring, self.blocks_listview],
+            width=500,
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True,
+            scroll=ft.ScrollMode.AUTO,
+        )
+        self.actions = [self.cancel_button]
+
+    def disable_interactions(self):
+        self.progress_ring.visible = True
+        self.blocks_listview.visible = False
+        self.update()
+
+    def enable_interactions(self):
+        self.progress_ring.visible = False
+        self.blocks_listview.visible = True
+        self.update()
+
+    def build_block_list(self, blocks: list[dict]):
+        """Build the UI list from a list of block records, merging overlapping active blocks."""
+        self.blocks_listview.controls = []
+
+        if not blocks:
+            self.blocks_listview.controls.append(
+                ft.Text(_("No active blocks found."), italic=True)
+            )
+            return
+
+        # Compute merged effective block span across all records
+        now_ts = __import__("time").time()
+        permanent = any(b.get("expires") is None for b in blocks)
+        if not permanent:
+            max_expires = max(b["expires"] for b in blocks)
+        else:
+            max_expires = None
+
+        min_created = min(b.get("created_time", now_ts) for b in blocks)
+
+        # Summary section
+        if permanent:
+            effective_expires_str = _("Permanent")
+        else:
+            from datetime import datetime as _dt
+            effective_expires_str = _dt.fromtimestamp(max_expires).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+        from datetime import datetime as _dt
+        self.blocks_listview.controls.append(
+            ft.ListTile(
+                title=ft.Text(
+                    _("Effective block: blocked since {since}, expires {expires}").format(
+                        since=_dt.fromtimestamp(min_created).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
+                        expires=effective_expires_str,
+                    ),
+                    weight=ft.FontWeight.BOLD,
+                ),
+                subtitle=ft.Text(
+                    _("{count} underlying record(s)").format(count=len(blocks))
+                ),
+            )
+        )
+        self.blocks_listview.controls.append(ft.Divider())
+
+        # Individual records
+        for block in blocks:
+            block_id = block.get("id", "")
+            reason = block.get("reason") or _("(No reason provided)")
+            created_str = (
+                _dt.fromtimestamp(block["created_time"]).strftime("%Y-%m-%d %H:%M:%S")
+                if block.get("created_time") is not None
+                else _("(Unknown)")
+            )
+            expires = block.get("expires")
+            expires_str = (
+                _dt.fromtimestamp(expires).strftime("%Y-%m-%d %H:%M:%S")
+                if expires
+                else _("Permanent")
+            )
+
+            revoke_button = ft.TextButton(
+                _("Revoke"),
+                data=block_id,
+                on_click=self.revoke_button_click,
+            )
+
+            self.blocks_listview.controls.append(
+                ft.ListTile(
+                    leading=ft.Icon(ft.Icons.BLOCK),
+                    title=ft.Text(reason),
+                    subtitle=ft.Text(
+                        _("Created: {created} | Expires: {expires} | ID: {id}").format(
+                            created=created_str,
+                            expires=expires_str,
+                            id=block_id,
+                        )
+                    ),
+                    trailing=revoke_button,
+                )
+            )
+
+    def did_mount(self):
+        super().did_mount()
+        self.page.run_task(self.controller.action_refresh_blocks)
+
+    async def cancel_button_click(self, event: ft.Event[ft.TextButton]):
+        self.close()
+
+    async def refresh_button_click(self, event: ft.Event[ft.IconButton]):
+        self.page.run_task(self.controller.action_refresh_blocks)
+
+    async def revoke_button_click(self, event: ft.Event[ft.TextButton]):
+        block_id = event.control.data
+        self.page.run_task(self.controller.action_revoke_block, block_id)

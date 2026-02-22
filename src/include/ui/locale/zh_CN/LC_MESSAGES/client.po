@@ -2575,3 +2575,79 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:259
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
+
+#: .\include\controllers\contextmenus\management.py
+msgid "Failed to block user: ({code}) {message}"
+msgstr "封禁用户失败：({code}) {message}"
+
+#: .\include\controllers\contextmenus\management.py
+msgid "Failed to revoke block: ({code}) {message}"
+msgstr "解除封禁失败：({code}) {message}"
+
+#: .\include\controllers\contextmenus\management.py
+msgid "Failed to fetch user blocks: ({code}) {message}"
+msgstr "获取封禁记录失败：({code}) {message}"
+
+#: .\include\ui\controls\contextmenus\management.py
+msgid "Block User"
+msgstr "封禁用户"
+
+#: .\include\ui\controls\contextmenus\management.py
+msgid "View/Revoke Blocks"
+msgstr "查看/解除封禁"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Block User"
+msgstr "封禁用户"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Reason"
+msgstr "原因"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Expires (YYYY-MM-DD HH:MM:SS, leave blank for permanent)"
+msgstr "到期时间（格式：YYYY-MM-DD HH:MM:SS，留空表示永久）"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Block"
+msgstr "封禁"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Invalid date format. Please use YYYY-MM-DD HH:MM:SS."
+msgstr "日期格式无效，请使用 YYYY-MM-DD HH:MM:SS 格式。"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "User Blocks"
+msgstr "用户封禁记录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "No active blocks found."
+msgstr "未找到有效的封禁记录。"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Effective block: blocked since {since}, expires {expires}"
+msgstr "有效封禁：封禁开始于 {since}，到期时间：{expires}"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "{count} underlying record(s)"
+msgstr "共 {count} 条记录"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Created: {created} | Expires: {expires} | ID: {id}"
+msgstr "创建时间：{created} | 到期时间：{expires} | 记录ID：{id}"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Revoke"
+msgstr "解除"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Permanent"
+msgstr "永久"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "(No reason provided)"
+msgstr "（未提供原因）"
+
+#: .\include\ui\controls\dialogs\admin\accounts.py
+msgid "Close"
+msgstr "关闭"
