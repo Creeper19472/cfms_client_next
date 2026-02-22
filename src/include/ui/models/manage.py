@@ -93,7 +93,9 @@ class ManageModel(Model):
         )
 
         self.controls = [self.pageview]
-        self.navigation_bar = ManagementNavigationBar(self, self.stored_views)
+        self.navigation_bar = ManagementNavigationBar(
+            self, self.stored_views, initial_selected_index=INITIAL_VIEW_INDEX
+        )
 
         # self.floating_action_button = ft.FloatingActionButton(
         #     icon=ft.Icons.LOCK, on_click=apply_lockdown
