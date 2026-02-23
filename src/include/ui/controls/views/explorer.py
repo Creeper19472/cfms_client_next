@@ -249,6 +249,7 @@ class FileManagerView(ft.Container):
         self.progress_ring.visible = False
         if self.access_denied_view is not None:
             self.access_denied_view.visible = False
+        self.top_bar.update_root_button_visibility()
         self.update()
 
     def show_access_denied_view(self, reason: str):

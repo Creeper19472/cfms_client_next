@@ -148,7 +148,14 @@ class ExplorerTopBar(ft.Row):
             on_click=self.on_selection_toggle_click,
             tooltip=_("Select items"),
         )
-        
+
+        self.root_permissions_button = ft.IconButton(
+            ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
+            on_click=self.on_set_root_permissions_click,
+            tooltip=_("Set root directory permissions"),
+            visible=False,
+        )
+
         super().__init__(
             controls=[
                 ft.Row(
@@ -180,11 +187,7 @@ class ExplorerTopBar(ft.Row):
                 ),
                 ft.Row(
                     controls=[
-                        ft.IconButton(
-                            ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
-                            on_click=self.on_set_root_permissions_click,
-                            tooltip=_("Set root directory permissions"),
-                        ),
+                        self.root_permissions_button,
                         ft.IconButton(
                             ft.Icons.FOLDER_OPEN_OUTLINED,
                             on_click=self.on_open_folder_button_click,
@@ -200,6 +203,15 @@ class ExplorerTopBar(ft.Row):
         self.page: ft.Page
         self.parent_view = parent_view
         # self.controller = ExplorerTopBarController(self)
+
+    def update_root_button_visibility(self):
+        """Show the root-permissions button only when viewing the root directory."""
+        at_root = (
+            self.parent_view.current_directory_id
+            == self.parent_view.root_directory_id
+        )
+        self.root_permissions_button.visible = at_root
+        self.root_permissions_button.update()
 
     async def on_upload_button_click(self, event: ft.Event[ft.IconButton]):
         files = await self.parent_view.parent_model.file_picker.pick_files(
