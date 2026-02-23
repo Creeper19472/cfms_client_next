@@ -245,7 +245,7 @@ class ExplorerTopBar(ft.Row):
         self.page.show_dialog(OpenDirectoryDialog(self.parent_view))
 
     async def on_set_root_permissions_click(self, event: ft.Event[ft.IconButton]):
-        self.page.show_dialog(RuleManager("/", "directory"))
+        self.page.show_dialog(RuleManager(self.parent_view.root_directory_id or "/", "directory"))
 
     async def on_search_button_click(self, event: ft.Event[ft.IconButton]):
         """Handle search button click."""
