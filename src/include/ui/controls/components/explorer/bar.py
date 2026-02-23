@@ -20,7 +20,7 @@ _ = t.gettext
 
 class SelectionToolbar(ft.Row):
     """Toolbar that appears when items are selected in the file explorer."""
-    
+
     def __init__(
         self,
         parent_view: "FileManagerView",
@@ -34,51 +34,51 @@ class SelectionToolbar(ft.Row):
         )
         self.page: ft.Page
         self.parent_view = parent_view
-        
+
         # Selection info text
         self.selection_info = ft.Text(
             _("0 items selected"),
             size=14,
             weight=ft.FontWeight.W_500,
         )
-        
+
         # Action buttons
         self.select_all_button = ft.TextButton(
             content=_("Select All"),
             icon=ft.Icons.SELECT_ALL,
             on_click=self.on_select_all_click,
         )
-        
+
         self.clear_selection_button = ft.TextButton(
             content=_("Clear"),
             icon=ft.Icons.CLEAR,
             on_click=self.on_clear_selection_click,
         )
-        
+
         self.download_button = ft.TextButton(
             content=_("Download"),
             icon=ft.Icons.DOWNLOAD,
             on_click=self.on_download_click,
         )
-        
+
         self.move_button = ft.TextButton(
             content=_("Move"),
             icon=ft.Icons.DRIVE_FILE_MOVE,
             on_click=self.on_move_click,
         )
-        
+
         self.delete_button = ft.TextButton(
             content=_("Delete"),
             icon=ft.Icons.DELETE,
             on_click=self.on_delete_click,
         )
-        
+
         self.cancel_button = ft.TextButton(
             content=_("Cancel"),
             icon=ft.Icons.CLOSE,
             on_click=self.on_cancel_click,
         )
-        
+
         self.controls = [
             self.selection_info,
             ft.VerticalDivider(),
@@ -91,7 +91,7 @@ class SelectionToolbar(ft.Row):
             ft.VerticalDivider(),
             self.cancel_button,
         ]
-    
+
     def update_selection_count(self, count: int):
         """Update the selection count display."""
         if count == 0:
@@ -101,30 +101,30 @@ class SelectionToolbar(ft.Row):
         else:
             self.selection_info.value = _("{count} items selected").format(count=count)
         self.update()
-    
+
     async def on_select_all_click(self, event: ft.Event[ft.TextButton]):
         """Handle select all button click."""
         self.parent_view.file_listview.select_all()
         count = self.parent_view.file_listview.get_selected_count()
         self.update_selection_count(count)
-    
+
     async def on_clear_selection_click(self, event: ft.Event[ft.TextButton]):
         """Handle clear selection button click."""
         self.parent_view.file_listview.clear_selection()
         self.update_selection_count(0)
-    
+
     async def on_download_click(self, event: ft.Event[ft.TextButton]):
         """Handle download selected button click."""
         self.page.run_task(self.parent_view.controller.action_batch_download)
-    
+
     async def on_move_click(self, event: ft.Event[ft.TextButton]):
         """Handle move selected button click."""
         self.page.run_task(self.parent_view.controller.action_batch_move)
-    
+
     async def on_delete_click(self, event: ft.Event[ft.TextButton]):
         """Handle delete selected button click."""
         self.page.run_task(self.parent_view.controller.action_batch_delete)
-    
+
     async def on_cancel_click(self, event: ft.Event[ft.TextButton]):
         """Handle cancel selection mode button click."""
         self.parent_view.file_listview.toggle_selection_mode(False)
@@ -207,8 +207,7 @@ class ExplorerTopBar(ft.Row):
     def update_root_button_visibility(self):
         """Show the root-permissions button only when viewing the root directory."""
         at_root = (
-            self.parent_view.current_directory_id
-            == self.parent_view.root_directory_id
+            self.parent_view.current_directory_id == self.parent_view.root_directory_id
         )
         self.root_permissions_button.visible = at_root
         self.root_permissions_button.update()
@@ -245,22 +244,24 @@ class ExplorerTopBar(ft.Row):
         self.page.show_dialog(OpenDirectoryDialog(self.parent_view))
 
     async def on_set_root_permissions_click(self, event: ft.Event[ft.IconButton]):
-        self.page.show_dialog(RuleManager(self.parent_view.root_directory_id or "/", "directory"))
+        self.page.show_dialog(
+            RuleManager(self.parent_view.root_directory_id or "/", "directory")
+        )
 
     async def on_search_button_click(self, event: ft.Event[ft.IconButton]):
         """Handle search button click."""
         self.page.show_dialog(SearchDialog(self.parent_view))
-    
+
     async def on_selection_toggle_click(self, event: ft.Event[ft.IconButton]):
         """Handle selection mode toggle button click."""
         # Enable selection mode
         self.parent_view.file_listview.toggle_selection_mode(True)
-        
+
         # Show selection toolbar
         self.parent_view.selection_toolbar.visible = True
         self.parent_view.selection_toolbar.update_selection_count(0)
         self.parent_view.selection_toolbar.update()
-        
+
         # Hide this toggle button while in selection mode
         self.selection_toggle_button.visible = False
         self.update()
