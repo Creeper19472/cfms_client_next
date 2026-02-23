@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-23 00:31+0800\n"
+"POT-Creation-Date: 2026-02-23 20:50+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -690,24 +690,24 @@ msgid ""
 "contact your system administrator for assistance."
 msgstr "发生意外错误，请重试。如果问题仍然存在，请联系系统管理员寻求帮助。"
 
-#: .\include\ui\controls\components\explorer\bar.py:39
-#: .\include\ui\controls\components\explorer\bar.py:97
+#: .\include\ui\controls\components\explorer\bar.py:40
+#: .\include\ui\controls\components\explorer\bar.py:98
 msgid "0 items selected"
 msgstr "选择了 0 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:46
+#: .\include\ui\controls\components\explorer\bar.py:47
 msgid "Select All"
 msgstr "全选"
 
-#: .\include\ui\controls\components\explorer\bar.py:52
+#: .\include\ui\controls\components\explorer\bar.py:53
 msgid "Clear"
 msgstr "清除"
 
-#: .\include\ui\controls\components\explorer\bar.py:58
+#: .\include\ui\controls\components\explorer\bar.py:59
 msgid "Download"
 msgstr "下载"
 
-#: .\include\ui\controls\components\explorer\bar.py:64
+#: .\include\ui\controls\components\explorer\bar.py:65
 #: .\include\ui\controls\components\visualmgr\editor.py:608
 #: .\include\ui\controls\contextmenus\explorer.py:76
 #: .\include\ui\controls\contextmenus\explorer.py:212
@@ -716,7 +716,7 @@ msgstr "下载"
 msgid "Move"
 msgstr "移动"
 
-#: .\include\ui\controls\components\explorer\bar.py:70
+#: .\include\ui\controls\components\explorer\bar.py:71
 #: .\include\ui\controls\contextmenus\explorer.py:64
 #: .\include\ui\controls\contextmenus\explorer.py:200
 #: .\include\ui\controls\contextmenus\group.py:50
@@ -726,7 +726,7 @@ msgstr "移动"
 msgid "Delete"
 msgstr "删除"
 
-#: .\include\ui\controls\components\explorer\bar.py:76
+#: .\include\ui\controls\components\explorer\bar.py:77
 #: .\include\ui\controls\components\rulemanager.py:111
 #: .\include\ui\controls\dialogs\admin\accounts.py:93
 #: .\include\ui\controls\dialogs\admin\accounts.py:186
@@ -759,56 +759,56 @@ msgstr "删除"
 msgid "Cancel"
 msgstr "取消"
 
-#: .\include\ui\controls\components\explorer\bar.py:99
+#: .\include\ui\controls\components\explorer\bar.py:100
 msgid "1 item selected"
 msgstr "选择了 1 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:101
+#: .\include\ui\controls\components\explorer\bar.py:102
 msgid "{count} items selected"
 msgstr "选择了 {count} 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:148
+#: .\include\ui\controls\components\explorer\bar.py:149
 msgid "Select items"
 msgstr "选择项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:186
+#: .\include\ui\controls\components\explorer\bar.py:155
 msgid "Set root directory permissions"
 msgstr "设置根目录权限"
 
-#: .\include\ui\controls\components\explorer\bar.py:173
+#: .\include\ui\controls\components\explorer\bar.py:181
 #: .\include\ui\controls\dialogs\authorize.py:74
 #: .\include\ui\controls\dialogs\search.py:131
 #: .\include\ui\controls\dialogs\search.py:207
 msgid "Search"
 msgstr "搜索"
 
-#: .\include\ui\controls\components\explorer\bar.py:266
+#: .\include\ui\controls\components\explorer\bar.py:288
 msgid "Sort by:"
 msgstr "排序方式："
 
-#: .\include\ui\controls\components\explorer\bar.py:269
+#: .\include\ui\controls\components\explorer\bar.py:291
 #: .\include\ui\controls\dialogs\search.py:156
 msgid "Name"
 msgstr "名称"
 
-#: .\include\ui\controls\components\explorer\bar.py:270
+#: .\include\ui\controls\components\explorer\bar.py:292
 msgid "Created at"
 msgstr "创建时间"
 
-#: .\include\ui\controls\components\explorer\bar.py:271
+#: .\include\ui\controls\components\explorer\bar.py:293
 msgid "Last Modified"
 msgstr "最后修改"
 
-#: .\include\ui\controls\components\explorer\bar.py:272
+#: .\include\ui\controls\components\explorer\bar.py:294
 #: .\include\ui\controls\dialogs\search.py:159
 msgid "Size"
 msgstr "大小"
 
-#: .\include\ui\controls\components\explorer\bar.py:273
+#: .\include\ui\controls\components\explorer\bar.py:295
 msgid "Type"
 msgstr "类型"
 
-#: .\include\ui\controls\components\explorer\bar.py:282
+#: .\include\ui\controls\components\explorer\bar.py:304
 msgid "Toggle Sort Order"
 msgstr "切换排序顺序"
 
