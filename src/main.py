@@ -101,6 +101,7 @@ async def main(page: ft.Page):
     # Configure fonts
     page.fonts = {
         "Source Han Serif SC Regular": "/fonts/SourceHanSerifSC/SourceHanSerifSC-Regular.otf",
+        "Google Sans Regular": "/fonts/GoogleSans/GoogleSans-Regular.ttf",
     }
 
     # Configure theme
@@ -109,6 +110,11 @@ async def main(page: ft.Page):
         snackbar_theme=ft.SnackBarTheme(
             show_close_icon=True,
             behavior=ft.SnackBarBehavior.FLOATING,
+        ),
+        badge_theme=ft.BadgeTheme(
+            text_style=ft.TextStyle(
+                font_family="Google Sans Regular", size=10, weight=ft.FontWeight.BOLD
+            )
         ),
         font_family="Source Han Serif SC Regular",
     )

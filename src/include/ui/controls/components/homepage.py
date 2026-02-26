@@ -34,13 +34,13 @@ class HomeNavigationBar(ft.NavigationBar):
         self.views = views
         self._is_click_navigating = False
 
-        self._tasks_destination = ft.NavigationBarDestination(
-            icon=ft.Icons.ARROW_CIRCLE_DOWN, label=_("Tasks")
-        )
+        self._tasks_destination_icon = ft.Icon(ft.Icons.ARROW_CIRCLE_DOWN)
 
         nav_destinations = [
             ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
-            self._tasks_destination,
+            ft.NavigationBarDestination(
+                icon=self._tasks_destination_icon, label=_("Tasks")
+            ),
             ft.NavigationBarDestination(icon=ft.Icons.HOME, label=_("Home")),
             ft.NavigationBarDestination(icon=ft.Icons.MORE_HORIZ, label=_("More")),
             ft.NavigationBarDestination(
@@ -78,21 +78,15 @@ class HomeNavigationBar(ft.NavigationBar):
 
     def _on_task_count_changed(self, count: int):
         self._set_tasks_badge(count)
-        if self.page:
-            self.page.run_task(self._do_update)
-
-    async def _do_update(self):
-        # page.run_task() requires a coroutine; self.update() is synchronous.
-        if self.page:
-            self.update()
+        self.update()
 
     def _set_tasks_badge(self, count: int):
         if count <= 0:
-            self._tasks_destination.badge = None
+            self._tasks_destination_icon.badge = None
         elif count > 99:
-            self._tasks_destination.badge = ft.Badge(text="99+")
+            self._tasks_destination_icon.badge = ft.Badge(label="99+")
         else:
-            self._tasks_destination.badge = ft.Badge(text=str(count))
+            self._tasks_destination_icon.badge = ft.Badge(label=str(count))
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
         if e.control.selected_index == 4:
