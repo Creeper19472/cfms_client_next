@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 import flet as ft
 
+from include.classes.shared import AppShared
 from include.ui.controls.dialogs.explorer import (
     CreateDirectoryDialog,
     OpenDirectoryDialog,
@@ -196,10 +197,12 @@ class ExplorerTopBar(ft.Row):
                 ),
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-            spacing=10,
             visible=visible,
             ref=ref,
         )
+        if AppShared().is_mobile:
+            self.scroll = ft.ScrollMode.HIDDEN
+            self.tight = True
         self.page: ft.Page
         self.parent_view = parent_view
         # self.controller = ExplorerTopBarController(self)
