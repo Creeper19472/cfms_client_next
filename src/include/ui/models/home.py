@@ -1,3 +1,5 @@
+from typing import cast
+
 from flet_model import Model, Router, route
 import flet as ft
 
@@ -82,8 +84,7 @@ class HomeModel(Model):
         # _is_click_navigating=True before calling go_to_page(), which causes
         # all intermediate on_change events to be skipped. This prevents the
         # navigation bar indicator from flickering through intermediate positions.
-        if isinstance(self.navigation_bar, HomeNavigationBar) and self.navigation_bar._is_click_navigating:
+        if cast(HomeNavigationBar, self.navigation_bar)._is_click_navigating:
             return
 
-        if abs(self.navigation_bar.selected_index - event.data) == 1:
-            self.navigation_bar.selected_index = event.data
+        self.navigation_bar.selected_index = event.data

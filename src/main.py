@@ -125,6 +125,7 @@ async def main(page: ft.Page):
     )
 
     # Disable browser context menu in web mode
+    # FIXME: browser context menu will be enabled again when refreshing the page
     if page.web:
         await ft.BrowserContextMenu().disable()
 

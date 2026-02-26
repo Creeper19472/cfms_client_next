@@ -57,12 +57,7 @@ class HomeNavigationBar(ft.NavigationBar):
         )
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
-        if e.control.selected_index == 0:
-            assert type(self.views[0]) == FileManagerView
-            await get_directory(
-                self.views[0].current_directory_id, self.views[0].file_listview
-            )
-        elif e.control.selected_index == 4:
+        if e.control.selected_index == 4:
             assert type(self.page) == ft.Page
             await self.page.push_route("/home/manage")
             self.selected_index = self.last_selected_index
