@@ -87,4 +87,6 @@ class HomeModel(Model):
         if cast(HomeNavigationBar, self.navigation_bar)._is_click_navigating:
             return
 
-        self.navigation_bar.selected_index = event.data
+        nav_bar = cast(HomeNavigationBar, self.navigation_bar)
+        nav_bar.selected_index = event.data
+        nav_bar.last_selected_index = event.data
