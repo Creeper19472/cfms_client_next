@@ -1,12 +1,10 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
-import gettext
 
 import flet as ft
 import flet_datatable2 as fdt
 
 from include.classes.shared import AppShared
-from include.constants import LOCALE_PATH
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
 from include.util.requests import do_request
