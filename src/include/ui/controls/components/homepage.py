@@ -34,11 +34,13 @@ class HomeNavigationBar(ft.NavigationBar):
         self.views = views
         self._is_click_navigating = False
 
+        self._tasks_destination = ft.NavigationBarDestination(
+            icon=ft.Icons.ARROW_CIRCLE_DOWN, label=_("Tasks")
+        )
+
         nav_destinations = [
             ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
-            ft.NavigationBarDestination(
-                icon=ft.Icons.ARROW_CIRCLE_DOWN, label=_("Tasks")
-            ),
+            self._tasks_destination,
             ft.NavigationBarDestination(icon=ft.Icons.HOME, label=_("Home")),
             ft.NavigationBarDestination(icon=ft.Icons.MORE_HORIZ, label=_("More")),
             ft.NavigationBarDestination(
@@ -53,6 +55,44 @@ class HomeNavigationBar(ft.NavigationBar):
             ref=ref,
             visible=visible,
         )
+
+    def did_mount(self):
+        badge_service = self._get_task_badge_service()
+        if badge_service:
+            badge_service.register_callback(self._on_task_count_changed)
+            self._set_tasks_badge(badge_service.current_count)
+
+    def will_unmount(self):
+        badge_service = self._get_task_badge_service()
+        if badge_service:
+            badge_service.unregister_callback(self._on_task_count_changed)
+
+    def _get_task_badge_service(self):
+        from include.classes.services.task_badge import TaskBadgeService
+
+        if self.app_shared.service_manager:
+            service = self.app_shared.service_manager.get_service("task_badge")
+            if isinstance(service, TaskBadgeService):
+                return service
+        return None
+
+    def _on_task_count_changed(self, count: int):
+        self._set_tasks_badge(count)
+        if self.page:
+            self.page.run_task(self._do_update)
+
+    async def _do_update(self):
+        # page.run_task() requires a coroutine; self.update() is synchronous.
+        if self.page:
+            self.update()
+
+    def _set_tasks_badge(self, count: int):
+        if count <= 0:
+            self._tasks_destination.badge = None
+        elif count > 99:
+            self._tasks_destination.badge = ft.Badge(text="99+")
+        else:
+            self._tasks_destination.badge = ft.Badge(text=str(count))
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
         if e.control.selected_index == 4:

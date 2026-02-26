@@ -18,6 +18,7 @@ from include.classes.services.autoupdate import AutoUpdateService
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
+from include.classes.services.task_badge import TaskBadgeService
 from include.util.locale import set_translation
 
 # Window configuration constants
@@ -204,6 +205,15 @@ async def main(page: ft.Page):
         interval=300.0,  # Check every 5 minutes
     )
     service_manager.register(favorites_validation_service)
+
+    # Register task badge service
+    # Checks active task count every second and notifies the navigation badge
+    task_badge_service = TaskBadgeService(
+        app_shared=app_shared,
+        enabled=True,
+        interval=1.0,
+    )
+    service_manager.register(task_badge_service)
 
     # Start all registered services
     await service_manager.start_all()
