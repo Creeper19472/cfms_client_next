@@ -605,6 +605,7 @@ class DownloadManagerService(BaseService):
 
                 self.tasks[task_id] = task
 
+            self._last_active_count = self.__get_active_task_count()
             self.logger.info(
                 f"Loaded {len(self.tasks)} tasks from disk (file: {os.path.basename(persistence_file)})"
             )
@@ -839,9 +840,7 @@ class DownloadManagerService(BaseService):
         # Recompute active count and fire count-change callbacks when it changes.
         # We recount from the full task dict here for correctness; in practice task
         # collections are small (dozens at most) so a full scan is negligible.
-        active_count = sum(
-            1 for t in self.tasks.values() if t.status in _ACTIVE_BADGE_STATUSES
-        )
+        active_count = self.__get_active_task_count()
         if active_count != self._last_active_count:
             self._last_active_count = active_count
             for callback in self.on_active_count_changed_callbacks:
@@ -859,6 +858,9 @@ class DownloadManagerService(BaseService):
     def active_task_count(self) -> int:
         """Number of active (non-terminal) download tasks."""
         return self._last_active_count if self._last_active_count is not None else 0
+
+    def __get_active_task_count(self) -> int:
+        return sum(1 for t in self.tasks.values() if t.status in _ACTIVE_BADGE_STATUSES)
 
     def add_active_count_callback(self, callback: Callable[[int], None]) -> None:
         """
