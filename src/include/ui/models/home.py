@@ -6,6 +6,7 @@ from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.controls.views.tasks import TasksView
+from include.classes.shared import AppShared
 
 INITIAL_VIEW_INDEX = 2
 
@@ -31,11 +32,15 @@ class HomeModel(Model):
             self.stored_views,
             expand=True,
             selected_index=INITIAL_VIEW_INDEX,
+            on_change=self.on_pageview_change,
         )
 
         self.controls = [
             self.pageview,
         ]
+        if AppShared().is_mobile:
+            self.controls.insert(0, ft.SafeArea(ft.Container()))
+
         self.navigation_bar = HomeNavigationBar(
             parent_view=self,
             views=self.stored_views,
@@ -67,3 +72,12 @@ class HomeModel(Model):
     #         "lockdown"
     #     ] and "bypass_lockdown" not in self.page.session.store.get("user_permissions"):
     #         go_lockdown(self.page)
+
+    async def on_pageview_change(self, event: ft.Event[ft.PageView]):
+        assert self.navigation_bar
+        assert type(event.data) == int
+        print(self.navigation_bar.selected_index, event.data)
+
+        # FIXME: The display issue when directly pressing buttons in the navigation bar needs to be resolved.
+        if abs(self.navigation_bar.selected_index - event.data) == 1:
+            self.navigation_bar.selected_index = event.data
