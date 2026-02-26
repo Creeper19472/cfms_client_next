@@ -70,7 +70,7 @@ class ManageModel(Model):
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.START
     horizontal_alignment = ft.CrossAxisAlignment.BASELINE
-    padding = 20
+    padding = ft.Padding(20, 0, 20, 20)
     spacing = 10
 
     def __init__(self, page: ft.Page, router: Router):
