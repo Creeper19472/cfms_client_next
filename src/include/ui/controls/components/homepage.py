@@ -57,22 +57,22 @@ class HomeNavigationBar(ft.NavigationBar):
         )
 
     def did_mount(self):
-        badge_service = self._get_task_badge_service()
-        if badge_service:
-            badge_service.register_callback(self._on_task_count_changed)
-            self._set_tasks_badge(badge_service.current_count)
+        download_service = self._get_download_service()
+        if download_service:
+            download_service.add_active_count_callback(self._on_task_count_changed)
+            self._set_tasks_badge(download_service.active_task_count)
 
     def will_unmount(self):
-        badge_service = self._get_task_badge_service()
-        if badge_service:
-            badge_service.unregister_callback(self._on_task_count_changed)
+        download_service = self._get_download_service()
+        if download_service:
+            download_service.remove_active_count_callback(self._on_task_count_changed)
 
-    def _get_task_badge_service(self):
-        from include.classes.services.task_badge import TaskBadgeService
+    def _get_download_service(self):
+        from include.classes.services.download import DownloadManagerService
 
         if self.app_shared.service_manager:
-            service = self.app_shared.service_manager.get_service("task_badge")
-            if isinstance(service, TaskBadgeService):
+            service = self.app_shared.service_manager.get_service("download_manager")
+            if isinstance(service, DownloadManagerService):
                 return service
         return None
 

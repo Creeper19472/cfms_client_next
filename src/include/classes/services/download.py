@@ -1,6 +1,7 @@
 """Download manager service for centrally managing file downloads."""
 
 import asyncio
+import inspect
 import json
 import os
 import time
@@ -17,6 +18,15 @@ from include.util.kdf import encrypt_config, decrypt_config, is_encrypted_config
 from include.util.transfer import receive_file_from_server
 
 __all__ = ["DownloadManagerService"]
+
+# Statuses that count towards the navigation badge (non-terminal, actively queued/running)
+_ACTIVE_BADGE_STATUSES = {
+    DownloadTaskStatus.PENDING,
+    DownloadTaskStatus.DOWNLOADING,
+    DownloadTaskStatus.DECRYPTING,
+    DownloadTaskStatus.VERIFYING,
+    DownloadTaskStatus.SCHEDULED,
+}
 
 # Directory for task persistence (similar to user_preferences)
 DOWNLOAD_TASKS_PATH = f"{FLET_APP_STORAGE_DATA}/download_tasks"
@@ -50,6 +60,7 @@ class DownloadManagerService(BaseService):
         max_concurrent: Maximum number of concurrent downloads
         app_shared: Application shared configuration
         on_task_update_callbacks: List of callbacks for task updates
+        on_active_count_changed_callbacks: List of callbacks for active-task count changes
         enable_persistence: Whether to save/load tasks across restarts
     """
 
@@ -85,6 +96,8 @@ class DownloadManagerService(BaseService):
         self.on_task_update_callbacks: List[Callable[[DownloadTask], None]] = []
         if on_task_update:
             self.on_task_update_callbacks.append(on_task_update)
+        self.on_active_count_changed_callbacks: List[Callable[[int], None]] = []
+        self._last_active_count: int | None = None
         self._download_lock = asyncio.Lock()
 
     async def execute(self):
@@ -822,6 +835,50 @@ class DownloadManagerService(BaseService):
                 callback(task)
             except Exception as e:
                 self.logger.error(f"Error in task update callback: {e}", exc_info=True)
+
+        # Recompute active count and fire count-change callbacks when it changes.
+        # We recount from the full task dict here for correctness; in practice task
+        # collections are small (dozens at most) so a full scan is negligible.
+        active_count = sum(
+            1 for t in self.tasks.values() if t.status in _ACTIVE_BADGE_STATUSES
+        )
+        if active_count != self._last_active_count:
+            self._last_active_count = active_count
+            for callback in self.on_active_count_changed_callbacks:
+                try:
+                    if inspect.iscoroutinefunction(callback):
+                        asyncio.create_task(callback(active_count))
+                    else:
+                        callback(active_count)
+                except Exception as e:
+                    self.logger.error(
+                        f"Error in active count callback: {e}", exc_info=True
+                    )
+
+    @property
+    def active_task_count(self) -> int:
+        """Number of active (non-terminal) download tasks."""
+        return self._last_active_count if self._last_active_count is not None else 0
+
+    def add_active_count_callback(self, callback: Callable[[int], None]) -> None:
+        """
+        Register a callback to be notified when the active task count changes.
+
+        Args:
+            callback: Function accepting an int (new active task count)
+        """
+        if callback not in self.on_active_count_changed_callbacks:
+            self.on_active_count_changed_callbacks.append(callback)
+
+    def remove_active_count_callback(self, callback: Callable[[int], None]) -> None:
+        """
+        Unregister a previously registered active-count callback.
+
+        Args:
+            callback: Function to remove
+        """
+        if callback in self.on_active_count_changed_callbacks:
+            self.on_active_count_changed_callbacks.remove(callback)
 
     async def on_start(self):
         """Called when the service starts."""
