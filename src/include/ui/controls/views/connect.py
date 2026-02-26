@@ -3,7 +3,12 @@ import re
 import flet as ft
 
 from include.classes.shared import AppShared
-from include.constants import DEFAULT_WINDOW_TITLE
+from include.constants import (
+    AUTO_CONNECT,
+    DEFAULT_SERVER_ADDRESS,
+    DEFAULT_WINDOW_TITLE,
+    LOCK_SERVER_ADDRESS,
+)
 from include.controllers.connect import ConnectFormController
 from include.ui import constants as const
 from include.ui.util.notifications import send_error
@@ -11,6 +16,20 @@ from include.util.locale import get_translation
 
 t = get_translation()
 _ = t.gettext
+
+# Regex patterns for validating wss:// server addresses
+_WSS_PATTERN_V4 = r"^wss:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?$"
+_WSS_PATTERN_V6 = (
+    r"^wss:\/\/\[(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}"
+    r"|(?:[0-9a-fA-F]{1,4}:){6}:[0-9a-fA-F]{1,4}"
+    r"|(?:[0-9a-fA-F]{1,4}:){5}(?::[0-9a-fA-F]{1,4}){1,2}"
+    r"|(?:[0-9a-fA-F]{1,4}:){4}(?::[0-9a-fA-F]{1,4}){1,3}"
+    r"|(?:[0-9a-fA-F]{1,4}:){3}(?::[0-9a-fA-F]{1,4}){1,4}"
+    r"|(?:[0-9a-fA-F]{1,4}:){2}(?::[0-9a-fA-F]{1,4}){1,5}"
+    r"|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}"
+    r"|:(?::[0-9a-fA-F]{1,4}){1,7})\](?::[0-9]{1,5})?$"
+)
+_WSS_PATTERN = _WSS_PATTERN_V4 + "|" + _WSS_PATTERN_V6
 
 
 class ConnectForm(ft.Container):
@@ -44,7 +63,8 @@ class ConnectForm(ft.Container):
             color=const.TEXT_COLOR,
             hint_style=ft.TextStyle(color=const.PLACEHOLDER_COLOR),
             border_radius=8,
-            value=const.REMOTE_ADDRESS_PLACEHOLDER,  # default
+            value=DEFAULT_SERVER_ADDRESS,  # default (set by administrator)
+            read_only=LOCK_SERVER_ADDRESS,  # lock editing if configured by administrator
             autofocus=True,
             on_submit=self.connect_button_click,  # Listen for the enter key event
             expand=True,
@@ -86,9 +106,19 @@ class ConnectForm(ft.Container):
     def did_mount(self):
         super().did_mount()
         self.page.title = DEFAULT_WINDOW_TITLE
-        # make sure previous connection is closed
+        # make sure previous connection is closed, then auto-connect if configured
         assert isinstance(self.page, ft.Page)
-        self.page.run_task(self.controller.close_previous_connection)
+        self.page.run_task(self._on_mount)
+
+    async def _on_mount(self):
+        await self.controller.close_previous_connection()
+        if AUTO_CONNECT and DEFAULT_SERVER_ADDRESS:
+            # Strip the protocol prefix in case the administrator included it
+            raw_address = DEFAULT_SERVER_ADDRESS.removeprefix("wss://")
+            server_address = "wss://" + raw_address
+            if re.match(_WSS_PATTERN, server_address):
+                self.disable_interactions()
+                self.page.run_task(self.controller.action_connect, server_address)
 
     def will_unmount(self):
         super().will_unmount()
@@ -110,6 +140,7 @@ class ConnectForm(ft.Container):
         self.connect_button.visible = True
         self.loading_animation.visible = False
         self.remote_address_textfield.disabled = False
+        self.remote_address_textfield.read_only = LOCK_SERVER_ADDRESS
         self.disable_ssl_enforcement_switch.disabled = False
         self.update()
 
@@ -125,13 +156,8 @@ class ConnectForm(ft.Container):
 
         server_address = "wss://" + self.remote_address_textfield.value
 
-        # Regular expression to match "wss://<valid server address>"
-        wss_pattern_v4 = r"^wss:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?$"
-        wss_pattern_v6 = r"^wss:\/\/\[(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|:(?::[0-9a-fA-F]{1,4}){1,7})\](?::[0-9]{1,5})?$"
-        wss_pattern = wss_pattern_v4 + "|" + wss_pattern_v6
-
         # Check if the server address matches the pattern
-        if not server_address or not re.match(wss_pattern, server_address):
+        if not server_address or not re.match(_WSS_PATTERN, server_address):
             self.remote_address_textfield.error = _("Invalid server address")
             self.enable_interactions()
             return  # Exit the function if the pattern is invalid

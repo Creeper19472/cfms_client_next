@@ -15,6 +15,9 @@ __all__ = [
     "DEFAULT_WINDOW_TITLE",
     "GITHUB_REPO",
     "DEFAULT_UPDATE_CHANNEL",
+    "DEFAULT_SERVER_ADDRESS",
+    "LOCK_SERVER_ADDRESS",
+    "AUTO_CONNECT",
 ]
 
 # Path Configuration
@@ -46,3 +49,8 @@ else:
 
 # Protocol
 PROTOCOL_VERSION = 9
+
+# Connect Screen Configuration (set by system administrators)
+DEFAULT_SERVER_ADDRESS = ""   # Pre-filled server address in the connect form (empty = no default)
+LOCK_SERVER_ADDRESS = False   # If True, users cannot edit the server address
+AUTO_CONNECT = False          # If True, automatically connect using DEFAULT_SERVER_ADDRESS on startup
