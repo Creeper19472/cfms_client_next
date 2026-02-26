@@ -5,8 +5,6 @@ import flet as ft
 from include.classes.shared import AppShared
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
-from include.ui.controls.views.explorer import FileManagerView
-from include.ui.util.file_controls import get_directory
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_document
 
@@ -34,6 +32,7 @@ class HomeNavigationBar(ft.NavigationBar):
 
         self.last_selected_index = initial_selected_index  # Setting default to initially selected page works better
         self.views = views
+        self._is_click_navigating = False
 
         nav_destinations = [
             ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
@@ -56,23 +55,22 @@ class HomeNavigationBar(ft.NavigationBar):
         )
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
-        if e.control.selected_index == 0:
-            assert type(self.views[0]) == FileManagerView
-            await get_directory(
-                self.views[0].current_directory_id, self.views[0].file_listview
-            )
-        elif e.control.selected_index == 4:
+        if e.control.selected_index == 4:
             assert type(self.page) == ft.Page
             await self.page.push_route("/home/manage")
             self.selected_index = self.last_selected_index
             self.update()
             return
 
-        await self.parent_view.pageview.go_to_page(
-            e.control.selected_index,
-            animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
-            animation_duration=ft.Duration(milliseconds=400),
-        )
+        self._is_click_navigating = True
+        try:
+            await self.parent_view.pageview.go_to_page(
+                e.control.selected_index,
+                animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+                animation_duration=ft.Duration(milliseconds=400),
+            )
+        finally:
+            self._is_click_navigating = False
 
         self.last_selected_index = self.selected_index
 

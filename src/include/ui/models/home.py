@@ -1,3 +1,5 @@
+from typing import cast
+
 from flet_model import Model, Router, route
 import flet as ft
 
@@ -76,8 +78,15 @@ class HomeModel(Model):
     async def on_pageview_change(self, event: ft.Event[ft.PageView]):
         assert self.navigation_bar
         assert type(event.data) == int
-        print(self.navigation_bar.selected_index, event.data)
 
-        # FIXME: The display issue when directly pressing buttons in the navigation bar needs to be resolved.
-        if abs(self.navigation_bar.selected_index - event.data) == 1:
-            self.navigation_bar.selected_index = event.data
+        # Only sync the navigation bar indicator for swipe gestures.
+        # When the user clicks a NavigationBarDestination, on_change_item sets
+        # _is_click_navigating=True before calling go_to_page(), which causes
+        # all intermediate on_change events to be skipped. This prevents the
+        # navigation bar indicator from flickering through intermediate positions.
+        if cast(HomeNavigationBar, self.navigation_bar)._is_click_navigating:
+            return
+
+        nav_bar = cast(HomeNavigationBar, self.navigation_bar)
+        nav_bar.selected_index = event.data
+        nav_bar.last_selected_index = event.data

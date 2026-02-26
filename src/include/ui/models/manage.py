@@ -1,3 +1,5 @@
+from typing import cast
+
 from flet_model import Model, Router, route
 import flet as ft
 
@@ -26,6 +28,7 @@ class ManagementNavigationBar(ft.NavigationBar):
         # Setting default to initially selected page works better
         self.last_selected_index = initial_selected_index
         self.views = views
+        self._is_click_navigating = False
 
         nav_destinations = [
             ft.NavigationBarDestination(
@@ -48,12 +51,15 @@ class ManagementNavigationBar(ft.NavigationBar):
         )
 
     async def on_change_item(self, e: ft.Event[ft.NavigationBar]):
-
-        await self.parent_view.pageview.go_to_page(
-            e.control.selected_index,
-            animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
-            animation_duration=ft.Duration(milliseconds=400),
-        )
+        self._is_click_navigating = True
+        try:
+            await self.parent_view.pageview.go_to_page(
+                e.control.selected_index,
+                animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+                animation_duration=ft.Duration(milliseconds=400),
+            )
+        finally:
+            self._is_click_navigating = False
 
         self.last_selected_index = self.selected_index
 
@@ -64,7 +70,7 @@ class ManageModel(Model):
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.START
     horizontal_alignment = ft.CrossAxisAlignment.BASELINE
-    padding = 20
+    padding = ft.Padding(20, 0, 20, 20)
     spacing = 10
 
     def __init__(self, page: ft.Page, router: Router):
@@ -86,6 +92,7 @@ class ManageModel(Model):
             self.stored_views,
             expand=True,
             selected_index=INITIAL_VIEW_INDEX,
+            on_change=self.on_pageview_change,
         )
 
         self.controls = [self.pageview]
@@ -102,6 +109,20 @@ class ManageModel(Model):
 
     async def _go_back(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
+
+    async def on_pageview_change(self, event: ft.Event[ft.PageView]):
+        assert self.navigation_bar
+        assert type(event.data) == int
+
+        # Only sync the navigation bar indicator for swipe gestures.
+        # When the user clicks a NavigationBarDestination, on_change_item sets
+        # _is_click_navigating=True before calling go_to_page(), which causes
+        # all intermediate on_change events to be skipped. This prevents the
+        # navigation bar indicator from flickering through intermediate positions.
+        if cast(ManagementNavigationBar, self.navigation_bar)._is_click_navigating:
+            return
+
+        self.navigation_bar.selected_index = event.data
 
     def did_mount(self) -> None:
         pass
