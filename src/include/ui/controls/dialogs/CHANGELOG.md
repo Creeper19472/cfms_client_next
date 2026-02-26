@@ -3,6 +3,25 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.6.8
+**Released on:** 2026-02-26
+
+**Title:** Bug Fixes
+
+This version introduces several fixes for the previous version.
+
+## Fixed
+- The NavigationBar below will now update synchronously when switching views by touch.
+- Fixed the issue of overflowing content in the top icon button bar of the file 
+management view on mobile devices.
+- The issue of the file management view not loading automatically when switching views 
+by swiping has been fixed; it will now load the directory every time it is mounted.
+- Fixed an issue where the `Debugging` view was not scrolling.
+- Replaced a deprecated method.
+- Fixed an issue where the view title was too close to the notification bar on mobile 
+devices.
+
+---
 ## v0.6.7
 **Released on:** 2026-02-25
 
