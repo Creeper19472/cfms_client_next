@@ -34,6 +34,7 @@ class HomeNavigationBar(ft.NavigationBar):
 
         self.last_selected_index = initial_selected_index  # Setting default to initially selected page works better
         self.views = views
+        self._is_click_navigating = False
 
         nav_destinations = [
             ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
@@ -68,11 +69,15 @@ class HomeNavigationBar(ft.NavigationBar):
             self.update()
             return
 
-        await self.parent_view.pageview.go_to_page(
-            e.control.selected_index,
-            animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
-            animation_duration=ft.Duration(milliseconds=400),
-        )
+        self._is_click_navigating = True
+        try:
+            await self.parent_view.pageview.go_to_page(
+                e.control.selected_index,
+                animation_curve=ft.AnimationCurve.FAST_OUT_SLOWIN,
+                animation_duration=ft.Duration(milliseconds=400),
+            )
+        finally:
+            self._is_click_navigating = False
 
         self.last_selected_index = self.selected_index
 
