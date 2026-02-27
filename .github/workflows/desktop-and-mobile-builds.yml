@@ -76,6 +76,10 @@ jobs:
         echo "channel=$channelName" >> $env:GITHUB_OUTPUT
       shell: pwsh
 
+    - name: Extract Changelog Notes
+      id: changelog
+      run: python scripts/get_changelog_notes.py "${{ github.ref_name }}"
+
     - name: Flet Build Windows
       run: |
         uv run flet build windows --yes -v --no-rich-output
@@ -105,6 +109,7 @@ jobs:
         # overwrite_files: true
         generate_release_notes: true
         body: |
+          ${{ steps.changelog.outputs.changelog_notes }}
           <!-- channel: ${{ steps.release_type.outputs.channel }} -->
         prerelease: ${{ steps.release_type.outputs.prerelease == 'true' }}
 
