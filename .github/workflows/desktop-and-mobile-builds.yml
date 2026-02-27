@@ -79,6 +79,7 @@ jobs:
     - name: Extract Changelog Notes
       id: changelog
       run: python scripts/get_changelog_notes.py "${{ github.ref_name }}"
+      shell: pwsh
 
     - name: Flet Build Windows
       run: |
