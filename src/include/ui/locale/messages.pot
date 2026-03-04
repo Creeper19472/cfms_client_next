@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-28 11:31+0800\n"
+"POT-Creation-Date: 2026-03-04 17:32+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -244,7 +244,7 @@ msgstr ""
 msgid "Failed to load revisions: {error}"
 msgstr ""
 
-#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:158
+#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:156
 msgid "Download added: {filename}"
 msgstr ""
 
@@ -374,7 +374,7 @@ msgstr ""
 
 #: .\include\controllers\explorer\itself.py:546
 #: .\include\controllers\explorer\itself.py:653
-#: .\include\controllers\explorer\itself.py:747
+#: .\include\controllers\explorer\itself.py:743
 msgid "No items selected"
 msgstr ""
 
@@ -387,14 +387,14 @@ msgid "Failed to delete {type} \"{name}\": {error}"
 msgstr ""
 
 #: .\include\controllers\explorer\itself.py:610
-#: .\include\controllers\explorer\itself.py:710
-#: .\include\controllers\explorer\itself.py:823
+#: .\include\controllers\explorer\itself.py:706
+#: .\include\controllers\explorer\itself.py:819
 msgid "file"
 msgstr ""
 
 #: .\include\controllers\explorer\itself.py:610
-#: .\include\controllers\explorer\itself.py:710
-#: .\include\controllers\explorer\itself.py:823
+#: .\include\controllers\explorer\itself.py:706
+#: .\include\controllers\explorer\itself.py:819
 msgid "directory"
 msgstr ""
 
@@ -406,43 +406,43 @@ msgstr ""
 msgid "Deletion completed with {failed} error(s)"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:681
+#: .\include\controllers\explorer\itself.py:677
 msgid "Adding Downloads"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:688
+#: .\include\controllers\explorer\itself.py:684
 msgid "Adding items to download queue..."
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:709
+#: .\include\controllers\explorer\itself.py:705
 msgid "Failed to add {type} \"{name}\": {error}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:718
+#: .\include\controllers\explorer\itself.py:714
 msgid "Adding: {current_file}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:727
+#: .\include\controllers\explorer\itself.py:723
 msgid "Added {added} items to download queue, {failed} failed"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:767
+#: .\include\controllers\explorer\itself.py:763
 msgid "Target directory is the same as current directory"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:788
+#: .\include\controllers\explorer\itself.py:784
 msgid "Moving Items"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:822
+#: .\include\controllers\explorer\itself.py:818
 msgid "Failed to move {type} \"{name}\": {error}"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:830
+#: .\include\controllers\explorer\itself.py:826
 msgid "Moved {completed}/{total} items ({failed} failed)"
 msgstr ""
 
-#: .\include\controllers\explorer\itself.py:841
+#: .\include\controllers\explorer\itself.py:837
 msgid "Move completed with {failed} error(s)"
 msgstr ""
 
@@ -480,11 +480,11 @@ msgstr ""
 msgid "Setting up encryption"
 msgstr ""
 
-#: .\include\controllers\login.py:135
+#: .\include\controllers\login.py:133
 msgid "Downloading avatar"
 msgstr ""
 
-#: .\include\controllers\login.py:158
+#: .\include\controllers\login.py:156
 msgid "Loading tasks"
 msgstr ""
 
@@ -1163,6 +1163,7 @@ msgid "(No target selected)"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:492
+#: .\include\ui\models\settings\storage.py:47
 msgid "Browse..."
 msgstr ""
 
@@ -1882,7 +1883,7 @@ msgid "Use recovery code instead"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:38
-#: .\include\ui\models\settings\overview.py:56
+#: .\include\ui\models\settings\overview.py:62
 #: .\include\ui\models\settings\twofa.py:33
 msgid "Two-Factor Authentication"
 msgstr ""
@@ -2408,6 +2409,7 @@ msgstr ""
 
 #: .\include\ui\models\settings\connection.py:85
 #: .\include\ui\models\settings\safety.py:66
+#: .\include\ui\models\settings\storage.py:91
 #: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr ""
@@ -2436,23 +2438,32 @@ msgid "Change application proxy settings"
 msgstr ""
 
 #: .\include\ui\models\settings\overview.py:44
-msgid "Security"
+#: .\include\ui\models\settings\storage.py:29
+msgid "Storage"
 msgstr ""
 
 #: .\include\ui\models\settings\overview.py:45
-msgid "Adjust application connection history policy"
+msgid "Configure external storage options"
 msgstr ""
 
 #: .\include\ui\models\settings\overview.py:50
+msgid "Security"
+msgstr ""
+
+#: .\include\ui\models\settings\overview.py:51
+msgid "Adjust application connection history policy"
+msgstr ""
+
+#: .\include\ui\models\settings\overview.py:56
 #: .\include\ui\models\settings\updates.py:27
 msgid "Updates"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:51
+#: .\include\ui\models\settings\overview.py:57
 msgid "Configure update channel preferences"
 msgstr ""
 
-#: .\include\ui\models\settings\overview.py:57
+#: .\include\ui\models\settings\overview.py:63
 msgid "Manage two-factor authentication settings"
 msgstr ""
 
@@ -2466,6 +2477,18 @@ msgstr ""
 
 #: .\include\ui\models\settings\safety.py:42
 msgid "Decide whether the app should log the server address of the last connection. While this feature increases convenience, it may also increase the risk of exposing the server address."
+msgstr ""
+
+#: .\include\ui\models\settings\storage.py:38
+msgid "Use external storage"
+msgstr ""
+
+#: .\include\ui\models\settings\storage.py:41
+msgid "External storage path"
+msgstr ""
+
+#: .\include\ui\models\settings\storage.py:50
+msgid "The application will only save files to the specified location if the \"Use external storage\" switch is enabled and an external storage path is set."
 msgstr ""
 
 #: .\include\ui\models\settings\twofa.py:43

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-28 11:31+0800\n"
+"POT-Creation-Date: 2026-03-04 17:32+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -243,7 +243,7 @@ msgstr "加载修订版本失败：({code}) {message}"
 msgid "Failed to load revisions: {error}"
 msgstr "加载修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:158
+#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:156
 msgid "Download added: {filename}"
 msgstr "已添加下载：{filename}"
 
@@ -373,7 +373,7 @@ msgstr "上传完成，共计 {total_errors} 个错误。"
 
 #: .\include\controllers\explorer\itself.py:546
 #: .\include\controllers\explorer\itself.py:653
-#: .\include\controllers\explorer\itself.py:747
+#: .\include\controllers\explorer\itself.py:743
 msgid "No items selected"
 msgstr "未选择项目"
 
@@ -386,14 +386,14 @@ msgid "Failed to delete {type} \"{name}\": {error}"
 msgstr "删除{type} \"{name}\" 失败：{error}"
 
 #: .\include\controllers\explorer\itself.py:610
-#: .\include\controllers\explorer\itself.py:710
-#: .\include\controllers\explorer\itself.py:823
+#: .\include\controllers\explorer\itself.py:706
+#: .\include\controllers\explorer\itself.py:819
 msgid "file"
 msgstr "文件"
 
 #: .\include\controllers\explorer\itself.py:610
-#: .\include\controllers\explorer\itself.py:710
-#: .\include\controllers\explorer\itself.py:823
+#: .\include\controllers\explorer\itself.py:706
+#: .\include\controllers\explorer\itself.py:819
 msgid "directory"
 msgstr "目录"
 
@@ -405,43 +405,43 @@ msgstr "删除了 {completed}/{total} 个项目（失败 {failed} 个）"
 msgid "Deletion completed with {failed} error(s)"
 msgstr "删除完成，共计 {failed} 个错误。"
 
-#: .\include\controllers\explorer\itself.py:681
+#: .\include\controllers\explorer\itself.py:677
 msgid "Adding Downloads"
 msgstr "新增下载"
 
-#: .\include\controllers\explorer\itself.py:688
+#: .\include\controllers\explorer\itself.py:684
 msgid "Adding items to download queue..."
 msgstr "正在向下载队列添加项目..."
 
-#: .\include\controllers\explorer\itself.py:709
+#: .\include\controllers\explorer\itself.py:705
 msgid "Failed to add {type} \"{name}\": {error}"
 msgstr "添加 {type} \"{name}\" 失败：{error}"
 
-#: .\include\controllers\explorer\itself.py:718
+#: .\include\controllers\explorer\itself.py:714
 msgid "Adding: {current_file}"
 msgstr "正在添加：{current_file}"
 
-#: .\include\controllers\explorer\itself.py:727
+#: .\include\controllers\explorer\itself.py:723
 msgid "Added {added} items to download queue, {failed} failed"
 msgstr "添加了 {added} 个项目到下载队列中，{failed} 个失败"
 
-#: .\include\controllers\explorer\itself.py:767
+#: .\include\controllers\explorer\itself.py:763
 msgid "Target directory is the same as current directory"
 msgstr "目标目录与当前目录相同"
 
-#: .\include\controllers\explorer\itself.py:788
+#: .\include\controllers\explorer\itself.py:784
 msgid "Moving Items"
 msgstr "移动项目中"
 
-#: .\include\controllers\explorer\itself.py:822
+#: .\include\controllers\explorer\itself.py:818
 msgid "Failed to move {type} \"{name}\": {error}"
 msgstr "移动{type} \"{name}\" 失败：{error}"
 
-#: .\include\controllers\explorer\itself.py:830
+#: .\include\controllers\explorer\itself.py:826
 msgid "Moved {completed}/{total} items ({failed} failed)"
 msgstr "移动了 {completed}/{total} 个项目（失败 {failed} 个）"
 
-#: .\include\controllers\explorer\itself.py:841
+#: .\include\controllers\explorer\itself.py:837
 msgid "Move completed with {failed} error(s)"
 msgstr "移动完成，共计 {failed} 个错误。"
 
@@ -479,11 +479,11 @@ msgstr "登录失败：({code}) {message}"
 msgid "Setting up encryption"
 msgstr "正在设置加密"
 
-#: .\include\controllers\login.py:135
+#: .\include\controllers\login.py:133
 msgid "Downloading avatar"
 msgstr "正在下载头像"
 
-#: .\include\controllers\login.py:158
+#: .\include\controllers\login.py:156
 msgid "Loading tasks"
 msgstr "正在载入任务"
 
@@ -1203,6 +1203,7 @@ msgid "(No target selected)"
 msgstr "（未选择目标）"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:492
+#: .\include\ui\models\settings\storage.py:47
 msgid "Browse..."
 msgstr "浏览..."
 
@@ -1940,7 +1941,7 @@ msgid "Use recovery code instead"
 msgstr "改用恢复代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:38
-#: .\include\ui\models\settings\overview.py:56
+#: .\include\ui\models\settings\overview.py:62
 #: .\include\ui\models\settings\twofa.py:33
 msgid "Two-Factor Authentication"
 msgstr "双因素认证"
@@ -2474,6 +2475,7 @@ msgstr "强制使用 IPv4"
 
 #: .\include\ui\models\settings\connection.py:85
 #: .\include\ui\models\settings\safety.py:66
+#: .\include\ui\models\settings\storage.py:91
 #: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr "设置已保存。"
@@ -2506,23 +2508,32 @@ msgid "Change application proxy settings"
 msgstr "更改应用使用代理的规则"
 
 #: .\include\ui\models\settings\overview.py:44
+#: .\include\ui\models\settings\storage.py:29
+msgid "Storage"
+msgstr "存储"
+
+#: .\include\ui\models\settings\overview.py:45
+msgid "Configure external storage options"
+msgstr "配置外部存储选项"
+
+#: .\include\ui\models\settings\overview.py:50
 msgid "Security"
 msgstr "安全"
 
-#: .\include\ui\models\settings\overview.py:45
+#: .\include\ui\models\settings\overview.py:51
 msgid "Adjust application connection history policy"
 msgstr "调整应用记住连接历史的策略"
 
-#: .\include\ui\models\settings\overview.py:50
+#: .\include\ui\models\settings\overview.py:56
 #: .\include\ui\models\settings\updates.py:27
 msgid "Updates"
 msgstr "更新"
 
-#: .\include\ui\models\settings\overview.py:51
+#: .\include\ui\models\settings\overview.py:57
 msgid "Configure update channel preferences"
 msgstr "配置更新频道偏好"
 
-#: .\include\ui\models\settings\overview.py:57
+#: .\include\ui\models\settings\overview.py:63
 msgid "Manage two-factor authentication settings"
 msgstr "管理双因素认证设置"
 
@@ -2542,6 +2553,20 @@ msgid ""
 msgstr ""
 "决定应用程序是否应记录上次连接的服务器地址。虽然此功能提高了便利性，但也可能"
 "增加服务器地址泄露的风险。"
+
+#: .\include\ui\models\settings\storage.py:38
+msgid "Use external storage"
+msgstr "使用外部存储"
+
+#: .\include\ui\models\settings\storage.py:41
+msgid "External storage path"
+msgstr "外部存储路径"
+
+#: .\include\ui\models\settings\storage.py:50
+msgid ""
+"The application will only save files to the specified location if the \"Use "
+"external storage\" switch is enabled and an external storage path is set."
+msgstr "仅当启用“使用外部存储”开关并设置外部存储路径时，应用程序才会将文件保存到指定位置。"
 
 #: .\include\ui\models\settings\twofa.py:43
 msgid "Two-Factor Authentication Status: Checking..."
