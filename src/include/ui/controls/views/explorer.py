@@ -264,11 +264,8 @@ class FileManagerView(ft.Container):
     def _on_favorites_changed(self):
         """Called by FavoritesValidationService when items are starred/unstarred."""
         assert type(self.page) is ft.Page
-        self.page.run_task(self._refresh_file_list_star_states)
-
-    async def _refresh_file_list_star_states(self):
-        """Re-render the file list preserving the current sort order."""
-        await self.sort_bar.controller.apply_sorting()
+        # Refresh the file list to update star icons, preserving current sort order
+        self.page.run_task(self.sort_bar.controller.apply_sorting)
 
     def send_error(self, msg: str):
         send_error(self.page, msg)
