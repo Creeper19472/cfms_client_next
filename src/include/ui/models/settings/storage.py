@@ -39,6 +39,9 @@ class StorageSettingsModel(Model):
         )
         self.external_storage_path_textfield = ft.TextField(
             label=_("External storage path"),
+            expand=True,
+            expand_loose=True,
+            disabled=True,
         )
 
         self.controls = [
@@ -76,3 +79,4 @@ class StorageSettingsModel(Model):
         self.external_storage_path_textfield.disabled = (
             not self.use_external_storage_switch.value
         )
+        self.update()
