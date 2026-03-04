@@ -40,6 +40,12 @@ class SettingsModel(Model):
                 on_click=self.configure_conn_listtile_click,
             ),
             ft.ListTile(
+                leading=ft.Icon(ft.Icons.STORAGE),
+                title=ft.Text(_("Storage")),
+                subtitle=ft.Text(_("Configure external storage options")),
+                on_click=self.configure_storage_listtile_click,
+            ),
+            ft.ListTile(
                 leading=ft.Icon(ft.Icons.SECURITY),
                 title=ft.Text(_("Security")),
                 subtitle=ft.Text(_("Adjust application connection history policy")),
@@ -85,3 +91,6 @@ class SettingsModel(Model):
 
     async def configure_updates_listtile_click(self, event: ft.Event[ft.ListTile]):
         await self.page.push_route(self.page.route + "/updates_settings")
+
+    async def configure_storage_listtile_click(self, event: ft.Event[ft.ListTile]):
+        await self.page.push_route(self.page.route + "/storage_settings")
