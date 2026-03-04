@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-03-04 17:32+0800\n"
+"POT-Creation-Date: 2026-03-04 17:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -486,6 +486,21 @@ msgstr ""
 
 #: .\include\controllers\login.py:156
 msgid "Loading tasks"
+msgstr ""
+
+#: .\include\ui\controls\banners\settings.py:14
+msgid "The application has not yet been granted permission to access external storage. Please grant the permission to allow this feature to function correctly."
+msgstr ""
+
+#: .\include\ui\controls\banners\settings.py:21
+#: .\include\ui\controls\contextmenus\explorer.py:83
+#: .\include\ui\controls\contextmenus\explorer.py:219
+#: .\include\ui\controls\dialogs\authorize.py:183
+msgid "Authorize"
+msgstr ""
+
+#: .\include\ui\controls\banners\settings.py:22
+msgid "Dismiss"
 msgstr ""
 
 #: .\include\ui\controls\buttons\upgrade.py:14
@@ -996,12 +1011,6 @@ msgstr ""
 msgid "Rename"
 msgstr ""
 
-#: .\include\ui\controls\contextmenus\explorer.py:83
-#: .\include\ui\controls\contextmenus\explorer.py:219
-#: .\include\ui\controls\dialogs\authorize.py:183
-msgid "Authorize"
-msgstr ""
-
 #: .\include\ui\controls\contextmenus\explorer.py:89
 msgid "View access entries"
 msgstr ""
@@ -1163,7 +1172,7 @@ msgid "(No target selected)"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:492
-#: .\include\ui\models\settings\storage.py:47
+#: .\include\ui\models\settings\storage.py:49
 msgid "Browse..."
 msgstr ""
 
@@ -2409,7 +2418,7 @@ msgstr ""
 
 #: .\include\ui\models\settings\connection.py:85
 #: .\include\ui\models\settings\safety.py:66
-#: .\include\ui\models\settings\storage.py:91
+#: .\include\ui\models\settings\storage.py:93
 #: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr ""
@@ -2438,7 +2447,7 @@ msgid "Change application proxy settings"
 msgstr ""
 
 #: .\include\ui\models\settings\overview.py:44
-#: .\include\ui\models\settings\storage.py:29
+#: .\include\ui\models\settings\storage.py:31
 msgid "Storage"
 msgstr ""
 
@@ -2479,15 +2488,15 @@ msgstr ""
 msgid "Decide whether the app should log the server address of the last connection. While this feature increases convenience, it may also increase the risk of exposing the server address."
 msgstr ""
 
-#: .\include\ui\models\settings\storage.py:38
+#: .\include\ui\models\settings\storage.py:40
 msgid "Use external storage"
 msgstr ""
 
-#: .\include\ui\models\settings\storage.py:41
+#: .\include\ui\models\settings\storage.py:43
 msgid "External storage path"
 msgstr ""
 
-#: .\include\ui\models\settings\storage.py:50
+#: .\include\ui\models\settings\storage.py:52
 msgid "The application will only save files to the specified location if the \"Use external storage\" switch is enabled and an external storage path is set."
 msgstr ""
 

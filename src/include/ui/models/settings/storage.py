@@ -1,10 +1,12 @@
 from typing import cast
 
 from flet_model import Model, Router, route
+import flet_permission_handler as fph
 import flet as ft
 
 from include.classes.preferences import UserPreference
 from include.classes.shared import AppShared
+from include.ui.controls.banners.settings import ExternalStorageWarningBanner
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
@@ -91,6 +93,14 @@ class StorageSettingsModel(Model):
         send_success(self.page, _("Settings Saved."))
 
     async def on_switch_change(self, event: ft.Event[ft.Switch]):
+        ph = fph.PermissionHandler()
+        if (
+            self.use_external_storage_switch.value
+            and await ph.get_status(fph.Permission.MANAGE_EXTERNAL_STORAGE)
+            != fph.PermissionStatus.GRANTED
+        ):
+            self.page.show_dialog(ExternalStorageWarningBanner())
+
         await self.flush_switch()
 
     async def load_switch_status(self):

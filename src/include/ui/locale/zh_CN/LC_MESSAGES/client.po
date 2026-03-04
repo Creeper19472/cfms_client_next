@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-04 17:32+0800\n"
+"POT-Creation-Date: 2026-03-04 17:57+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -486,6 +486,24 @@ msgstr "正在下载头像"
 #: .\include\controllers\login.py:156
 msgid "Loading tasks"
 msgstr "正在载入任务"
+
+#: .\include\ui\controls\banners\settings.py:14
+msgid ""
+"The application has not yet been granted permission to access external "
+"storage. Please grant the permission to allow this feature to function "
+"correctly."
+msgstr "应用尚未获得访问外部存储的权限。请授予权限以使此功能正常运行。"
+
+#: .\include\ui\controls\banners\settings.py:21
+#: .\include\ui\controls\contextmenus\explorer.py:83
+#: .\include\ui\controls\contextmenus\explorer.py:219
+#: .\include\ui\controls\dialogs\authorize.py:183
+msgid "Authorize"
+msgstr "授权"
+
+#: .\include\ui\controls\banners\settings.py:22
+msgid "Dismiss"
+msgstr "关闭"
 
 #: .\include\ui\controls\buttons\upgrade.py:14
 msgid "Check for Updates"
@@ -1037,12 +1055,6 @@ msgstr ""
 msgid "Rename"
 msgstr "重命名"
 
-#: .\include\ui\controls\contextmenus\explorer.py:83
-#: .\include\ui\controls\contextmenus\explorer.py:219
-#: .\include\ui\controls\dialogs\authorize.py:183
-msgid "Authorize"
-msgstr "授权"
-
 #: .\include\ui\controls\contextmenus\explorer.py:89
 msgid "View access entries"
 msgstr "查看访问条目"
@@ -1203,7 +1215,7 @@ msgid "(No target selected)"
 msgstr "（未选择目标）"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:492
-#: .\include\ui\models\settings\storage.py:47
+#: .\include\ui\models\settings\storage.py:49
 msgid "Browse..."
 msgstr "浏览..."
 
@@ -2475,7 +2487,7 @@ msgstr "强制使用 IPv4"
 
 #: .\include\ui\models\settings\connection.py:85
 #: .\include\ui\models\settings\safety.py:66
-#: .\include\ui\models\settings\storage.py:91
+#: .\include\ui\models\settings\storage.py:93
 #: .\include\ui\models\settings\updates.py:86
 msgid "Settings Saved."
 msgstr "设置已保存。"
@@ -2508,7 +2520,7 @@ msgid "Change application proxy settings"
 msgstr "更改应用使用代理的规则"
 
 #: .\include\ui\models\settings\overview.py:44
-#: .\include\ui\models\settings\storage.py:29
+#: .\include\ui\models\settings\storage.py:31
 msgid "Storage"
 msgstr "存储"
 
@@ -2554,19 +2566,21 @@ msgstr ""
 "决定应用程序是否应记录上次连接的服务器地址。虽然此功能提高了便利性，但也可能"
 "增加服务器地址泄露的风险。"
 
-#: .\include\ui\models\settings\storage.py:38
+#: .\include\ui\models\settings\storage.py:40
 msgid "Use external storage"
 msgstr "使用外部存储"
 
-#: .\include\ui\models\settings\storage.py:41
+#: .\include\ui\models\settings\storage.py:43
 msgid "External storage path"
 msgstr "外部存储路径"
 
-#: .\include\ui\models\settings\storage.py:50
+#: .\include\ui\models\settings\storage.py:52
 msgid ""
 "The application will only save files to the specified location if the \"Use "
 "external storage\" switch is enabled and an external storage path is set."
-msgstr "仅当启用“使用外部存储”开关并设置外部存储路径时，应用程序才会将文件保存到指定位置。"
+msgstr ""
+"仅当启用“使用外部存储”开关并设置外部存储路径时，应用程序才会将文件保存到指定"
+"位置。"
 
 #: .\include\ui\models\settings\twofa.py:43
 msgid "Two-Factor Authentication Status: Checking..."
