@@ -236,6 +236,44 @@ class FileManagerView(ft.Container):
     def did_mount(self):
         super().did_mount()
         self.page.run_task(get_directory, self.current_directory_id, self.file_listview)
+        # Register callback so star states refresh when favorites change
+        service = self._get_favorites_validation_service()
+        if service:
+            service.register_on_favorites_changed(self._on_favorites_changed)
+
+    def will_unmount(self):
+        # Unregister callback to avoid stale references
+        service = self._get_favorites_validation_service()
+        if service:
+            service.unregister_on_favorites_changed(self._on_favorites_changed)
+
+    def _get_favorites_validation_service(self):
+        """Return the FavoritesValidationService instance, or None if unavailable."""
+        from include.classes.services.favorites_validation import (
+            FavoritesValidationService,
+        )
+
+        if self.app_shared.service_manager:
+            service = self.app_shared.service_manager.get_service(
+                "favorites_validation"
+            )
+            if isinstance(service, FavoritesValidationService):
+                return service
+        return None
+
+    def _on_favorites_changed(self):
+        """Called by FavoritesValidationService when items are starred/unstarred."""
+        assert type(self.page) is ft.Page
+        self.page.run_task(self._refresh_file_list_star_states)
+
+    async def _refresh_file_list_star_states(self):
+        """Re-render the file list so star states reflect the current favorites."""
+        update_file_controls(
+            self.file_listview,
+            self.file_listview.current_directories_data,
+            self.file_listview.current_files_data,
+            self.file_listview.current_parent_id,
+        )
 
     def send_error(self, msg: str):
         send_error(self.page, msg)
