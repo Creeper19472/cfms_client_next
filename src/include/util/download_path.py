@@ -16,7 +16,7 @@ def get_download_root_path() -> str:
 
     user_pref = AppShared().user_perference
     if user_pref and user_pref.use_external_storage:
-        external_path = user_pref.external_storage_path.strip()
+        external_path = (user_pref.external_storage_path or "").strip()
         if external_path:
             try:
                 os.makedirs(external_path, exist_ok=True)
