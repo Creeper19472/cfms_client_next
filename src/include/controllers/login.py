@@ -127,9 +127,7 @@ class LoginFormController(Controller["LoginForm"]):
                 if not await self._handle_corrupted_config(exc.file_path):
                     return  # user cancelled login
                 # User chose to delete — continue with defaults
-                self.app_shared.user_perference = UserPreference(
-                    favourites={"files": {}, "directories": {}}
-                )
+                self.app_shared.user_perference = UserPreference()
 
             # Get and download avatar if available
             parent_view.data_loading_view.set_status(_("Downloading avatar"))
@@ -258,6 +256,7 @@ class LoginFormController(Controller["LoginForm"]):
         except Exception:
             # Non-fatal: encryption is best-effort; login still succeeds.
             import logging
+
             logging.getLogger(__name__).warning(
                 "DEK setup failed; configuration will not be encrypted this session",
                 exc_info=True,

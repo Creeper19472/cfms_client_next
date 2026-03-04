@@ -18,7 +18,7 @@ def load_user_preference(username: str) -> UserPreference:
     pref_path = get_user_preference_path(username)
 
     if not os.path.exists(pref_path):
-        return UserPreference(favourites={"files": {}, "directories": {}})
+        return UserPreference()
 
     dek = AppShared().dek
 
@@ -27,7 +27,7 @@ def load_user_preference(username: str) -> UserPreference:
 
     if is_encrypted_config(raw):
         if dek is None:
-            return UserPreference(favourites={"files": {}, "directories": {}})
+            return UserPreference()
         try:
             plaintext = decrypt_config(raw, dek)
             data: dict = json.loads(plaintext.decode("utf-8"))
@@ -39,7 +39,7 @@ def load_user_preference(username: str) -> UserPreference:
         try:
             data = json.loads(raw.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            return UserPreference(favourites={"files": {}, "directories": {}})
+            return UserPreference()
         # Migrate plain-JSON file to encrypted format when DEK is available
         if dek is not None:
             _write_pref_file(pref_path, data, dek)
