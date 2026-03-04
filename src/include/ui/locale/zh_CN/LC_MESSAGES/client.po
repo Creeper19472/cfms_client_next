@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-04 17:57+0800\n"
+"POT-Creation-Date: 2026-03-04 19:33+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -830,19 +830,19 @@ msgstr "类型"
 msgid "Toggle Sort Order"
 msgstr "切换排序顺序"
 
-#: .\include\ui\controls\components\explorer\tile.py:54
-msgid "ID: {file_id}\n"
-msgstr "ID：{file_id}\n"
+#: .\include\ui\controls\components\explorer\tile.py:66
+msgid "ID: {file_id}"
+msgstr "ID：{file_id}"
 
-#: .\include\ui\controls\components\explorer\tile.py:57
+#: .\include\ui\controls\components\explorer\tile.py:72
 msgid "Last modified: {last_modified}\n"
 msgstr "最后更改时间：{last_modified}\n"
 
-#: .\include\ui\controls\components\explorer\tile.py:174
-msgid "ID: {dir_id}\n"
-msgstr "ID：{dir_id}\n"
+#: .\include\ui\controls\components\explorer\tile.py:192
+msgid "ID: {dir_id}"
+msgstr "ID：{dir_id}"
 
-#: .\include\ui\controls\components\explorer\tile.py:177
+#: .\include\ui\controls\components\explorer\tile.py:198
 msgid "Created at: {created_at}"
 msgstr "创建于：{created_at}"
 
@@ -882,23 +882,27 @@ msgstr "落霞与孤鹜齐飞，秋水共长天一色。"
 msgid "ID: {id} (No longer exists)"
 msgstr "ID：{id}（不再存在）"
 
-#: .\include\ui\controls\components\homepage.py:249
-msgid "This document no longer exists on the server."
-msgstr "此文档在服务器上不再存在。"
+#: .\include\ui\controls\components\homepage.py:192
+msgid "ID: {id} (Access denied)"
+msgstr "ID：{id}（拒绝访问）"
 
-#: .\include\ui\controls\components\homepage.py:272
+#: .\include\ui\controls\components\homepage.py:296
+msgid "This document no longer exists on the server."
+msgstr "此文档不再存在于服务器上。"
+
+#: .\include\ui\controls\components\homepage.py:319
 msgid "Failed to download document: ({code}) {message}"
 msgstr "文档下载失败：({code}) {message}"
 
-#: .\include\ui\controls\components\homepage.py:280
+#: .\include\ui\controls\components\homepage.py:327
 msgid "Failed to download document: {error}"
 msgstr "文档下载失败：{error}"
 
-#: .\include\ui\controls\components\homepage.py:330
+#: .\include\ui\controls\components\homepage.py:390
 msgid "You have not favorited any documents or folders yet."
 msgstr "您尚未收藏任何文档或文件夹。"
 
-#: .\include\ui\controls\components\homepage.py:350
+#: .\include\ui\controls\components\homepage.py:410
 msgid "Favorites"
 msgstr "收藏"
 
