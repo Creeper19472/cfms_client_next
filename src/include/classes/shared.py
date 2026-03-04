@@ -160,6 +160,12 @@ class AppShared:
             yaml.safe_dump(default_preferences, f)
 
     def dump_preferences(self) -> None:
-        """Save current preferences to disk."""
+        """Save current preferences to disk and user preferences if logged in."""
+        # Save application-level preferences
         with open(PREFERENCES_PATH, "w", encoding="utf-8") as f:
             yaml.safe_dump(self.preferences, f)
+        
+        # Save user-specific preferences if user is logged in
+        if self.username is not None and self.user_perference is not None:
+            from include.util.userpref import save_user_preference
+            save_user_preference(self.username, self.user_perference)

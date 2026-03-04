@@ -1,5 +1,6 @@
 import os
 import json
+from dataclasses import asdict
 from typing import Optional
 from include.classes.shared import AppShared
 from include.classes.preferences import UserPreference
@@ -43,20 +44,20 @@ def load_user_preference(username: str) -> UserPreference:
         if dek is not None:
             _write_pref_file(pref_path, data, dek)
 
-    return UserPreference(
-        theme=data.get("theme", "light"),
-        favourites=_normalize_favourites(data.get("favourites")),
-    )
+    # Normalize favourites to ensure proper structure
+    data["favourites"] = _normalize_favourites(data.get("favourites"))
+    # Create UserPreference instance using all fields from data
+    # This automatically handles all dataclass fields
+    return UserPreference(**data)
 
 
 def save_user_preference(username: str, preferences: UserPreference) -> None:
     pref_path = get_user_preference_path(username)
     os.makedirs(os.path.dirname(pref_path), exist_ok=True)
 
-    data = {
-        "theme": preferences.theme,
-        "favourites": preferences.favourites,
-    }
+    # Automatically convert all dataclass fields to dict
+    # New fields added to UserPreference will be automatically saved
+    data = asdict(preferences)
     _write_pref_file(pref_path, data, AppShared().dek)
 
 
