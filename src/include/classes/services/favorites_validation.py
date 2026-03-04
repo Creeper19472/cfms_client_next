@@ -47,9 +47,13 @@ class FavoritesValidationService(BaseService):
         )
         self.app_shared = app_shared
 
-        # Track invalid items
+        # Track invalid items (no longer exist on the server)
         self.invalid_files: Set[str] = set()
         self.invalid_directories: Set[str] = set()
+
+        # Track items that exist but are inaccessible (access denied)
+        self.access_denied_files: Set[str] = set()
+        self.access_denied_directories: Set[str] = set()
 
         # Track validation state
         self.validation_in_progress = False
@@ -160,12 +164,19 @@ class FavoritesValidationService(BaseService):
             )
 
             if response.code == 200:
-                # File exists, remove from invalid set if it was there
+                # File exists and is accessible
                 self.invalid_files.discard(file_id)
+                self.access_denied_files.discard(file_id)
                 self.logger.debug(f"File {file_id} is valid")
+            elif response.code == 403:
+                # File exists but user cannot access it
+                self.access_denied_files.add(file_id)
+                self.invalid_files.discard(file_id)
+                self.logger.warning(f"File {file_id} access denied: {response.message}")
             else:
-                # File doesn't exist or error occurred
+                # File doesn't exist or other error
                 self.invalid_files.add(file_id)
+                self.access_denied_files.discard(file_id)
                 self.logger.warning(
                     f"File {file_id} is invalid: ({response.code}) {response.message}"
                 )
@@ -173,6 +184,7 @@ class FavoritesValidationService(BaseService):
         except Exception as e:
             # On error, mark as invalid to be safe
             self.invalid_files.add(file_id)
+            self.access_denied_files.discard(file_id)
             self.logger.error(f"Error validating file {file_id}: {e}")
 
     async def _validate_directory(self, dir_id: str) -> None:
@@ -192,12 +204,21 @@ class FavoritesValidationService(BaseService):
             )
 
             if response.code == 200:
-                # Directory exists, remove from invalid set if it was there
+                # Directory exists and is accessible
                 self.invalid_directories.discard(dir_id)
+                self.access_denied_directories.discard(dir_id)
                 self.logger.debug(f"Directory {dir_id} is valid")
+            elif response.code == 403:
+                # Directory exists but user cannot access it
+                self.access_denied_directories.add(dir_id)
+                self.invalid_directories.discard(dir_id)
+                self.logger.warning(
+                    f"Directory {dir_id} access denied: {response.message}"
+                )
             else:
-                # Directory doesn't exist or error occurred
+                # Directory doesn't exist or other error
                 self.invalid_directories.add(dir_id)
+                self.access_denied_directories.discard(dir_id)
                 self.logger.warning(
                     f"Directory {dir_id} is invalid: ({response.code}) {response.message}"
                 )
@@ -205,6 +226,7 @@ class FavoritesValidationService(BaseService):
         except Exception as e:
             # On error, mark as invalid to be safe
             self.invalid_directories.add(dir_id)
+            self.access_denied_directories.discard(dir_id)
             self.logger.error(f"Error validating directory {dir_id}: {e}")
 
     def is_file_valid(self, file_id: str) -> bool:
@@ -230,6 +252,34 @@ class FavoritesValidationService(BaseService):
             True if directory is valid, False if it's marked as invalid
         """
         return dir_id not in self.invalid_directories
+
+    def is_file_access_denied(self, file_id: str) -> bool:
+        """
+        Check if the most recent validation found the file inaccessible (HTTP 403).
+
+        Returns False before validation has run for this file.
+
+        Args:
+            file_id: ID of the file to check
+
+        Returns:
+            True if the server returned 403 for this file during the last validation
+        """
+        return file_id in self.access_denied_files
+
+    def is_directory_access_denied(self, dir_id: str) -> bool:
+        """
+        Check if the most recent validation found the directory inaccessible (HTTP 403).
+
+        Returns False before validation has run for this directory.
+
+        Args:
+            dir_id: ID of the directory to check
+
+        Returns:
+            True if the server returned 403 for this directory during the last validation
+        """
+        return dir_id in self.access_denied_directories
 
     def mark_file_invalid(self, file_id: str) -> None:
         """

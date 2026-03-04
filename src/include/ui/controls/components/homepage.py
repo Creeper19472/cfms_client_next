@@ -162,7 +162,7 @@ class HomeFavoritesContainer(ft.Container):
         item_id: str,
         item_name: str,
     ):
-        """Helper method to mark a control as invalid with consistent styling."""
+        """Helper method to mark a control as invalid (does not exist) with strong styling."""
         cast(ft.Icon, control.leading).color = ft.Colors.GREY_500
         control.title = ft.Text(
             item_name,
@@ -172,6 +172,21 @@ class HomeFavoritesContainer(ft.Container):
         control.subtitle = ft.Text(
             _("ID: {id} (No longer exists)").format(id=item_id),
             color=ft.Colors.RED_300,
+        )
+        control.on_click = None
+
+    def _mark_item_access_denied(
+        self,
+        control: Union[FileTile, DirectoryTile],
+        item_id: str,
+        item_name: str,
+    ):
+        """Helper method to mark a control as access-denied with a subtle gray style."""
+        cast(ft.Icon, control.leading).color = ft.Colors.GREY_400
+        control.title = ft.Text(item_name, color=ft.Colors.GREY_400)
+        control.subtitle = ft.Text(
+            _("ID: {id} (Access denied)").format(id=item_id),
+            color=ft.Colors.GREY_400,
         )
         control.on_click = None
 
@@ -216,20 +231,26 @@ class HomeFavoritesContainer(ft.Container):
         # If this is called from validation callback, only update the styling of existing controls
         # Don't clear and recreate everything
         if from_validation_callback and validation_service:
-            # Update existing controls to mark invalid items
+            # Update existing controls to mark invalid or access-denied items
             for control in self.listview.controls:
                 if isinstance(control, FileTile):
-                    is_valid = validation_service.is_file_valid(control.file_id)
-                    if not is_valid:
+                    if not validation_service.is_file_valid(control.file_id):
                         self._mark_item_invalid(
                             control, control.file_id, control.filename
                         )
+                    elif validation_service.is_file_access_denied(control.file_id):
+                        self._mark_item_access_denied(
+                            control, control.file_id, control.filename
+                        )
                 elif isinstance(control, DirectoryTile):
-                    is_valid = validation_service.is_directory_valid(
-                        control.directory_id
-                    )
-                    if not is_valid:
+                    if not validation_service.is_directory_valid(control.directory_id):
                         self._mark_item_invalid(
+                            control, control.directory_id, control.dir_name
+                        )
+                    elif validation_service.is_directory_access_denied(
+                        control.directory_id
+                    ):
+                        self._mark_item_access_denied(
                             control, control.directory_id, control.dir_name
                         )
 
@@ -308,42 +329,52 @@ class HomeFavoritesContainer(ft.Container):
             pass
 
         for dir_id in favorite_directories:
-            # Check if directory is valid
-            is_valid = True
-            if validation_service:
-                is_valid = validation_service.is_directory_valid(dir_id)
+            is_valid = not validation_service or validation_service.is_directory_valid(
+                dir_id
+            )
+            is_access_denied = bool(
+                validation_service
+                and validation_service.is_directory_access_denied(dir_id)
+            )
 
             directory = DirectoryTile(
                 dir_name=favorite_directories[dir_id],
                 directory_id=dir_id,
                 starred=True,
                 show_id=True,
-                on_click=on_dirtile_click if is_valid else None,
+                on_click=on_dirtile_click if (is_valid and not is_access_denied) else None,
             )
 
-            # Apply visual styling for invalid items
             if not is_valid:
                 self._mark_item_invalid(directory, dir_id, favorite_directories[dir_id])
+            elif is_access_denied:
+                self._mark_item_access_denied(
+                    directory, dir_id, favorite_directories[dir_id]
+                )
 
             self.listview.controls.append(directory)
 
         for file_id in favorite_files:
-            # Check if file is valid
-            is_valid = True
-            if validation_service:
-                is_valid = validation_service.is_file_valid(file_id)
+            is_valid = not validation_service or validation_service.is_file_valid(
+                file_id
+            )
+            is_access_denied = bool(
+                validation_service
+                and validation_service.is_file_access_denied(file_id)
+            )
 
             file = FileTile(
                 filename=favorite_files[file_id],
                 file_id=file_id,
                 starred=True,
                 show_id=True,
-                on_click=on_filetile_click if is_valid else None,
+                on_click=on_filetile_click if (is_valid and not is_access_denied) else None,
             )
 
-            # Apply visual styling for invalid items
             if not is_valid:
                 self._mark_item_invalid(file, file_id, favorite_files[file_id])
+            elif is_access_denied:
+                self._mark_item_access_denied(file, file_id, favorite_files[file_id])
 
             self.listview.controls.append(file)
 
