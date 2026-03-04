@@ -11,6 +11,18 @@ t = get_translation()
 _ = t.gettext
 
 
+def _notify_favorites_changed(app_shared: AppShared) -> None:
+    """Notify the FavoritesValidationService that the favorites list has changed."""
+    if app_shared.service_manager:
+        from include.classes.services.favorites_validation import (
+            FavoritesValidationService,
+        )
+
+        service = app_shared.service_manager.get_service("favorites_validation")
+        if isinstance(service, FavoritesValidationService):
+            service.notify_favorites_changed()
+
+
 class FileTile(ft.ListTile):
     def __init__(
         self,
@@ -118,6 +130,9 @@ class FileTile(ft.ListTile):
             self.app_shared.get_not_none_attribute("username"),
             self.app_shared.user_perference,
         )
+
+        # Notify listeners that favorites have changed
+        _notify_favorites_changed(self.app_shared)
 
         self.update_state()
 
@@ -232,6 +247,9 @@ class DirectoryTile(ft.ListTile):
             self.app_shared.get_not_none_attribute("username"),
             self.app_shared.user_perference,
         )
+
+        # Notify listeners that favorites have changed
+        _notify_favorites_changed(self.app_shared)
 
         self.update_state()
 

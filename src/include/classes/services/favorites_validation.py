@@ -58,6 +58,9 @@ class FavoritesValidationService(BaseService):
         # Callbacks to be called after validation completes
         self._on_validation_complete_callbacks: List[Callable] = []
 
+        # Callbacks to be called when the favorites list changes (items added/removed)
+        self._on_favorites_changed_callbacks: List[Callable] = []
+
     @property
     def first_validation_done(self) -> bool:
         return self._first_validation_done
@@ -270,6 +273,57 @@ class FavoritesValidationService(BaseService):
         """
         if callback in self._on_validation_complete_callbacks:
             self._on_validation_complete_callbacks.remove(callback)
+
+    def register_on_favorites_changed(self, callback) -> None:
+        """
+        Register a callback to be called when the favorites list changes.
+
+        The callback will be called when items are added to or removed from favorites.
+        Callback can be sync or async function.
+
+        Args:
+            callback: Function to call when favorites change
+        """
+        if callback not in self._on_favorites_changed_callbacks:
+            self._on_favorites_changed_callbacks.append(callback)
+
+    def unregister_on_favorites_changed(self, callback) -> None:
+        """
+        Unregister a favorites-changed callback.
+
+        Args:
+            callback: Function to remove from callbacks
+        """
+        if callback in self._on_favorites_changed_callbacks:
+            self._on_favorites_changed_callbacks.remove(callback)
+
+    def notify_favorites_changed(self) -> None:
+        """
+        Notify all registered callbacks that the favorites list has changed.
+
+        This should be called whenever an item is added to or removed from favorites.
+        """
+        for callback in list(self._on_favorites_changed_callbacks):
+            try:
+                if inspect.iscoroutinefunction(callback):
+                    try:
+                        loop = asyncio.get_running_loop()
+                    except RuntimeError:
+                        loop = None
+
+                    if loop and loop.is_running():
+                        loop.create_task(callback())
+                    else:
+                        self.logger.warning(
+                            "notify_favorites_changed called outside of a running "
+                            "event loop; async callback skipped"
+                        )
+                else:
+                    callback()
+            except Exception as e:
+                self.logger.error(
+                    f"Error in favorites-changed callback: {e}", exc_info=True
+                )
 
     def trigger_validation_async(self) -> None:
         """

@@ -175,6 +175,33 @@ class HomeFavoritesContainer(ft.Container):
         )
         control.on_click = None
 
+    def _get_favorites_validation_service(self):
+        """Return the FavoritesValidationService instance, or None if unavailable."""
+        if self.app_shared.service_manager:
+            service = self.app_shared.service_manager.get_service(
+                "favorites_validation"
+            )
+            if isinstance(service, FavoritesValidationService):
+                return service
+        return None
+
+    def did_mount(self):
+        # Register callback so the list re-renders when favorites change
+        service = self._get_favorites_validation_service()
+        if service:
+            service.register_on_favorites_changed(self._on_favorites_changed)
+
+    def will_unmount(self):
+        # Unregister callback to avoid stale references
+        service = self._get_favorites_validation_service()
+        if service:
+            service.unregister_on_favorites_changed(self._on_favorites_changed)
+
+    def _on_favorites_changed(self):
+        """Called by FavoritesValidationService when items are starred/unstarred."""
+        assert type(self.page) is ft.Page
+        self.page.run_task(self.update_favorites)
+
     async def update_favorites(self, from_validation_callback: bool = False):
         # add favorite files and directories
         assert self.app_shared.user_perference
@@ -184,12 +211,7 @@ class HomeFavoritesContainer(ft.Container):
         )
 
         # Get validation service
-        validation_service = None
-        if self.app_shared.service_manager:
-            validation_service = cast(
-                FavoritesValidationService,
-                self.app_shared.service_manager.get_service("favorites_validation"),
-            )
+        validation_service = self._get_favorites_validation_service()
 
         # If this is called from validation callback, only update the styling of existing controls
         # Don't clear and recreate everything
