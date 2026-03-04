@@ -5,9 +5,9 @@ import flet as ft
 from include.classes.shared import AppShared
 from include.classes.exceptions.request import RequestFailureError
 from include.ui.util.notifications import send_error, send_info
+from include.util.download_path import get_download_file_path
 from include.util.requests import do_request
 from include.classes.services.download import DownloadManagerService
-from include.util.download_path import get_download_file_path
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
@@ -106,7 +106,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Handle 403 (Access Denied) with dialog
     if response["code"] == 403:
         from include.ui.controls.dialogs.explorer import AccessDeniedDialog
-        
+
         dialog = AccessDeniedDialog(
             reason=response["message"],
             operation=_("download"),
@@ -128,8 +128,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     supports_resume = task_data.get("supports_resume", False)
     # Future: Server can set this based on its capabilities
 
-    resolved_filename = filename if filename else task_id[0:17]
-    file_path = get_download_file_path(resolved_filename)
+    file_path = get_download_file_path(filename or task_id[0:17])
 
     # Get the download manager service
     download_service = None
@@ -145,9 +144,8 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Use download manager service
     download_service.add_task(
         task_id=task_id,
-        file_id=id if id else "",
-        filename=filename if filename else task_id[0:17],
-        file_pathresolved_filename,
+        file_id=id or "",
+        filename=filename or task_id[0:17],
         file_path=file_path,
         supports_resume=supports_resume,
     )
@@ -155,4 +153,5 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Show notification that download was added
     send_info(
         page,
-        _("Download added: {filename}").format(filename=resolved_filename
+        _("Download added: {filename}").format(filename=filename or task_id[0:17]),
+    )

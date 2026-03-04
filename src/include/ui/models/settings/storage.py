@@ -43,10 +43,28 @@ class StorageSettingsModel(Model):
             expand_loose=True,
             disabled=True,
         )
+        self.external_storage_path_pick_button = ft.Button(
+            _("Browse..."), on_click=self.pick_external_storage_path, disabled=True
+        )
+        self.note = ft.Text(
+            _(
+                "The application will only save files to the specified location if the "
+                '"Use external storage" switch is enabled and an external storage path '
+                "is set."
+            ),
+            size=12,
+            color=ft.Colors.GREY,
+        )
 
         self.controls = [
             self.use_external_storage_switch,
-            self.external_storage_path_textfield,
+            ft.Row(
+                [
+                    self.external_storage_path_textfield,
+                    self.external_storage_path_pick_button,
+                ]
+            ),
+            self.note,
         ]
 
     def did_mount(self) -> None:
@@ -55,6 +73,12 @@ class StorageSettingsModel(Model):
 
     async def _go_back(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
+
+    async def pick_external_storage_path(self, event: ft.Event[ft.Button]):
+        storage_path = await ft.FilePicker().get_directory_path()
+        if storage_path:
+            self.external_storage_path_textfield.value = storage_path
+            self.update()
 
     async def save_button_click(self, event: ft.Event[ft.IconButton]):
         user_pref = cast(UserPreference, AppShared().user_perference)
@@ -76,7 +100,7 @@ class StorageSettingsModel(Model):
         await self.flush_switch()
 
     async def flush_switch(self):
-        self.external_storage_path_textfield.disabled = (
-            not self.use_external_storage_switch.value
-        )
+        is_enabled = self.use_external_storage_switch.value
+        self.external_storage_path_textfield.disabled = not is_enabled
+        self.external_storage_path_pick_button.disabled = not is_enabled
         self.update()
