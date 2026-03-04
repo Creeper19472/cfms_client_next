@@ -64,10 +64,10 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                 if task_data:
                     # Download the revision file using the download manager
                     from include.classes.services.download import DownloadManagerService
-                    from include.constants import FLET_APP_STORAGE_DATA
                     from include.ui.util.notifications import send_info
+                    from include.util.download_path import get_download_file_path
                     from typing import cast
-                    
+
                     task_id = task_data["task_id"]
                     
                     if not is_current:
@@ -75,7 +75,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                     else:
                         filename = self.control.filename
 
-                    file_path = f"{FLET_APP_STORAGE_DATA}/downloads/{filename}"
+                    file_path = get_download_file_path(filename)
                     supports_resume = task_data.get("supports_resume", False)
                     
                     # Get the download manager service

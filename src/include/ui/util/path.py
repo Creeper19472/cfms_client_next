@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Optional, cast
 
 import flet as ft
 
-from include.constants import FLET_APP_STORAGE_DATA
 from include.classes.shared import AppShared
 from include.classes.exceptions.request import RequestFailureError
 from include.ui.util.notifications import send_error, send_info
 from include.util.requests import do_request
 from include.classes.services.download import DownloadManagerService
+from include.util.download_path import get_download_file_path
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
@@ -128,9 +128,8 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     supports_resume = task_data.get("supports_resume", False)
     # Future: Server can set this based on its capabilities
 
-    file_path = (
-        f"{FLET_APP_STORAGE_DATA}/downloads/{filename if filename else task_id[0:17]}"
-    )
+    resolved_filename = filename if filename else task_id[0:17]
+    file_path = get_download_file_path(resolved_filename)
 
     # Get the download manager service
     download_service = None
@@ -148,6 +147,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
         task_id=task_id,
         file_id=id if id else "",
         filename=filename if filename else task_id[0:17],
+        file_pathresolved_filename,
         file_path=file_path,
         supports_resume=supports_resume,
     )
@@ -155,7 +155,4 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Show notification that download was added
     send_info(
         page,
-        _("Download added: {filename}").format(
-            filename=filename if filename else task_id[0:17]
-        ),
-    )
+        _("Download added: {filename}").format(filename=resolved_filename
