@@ -267,13 +267,8 @@ class FileManagerView(ft.Container):
         self.page.run_task(self._refresh_file_list_star_states)
 
     async def _refresh_file_list_star_states(self):
-        """Re-render the file list so star states reflect the current favorites."""
-        update_file_controls(
-            self.file_listview,
-            self.file_listview.current_directories_data,
-            self.file_listview.current_files_data,
-            self.file_listview.current_parent_id,
-        )
+        """Re-render the file list preserving the current sort order."""
+        await self.sort_bar.controller.apply_sorting()
 
     def send_error(self, msg: str):
         send_error(self.page, msg)
