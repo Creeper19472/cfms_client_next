@@ -182,11 +182,15 @@ class HomeFavoritesContainer(ft.Container):
         item_name: str,
     ):
         """Helper method to mark a control as access-denied with a subtle gray style."""
-        cast(ft.Icon, control.leading).color = ft.Colors.GREY_400
-        control.title = ft.Text(item_name, color=ft.Colors.GREY_400)
+        cast(ft.Icon, control.leading).color = ft.Colors.GREY_500
+        control.title = ft.Text(
+            item_name,
+            color=ft.Colors.GREY_500,
+            style=ft.TextStyle(decoration=ft.TextDecoration.LINE_THROUGH),
+        )
         control.subtitle = ft.Text(
             _("ID: {id} (Access denied)").format(id=item_id),
-            color=ft.Colors.GREY_400,
+            color=ft.Colors.GREY_500,
         )
         control.on_click = None
 
@@ -342,7 +346,9 @@ class HomeFavoritesContainer(ft.Container):
                 directory_id=dir_id,
                 starred=True,
                 show_id=True,
-                on_click=on_dirtile_click if (is_valid and not is_access_denied) else None,
+                on_click=(
+                    on_dirtile_click if (is_valid and not is_access_denied) else None
+                ),
             )
 
             if not is_valid:
@@ -359,8 +365,7 @@ class HomeFavoritesContainer(ft.Container):
                 file_id
             )
             is_access_denied = bool(
-                validation_service
-                and validation_service.is_file_access_denied(file_id)
+                validation_service and validation_service.is_file_access_denied(file_id)
             )
 
             file = FileTile(
@@ -368,7 +373,9 @@ class HomeFavoritesContainer(ft.Container):
                 file_id=file_id,
                 starred=True,
                 show_id=True,
-                on_click=on_filetile_click if (is_valid and not is_access_denied) else None,
+                on_click=(
+                    on_filetile_click if (is_valid and not is_access_denied) else None
+                ),
             )
 
             if not is_valid:

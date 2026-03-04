@@ -63,7 +63,10 @@ class FileTile(ft.ListTile):
 
         subtitle_text = ""
         if show_id:
-            subtitle_text += _("ID: {file_id}\n").format(file_id=file_id)
+            subtitle_text += _("ID: {file_id}").format(file_id=file_id)
+
+        if show_id and (last_modified is not None or size is not None):
+            subtitle_text += "\n"  # Add extra newline for spacing if ID is shown
 
         if last_modified is not None:
             subtitle_text += _("Last modified: {last_modified}\n").format(
@@ -186,7 +189,10 @@ class DirectoryTile(ft.ListTile):
 
         subtitle_text = ""
         if show_id:
-            subtitle_text += _("ID: {dir_id}\n").format(dir_id=self.directory_id)
+            subtitle_text += _("ID: {dir_id}").format(dir_id=self.directory_id)
+
+        if show_id and created_at is not None:
+            subtitle_text += "\n"  # Add extra newline for spacing if ID is shown
 
         if created_at is not None:
             subtitle_text += _("Created at: {created_at}").format(
