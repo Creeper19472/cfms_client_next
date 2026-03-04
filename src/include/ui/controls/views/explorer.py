@@ -242,6 +242,7 @@ class FileManagerView(ft.Container):
             service.register_on_favorites_changed(self._on_favorites_changed)
 
     def will_unmount(self):
+        super().will_unmount()
         # Unregister callback to avoid stale references
         service = self._get_favorites_validation_service()
         if service:

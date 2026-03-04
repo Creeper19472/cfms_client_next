@@ -205,12 +205,14 @@ class HomeFavoritesContainer(ft.Container):
         return None
 
     def did_mount(self):
+        super().did_mount()
         # Register callback so the list re-renders when favorites change
         service = self._get_favorites_validation_service()
         if service:
             service.register_on_favorites_changed(self._on_favorites_changed)
 
     def will_unmount(self):
+        super().will_unmount()
         # Unregister callback to avoid stale references
         service = self._get_favorites_validation_service()
         if service:
