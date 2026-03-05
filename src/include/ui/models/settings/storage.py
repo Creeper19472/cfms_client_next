@@ -7,6 +7,7 @@ import flet as ft
 from include.classes.preferences import UserPreference
 from include.classes.shared import AppShared
 from include.ui.controls.banners.settings import ExternalStorageWarningBanner
+from include.ui.settings_framework import RegisteredSettingsPage, settings_page
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
@@ -16,8 +17,15 @@ t = get_translation()
 _ = t.gettext
 
 
+@settings_page
 @route("storage_settings")
-class StorageSettingsModel(Model):
+class StorageSettingsModel(Model, RegisteredSettingsPage):
+    # Overview metadata
+    settings_name = "Storage"
+    settings_description = "Configure external storage options"
+    settings_icon = ft.Icons.STORAGE
+    settings_route_suffix = "storage_settings"
+
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.START
     horizontal_alignment = ft.CrossAxisAlignment.BASELINE

@@ -1,7 +1,11 @@
+from __future__ import annotations
+
+from collections.abc import Awaitable, Callable
+
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.classes.shared import AppShared
+from include.ui.settings_framework import get_settings_registry
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
 
@@ -28,41 +32,13 @@ class SettingsModel(Model):
 
         self.listtiles = [
             ft.ListTile(
-                leading=ft.Icon(ft.Icons.LANGUAGE),
-                title=ft.Text(_("Language")),
-                subtitle=ft.Text(_("Select your preferred language")),
-                on_click=self.configure_language_listtile_click,
-            ),
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.LINK),
-                title=ft.Text(_("Connect")),
-                subtitle=ft.Text(_("Change application proxy settings")),
-                on_click=self.configure_conn_listtile_click,
-            ),
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.STORAGE),
-                title=ft.Text(_("Storage")),
-                subtitle=ft.Text(_("Configure external storage options")),
-                on_click=self.configure_storage_listtile_click,
-            ),
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.SECURITY),
-                title=ft.Text(_("Security")),
-                subtitle=ft.Text(_("Adjust application connection history policy")),
-                on_click=self.configure_safety_listtile_click,
-            ),
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.BROWSER_UPDATED),
-                title=ft.Text(_("Updates")),
-                subtitle=ft.Text(_("Configure update channel preferences")),
-                on_click=self.configure_updates_listtile_click,
-            ),
-            ft.ListTile(
-                leading=ft.Icon(ft.Icons.LOCK),
-                title=ft.Text(_("Two-Factor Authentication")),
-                subtitle=ft.Text(_("Manage two-factor authentication settings")),
-                on_click=self.configure_twofa_listtile_click,
+                leading=ft.Icon(cls.settings_icon),
+                title=ft.Text(_(cls.settings_name)),
+                subtitle=ft.Text(_(cls.settings_description)),
+                on_click=self._make_route_handler(cls.settings_route_suffix),
             )
+            for cls in get_settings_registry()
+            if cls.settings_route_suffix
         ]
 
         self.listview = ft.ListView(
@@ -77,20 +53,12 @@ class SettingsModel(Model):
     async def _go_back(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
 
-    async def configure_language_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/language_settings")
+    def _make_route_handler(
+        self, route_suffix: str
+    ) -> Callable[[ft.Event[ft.ListTile]], Awaitable[None]]:
+        """Return an async click handler that navigates to *route_suffix*."""
 
-    async def configure_conn_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/conn_settings")
+        async def handler(event: ft.Event[ft.ListTile]) -> None:
+            await self.page.push_route(self.page.route + "/" + route_suffix)
 
-    async def configure_safety_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/safety_settings")
-
-    async def configure_twofa_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/twofa_settings")
-
-    async def configure_updates_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/updates_settings")
-
-    async def configure_storage_listtile_click(self, event: ft.Event[ft.ListTile]):
-        await self.page.push_route(self.page.route + "/storage_settings")
+        return handler

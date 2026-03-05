@@ -4,6 +4,7 @@ from flet_model import Model, Router, route
 import flet as ft
 
 from include.classes.shared import AppShared
+from include.ui.settings_framework import RegisteredSettingsPage, settings_page
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
@@ -12,8 +13,15 @@ t = get_translation()
 _ = t.gettext
 
 
+@settings_page
 @route("conn_settings")
-class ConnectionSettingsModel(Model):
+class ConnectionSettingsModel(Model, RegisteredSettingsPage):
+    # Overview metadata
+    settings_name = "Connect"
+    settings_description = "Change application proxy settings"
+    settings_icon = ft.Icons.LINK
+    settings_route_suffix = "conn_settings"
+
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.START
     horizontal_alignment = ft.CrossAxisAlignment.BASELINE

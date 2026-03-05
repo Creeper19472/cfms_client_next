@@ -1,78 +1,44 @@
-from flet_model import Model, Router, route
+"""Safety / security settings model (declarative)."""
+
+from flet_model import route
 import flet as ft
 
-from include.classes.shared import AppShared
-from include.ui.util.notifications import send_success
-from include.ui.util.route import get_parent_route
+from include.ui.settings_framework import (
+    DeclarativeSettingsPage,
+    SettingsField,
+    settings_page,
+)
 from include.util.locale import get_translation
 
 t = get_translation()
 _ = t.gettext
 
 
+@settings_page
 @route("safety_settings")
-class SafetySettingsModel(Model):
-    # Layout configuration
-    vertical_alignment = ft.MainAxisAlignment.START
-    horizontal_alignment = ft.CrossAxisAlignment.BASELINE
-    padding = 20
-    spacing = 10
+class SafetySettingsModel(DeclarativeSettingsPage):
+    """Settings page for connection-history logging policy."""
 
-    def __init__(self, page: ft.Page, router: Router):
-        super().__init__(page, router)
+    # Overview metadata
+    settings_name = "Safety"
+    settings_description = "Adjust application connection history policy"
+    settings_icon = ft.Icons.SECURITY
+    settings_route_suffix = "safety_settings"
 
-        self.appbar = ft.AppBar(
-            title=ft.Text(_("Safety")),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
-            actions=[
-                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self.save_button_click)
-            ],
-            actions_padding=10,
-        )
-        self.app_shared = AppShared()
+    # ---------------------------------------------------------------------------
+    # Declarative fields
+    # ---------------------------------------------------------------------------
 
-        self.enable_logging_switch = ft.Switch(
-            label=ft.Text(
-                _("Enable connection history logging"),
-            ),
-            on_change=self.switch_click,
-            disabled=True,
-        )
-        self.logging_hint_text = ft.Text(
-            _(
-                "Decide whether the app should log the "
-                "server address of the last connection. "
-                "While this feature increases convenience, "
-                "it may also increase the risk of exposing "
-                "the server address."
-            )
-        )
-
-        self.controls = [self.enable_logging_switch, self.logging_hint_text]
-
-    def did_mount(self) -> None:
-        super().did_mount()
-        self.page.run_task(self.load_switch_status)
-
-    async def _go_back(self, event: ft.Event[ft.IconButton]):
-        await self.page.push_route(get_parent_route(self.page.route))
-
-    async def save_button_click(self, event: ft.Event[ft.IconButton]):
-        self.app_shared.preferences["settings"][
-            "enable_conn_history_logging"
-        ] = self.enable_logging_switch.value
-
-        self.app_shared.dump_preferences()
-        send_success(self.page, _("Settings Saved."))
-
-    async def switch_click(self, event: ft.Event[ft.Switch]):
-        await self.flush_switch()
-
-    async def load_switch_status(self):
-        self.enable_logging_switch.value = bool(
-            self.app_shared.preferences["settings"].get("enable_conn_history_logging")
-        )
-        await self.flush_switch()
-
-    async def flush_switch(self):
-        self.update()
+    enable_conn_history_logging: bool = SettingsField(
+        label="Enable connection history logging",
+        key="enable_conn_history_logging",
+        default=False,
+        disabled=True,  # Feature not yet fully implemented
+        description=(
+            "Decide whether the app should log the "
+            "server address of the last connection. "
+            "While this feature increases convenience, "
+            "it may also increase the risk of exposing "
+            "the server address."
+        ),
+    )

@@ -7,6 +7,7 @@ from include.classes.shared import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
 from include.ui.controls.dialogs.backup_codes import BackupCodesDialog
+from include.ui.settings_framework import RegisteredSettingsPage, settings_page
 from include.ui.util.notifications import send_success, send_error
 from include.ui.util.route import get_parent_route
 from include.util.requests import do_request_2
@@ -16,9 +17,16 @@ t = get_translation()
 _ = t.gettext
 
 
+@settings_page
 @route("twofa_settings")
-class TwoFactorSettingsModel(Model):
+class TwoFactorSettingsModel(Model, RegisteredSettingsPage):
     """Model for Two-Factor Authentication settings page."""
+
+    # Overview metadata
+    settings_name = "Two-Factor Authentication"
+    settings_description = "Manage two-factor authentication settings"
+    settings_icon = ft.Icons.LOCK
+    settings_route_suffix = "twofa_settings"
 
     # Layout configuration
     vertical_alignment = ft.MainAxisAlignment.START
