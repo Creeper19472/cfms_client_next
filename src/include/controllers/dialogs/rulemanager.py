@@ -3,6 +3,7 @@ import json
 
 from include.classes.shared import AppShared
 from include.controllers.base import Controller
+from include.ui.util.notifications import send_error
 from include.util.requests import do_request
 
 if TYPE_CHECKING:
@@ -39,9 +40,14 @@ class RuleManagerController(Controller["RuleManager"]):
             token=self.app_shared.token,
         )
         if info_resp["code"] != 200:
-            self.control.source_editor.value = (
-                f"Failed to fetch current rules: {info_resp['message']}"
+            send_error(
+                self.control.page,
+                _("Failed to fetch rules: {message}").format(
+                    message=info_resp["message"]
+                ),
             )
+            self.control.close()
+            return
         else:
             self.control.cached_access_rules = info_resp["data"]["rules"]
             self.control.inherit_checkbox.value = info_resp["data"]["inherit"]
