@@ -4,7 +4,7 @@ from flet_model import Model, Router, route
 import flet as ft
 
 from include.classes.shared import AppShared
-from include.ui.settings_framework import RegisteredSettingsPage, settings_page
+from include.ui.frameworks.settings import RegisteredSettingsPage, settings_page
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation

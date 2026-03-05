@@ -7,7 +7,7 @@ from include.classes.shared import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
 from include.ui.controls.dialogs.backup_codes import BackupCodesDialog
-from include.ui.settings_framework import RegisteredSettingsPage, settings_page
+from include.ui.frameworks.settings.settings_framework import RegisteredSettingsPage, settings_page
 from include.ui.util.notifications import send_success, send_error
 from include.ui.util.route import get_parent_route
 from include.util.requests import do_request_2

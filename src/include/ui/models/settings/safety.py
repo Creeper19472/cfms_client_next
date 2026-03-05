@@ -3,7 +3,7 @@
 from flet_model import route
 import flet as ft
 
-from include.ui.settings_framework import (
+from include.ui.frameworks.settings.settings_framework import (
     DeclarativeSettingsPage,
     SettingsField,
     settings_page,

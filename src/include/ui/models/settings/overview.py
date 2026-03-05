@@ -5,7 +5,7 @@ from collections.abc import Awaitable, Callable
 from flet_model import Model, Router, route
 import flet as ft
 
-from include.ui.settings_framework import get_settings_registry
+from include.ui.frameworks.settings.settings_framework import get_settings_registry
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
 
