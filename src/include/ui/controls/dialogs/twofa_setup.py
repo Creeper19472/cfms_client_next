@@ -2,7 +2,6 @@
 
 import base64
 import io
-from typing import Optional
 
 import flet as ft
 import qrcode
@@ -67,6 +66,7 @@ class TwoFactorSetupDialog(AlertDialog):
             text_size=12,
             expand=True,
             expand_loose=True,
+            margin=ft.Margin(top=10),
         )
 
         # Code verification field
@@ -111,7 +111,7 @@ class TwoFactorSetupDialog(AlertDialog):
                 ft.Divider(),
                 ft.Text(
                     _("Or enter this key manually:"),
-                    size=12,
+                    size=14,
                     weight=ft.FontWeight.BOLD,
                 ),
                 self.secret_text,

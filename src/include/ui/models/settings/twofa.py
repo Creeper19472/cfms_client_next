@@ -1,14 +1,13 @@
 """Two-Factor Authentication settings model."""
 
-from flet_model import Model, Router, route
+from flet_model import Router, route
 import flet as ft
 
-from include.classes.shared import AppShared
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
 from include.ui.controls.dialogs.backup_codes import BackupCodesDialog
+from include.ui.frameworks.settings import DeclarativeActionPage, settings_page
 from include.ui.util.notifications import send_success, send_error
-from include.ui.util.route import get_parent_route
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
 
@@ -16,36 +15,37 @@ t = get_translation()
 _ = t.gettext
 
 
+@settings_page
 @route("twofa_settings")
-class TwoFactorSettingsModel(Model):
-    """Model for Two-Factor Authentication settings page."""
+class TwoFactorSettingsModel(DeclarativeActionPage):
+    """Settings page for Two-Factor Authentication management.
 
-    # Layout configuration
-    vertical_alignment = ft.MainAxisAlignment.START
-    horizontal_alignment = ft.CrossAxisAlignment.BASELINE
-    padding = 20
-    spacing = 10
+    This page is action-based rather than preference-based: it fetches the
+    current 2FA status from the server and lets the user enable or disable
+    2FA via multi-step dialogs.  It therefore uses
+    :class:`~include.ui.frameworks.settings.DeclarativeActionPage` (no Save
+    button, async :meth:`_on_load` for server fetch) rather than
+    :class:`~include.ui.frameworks.settings.DeclarativeSettingsPage`.
+    """
+
+    # Overview metadata
+    settings_name = _("Two-Factor Authentication")
+    settings_description = _("Manage two-factor authentication settings")
+    settings_icon = ft.Icons.LOCK
+    settings_route_suffix = "twofa_settings"
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
 
-        self.appbar = ft.AppBar(
-            title=ft.Text(_("Two-Factor Authentication")),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
-        )
-        self.app_shared = AppShared()
-
-        # Store backup codes for display after verification
+        # Backup codes collected during setup; shown after TOTP verification.
         self.pending_backup_codes: list[str] = []
 
-        # 2FA status text
+        # Status / description text
         self.status_text = ft.Text(
             _("Two-Factor Authentication Status: Checking..."),
             size=16,
             weight=ft.FontWeight.BOLD,
         )
-
-        # Description text
         self.description_text = ft.Text(
             _(
                 "Two-factor authentication adds an extra layer of security to your account. "
@@ -54,15 +54,13 @@ class TwoFactorSettingsModel(Model):
             size=14,
         )
 
-        # Enable/Disable button
+        # Action buttons
         self.toggle_button = ft.Button(
             _("Enable Two-Factor Authentication"),
             icon=ft.Icons.SECURITY,
             on_click=self._on_toggle_2fa,
             disabled=True,
         )
-
-        # Disable button (shown when 2FA is enabled)
         self.disable_button = ft.Button(
             _("Disable Two-Factor Authentication"),
             icon=ft.Icons.SECURITY_UPDATE_WARNING,
@@ -70,7 +68,6 @@ class TwoFactorSettingsModel(Model):
             visible=False,
             color=ft.Colors.ERROR,
         )
-
         self.loading_ring = ft.ProgressRing(visible=False)
 
         self.controls = [
@@ -85,15 +82,12 @@ class TwoFactorSettingsModel(Model):
             self.disable_button,
         ]
 
-    def did_mount(self) -> None:
-        super().did_mount()
-        self.page.run_task(self._load_2fa_status)
+    # ------------------------------------------------------------------
+    # _on_load: fetch 2FA status from server
+    # ------------------------------------------------------------------
 
-    async def _go_back(self, event: ft.Event[ft.IconButton]):
-        await self.page.push_route(get_parent_route(self.page.route))
-
-    async def _load_2fa_status(self):
-        """Load the current 2FA status from server."""
+    async def _on_load(self) -> None:
+        """Load the current 2FA status from the server."""
         self.loading_ring.visible = True
         self.update()
 
@@ -124,7 +118,11 @@ class TwoFactorSettingsModel(Model):
             self.toggle_button.disabled = False
             self.update()
 
-    def _update_ui_for_status(self, is_enabled: bool):
+    # ------------------------------------------------------------------
+    # UI helpers
+    # ------------------------------------------------------------------
+
+    def _update_ui_for_status(self, is_enabled: bool) -> None:
         """Update UI based on 2FA status."""
         if is_enabled:
             self.status_text.value = _("Two-Factor Authentication Status: Enabled")
@@ -140,14 +138,17 @@ class TwoFactorSettingsModel(Model):
         self.app_shared.user_2fa_enabled = is_enabled
         self.update()
 
-    async def _on_toggle_2fa(self, e):
+    # ------------------------------------------------------------------
+    # Enable 2FA flow
+    # ------------------------------------------------------------------
+
+    async def _on_toggle_2fa(self, e) -> None:
         """Handle enabling 2FA."""
         self.toggle_button.disabled = True
         self.loading_ring.visible = True
         self.update()
 
         try:
-            # Request 2FA setup from server
             response = await do_request_2(
                 "setup_2fa",
                 data={"method": "totp"},
@@ -156,16 +157,12 @@ class TwoFactorSettingsModel(Model):
             )
 
             if response.code == 200:
-                # Server returned complete setup data
                 secret = response.data.get("secret")
                 provisioning_uri = response.data.get("provisioning_uri")
                 backup_codes: list[str] = response.data.get("backup_codes", [])
-
-                # Store backup codes for display after verification
                 self.pending_backup_codes = backup_codes
 
                 if secret and provisioning_uri:
-                    # Show setup dialog
                     setup_dialog = TwoFactorSetupDialog(
                         secret=secret,
                         qr_uri=provisioning_uri,
@@ -193,25 +190,20 @@ class TwoFactorSettingsModel(Model):
             self.update()
 
     async def _verify_and_enable_2fa(self, code: str) -> bool:
-        """
-        Verify the setup code and enable 2FA.
+        """Verify the setup code and enable 2FA.
 
-        Returns:
-            True if successful, False otherwise
+        Returns ``True`` on success, ``False`` otherwise.
         """
         try:
             response = await do_request_2(
                 "validate_2fa",
-                data={"token": code},  # token is actually code.
+                data={"token": code},
                 username=self.app_shared.username,
                 token=self.app_shared.token,
             )
 
             if response.code == 200:
-                # Update UI status first
                 self._update_ui_for_status(True)
-
-                # Show backup codes if available
                 if self.pending_backup_codes:
                     backup_codes_dialog = BackupCodesDialog(
                         backup_codes=self.pending_backup_codes,
@@ -222,7 +214,6 @@ class TwoFactorSettingsModel(Model):
                     send_success(
                         self.page, _("Two-Factor Authentication enabled successfully!")
                     )
-
                 return True
             else:
                 return False
@@ -233,20 +224,15 @@ class TwoFactorSettingsModel(Model):
             )
             return False
 
-    async def _on_backup_codes_saved(self):
-        """Handle when user confirms they've saved backup codes."""
-        # Clear the pending backup codes
+    async def _on_backup_codes_saved(self) -> None:
+        """Handle when the user confirms they've saved backup codes."""
         self.pending_backup_codes = []
-        # Show success message after backup codes dialog is closed
         send_success(self.page, _("Two-Factor Authentication enabled successfully!"))
 
-    async def _cancel_2fa_setup(self):
+    async def _cancel_2fa_setup(self) -> None:
         """Handle cancellation of 2FA setup."""
-        # Clear pending backup codes
         self.pending_backup_codes = []
-
         try:
-            # Notify server to cancel pending setup
             await do_request_2(
                 "cancel_2fa_setup",
                 username=self.app_shared.username,
@@ -255,9 +241,12 @@ class TwoFactorSettingsModel(Model):
         except Exception:
             pass  # Silent fail on cancel
 
-    async def _on_disable_2fa(self, e):
+    # ------------------------------------------------------------------
+    # Disable 2FA flow
+    # ------------------------------------------------------------------
+
+    async def _on_disable_2fa(self, e) -> None:
         """Handle disabling 2FA."""
-        # Show password confirmation dialog
         password_dialog = PasswordConfirmDialog(
             on_confirm_callback=self._confirm_disable_with_password,
             title=_("Disable Two-Factor Authentication"),
@@ -268,14 +257,9 @@ class TwoFactorSettingsModel(Model):
         self.page.show_dialog(password_dialog)
 
     async def _confirm_disable_with_password(self, password: str) -> bool:
-        """
-        Confirm disabling 2FA with password verification.
+        """Confirm disabling 2FA with password verification.
 
-        Args:
-            password: The user's password
-
-        Returns:
-            True if successful, False otherwise
+        Returns ``True`` on success, ``False`` otherwise.
         """
         try:
             response = await do_request_2(
