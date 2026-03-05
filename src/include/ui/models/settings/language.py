@@ -30,14 +30,14 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     language: SettingsField[str] = SettingsField(
-        label="Language",
+        label=_("Language"),
         key="language",
-        hint_text="Select your preferred language",
+        hint_text=_("Select your preferred language"),
         options=[
-            ("zh_CN", "中文 (Chinese Simplified)"),
-            ("en", "English"),
+            ("zh_CN", _("中文 (Chinese Simplified)")),
+            ("en", _("English")),
         ],
-        description=(
+        description=_(
             "Select your preferred language for the application interface. "
             "You may need to restart the application for changes to take full effect."
         ),

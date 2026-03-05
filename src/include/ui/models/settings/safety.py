@@ -30,11 +30,11 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     enable_conn_history_logging: SettingsField[bool] = SettingsField(
-        label="Enable connection history logging",
+        label=_("Enable connection history logging"),
         key="enable_conn_history_logging",
         default=False,
         disabled=True,  # Feature not yet fully implemented
-        description=(
+        description=_(
             "Decide whether the app should log the "
             "server address of the last connection. "
             "While this feature increases convenience, "

@@ -21,9 +21,9 @@ Basic usage (declarative)::
         settings_route_suffix = "my_settings"
 
         # Declarative fields
-        enable_feature: SettingsField[bool] = SettingsField(label="Enable feature")
+        enable_feature: SettingsField[bool] = SettingsField(label=_("Enable feature"))
         feature_value: SettingsField[str] = SettingsField(
-            label="Feature value",
+            label=_("Feature value"),
             depends_on="enable_feature",
         )
 
@@ -137,12 +137,32 @@ class SettingsField(Generic[_T]):
     * ``bool``  → ``ft.Switch``
     * ``str``   → ``ft.TextField``  (or ``ft.Dropdown`` when *options* is given)
 
+    String arguments (*label*, *hint_text*, *description*, and option display
+    texts) are stored and returned as-is.  **Always pass them through ``_()``
+    at the call site** so that :mod:`pygettext` / :mod:`xgettext` can extract
+    the string literals for translation::
+
+        t = get_translation()
+        _ = t.gettext
+
+        class MyPage(DeclarativeSettingsPage):
+            field: SettingsField[str] = SettingsField(
+                label=_("My label"),
+                description=_("Help text."),
+            )
+
+    When deferred (per-render) translation is required — for example when the
+    locale can change at runtime — pass a zero-argument callable instead::
+
+        field: SettingsField[str] = SettingsField(
+            label=lambda: _("My label"),
+        )
+
     Parameters
     ----------
     label:
-        Human-readable label.  Plain strings are treated as translation keys
-        and passed through ``_()`` at control-build time.  Pass a zero-argument
-        callable to defer evaluation (e.g. ``label=lambda: _("My label")``).
+        Human-readable label.  Pass an already-translated string
+        (``_("…")``) or a zero-argument callable for deferred evaluation.
     key:
         Key used in ``app_shared.preferences[settings_pref_section]``.
         Defaults to the attribute name.
@@ -150,15 +170,15 @@ class SettingsField(Generic[_T]):
         Default value when the key is absent from preferences.
     hint_text:
         Placeholder / hint text for text fields and dropdowns.
-        Same callable convention as *label*.
+        Same convention as *label*.
     options:
         List of ``(config_value, display_text)`` tuples.  When provided, a
-        ``ft.Dropdown`` is used regardless of the annotation type.  The
-        *display_text* values are treated as translation keys.
+        ``ft.Dropdown`` is used regardless of the annotation type.
+        Pass display texts as ``_("…")`` strings or use a callable.
         A callable returning such a list is also accepted.
     description:
         Optional help text rendered below the control (or below the row when
-        ``row_id`` is used).  Same callable convention as *label*.
+        ``row_id`` is used).  Same convention as *label*.
     depends_on:
         Attribute name of another ``bool`` field in the same class.  This
         field's control is disabled when the referenced field's value is
@@ -262,27 +282,25 @@ class SettingsField(Generic[_T]):
 
     @property
     def label(self) -> str:
-        val = self._label() if callable(self._label) else self._label
-        return _(val)
+        return self._label() if callable(self._label) else self._label
 
     @property
     def hint_text(self) -> str:
-        val = self._hint_text() if callable(self._hint_text) else self._hint_text
-        return _(val) if val else val
+        return self._hint_text() if callable(self._hint_text) else self._hint_text
 
     @property
     def description(self) -> str | None:
         if self._description is None:
             return None
-        val = self._description() if callable(self._description) else self._description
-        return _(val)
+        return self._description() if callable(self._description) else self._description
 
     @property
     def options(self) -> list[tuple[str, str]] | None:
         if self._options is None:
             return None
         opts = self._options() if callable(self._options) else self._options
-        return [(k, _(text)) for k, text in opts]
+        # Return a shallow copy so callers cannot mutate the stored list.
+        return list(opts)
 
     @property
     def config_key(self) -> str:
