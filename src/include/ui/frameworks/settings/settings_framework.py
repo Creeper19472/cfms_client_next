@@ -40,9 +40,16 @@ auto-population by mixing in :class:`RegisteredSettingsPage`::
         ...
 """
 
-from __future__ import annotations
-
-from typing import Any, Callable, ClassVar, Generic, TypeVar, get_args, get_type_hints, overload
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Generic,
+    TypeVar,
+    get_args,
+    get_type_hints,
+    overload,
+)
 
 _T = TypeVar("_T")
 import flet as ft
@@ -442,13 +449,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         self.appbar = ft.AppBar(
             title=ft.Text(type(self).settings_name),
-            leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK, on_click=self._go_back
-            ),
+            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
             actions=[
-                ft.IconButton(
-                    ft.Icons.SAVE_OUTLINED, on_click=self._save_button_click
-                )
+                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self._save_button_click)
             ],
             actions_padding=10,
         )
@@ -578,8 +581,11 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 control.on_change = self._on_switch_change
 
             # Wire dropdown change handler when option_descriptions is set.
-            if isinstance(control, ft.Dropdown) and field.option_descriptions is not None:
-                control.on_change = self._on_dropdown_change
+            if (
+                isinstance(control, ft.Dropdown)
+                and field.option_descriptions is not None
+            ):
+                control.on_select = self._on_dropdown_select
                 desc_text = ft.Text(
                     "",
                     size=14,
@@ -750,7 +756,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         """
         await self._flush_dependencies()
 
-    async def _on_dropdown_change(self, event: ft.Event[ft.Dropdown]) -> None:
+    async def _on_dropdown_select(self, event: ft.Event[ft.Dropdown]) -> None:
         """Called when any ``ft.Dropdown`` with ``option_descriptions`` changes.
 
         Refreshes the description text for the changed dropdown.
@@ -886,9 +892,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
 
         self.appbar = ft.AppBar(
             title=ft.Text(type(self).settings_name),
-            leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK, on_click=self._go_back
-            ),
+            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
         )
 
     # ------------------------------------------------------------------

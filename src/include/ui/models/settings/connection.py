@@ -67,9 +67,9 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     async def _on_load(self) -> None:
         """Derive ``enable_proxy`` and ``follow_system_proxy`` from the stored
         ``proxy_settings`` value after the persisted fields have been loaded."""
-        proxy_settings: str | Literal[True] | None = (
-            self.app_shared.preferences["settings"].get("proxy_settings")
-        )
+        proxy_settings: str | Literal[True] | None = self.app_shared.preferences[
+            "settings"
+        ].get("proxy_settings")
         self.enable_proxy = bool(proxy_settings)
         self.follow_system_proxy = proxy_settings is True
 
@@ -81,7 +81,9 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
             if self.follow_system_proxy:
                 proxy_settings_value: str | Literal[True] | None = True
             else:
-                proxy_settings_value = custom_proxy_value if custom_proxy_value else True
+                proxy_settings_value = (
+                    custom_proxy_value if custom_proxy_value else True
+                )
         else:
             proxy_settings_value = None
 

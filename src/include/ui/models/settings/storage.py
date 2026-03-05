@@ -7,7 +7,6 @@ import flet_permission_handler as fph
 import flet as ft
 
 from include.classes.preferences import UserPreference
-from include.classes.shared import AppShared
 from include.ui.controls.banners.settings import ExternalStorageWarningBanner
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
