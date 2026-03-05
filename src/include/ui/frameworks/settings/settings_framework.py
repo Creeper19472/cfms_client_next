@@ -430,10 +430,11 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         ``"settings"``.
 
     Override :meth:`_on_save` for custom save logic (it is called *after* the
-    automatic field saving and receives the preferences section dict).
+    automatic field saving).
     Override :meth:`_on_load` for extra loading steps (called after automatic
-    value loading).  Both hooks may return a custom success-message string; if
-    they do, it replaces the default ``"Settings Saved."`` notification.
+    value loading).  :meth:`_on_save` may return a custom success-message
+    string; if it does, it replaces the default ``"Settings Saved."``
+    notification.
     """
 
     settings_pref_section: ClassVar[str] = "settings"
