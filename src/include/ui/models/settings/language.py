@@ -37,6 +37,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
             ("zh_CN", _("中文 (Chinese Simplified)")),
             ("en", _("English")),
         ],
+        default="zh_CN",
         description=_(
             "Select your preferred language for the application interface. "
             "You may need to restart the application for changes to take full effect."
