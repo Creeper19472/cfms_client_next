@@ -20,8 +20,8 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     """Settings page for language / locale selection."""
 
     # Overview metadata
-    settings_name = "Language"
-    settings_description = "Select your preferred language"
+    settings_name = _("Language")
+    settings_description = _("Select your preferred language")
     settings_icon = ft.Icons.LANGUAGE
     settings_route_suffix = "language_settings"
 

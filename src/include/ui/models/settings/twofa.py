@@ -23,8 +23,8 @@ class TwoFactorSettingsModel(Model, RegisteredSettingsPage):
     """Model for Two-Factor Authentication settings page."""
 
     # Overview metadata
-    settings_name = "Two-Factor Authentication"
-    settings_description = "Manage two-factor authentication settings"
+    settings_name = _("Two-Factor Authentication")
+    settings_description = _("Manage two-factor authentication settings")
     settings_icon = ft.Icons.LOCK
     settings_route_suffix = "twofa_settings"
 

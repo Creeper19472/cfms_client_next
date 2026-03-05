@@ -17,8 +17,8 @@ _ = t.gettext
 @route("conn_settings")
 class ConnectionSettingsModel(Model, RegisteredSettingsPage):
     # Overview metadata
-    settings_name = "Connect"
-    settings_description = "Change application proxy settings"
+    settings_name = _("Connect")
+    settings_description = _("Change application proxy settings")
     settings_icon = ft.Icons.LINK
     settings_route_suffix = "conn_settings"
 

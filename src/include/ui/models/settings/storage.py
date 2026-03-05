@@ -21,8 +21,8 @@ _ = t.gettext
 @route("storage_settings")
 class StorageSettingsModel(Model, RegisteredSettingsPage):
     # Overview metadata
-    settings_name = "Storage"
-    settings_description = "Configure external storage options"
+    settings_name = _("Storage")
+    settings_description = _("Configure external storage options")
     settings_icon = ft.Icons.STORAGE
     settings_route_suffix = "storage_settings"
 

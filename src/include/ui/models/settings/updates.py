@@ -17,8 +17,8 @@ _ = t.gettext
 @route("updates_settings")
 class UpdatesSettingsModel(Model, RegisteredSettingsPage):
     # Overview metadata
-    settings_name = "Updates"
-    settings_description = "Configure update channel preferences"
+    settings_name = _("Updates")
+    settings_description = _("Configure update channel preferences")
     settings_icon = ft.Icons.BROWSER_UPDATED
     settings_route_suffix = "updates_settings"
 

@@ -15,8 +15,8 @@ Basic usage (declarative)::
     @route("my_settings")
     class MySettingsModel(DeclarativeSettingsPage):
         # Overview metadata
-        settings_name = "My Settings"
-        settings_description = "Configure my settings"
+        settings_name = _("My Settings")
+        settings_description = _("Configure my settings")
         settings_icon = ft.Icons.SETTINGS
         settings_route_suffix = "my_settings"
 
@@ -33,8 +33,8 @@ auto-population by mixing in :class:`RegisteredSettingsPage`::
     @settings_page
     @route("complex_settings")
     class ComplexSettingsModel(Model, RegisteredSettingsPage):
-        settings_name = "Complex Settings"
-        settings_description = "Complex configuration"
+        settings_name = _("Complex Settings")
+        settings_description = _("Complex configuration")
         settings_icon = ft.Icons.SETTINGS
         settings_route_suffix = "complex_settings"
         ...
@@ -388,7 +388,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         self.app_shared = AppShared()
 
         self.appbar = ft.AppBar(
-            title=ft.Text(_(type(self).settings_name)),
+            title=ft.Text(type(self).settings_name),
             leading=ft.IconButton(
                 icon=ft.Icons.ARROW_BACK, on_click=self._go_back
             ),

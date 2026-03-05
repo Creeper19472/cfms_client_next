@@ -20,8 +20,8 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     """Settings page for connection-history logging policy."""
 
     # Overview metadata
-    settings_name = "Safety"
-    settings_description = "Adjust application connection history policy"
+    settings_name = _("Safety")
+    settings_description = _("Adjust application connection history policy")
     settings_icon = ft.Icons.SECURITY
     settings_route_suffix = "safety_settings"
 
