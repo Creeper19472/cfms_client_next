@@ -6,7 +6,7 @@ dependency management, and auto-registration in the Settings Overview.
 
 Basic usage (declarative)::
 
-    from include.ui.settings_framework import (
+    from include.ui.frameworks.settings import (
         DeclarativeSettingsPage, SettingsField, settings_page,
     )
     from flet_model import route
@@ -51,7 +51,6 @@ from typing import (
     overload,
 )
 
-_T = TypeVar("_T")
 import flet as ft
 from flet_model import Model, Router
 
@@ -62,6 +61,8 @@ from include.util.locale import get_translation
 
 t = get_translation()
 _ = t.gettext
+
+_T = TypeVar("_T")
 
 __all__ = [
     "SettingsField",
