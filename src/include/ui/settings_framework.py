@@ -199,6 +199,56 @@ class SettingsField:
         self.row_id = row_id
         self.expand = expand
         self.disabled = disabled
+        # _attr_name is set by __set_name__ when the class body is processed.
+        # It is initialised here so that the attribute always exists, even for
+        # SettingsField instances that are constructed outside a class body
+        # (e.g. in tests).
+        self._attr_name: str = ""
+
+    # ------------------------------------------------------------------
+    # Descriptor protocol
+    # ------------------------------------------------------------------
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        """Called by Python when the owning class body is processed.
+
+        This is the SQLAlchemy-style pattern: Python automatically informs
+        every descriptor of the attribute name it was assigned to, so no
+        external mutation (``field._attr_name = name``) is needed.
+        """
+        self._attr_name = name
+        # If no explicit key was provided, use the attribute name as the
+        # preferences key (mirrors how SQLAlchemy column names default to the
+        # attribute name).
+        if self.key is None:
+            self.key = name
+
+    def __get__(self, obj: Any, objtype: Any = None) -> Any:
+        """Descriptor protocol getter.
+
+        * Class-level access (``obj is None``) returns the :class:`SettingsField`
+          itself, so the field can be inspected from the class (e.g. in
+          :meth:`DeclarativeSettingsPage._collect_fields`).
+        * Instance-level access returns the *current value* held by the
+          corresponding Flet control, just as SQLAlchemy columns return the
+          mapped attribute value on a model instance.
+        """
+        if obj is None:
+            return self
+        control = getattr(obj, "_control_map", {}).get(self._attr_name)
+        if control is None:
+            return self.default
+        return _read_control_value(control)
+
+    def __set__(self, obj: Any, value: Any) -> None:
+        """Descriptor protocol setter.
+
+        Writes *value* to the underlying Flet control on *obj*, mirroring how
+        SQLAlchemy mapped attributes propagate assignments to the instance state.
+        """
+        control = getattr(obj, "_control_map", {}).get(self._attr_name)
+        if control is not None:
+            _apply_value_to_control(control, value)
 
     # ------------------------------------------------------------------
     # Lazy-translation properties
@@ -232,9 +282,6 @@ class SettingsField:
     def config_key(self) -> str:
         """Config key in preferences (defaults to the attribute name)."""
         return self.key if self.key is not None else self._attr_name
-
-    # Internal: set by DeclarativeSettingsPage._collect_fields()
-    _attr_name: str = ""
 
     # ------------------------------------------------------------------
     # Control factory
@@ -343,6 +390,10 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         Only annotated class attributes whose value is a :class:`SettingsField`
         instance are included.
+
+        Because :meth:`SettingsField.__set_name__` is called by Python when the
+        class body is processed, each field already knows its own attribute name
+        — no external mutation is required here.
         """
         cls = type(self)
         try:
@@ -361,13 +412,13 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 if attr_name in seen:
                     continue
                 seen.add(attr_name)
+                # Class-level access returns the SettingsField descriptor itself
+                # (via __get__ with obj=None).
                 val = getattr(cls, attr_name, None)
                 if not isinstance(val, SettingsField):
                     continue
-                field = val
-                field._attr_name = attr_name
                 field_type = hints.get(attr_name, str)
-                result.append((attr_name, field, field_type))
+                result.append((attr_name, val, field_type))
         return result
 
     # ------------------------------------------------------------------
@@ -455,11 +506,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
-            control = self._control_map.get(attr_name)
-            if control is None:
-                continue
             value = section.get(field.config_key, field.default)
-            _apply_value_to_control(control, value)
+            # Use the descriptor __set__ to write the value onto the control.
+            setattr(self, attr_name, value)
 
         await self._on_load()
         await self._flush_dependencies()
@@ -474,10 +523,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
-            control = self._control_map.get(attr_name)
-            if control is None:
-                continue
-            section[field.config_key] = _read_control_value(control)
+            # Use the descriptor __get__ to read the current control value.
+            section[field.config_key] = getattr(self, attr_name)
 
         self.app_shared.dump_preferences()
 
@@ -499,13 +546,12 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         for attr_name, field, _ftype in self._fields:
             if field.depends_on is None or field.disabled:
                 continue
-            dep_control = self._control_map.get(field.depends_on)
-            if dep_control is None:
-                continue
-            dep_value = _read_control_value(dep_control)
             control = self._control_map.get(attr_name)
-            if control is not None:
-                control.disabled = not bool(dep_value)
+            if control is None:
+                continue
+            # Use the descriptor __get__ to read the dependency's current value.
+            dep_value = getattr(self, field.depends_on)
+            control.disabled = not bool(dep_value)
         self.update()
 
     async def _on_switch_change(self, event: ft.Event[ft.Switch]) -> None:

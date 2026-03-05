@@ -49,7 +49,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     async def _on_save(self) -> str | None:
-        selected_language = self._control_map["language"].value
+        selected_language = self.language
         if selected_language:
             set_translation(selected_language)
             self._router.clear_cache()
