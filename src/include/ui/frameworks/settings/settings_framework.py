@@ -180,9 +180,28 @@ class SettingsField(Generic[_T]):
         Optional help text rendered below the control (or below the row when
         ``row_id`` is used).  Same convention as *label*.
     depends_on:
-        Attribute name of another ``bool`` field in the same class.  This
-        field's control is disabled when the referenced field's value is
-        falsy.
+        One or more dependency specifications.  Accepts:
+
+        * A single attribute name as a plain string — the control is disabled
+          when that field's value is falsy (the existing behaviour).
+        * A ``!``-prefixed attribute name (e.g. ``"!follow_system_proxy"``) —
+          the control is disabled when that field's value is *truthy*.
+        * A list combining any of the above — the control is disabled when
+          **any** condition in the list is met.
+
+        Example::
+
+            # disabled when enable_proxy is False OR follow_system_proxy is True
+            depends_on=["enable_proxy", "!follow_system_proxy"]
+
+    persist:
+        When ``False`` the field is *not* automatically loaded from or saved to
+        preferences.  Use this for UI-only derived fields whose underlying
+        preference key has a different shape (e.g. a proxy-enable toggle that
+        is derived from the raw ``proxy_settings`` value rather than stored
+        directly).  Override :meth:`DeclarativeSettingsPage._on_load` and
+        :meth:`DeclarativeSettingsPage._on_save` to handle the translation
+        between stored values and the UI fields.  Defaults to ``True``.
     row_id:
         Arbitrary grouping key.  Fields sharing the same ``row_id`` are
         placed inside a single ``ft.Row`` in declaration order.
@@ -206,10 +225,11 @@ class SettingsField(Generic[_T]):
             list[tuple[str, str]] | Callable[[], list[tuple[str, str]]] | None
         ) = None,
         description: str | Callable[[], str] | None = None,
-        depends_on: str | None = None,
+        depends_on: str | list[str] | None = None,
         row_id: str | None = None,
         expand: bool = True,
         disabled: bool = False,
+        persist: bool = True,
     ) -> None:
         self._label = label
         self.key = key
@@ -221,6 +241,7 @@ class SettingsField(Generic[_T]):
         self.row_id = row_id
         self.expand = expand
         self.disabled = disabled
+        self.persist = persist
         # _attr_name is set by __set_name__ when the class body is processed.
         # It is initialised here so that the attribute always exists, even for
         # SettingsField instances that are constructed outside a class body
@@ -555,6 +576,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
+            if not field.persist:
+                continue
             value = section.get(field.config_key, field.default)
             # Use the descriptor __set__ to write the value onto the control.
             setattr(self, attr_name, value)
@@ -572,12 +595,15 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
+            if not field.persist:
+                continue
             # Use the descriptor __get__ to read the current control value.
             section[field.config_key] = getattr(self, attr_name)
 
-        self.app_shared.dump_preferences()
-
+        # Call the hook *before* dumping so that it can modify preferences
+        # (e.g. translate UI-only fields into the stored representation).
         custom_message = await self._on_save()
+        self.app_shared.dump_preferences()
         send_success(self.page, custom_message or _("Settings Saved."))
 
     # ------------------------------------------------------------------
@@ -588,9 +614,16 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         """Update the *disabled* state of controls with a ``depends_on``
         relationship.
 
-        A control is disabled when its dependency field's value is falsy,
-        *unless* the field is permanently disabled (``SettingsField.disabled``
-        is ``True``).
+        Each dependency specification is evaluated as follows:
+
+        * Plain name (e.g. ``"enable_proxy"``) — the control is disabled when
+          that field's value is falsy.
+        * ``!``-prefixed name (e.g. ``"!follow_system_proxy"``) — the control
+          is disabled when that field's value is *truthy*.
+
+        When ``depends_on`` is a list, the control is disabled as soon as
+        **any** condition in the list is met.  Permanently-disabled fields
+        (``SettingsField.disabled is True``) are never re-enabled.
         """
         for attr_name, field, _ftype in self._fields:
             if field.depends_on is None or field.disabled:
@@ -598,9 +631,26 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             control = self._control_map.get(attr_name)
             if control is None:
                 continue
-            # Use the descriptor __get__ to read the dependency's current value.
-            dep_value = getattr(self, field.depends_on)
-            control.disabled = not bool(dep_value)
+            specs = (
+                field.depends_on
+                if isinstance(field.depends_on, list)
+                else [field.depends_on]
+            )
+            should_disable = False
+            for spec in specs:
+                if not isinstance(spec, str):
+                    continue
+                if spec.startswith("!"):
+                    dep_value = getattr(self, spec[1:])
+                    if bool(dep_value):
+                        should_disable = True
+                        break
+                else:
+                    dep_value = getattr(self, spec)
+                    if not bool(dep_value):
+                        should_disable = True
+                        break
+            control.disabled = should_disable
         self.update()
 
     async def _on_switch_change(self, event: ft.Event[ft.Switch]) -> None:

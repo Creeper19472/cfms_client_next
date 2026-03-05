@@ -1,12 +1,15 @@
+"""Connection settings model (declarative)."""
+
 from typing import Literal
 
-from flet_model import Model, Router, route
+from flet_model import route
 import flet as ft
 
-from include.classes.shared import AppShared
-from include.ui.frameworks.settings import RegisteredSettingsPage, settings_page
-from include.ui.util.notifications import send_success
-from include.ui.util.route import get_parent_route
+from include.ui.frameworks.settings import (
+    DeclarativeSettingsPage,
+    SettingsField,
+    settings_page,
+)
 from include.util.locale import get_translation
 
 t = get_translation()
@@ -15,110 +18,72 @@ _ = t.gettext
 
 @settings_page
 @route("conn_settings")
-class ConnectionSettingsModel(Model, RegisteredSettingsPage):
+class ConnectionSettingsModel(DeclarativeSettingsPage):
+    """Settings page for proxy and network connection settings."""
+
     # Overview metadata
     settings_name = _("Connect")
     settings_description = _("Change application proxy settings")
     settings_icon = ft.Icons.LINK
     settings_route_suffix = "conn_settings"
 
-    # Layout configuration
-    vertical_alignment = ft.MainAxisAlignment.START
-    horizontal_alignment = ft.CrossAxisAlignment.BASELINE
-    padding = 20
-    spacing = 10
+    # ---------------------------------------------------------------------------
+    # Declarative fields
+    # ---------------------------------------------------------------------------
 
-    def __init__(self, page: ft.Page, router: Router):
-        super().__init__(page, router)
+    # UI-only toggle fields derived from the composite ``proxy_settings`` value.
+    # They are not persisted directly; ``_on_load`` and ``_on_save`` translate
+    # between the three-state ``proxy_settings`` stored in preferences and these
+    # two independent boolean controls.
+    enable_proxy: SettingsField[bool] = SettingsField(
+        label=_("Enable proxy"),
+        persist=False,
+    )
+    follow_system_proxy: SettingsField[bool] = SettingsField(
+        label=_("Follow system proxy settings"),
+        depends_on="enable_proxy",
+        persist=False,
+    )
 
-        self.appbar = ft.AppBar(
-            title=ft.Text(_("Connection")),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
-            actions=[
-                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self.save_button_click)
-            ],
-            actions_padding=10,
+    # Persisted directly under their own preference keys.
+    custom_proxy: SettingsField[str] = SettingsField(
+        label=_("Custom Proxy"),
+        key="custom_proxy",
+        hint_text="e.g. socks5h://proxy:1080/",
+        # Disabled when proxy is off *or* when system-proxy is on
+        # (the custom URL field is irrelevant in both cases).
+        depends_on=["enable_proxy", "!follow_system_proxy"],
+    )
+    force_ipv4: SettingsField[bool] = SettingsField(
+        label=_("Force IPv4"),
+        key="force_ipv4",
+        default=False,
+    )
+
+    # ---------------------------------------------------------------------------
+    # Load / save hooks: translate the composite ``proxy_settings`` value
+    # ---------------------------------------------------------------------------
+
+    async def _on_load(self) -> None:
+        """Derive ``enable_proxy`` and ``follow_system_proxy`` from the stored
+        ``proxy_settings`` value after the persisted fields have been loaded."""
+        proxy_settings: str | Literal[True] | None = (
+            self.app_shared.preferences["settings"].get("proxy_settings")
         )
-        self.app_shared = AppShared()
+        self.enable_proxy = bool(proxy_settings)
+        self.follow_system_proxy = proxy_settings is True
 
-        self.enable_proxy_switch = ft.Switch(
-            label=_("Enable proxy"), on_change=self.switch_click
-        )
-        self.follow_system_proxy_switch = ft.Switch(
-            label=_("Follow system proxy settings"), on_change=self.switch_click
-        )
-        self.custom_proxy_textfield = ft.TextField(
-            label=_("Custom Proxy"),
-            hint_text="e.g. socks5h://proxy:1080/",
-            expand=True,
-            expand_loose=True,
-        )
-        self.force_ipv4_switch = ft.Switch(
-            label=_("Force IPv4"), on_change=self.switch_click
-        )
-
-        self.controls = [
-            self.enable_proxy_switch,
-            self.follow_system_proxy_switch,
-            self.custom_proxy_textfield,
-            self.force_ipv4_switch,
-        ]
-
-    def did_mount(self) -> None:
-        super().did_mount()
-        self.page.run_task(self.load_switch_status)
-
-    async def _go_back(self, event: ft.Event[ft.IconButton]):
-        await self.page.push_route(get_parent_route(self.page.route))
-
-    async def save_button_click(self, event: ft.Event[ft.IconButton]):
-        proxy_settings_value = None
-        custom_proxy_value = self.custom_proxy_textfield.value
-
-        self.app_shared.preferences["settings"]["custom_proxy"] = custom_proxy_value
-
-        if self.enable_proxy_switch.value:
-            if self.follow_system_proxy_switch.value:
-                proxy_settings_value = True
+    async def _on_save(self) -> str | None:
+        """Compute the composite ``proxy_settings`` value and write it to
+        preferences before they are dumped to disk."""
+        custom_proxy_value: str = self.custom_proxy or ""
+        if self.enable_proxy:
+            if self.follow_system_proxy:
+                proxy_settings_value: str | Literal[True] | None = True
             else:
-                proxy_settings_value = (
-                    custom_proxy_value if custom_proxy_value else True
-                )
+                proxy_settings_value = custom_proxy_value if custom_proxy_value else True
         else:
             proxy_settings_value = None
 
         self.app_shared.preferences["settings"]["proxy_settings"] = proxy_settings_value
-        self.app_shared.preferences["settings"]["force_ipv4"] = self.force_ipv4_switch.value
-        self.app_shared.dump_preferences()
-        send_success(self.page, _("Settings Saved."))
-
-    async def switch_click(self, event: ft.Event[ft.Switch]):
-        await self.flush_switch()
-
-    async def load_switch_status(self):
-        proxy_settings: str | Literal[True] | None = self.app_shared.preferences[
-            "settings"
-        ].get("proxy_settings")
-        self.enable_proxy_switch.value = bool(proxy_settings)
-        self.follow_system_proxy_switch.value = proxy_settings == True
-        self.custom_proxy_textfield.value = self.app_shared.preferences["settings"].get(
-            "custom_proxy", ""
-        )
-        self.force_ipv4_switch.value = self.app_shared.preferences["settings"].get(
-            "force_ipv4", False
-        )
-        await self.flush_switch()
-
-    async def flush_switch(self):
-        depends_enabling_proxy: list[ft.Control] = [
-            self.follow_system_proxy_switch,
-            self.custom_proxy_textfield,
-        ]
-
-        for control in depends_enabling_proxy:
-            control.disabled = not self.enable_proxy_switch.value
-
-        self.custom_proxy_textfield.disabled = (
-            not self.enable_proxy_switch.value
-        ) or self.follow_system_proxy_switch.value
-        self.update()
+        return None
