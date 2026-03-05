@@ -556,9 +556,11 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         pending_row_id: str | None = None
         pending_row_controls: list[ft.Control] = []
         pending_row_description: str | None = None
+        # option-description texts belonging to fields in the current row group
+        pending_option_desc_controls: list[ft.Text] = []
 
         def flush_pending_row() -> None:
-            nonlocal pending_row_id, pending_row_controls, pending_row_description
+            nonlocal pending_row_id, pending_row_controls, pending_row_description, pending_option_desc_controls
             if pending_row_controls:
                 controls.append(ft.Row(controls=pending_row_controls))
                 if pending_row_description is not None:
@@ -569,9 +571,13 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                             color=ft.Colors.GREY,
                         )
                     )
+                # Emit any option-description texts from fields in this row group.
+                for opt_desc in pending_option_desc_controls:
+                    controls.append(opt_desc)
             pending_row_id = None
             pending_row_controls = []
             pending_row_description = None
+            pending_option_desc_controls = []
 
         for attr_name, field, field_type in self._fields:
             control = field.build_control(field_type)
@@ -618,6 +624,12 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 # Keep the last non-None description within the row group
                 if field.description is not None:
                     pending_row_description = field.description
+                # Accumulate any option-description text for this field so that
+                # flush_pending_row can emit it after the row widget.
+                if attr_name in self._option_desc_controls:
+                    pending_option_desc_controls.append(
+                        self._option_desc_controls[attr_name]
+                    )
             else:
                 # Standalone control – flush any pending row first
                 flush_pending_row()
