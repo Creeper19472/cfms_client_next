@@ -60,6 +60,7 @@ __all__ = [
     "SettingsField",
     "RegisteredSettingsPage",
     "DeclarativeSettingsPage",
+    "DeclarativeActionPage",
     "settings_page",
     "get_settings_registry",
 ]
@@ -212,6 +213,19 @@ class SettingsField(Generic[_T]):
     disabled:
         Whether the control should be permanently disabled.  Defaults to
         ``False``.
+    option_descriptions:
+        Mapping from option key to a short description string shown *below*
+        the dropdown when that option is selected.  Only meaningful for
+        dropdown fields (i.e. when *options* is also provided).  Pass an
+        already-translated dict (``{key: _("…")}``) or a zero-argument
+        callable returning such a dict for deferred evaluation.  When the
+        current selection has no entry, the description area is cleared.
+    browse:
+        When ``True`` on a ``SettingsField[str]`` field, a ``Browse…``
+        button is rendered to the right of the text field.  Pressing it
+        opens a directory-picker dialog and inserts the chosen path into the
+        text field.  The button inherits the same disabled state as the text
+        field (from ``depends_on``).  Defaults to ``False``.
     """
 
     def __init__(
@@ -230,6 +244,10 @@ class SettingsField(Generic[_T]):
         expand: bool = True,
         disabled: bool = False,
         persist: bool = True,
+        option_descriptions: (
+            dict[str, str] | Callable[[], dict[str, str]] | None
+        ) = None,
+        browse: bool = False,
     ) -> None:
         self._label = label
         self.key = key
@@ -242,6 +260,8 @@ class SettingsField(Generic[_T]):
         self.expand = expand
         self.disabled = disabled
         self.persist = persist
+        self._option_descriptions = option_descriptions
+        self.browse = browse
         # _attr_name is set by __set_name__ when the class body is processed.
         # It is initialised here so that the attribute always exists, even for
         # SettingsField instances that are constructed outside a class body
@@ -322,6 +342,18 @@ class SettingsField(Generic[_T]):
         opts = self._options() if callable(self._options) else self._options
         # Return a shallow copy so callers cannot mutate the stored list.
         return list(opts)
+
+    @property
+    def option_descriptions(self) -> dict[str, str] | None:
+        """Mapping of option key → description string (evaluated lazily)."""
+        if self._option_descriptions is None:
+            return None
+        descs = (
+            self._option_descriptions()
+            if callable(self._option_descriptions)
+            else self._option_descriptions
+        )
+        return dict(descs)
 
     @property
     def config_key(self) -> str:
@@ -424,6 +456,10 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         # Introspect fields, build controls, wire dependencies.
         self._fields = self._collect_fields()
         self._control_map: dict[str, ft.Control] = {}
+        # Maps attr_name → ft.Text for option-specific descriptions.
+        self._option_desc_controls: dict[str, ft.Text] = {}
+        # Maps attr_name → ft.Button for browse-path buttons.
+        self._browse_button_map: dict[str, ft.Button] = {}
         self.controls = self._build_controls()
 
     # ------------------------------------------------------------------
@@ -501,6 +537,15 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         Controls that share the same ``row_id`` are placed inside a single
         ``ft.Row``.  An optional description text is appended immediately
         after each standalone control or row.
+
+        Extra layout rules for special field parameters:
+
+        * ``browse=True`` — the text field and a *Browse…* button are wrapped
+          in a ``ft.Row``.  The button is stored in :attr:`_browse_button_map`
+          so its disabled state can be updated by :meth:`_flush_dependencies`.
+        * ``option_descriptions`` — a ``ft.Text`` is added immediately below
+          the dropdown control and stored in :attr:`_option_desc_controls`.
+          It is updated whenever the dropdown selection changes.
         """
         controls: list[ft.Control] = []
 
@@ -527,24 +572,50 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         for attr_name, field, field_type in self._fields:
             control = field.build_control(field_type)
-            # Wire switch-change handler for automatic dependency flushing
+
+            # Wire switch-change handler for automatic dependency flushing.
             if isinstance(control, ft.Switch):
                 control.on_change = self._on_switch_change
+
+            # Wire dropdown change handler when option_descriptions is set.
+            if isinstance(control, ft.Dropdown) and field.option_descriptions is not None:
+                control.on_change = self._on_dropdown_change
+                desc_text = ft.Text(
+                    "",
+                    size=14,
+                    color=ft.Colors.GREY,
+                    expand=True,
+                    expand_loose=True,
+                )
+                self._option_desc_controls[attr_name] = desc_text
+
             self._control_map[attr_name] = control
+
+            # For browse fields, wrap the TextField in a Row with a Browse button.
+            if field.browse and isinstance(control, ft.TextField):
+                browse_btn = ft.Button(
+                    _("Browse…"),
+                    on_click=self._make_browse_handler(attr_name),
+                    disabled=field.disabled,
+                )
+                self._browse_button_map[attr_name] = browse_btn
+                layout_control: ft.Control = ft.Row([control, browse_btn])
+            else:
+                layout_control = control
 
             if field.row_id is not None:
                 if field.row_id != pending_row_id:
                     # Starting a new row group – flush the previous one first
                     flush_pending_row()
                     pending_row_id = field.row_id
-                pending_row_controls.append(control)
+                pending_row_controls.append(layout_control)
                 # Keep the last non-None description within the row group
                 if field.description is not None:
                     pending_row_description = field.description
             else:
                 # Standalone control – flush any pending row first
                 flush_pending_row()
-                controls.append(control)
+                controls.append(layout_control)
                 if field.description is not None:
                     controls.append(
                         ft.Text(
@@ -553,6 +624,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                             color=ft.Colors.GREY,
                         )
                     )
+                # Option-descriptions text sits right below the dropdown.
+                if attr_name in self._option_desc_controls:
+                    controls.append(self._option_desc_controls[attr_name])
 
         # Flush any remaining pending row
         flush_pending_row()
@@ -583,6 +657,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             setattr(self, attr_name, value)
 
         await self._on_load()
+        # Refresh all option-description texts after values have been loaded.
+        for attr_name in self._option_desc_controls:
+            self._refresh_option_description(attr_name)
         await self._flush_dependencies()
 
     # ------------------------------------------------------------------
@@ -651,11 +728,72 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                         should_disable = True
                         break
             control.disabled = should_disable
+            # If this field also has a browse button, keep it in sync.
+            browse_btn = self._browse_button_map.get(attr_name)
+            if browse_btn is not None:
+                browse_btn.disabled = should_disable
         self.update()
 
     async def _on_switch_change(self, event: ft.Event[ft.Switch]) -> None:
-        """Generic handler wired to every ``ft.Switch`` for dependency updates."""
+        """Called when any ``ft.Switch`` in this page changes.
+
+        The default implementation refreshes the disabled state of all
+        dependent controls via :meth:`_flush_dependencies`.  Override to
+        add extra behaviour (e.g. requesting permissions) — call
+        ``await super()._on_switch_change(event)`` to keep the default
+        logic::
+
+            async def _on_switch_change(self, event):
+                if self.my_switch and needs_permission():
+                    self.page.show_dialog(PermissionDialog())
+                await super()._on_switch_change(event)
+        """
         await self._flush_dependencies()
+
+    async def _on_dropdown_change(self, event: ft.Event[ft.Dropdown]) -> None:
+        """Called when any ``ft.Dropdown`` with ``option_descriptions`` changes.
+
+        Refreshes the description text for the changed dropdown.
+        """
+        changed_control = event.control
+        for attr_name, mapped_control in self._control_map.items():
+            if mapped_control is changed_control:
+                self._refresh_option_description(attr_name)
+                break
+        self.update()
+
+    def _refresh_option_description(self, attr_name: str) -> None:
+        """Update the option-description ``ft.Text`` for *attr_name*.
+
+        Reads the current dropdown value and looks it up in the field's
+        ``option_descriptions`` mapping.  Sets the text to ``""`` when the
+        value has no entry.
+        """
+        desc_text = self._option_desc_controls.get(attr_name)
+        if desc_text is None:
+            return
+        field = getattr(type(self), attr_name, None)
+        if not isinstance(field, SettingsField):
+            return
+        descs = field.option_descriptions
+        if descs is None:
+            return
+        control = self._control_map.get(attr_name)
+        value = _read_control_value(control) if control is not None else ""
+        desc_text.value = descs.get(value or "", "")
+
+    def _make_browse_handler(self, attr_name: str):
+        """Return an async click handler that opens a directory picker for *attr_name*."""
+
+        async def _handler(event: ft.Event[ft.Button]) -> None:
+            storage_path = await ft.FilePicker().get_directory_path()
+            if storage_path:
+                control = self._control_map.get(attr_name)
+                if control is not None:
+                    _apply_value_to_control(control, storage_path)
+                    self.update()
+
+        return _handler
 
     # ------------------------------------------------------------------
     # Override hooks
@@ -679,6 +817,95 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         Override to perform additional initialization steps.
         """
+
+    # ------------------------------------------------------------------
+    # Navigation
+    # ------------------------------------------------------------------
+
+    async def _go_back(self, event: ft.Event[ft.IconButton]) -> None:
+        await self.page.push_route(get_parent_route(self.page.route))
+
+
+# ---------------------------------------------------------------------------
+# DeclarativeActionPage – base Model for action-based settings pages
+# ---------------------------------------------------------------------------
+
+
+class DeclarativeActionPage(Model, RegisteredSettingsPage):
+    """Base class for action-based settings pages.
+
+    Use this base class for settings pages that *perform operations* rather
+    than editing stored preferences — for example: Two-Factor Authentication
+    management, password changes, or account linking.  Unlike
+    :class:`DeclarativeSettingsPage`, this class:
+
+    * Does **not** declare :class:`SettingsField` attributes.
+    * Has **no** Save button in the AppBar (only a back arrow).
+    * Calls ``page.run_task(self._on_load)`` in :meth:`did_mount` so
+      subclasses only need to override :meth:`_on_load` for async
+      initialization.
+
+    Subclasses should:
+
+    1. Call ``super().__init__(page, router)`` to set up ``self.app_shared``
+       and the AppBar.
+    2. Build their own controls in ``__init__`` and assign to
+       ``self.controls``.
+    3. Override :meth:`_on_load` for any async initialization (e.g. a
+       server status fetch).
+
+    Example::
+
+        @settings_page
+        @route("password_settings")
+        class PasswordSettingsModel(DeclarativeActionPage):
+            settings_name = _("Change Password")
+            settings_description = _("Update your account password")
+            settings_icon = ft.Icons.LOCK
+            settings_route_suffix = "password_settings"
+
+            def __init__(self, page, router):
+                super().__init__(page, router)
+                self.change_btn = ft.Button(_("Change…"), on_click=self._on_change)
+                self.controls = [self.change_btn]
+
+            async def _on_load(self):
+                # e.g. fetch password-policy info from server
+                ...
+    """
+
+    # Shared layout defaults (consistent with DeclarativeSettingsPage)
+    vertical_alignment = ft.MainAxisAlignment.START
+    horizontal_alignment = ft.CrossAxisAlignment.BASELINE
+    padding = 20
+    spacing = 10
+
+    def __init__(self, page: ft.Page, router: Router) -> None:
+        super().__init__(page, router)
+        self.app_shared = AppShared()
+
+        self.appbar = ft.AppBar(
+            title=ft.Text(type(self).settings_name),
+            leading=ft.IconButton(
+                icon=ft.Icons.ARROW_BACK, on_click=self._go_back
+            ),
+        )
+
+    # ------------------------------------------------------------------
+    # Lifecycle
+    # ------------------------------------------------------------------
+
+    def did_mount(self) -> None:
+        super().did_mount()
+        self.page.run_task(self._on_load)
+
+    # ------------------------------------------------------------------
+    # Override hooks
+    # ------------------------------------------------------------------
+
+    async def _on_load(self) -> None:
+        """Called on mount.  Override to perform async initialization
+        (e.g. fetching current status from the server)."""
 
     # ------------------------------------------------------------------
     # Navigation
