@@ -33,8 +33,8 @@ class SettingsModel(Model):
         self.listtiles = [
             ft.ListTile(
                 leading=ft.Icon(cls.settings_icon),
-                title=ft.Text(cls.get_settings_name),
-                subtitle=ft.Text(cls.get_settings_description),
+                title=ft.Text(cls.settings_name),
+                subtitle=ft.Text(cls.settings_description),
                 on_click=self._make_route_handler(cls.settings_route_suffix),
             )
             for cls in get_settings_registry()

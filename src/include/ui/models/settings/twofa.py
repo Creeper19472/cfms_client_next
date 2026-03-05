@@ -29,8 +29,8 @@ class TwoFactorSettingsModel(DeclarativeActionPage):
     """
 
     # Overview metadata
-    settings_name = lambda: _("Two-Factor Authentication")  # noqa: E731
-    settings_description = lambda: _("Manage two-factor authentication settings")  # noqa: E731
+    settings_name = _("Two-Factor Authentication")
+    settings_description = _("Manage two-factor authentication settings")
     settings_icon = ft.Icons.LOCK
     settings_route_suffix = "twofa_settings"
 

@@ -22,8 +22,8 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     """Settings page for proxy and network connection settings."""
 
     # Overview metadata
-    settings_name = lambda: _("Connect")  # noqa: E731
-    settings_description = lambda: _("Change application proxy settings")  # noqa: E731
+    settings_name = _("Connect")
+    settings_description = _("Change application proxy settings")
     settings_icon = ft.Icons.LINK
     settings_route_suffix = "conn_settings"
 
@@ -36,18 +36,18 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     # between the three-state ``proxy_settings`` stored in preferences and these
     # two independent boolean controls.
     enable_proxy: SettingsField[bool] = SettingsField(
-        label=lambda: _("Enable proxy"),
+        label=_("Enable proxy"),
         persist=False,
     )
     follow_system_proxy: SettingsField[bool] = SettingsField(
-        label=lambda: _("Follow system proxy settings"),
+        label=_("Follow system proxy settings"),
         depends_on="enable_proxy",
         persist=False,
     )
 
     # Persisted directly under their own preference keys.
     custom_proxy: SettingsField[str] = SettingsField(
-        label=lambda: _("Custom Proxy"),
+        label=_("Custom Proxy"),
         key="custom_proxy",
         hint_text="e.g. socks5h://proxy:1080/",
         # Disabled when proxy is off *or* when system-proxy is on
@@ -55,7 +55,7 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
         depends_on=["enable_proxy", "!follow_system_proxy"],
     )
     force_ipv4: SettingsField[bool] = SettingsField(
-        label=lambda: _("Force IPv4"),
+        label=_("Force IPv4"),
         key="force_ipv4",
         default=False,
     )

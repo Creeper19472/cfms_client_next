@@ -22,8 +22,8 @@ class UpdatesSettingsModel(DeclarativeSettingsPage):
     """Settings page for update-channel selection."""
 
     # Overview metadata
-    settings_name = lambda: _("Updates")  # noqa: E731
-    settings_description = lambda: _("Configure update channel preferences")  # noqa: E731
+    settings_name = _("Updates")
+    settings_description = _("Configure update channel preferences")
     settings_icon = ft.Icons.BROWSER_UPDATED
     settings_route_suffix = "updates_settings"
 
@@ -32,16 +32,16 @@ class UpdatesSettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     update_channel: SettingsField[str] = SettingsField(
-        label=lambda: _("Update Channel"),
+        label=_("Update Channel"),
         key="update_channel",
-        hint_text=lambda: _("Select the update channel to check for updates"),
+        hint_text=_("Select the update channel to check for updates"),
         default=DEFAULT_UPDATE_CHANNEL.value,
-        options=lambda: [
+        options=[
             (ChannelType.STABLE.value, _("Stable - Most stable releases")),
             (ChannelType.BETA.value, _("Beta - Pre-release testing versions")),
             (ChannelType.ALPHA.value, _("Alpha - Cutting edge, frequent updates")),
         ],
-        option_descriptions=lambda: {
+        option_descriptions={
             ChannelType.STABLE.value: _(
                 "You will receive only stable, thoroughly tested releases."
             ),
