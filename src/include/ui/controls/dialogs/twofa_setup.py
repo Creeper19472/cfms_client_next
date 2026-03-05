@@ -2,7 +2,6 @@
 
 import base64
 import io
-from typing import Optional
 
 import flet as ft
 import qrcode
