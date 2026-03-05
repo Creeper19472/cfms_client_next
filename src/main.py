@@ -77,16 +77,11 @@ async def main(page: ft.Page):
     from include.ui.models.connect import ConnectToServerModel
     from include.ui.models.login import LoginModel
     from include.ui.models.about import AboutModel
-    from include.ui.models.settings.overview import SettingsModel
-    from include.ui.models.settings.language import LanguageSettingsModel
-    from include.ui.models.settings.connection import ConnectionSettingsModel
-    from include.ui.models.settings.storage import StorageSettingsModel
-    from include.ui.models.settings.safety import SafetySettingsModel
-    from include.ui.models.settings.updates import UpdatesSettingsModel
-    from include.ui.models.settings.twofa import TwoFactorSettingsModel
     from include.ui.models.home import HomeModel
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
+    import include.ui.models.settings
+    
     page.title = "CFMS Client"
     page.theme_mode = ft.ThemeMode.DARK
     page.window.width = DEFAULT_WINDOW_WIDTH

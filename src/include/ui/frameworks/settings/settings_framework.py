@@ -90,7 +90,7 @@ def settings_page(cls: type) -> type:
         class MySettingsModel(DeclarativeSettingsPage):
             ...
     """
-    _settings_registry.append(cls)  # type: ignore[arg-type]
+    _settings_registry.append(cls)
     return cls
 
 
