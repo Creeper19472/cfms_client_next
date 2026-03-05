@@ -21,8 +21,8 @@ Basic usage (declarative)::
         settings_route_suffix = "my_settings"
 
         # Declarative fields
-        enable_feature: bool = SettingsField(label="Enable feature")
-        feature_value: str = SettingsField(
+        enable_feature: SettingsField[bool] = SettingsField(label="Enable feature")
+        feature_value: SettingsField[str] = SettingsField(
             label="Feature value",
             depends_on="enable_feature",
         )
@@ -42,7 +42,9 @@ auto-population by mixing in :class:`RegisteredSettingsPage`::
 
 from __future__ import annotations
 
-from typing import Any, Callable, ClassVar, get_type_hints
+from typing import Any, Callable, ClassVar, Generic, TypeVar, get_args, get_type_hints, overload
+
+_T = TypeVar("_T")
 import flet as ft
 from flet_model import Model, Router
 
@@ -126,7 +128,7 @@ class RegisteredSettingsPage:
 # ---------------------------------------------------------------------------
 
 
-class SettingsField:
+class SettingsField(Generic[_T]):
     """Declarative descriptor for a single settings field.
 
     Declare as a class attribute with a type annotation to define a settings
@@ -223,6 +225,10 @@ class SettingsField:
         if self.key is None:
             self.key = name
 
+    @overload
+    def __get__(self, obj: None, objtype: Any) -> "SettingsField[_T]": ...
+    @overload
+    def __get__(self, obj: Any, objtype: Any) -> _T: ...
     def __get__(self, obj: Any, objtype: Any = None) -> Any:
         """Descriptor protocol getter.
 
@@ -240,7 +246,7 @@ class SettingsField:
             return self.default
         return _read_control_value(control)
 
-    def __set__(self, obj: Any, value: Any) -> None:
+    def __set__(self, obj: Any, value: _T) -> None:
         """Descriptor protocol setter.
 
         Writes *value* to the underlying Flet control on *obj*, mirroring how
@@ -417,7 +423,32 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 val = getattr(cls, attr_name, None)
                 if not isinstance(val, SettingsField):
                     continue
-                field_type = hints.get(attr_name, str)
+                # Prefer the fully-resolved hint from get_type_hints; fall back
+                # to the raw annotation object (which may already be a resolved
+                # generic alias when `from __future__ import annotations` is not
+                # in effect in the subclass's module).
+                hint = hints.get(attr_name) or ann.get(attr_name)
+                # Support both the canonical SettingsField[T] annotation and
+                # legacy bare type annotations (str, bool, …) for backward
+                # compatibility.
+                origin = getattr(hint, "__origin__", None)
+                if origin is SettingsField:
+                    # SettingsField[T] — extract the inner type T.
+                    args = get_args(hint)
+                    if not args:
+                        raise TypeError(
+                            f"{cls.__qualname__}.{attr_name}: "
+                            "SettingsField must be parameterised with a type, "
+                            "e.g. SettingsField[bool] or SettingsField[str]."
+                        )
+                    field_type: type = args[0]
+                elif isinstance(hint, type) and not issubclass(hint, SettingsField):
+                    # Legacy bare annotation e.g. `name: str = SettingsField(...)`
+                    # The `issubclass` guard prevents using the bare SettingsField
+                    # class itself as the field_type.
+                    field_type = hint
+                else:
+                    field_type = str
                 result.append((attr_name, val, field_type))
         return result
 

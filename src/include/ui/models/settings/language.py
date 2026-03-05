@@ -29,7 +29,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # Declarative fields
     # ---------------------------------------------------------------------------
 
-    language: str = SettingsField(
+    language: SettingsField[str] = SettingsField(
         label="Language",
         key="language",
         hint_text="Select your preferred language",

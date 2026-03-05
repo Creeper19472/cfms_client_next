@@ -3,7 +3,7 @@
 from flet_model import route
 import flet as ft
 
-from include.ui.frameworks.settings.settings_framework import (
+from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
     SettingsField,
     settings_page,
@@ -29,7 +29,7 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     # Declarative fields
     # ---------------------------------------------------------------------------
 
-    enable_conn_history_logging: bool = SettingsField(
+    enable_conn_history_logging: SettingsField[bool] = SettingsField(
         label="Enable connection history logging",
         key="enable_conn_history_logging",
         default=False,
