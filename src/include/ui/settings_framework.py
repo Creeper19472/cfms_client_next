@@ -117,7 +117,7 @@ class RegisteredSettingsPage:
 
     settings_name: ClassVar[str] = ""
     settings_description: ClassVar[str] = ""
-    settings_icon: ClassVar[str] = ft.Icons.SETTINGS
+    settings_icon: ClassVar[ft.IconData] = ft.Icons.SETTINGS
     settings_route_suffix: ClassVar[str] = ""
 
 
@@ -599,7 +599,7 @@ def _apply_value_to_control(control: ft.Control, value: Any) -> None:
     if isinstance(control, ft.Switch):
         control.value = bool(value) if value is not None else False
     elif isinstance(control, (ft.TextField, ft.Dropdown)):
-        control.value = str(value) if value is not None else None
+        control.value = str(value) if value is not None else ""
 
 
 def _read_control_value(control: ft.Control) -> Any:
