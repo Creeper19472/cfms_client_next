@@ -15,8 +15,8 @@ Basic usage (declarative)::
     @route("my_settings")
     class MySettingsModel(DeclarativeSettingsPage):
         # Overview metadata
-        settings_name = _("My Settings")
-        settings_description = _("Configure my settings")
+        settings_name = lambda: _("My Settings")
+        settings_description = lambda: _("Configure my settings")
         settings_icon = ft.Icons.SETTINGS
         settings_route_suffix = "my_settings"
 
@@ -33,8 +33,8 @@ auto-population by mixing in :class:`RegisteredSettingsPage`::
     @settings_page
     @route("complex_settings")
     class ComplexSettingsModel(Model, RegisteredSettingsPage):
-        settings_name = _("Complex Settings")
-        settings_description = _("Complex configuration")
+        settings_name = lambda: _("Complex Settings")
+        settings_description = lambda: _("Complex configuration")
         settings_icon = ft.Icons.SETTINGS
         settings_route_suffix = "complex_settings"
         ...
@@ -115,21 +115,36 @@ class RegisteredSettingsPage:
 
     Class-level attributes to define in each subclass:
 
-    settings_name (str):
-        Title shown in the Overview list tile (used as a translation key).
-    settings_description (str):
-        Subtitle shown in the Overview list tile (used as a translation key).
-    settings_icon (str):
+    settings_name (str | Callable[[], str]):
+        Title shown in the Overview list tile.  Assign a ``lambda: _("…")``
+        so the string is translated lazily at render time (required for
+        runtime language switching to take effect immediately).
+    settings_description (str | Callable[[], str]):
+        Subtitle shown in the Overview list tile.  Same lazy-lambda pattern
+        recommended.
+    settings_icon (ft.IconData):
         ``ft.Icons`` constant for the Overview list tile icon.
     settings_route_suffix (str):
         Route segment appended to the current route when navigating
         (must match the argument passed to ``@route()``).
     """
 
-    settings_name: ClassVar[str] = ""
-    settings_description: ClassVar[str] = ""
+    settings_name: ClassVar[str | Callable[[], str]] = ""
+    settings_description: ClassVar[str | Callable[[], str]] = ""
     settings_icon: ClassVar[ft.IconData] = ft.Icons.SETTINGS
     settings_route_suffix: ClassVar[str] = ""
+
+    @classmethod
+    def get_settings_name(cls) -> str:
+        """Return the resolved (translated) settings page name."""
+        v = cls.settings_name
+        return v() if callable(v) else v
+
+    @classmethod
+    def get_settings_description(cls) -> str:
+        """Return the resolved (translated) settings page description."""
+        v = cls.settings_description
+        return v() if callable(v) else v
 
 
 # ---------------------------------------------------------------------------
@@ -450,7 +465,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         self.app_shared = AppShared()
 
         self.appbar = ft.AppBar(
-            title=ft.Text(type(self).settings_name),
+            title=ft.Text(type(self).get_settings_name()),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
             actions=[
                 ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self._save_button_click)
@@ -879,8 +894,8 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
         @settings_page
         @route("password_settings")
         class PasswordSettingsModel(DeclarativeActionPage):
-            settings_name = _("Change Password")
-            settings_description = _("Update your account password")
+            settings_name = lambda: _("Change Password")
+            settings_description = lambda: _("Update your account password")
             settings_icon = ft.Icons.LOCK
             settings_route_suffix = "password_settings"
 
@@ -905,7 +920,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
         self.app_shared = AppShared()
 
         self.appbar = ft.AppBar(
-            title=ft.Text(type(self).settings_name),
+            title=ft.Text(type(self).get_settings_name()),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
         )
 

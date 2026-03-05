@@ -20,8 +20,8 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     """Settings page for language / locale selection."""
 
     # Overview metadata
-    settings_name = _("Language")
-    settings_description = _("Select your preferred language")
+    settings_name = lambda: _("Language")  # noqa: E731
+    settings_description = lambda: _("Select your preferred language")  # noqa: E731
     settings_icon = ft.Icons.LANGUAGE
     settings_route_suffix = "language_settings"
 
@@ -30,15 +30,15 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     language: SettingsField[str] = SettingsField(
-        label=_("Language"),
+        label=lambda: _("Language"),
         key="language",
-        hint_text=_("Select your preferred language"),
-        options=[
+        hint_text=lambda: _("Select your preferred language"),
+        options=lambda: [
             ("zh_CN", _("中文 (Chinese Simplified)")),
             ("en", _("English")),
         ],
         default="zh_CN",
-        description=_(
+        description=lambda: _(
             "Select your preferred language for the application interface. "
             "You may need to restart the application for changes to take full effect."
         ),

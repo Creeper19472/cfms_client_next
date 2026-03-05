@@ -26,8 +26,8 @@ class StorageSettingsModel(DeclarativeSettingsPage):
     """Settings page for external storage configuration."""
 
     # Overview metadata
-    settings_name = _("Storage")
-    settings_description = _("Configure external storage options")
+    settings_name = lambda: _("Storage")  # noqa: E731
+    settings_description = lambda: _("Configure external storage options")  # noqa: E731
     settings_icon = ft.Icons.STORAGE
     settings_route_suffix = "storage_settings"
 
@@ -38,15 +38,15 @@ class StorageSettingsModel(DeclarativeSettingsPage):
     # Both fields are UI-only (persist=False); _on_load / _on_save translate
     # between these controls and the UserPreference dataclass.
     use_external_storage: SettingsField[bool] = SettingsField(
-        label=_("Use external storage"),
+        label=lambda: _("Use external storage"),
         persist=False,
     )
     external_storage_path: SettingsField[str] = SettingsField(
-        label=_("External storage path"),
+        label=lambda: _("External storage path"),
         depends_on="use_external_storage",
         browse=True,
         persist=False,
-        description=_(
+        description=lambda: _(
             "The application will only save files to the specified location if the "
             '"Use external storage" switch is enabled and an external storage path '
             "is set."

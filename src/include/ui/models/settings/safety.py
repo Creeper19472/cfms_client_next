@@ -20,8 +20,8 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     """Settings page for connection-history logging policy."""
 
     # Overview metadata
-    settings_name = _("Safety")
-    settings_description = _("Adjust application connection history policy")
+    settings_name = lambda: _("Safety")  # noqa: E731
+    settings_description = lambda: _("Adjust application connection history policy")  # noqa: E731
     settings_icon = ft.Icons.SECURITY
     settings_route_suffix = "safety_settings"
 
@@ -30,11 +30,11 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     # ---------------------------------------------------------------------------
 
     enable_conn_history_logging: SettingsField[bool] = SettingsField(
-        label=_("Enable connection history logging"),
+        label=lambda: _("Enable connection history logging"),
         key="enable_conn_history_logging",
         default=False,
         disabled=True,  # Feature not yet fully implemented
-        description=_(
+        description=lambda: _(
             "Decide whether the app should log the "
             "server address of the last connection. "
             "While this feature increases convenience, "
