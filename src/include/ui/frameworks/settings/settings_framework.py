@@ -105,6 +105,25 @@ def get_settings_registry() -> list[type[RegisteredSettingsPage]]:
 # ---------------------------------------------------------------------------
 
 
+class _ClassProperty:
+    """Descriptor for a read-only class-level property.
+
+    Behaves like :func:`property` but is resolved against the *class* rather
+    than the instance, so ``cls.attr`` works identically to
+    ``instance.attr`` — both call the underlying getter with the class as the
+    first argument.
+    """
+
+    def __init__(self, fget: Callable[..., Any]) -> None:
+        self.fget = fget
+        # Preserve the wrapped function's name and docstring.
+        self.__doc__ = fget.__doc__
+        self.__name__ = getattr(fget, "__name__", "")
+
+    def __get__(self, obj: Any, objtype: type | None = None) -> Any:
+        return self.fget(objtype if objtype is not None else type(obj))
+
+
 class RegisteredSettingsPage:
     """Mixin that declares the class-level attributes required for Overview
     auto-population.
@@ -134,15 +153,15 @@ class RegisteredSettingsPage:
     settings_icon: ClassVar[ft.IconData] = ft.Icons.SETTINGS
     settings_route_suffix: ClassVar[str] = ""
 
-    @classmethod
-    def get_settings_name(cls) -> str:
-        """Return the resolved (translated) settings page name."""
+    @_ClassProperty
+    def get_settings_name(cls) -> str:  # noqa: N805
+        """Resolved (translated) settings page name."""
         v = cls.settings_name
         return v() if callable(v) else v
 
-    @classmethod
-    def get_settings_description(cls) -> str:
-        """Return the resolved (translated) settings page description."""
+    @_ClassProperty
+    def get_settings_description(cls) -> str:  # noqa: N805
+        """Resolved (translated) settings page description."""
         v = cls.settings_description
         return v() if callable(v) else v
 
@@ -465,7 +484,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         self.app_shared = AppShared()
 
         self.appbar = ft.AppBar(
-            title=ft.Text(type(self).get_settings_name()),
+            title=ft.Text(type(self).get_settings_name),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
             actions=[
                 ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self._save_button_click)
@@ -920,7 +939,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
         self.app_shared = AppShared()
 
         self.appbar = ft.AppBar(
-            title=ft.Text(type(self).get_settings_name()),
+            title=ft.Text(type(self).get_settings_name),
             leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
         )
 
