@@ -708,6 +708,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 controls.append(field.build_control())
                 continue
 
+            # field_type is always set for SettingsField entries; the SectionHeader
+            # and Separator branches above handle the None cases and continue.
+            assert field_type is not None
             control = field.build_control(field_type)
 
             # Wire switch-change handler for automatic dependency flushing.
