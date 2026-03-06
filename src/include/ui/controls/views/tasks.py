@@ -1,6 +1,6 @@
 """Tasks view for displaying and managing download tasks."""
 
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Optional
 import os
 import flet as ft
 
@@ -579,9 +579,8 @@ class TasksView(ft.Container):
         """Called when the view is mounted."""
         # Get download service
         if self.app_shared.service_manager:
-            self.download_service = cast(
-                DownloadManagerService,
-                self.app_shared.service_manager.get_service("download_manager"),
+            self.download_service = self.app_shared.service_manager.get_service(
+                "download_manager", DownloadManagerService
             )
 
             # Set up task update callback

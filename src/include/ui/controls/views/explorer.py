@@ -16,6 +16,9 @@ from include.ui.controls.components.explorer.access_denied import AccessDeniedVi
 from include.ui.util.notifications import send_error
 from include.ui.util.file_controls import update_file_controls
 from include.ui.util.path import get_directory
+from include.classes.services.favorites_validation import (
+    FavoritesValidationService,
+)
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -250,16 +253,10 @@ class FileManagerView(ft.Container):
 
     def _get_favorites_validation_service(self):
         """Return the FavoritesValidationService instance, or None if unavailable."""
-        from include.classes.services.favorites_validation import (
-            FavoritesValidationService,
-        )
-
         if self.app_shared.service_manager:
-            service = self.app_shared.service_manager.get_service(
-                "favorites_validation"
+            return self.app_shared.service_manager.get_service(
+                "favorites_validation", FavoritesValidationService
             )
-            if isinstance(service, FavoritesValidationService):
-                return service
         return None
 
     def _on_favorites_changed(self):

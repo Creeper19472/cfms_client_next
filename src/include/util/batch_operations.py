@@ -2,7 +2,7 @@
 
 import asyncio
 import os
-from typing import AsyncIterator, Optional, cast
+from typing import AsyncIterator, Optional
 
 from include.classes.shared import AppShared
 from include.classes.services.download import DownloadManagerService
@@ -122,9 +122,8 @@ async def batch_download_items(
     # Get the download manager service
     download_service = None
     if app_shared.service_manager:
-        download_service = cast(
-            DownloadManagerService,
-            app_shared.service_manager.get_service("download_manager"),
+        download_service = app_shared.service_manager.get_service(
+            "download_manager", DownloadManagerService
         )
 
     if not download_service:
