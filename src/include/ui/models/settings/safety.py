@@ -7,7 +7,10 @@ from flet_model import Router, route
 import flet as ft
 
 from include.ui.frameworks.settings import (
+    CustomControl,
     DeclarativeSettingsPage,
+    SectionHeader,
+    Separator,
     SettingsField,
     settings_page,
 )
@@ -52,53 +55,39 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         ),
     )
 
-    def __init__(self, page: ft.Page, router: Router) -> None:
-        # Create the CA cert controls *before* super().__init__() because the
-        # base class calls _build_controls() during __init__, and our override
-        # of that method references these attributes.
-        self._ca_last_checked_text = ft.Text(
+    # ---------------------------------------------------------------------------
+    # CA certificates section
+    # ---------------------------------------------------------------------------
+
+    _ca_separator = Separator()
+    _ca_header = SectionHeader(_("CA Certificates"))
+    _ca_description = CustomControl(
+        lambda model: ft.Text(
+            _(
+                "The CA certificate store contains trusted root certificates "
+                "used to verify secure connections to your server."
+            ),
+            size=13,
+            color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
+        )
+    )
+    _ca_last_checked_text = CustomControl(
+        lambda model: ft.Text(
             _("Last checked: Never"),
             size=13,
             color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
         )
-        self._ca_result_text = ft.Text(visible=False, size=13)
-        self._ca_update_button = ft.Button(
+    )
+    _ca_update_button = CustomControl(
+        lambda model: ft.Button(
             _("Check and Update Now"),
             icon=ft.Icons.REFRESH,
-            on_click=self._on_ca_update_click,
+            on_click=model._on_ca_update_click,
         )
-
-        super().__init__(page, router)
-
-    # ------------------------------------------------------------------
-    # Extend the declarative control list with the CA cert section
-    # ------------------------------------------------------------------
-
-    def _build_controls(self) -> list[ft.Control]:
-        """Build the declarative field controls, then append the CA cert section."""
-        controls = super()._build_controls()
-        controls += [
-            ft.Divider(height=24),
-            ft.Text(
-                _("CA Certificates"),
-                size=16,
-                weight=ft.FontWeight.BOLD,
-            ),
-            ft.Text(
-                _(
-                    "The CA certificate store contains trusted root certificates "
-                    "used to verify secure connections to your server."
-                ),
-                size=13,
-                color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
-            ),
-            ft.Divider(height=8, color=ft.Colors.TRANSPARENT),
-            self._ca_last_checked_text,
-            ft.Divider(height=4, color=ft.Colors.TRANSPARENT),
-            self._ca_update_button,
-            self._ca_result_text,
-        ]
-        return controls
+    )
+    _ca_result_text = CustomControl(
+        lambda model: ft.Text(visible=False, size=13)
+    )
 
     # ------------------------------------------------------------------
     # DeclarativeSettingsPage hook – called after values are loaded
