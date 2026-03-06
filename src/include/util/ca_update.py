@@ -26,6 +26,7 @@ import json
 import logging
 import re
 import time
+from enum import Enum
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -37,11 +38,7 @@ from include.constants import CA_CERT_API_URL
 
 __all__ = [
     "CACertUpdateResult",
-    "STAGE_CONNECTING",
-    "STAGE_CHECKING",
-    "STAGE_DOWNLOADING",
-    "STAGE_REMOVING",
-    "STAGE_SAVING",
+    "CACertUpdateStages",
     "build_initial_manifest",
     "check_and_update_ca_certs",
     "has_expired_certificates",
@@ -55,17 +52,18 @@ logger = logging.getLogger(__name__)
 # Progress stage identifiers passed to the on_progress callback.
 # Each constant identifies the current phase of a certificate store update:
 #
-#   STAGE_CONNECTING  – about to contact the remote repository
-#   STAGE_CHECKING    – remote listing fetched; comparing with local store
-#   STAGE_DOWNLOADING – downloading a new or updated certificate file
-#   STAGE_REMOVING    – deleting a certificate no longer in the remote store
-#   STAGE_SAVING      – persisting the updated manifest
+#   CACertUpdateStages.CONNECTING  – about to contact the remote repository
+#   CACertUpdateStages.CHECKING    – remote listing fetched; comparing with local store
+#   CACertUpdateStages.DOWNLOADING – downloading a new or updated certificate file
+#   CACertUpdateStages.REMOVING    – deleting a certificate no longer in the remote store
+#   CACertUpdateStages.SAVING      – persisting the updated manifest
 #
-STAGE_CONNECTING = "connecting"
-STAGE_CHECKING = "checking"
-STAGE_DOWNLOADING = "downloading"
-STAGE_REMOVING = "removing"
-STAGE_SAVING = "saving"
+class CACertUpdateStages(Enum):
+    CONNECTING = "connecting"
+    CHECKING = "checking"
+    DOWNLOADING = "downloading"
+    REMOVING = "removing"
+    SAVING = "saving"
 
 # Name of the local manifest file.
 _MANIFEST_FILENAME = ".manifest.json"
@@ -334,7 +332,7 @@ def check_and_update_ca_certs(
     ca_dir: Path,
     *,
     timeout: int = 10,
-    on_progress: Optional[Callable[[str, str], None]] = None,
+    on_progress: Optional[Callable[[CACertUpdateStages, str], None]] = None,
 ) -> CACertUpdateResult:
     """Check the remote CA certificate repository and sync the local store.
 
@@ -361,7 +359,7 @@ def check_and_update_ca_certs(
         HTTP request timeout in seconds.
     on_progress:
         Optional callback invoked at each significant stage with two arguments:
-        ``(stage, detail)`` where *stage* is one of the ``STAGE_*`` constants
+        ``(stage, detail)`` where *stage* is one of the ``CACertUpdateStages.*`` constants
         and *detail* is a short human-readable description (may be empty).
         The callback is called from the thread that runs this function; it
         must be thread-safe if Flet UI elements are updated inside it.
@@ -372,7 +370,7 @@ def check_and_update_ca_certs(
         Summary of the changes made.
     """
 
-    def _progress(stage: str, detail: str = "") -> None:
+    def _progress(stage: CACertUpdateStages, detail: str = "") -> None:
         if on_progress is not None:
             try:
                 on_progress(stage, detail)
@@ -385,7 +383,7 @@ def check_and_update_ca_certs(
     manifest = _load_manifest(ca_dir)
 
     # --- fetch remote state ---------------------------------------------------
-    _progress(STAGE_CONNECTING)
+    _progress(CACertUpdateStages.CONNECTING)
     try:
         remote_entries = _fetch_remote_entries(timeout=timeout)
     except Exception as exc:
@@ -404,7 +402,7 @@ def check_and_update_ca_certs(
             continue
         remote_files[name] = entry
 
-    _progress(STAGE_CHECKING, str(len(remote_files)))
+    _progress(CACertUpdateStages.CHECKING, str(len(remote_files)))
 
     # --- add / update ---------------------------------------------------------
     for name, entry in remote_files.items():
@@ -422,7 +420,7 @@ def check_and_update_ca_certs(
             result.errors.append(f"No download_url for {name}")
             continue
 
-        _progress(STAGE_DOWNLOADING, name)
+        _progress(CACertUpdateStages.DOWNLOADING, name)
         try:
             file_resp = requests.get(download_url, timeout=timeout)
             file_resp.raise_for_status()
@@ -468,7 +466,7 @@ def check_and_update_ca_certs(
         p.name for p in ca_dir.iterdir() if p.is_file() and _is_cert_file(p.name)
     }
     for name in local_cert_files - set(remote_files):
-        _progress(STAGE_REMOVING, name)
+        _progress(CACertUpdateStages.REMOVING, name)
         try:
             (ca_dir / name).unlink()
             manifest.pop(name, None)
@@ -478,7 +476,7 @@ def check_and_update_ca_certs(
             logger.error("Failed to remove %s: %s", name, exc)
             result.errors.append(f"Failed to remove {name}: {exc}")
 
-    _progress(STAGE_SAVING)
+    _progress(CACertUpdateStages.SAVING)
     _save_manifest(ca_dir, manifest)
 
     logger.info(

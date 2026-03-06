@@ -2,7 +2,7 @@
 
 The dialog displays a step list (like the first-run init wizard) so the user
 can see exactly which phase the update is in.  The four phases map onto the
-``STAGE_*`` constants from :mod:`include.util.ca_update`:
+``CACertUpdateStages.*`` constants from :mod:`include.util.ca_update`:
 
 * **Connecting** — contacting the remote certificate repository
 * **Checking** — comparing the remote listing with the local store
@@ -27,13 +27,7 @@ from typing import Callable
 import flet as ft
 
 from include.ui.controls.dialogs.base import AlertDialog
-from include.util.ca_update import (
-    STAGE_CHECKING,
-    STAGE_CONNECTING,
-    STAGE_DOWNLOADING,
-    STAGE_REMOVING,
-    STAGE_SAVING,
-)
+from include.util.ca_update import CACertUpdateStages
 from include.util.locale import get_translation
 
 t = get_translation()
@@ -41,13 +35,13 @@ _ = t.gettext
 
 __all__ = ["CACertUpdateProgressDialog"]
 
-# Map each STAGE_* constant to the index of the step it belongs to.
-_STAGE_STEP: dict[str, int] = {
-    STAGE_CONNECTING: 0,
-    STAGE_CHECKING: 1,
-    STAGE_DOWNLOADING: 2,
-    STAGE_REMOVING: 2,
-    STAGE_SAVING: 3,
+# Map each CACertUpdateStages.* constant to the index of the step it belongs to.
+_STAGE_STEP: dict[CACertUpdateStages, int] = {
+    CACertUpdateStages.CONNECTING: 0,
+    CACertUpdateStages.CHECKING: 1,
+    CACertUpdateStages.DOWNLOADING: 2,
+    CACertUpdateStages.REMOVING: 2,
+    CACertUpdateStages.SAVING: 3,
 }
 
 
@@ -157,11 +151,11 @@ class CACertUpdateProgressDialog(AlertDialog):
     # Public API
     # ------------------------------------------------------------------
 
-    def make_progress_callback(self) -> "Callable[[str, str], None]":
+    def make_progress_callback(self) -> "Callable[[CACertUpdateStages, str], None]":
         """Return an ``on_progress(stage, detail)`` callable for this dialog.
 
         The returned callable is thread-safe: it updates the step list and
-        detail label in response to ``STAGE_*`` events emitted by
+        detail label in response to ``CACertUpdateStages.*`` events emitted by
         :func:`~include.util.ca_update.check_and_update_ca_certs`.
 
         Typical usage::
@@ -171,30 +165,30 @@ class CACertUpdateProgressDialog(AlertDialog):
             )
         """
 
-        def _on_progress(stage: str, detail: str = "") -> None:
+        def _on_progress(stage: CACertUpdateStages, detail: str = "") -> None:
             step_idx = _STAGE_STEP.get(stage)
             if step_idx is not None:
                 self._activate_step(step_idx)
 
             # Build a human-readable detail line
-            if stage == STAGE_CONNECTING:
+            if stage == CACertUpdateStages.CONNECTING:
                 msg = _("Connecting to certificate repository...")
-            elif stage == STAGE_CHECKING:
+            elif stage == CACertUpdateStages.CHECKING:
                 n = detail or "?"
                 msg = _("Fetched {n} remote certificate(s); comparing...").format(n=n)
-            elif stage == STAGE_DOWNLOADING:
+            elif stage == CACertUpdateStages.DOWNLOADING:
                 msg = (
                     _("Downloading {name}...").format(name=detail)
                     if detail
                     else _("Downloading...")
                 )
-            elif stage == STAGE_REMOVING:
+            elif stage == CACertUpdateStages.REMOVING:
                 msg = (
                     _("Removing {name}...").format(name=detail)
                     if detail
                     else _("Removing...")
                 )
-            elif stage == STAGE_SAVING:
+            elif stage == CACertUpdateStages.SAVING:
                 msg = _("Saving manifest...")
             else:
                 msg = detail or stage

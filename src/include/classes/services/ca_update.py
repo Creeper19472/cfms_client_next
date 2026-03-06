@@ -10,6 +10,7 @@ from include.classes.services.base import BaseService
 from include.constants import ROOT_PATH
 from include.util.ca_update import (
     CACertUpdateResult,
+    CACertUpdateStages,
     check_and_update_ca_certs,
     load_last_check_time,
     save_last_check_time,
@@ -144,7 +145,7 @@ class CACertUpdateService(BaseService):
 
     async def _run_update(
         self,
-        on_progress: Optional[Callable[[str, str], None]] = None,
+        on_progress: Optional[Callable[[CACertUpdateStages, str], None]] = None,
     ) -> CACertUpdateResult:
         """Execute the update in a thread-pool executor and store the result.
 
@@ -191,7 +192,7 @@ class CACertUpdateService(BaseService):
 
     async def update_now(
         self,
-        on_progress: Optional[Callable[[str, str], None]] = None,
+        on_progress: Optional[Callable[[CACertUpdateStages, str], None]] = None,
     ) -> CACertUpdateResult:
         """Manually trigger an immediate CA certificate store update.
 
@@ -205,7 +206,7 @@ class CACertUpdateService(BaseService):
         on_progress:
             Optional two-argument callback ``(stage, detail)`` that receives
             progress notifications during the update.  *stage* is one of the
-            ``STAGE_*`` constants exported by
+            ``CACertUpdateStages.*`` constants exported by
             :mod:`include.util.ca_update`; *detail* is an optional
             human-readable string (e.g. the filename being downloaded).
             The callback is invoked from a thread-pool thread and must be
