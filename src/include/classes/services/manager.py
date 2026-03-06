@@ -3,9 +3,11 @@
 import asyncio
 import logging
 import threading
-from typing import Dict, Optional
+from typing import Dict, Optional, Type, TypeVar, overload
 
 from include.classes.services.base import BaseService
+
+_S = TypeVar("_S", bound=BaseService)
 
 __all__ = ["ServiceManager"]
 
@@ -88,17 +90,43 @@ class ServiceManager:
         self.logger.info(f"Unregistered service '{service_name}'")
         return True
 
-    def get_service(self, service_name: str) -> Optional[BaseService]:
+    @overload
+    def get_service(self, service_name: str) -> Optional[BaseService]: ...
+
+    @overload
+    def get_service(self, service_name: str, service_type: Type[_S]) -> Optional[_S]: ...
+
+    def get_service(
+        self,
+        service_name: str,
+        service_type: Optional[Type[_S]] = None,
+    ) -> Optional[BaseService]:
         """
         Get a registered service by name.
 
         Args:
             service_name: Name of the service to retrieve
+            service_type: Optional type to cast the result to.  When provided
+                the return value is typed as ``Optional[service_type]`` so
+                callers do not need a separate ``cast()``.  A ``TypeError`` is
+                raised at runtime if the found service is not an instance of
+                *service_type*.
 
         Returns:
             The service instance if found, None otherwise
+
+        Raises:
+            TypeError: If the found service is not an instance of *service_type*
         """
-        return self.services.get(service_name)
+        service = self.services.get(service_name)
+        if service is None or service_type is None:
+            return service
+        if not isinstance(service, service_type):
+            raise TypeError(
+                f"Service '{service_name}' is {type(service).__name__}, "
+                f"not {service_type.__name__}"
+            )
+        return service
 
     async def start_service(self, service_name: str) -> bool:
         """
