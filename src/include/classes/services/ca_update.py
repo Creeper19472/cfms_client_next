@@ -13,18 +13,14 @@ from include.constants import ROOT_PATH
 from include.util.ca_update import (
     CACertUpdateResult,
     check_and_update_ca_certs,
-    has_expired_certificates,
     load_last_check_time,
     save_last_check_time,
 )
 
 __all__ = ["CACertUpdateService"]
 
-# Default: check once per day (86 400 seconds)
-DEFAULT_INTERVAL = 86_400.0
-
-# Mandatory check threshold: 90 days (≈ 3 months)
-MANDATORY_CHECK_PERIOD = 90 * 24 * 3600.0
+# Periodic check interval: once every 90 days (≈ 3 months)
+DEFAULT_INTERVAL = 90 * 24 * 3600.0
 
 # Path to the bundled CA certificate directory
 _CA_DIR = ROOT_PATH / "include" / "ca"
@@ -38,24 +34,24 @@ class CACertUpdateService(BaseService):
     calls :func:`~include.util.ca_update.check_and_update_ca_certs` inside a
     thread-pool executor to avoid blocking the event loop.
 
-    **Mandatory check conditions** — a check is forced immediately on startup
-    (regardless of *check_on_start*) when any of the following is true:
-
-    * No check has ever been recorded (first run ever).
-    * The last check is older than :data:`MANDATORY_CHECK_PERIOD` (90 days).
-    * At least one local CA certificate has expired.
+    **Schedule** — :meth:`execute` is called by the base-class loop both on
+    startup and every :attr:`~include.classes.services.base.BaseService.interval`
+    seconds.  Each call checks the persisted ``last_updated`` timestamp and
+    skips the actual work if a check was completed less than 90 days ago.
+    This means the service runs silently at most once every 90 days regardless
+    of how often the application is restarted.
 
     The :attr:`last_updated` timestamp (Unix time) and the result of the most
     recent run (:attr:`last_result`) are available for display in the UI.
 
     Concurrent calls to :meth:`update_now` (or simultaneous scheduled and
     manual runs) are serialised via an :class:`asyncio.Lock` so that only one
-    update modifies the certificate store at a time.
+    update modifies the certificate store at a time.  The :attr:`is_updating`
+    property exposes the lock state so the UI can prevent connections during
+    a write.
 
     Attributes:
         page: Optional Flet page for UI notifications.
-        check_on_start: Whether to run a routine update immediately on start.
-            Mandatory checks bypass this flag.
         last_updated: Unix timestamp of the most recent completed run, or
             ``None`` if no run has completed yet.
         last_result: :class:`~include.util.ca_update.CACertUpdateResult` from
@@ -67,19 +63,25 @@ class CACertUpdateService(BaseService):
         page: Optional[ft.Page] = None,
         enabled: bool = True,
         interval: float = DEFAULT_INTERVAL,
-        check_on_start: bool = True,
     ) -> None:
         super().__init__(name="ca_cert_update", enabled=enabled, interval=interval)
         self.page = page
-        self.check_on_start = check_on_start
         self.last_updated: Optional[float] = None
         self.last_result: Optional[CACertUpdateResult] = None
-        self._first_run = True
         self._update_lock: asyncio.Lock = asyncio.Lock()
 
     def set_page(self, page: ft.Page) -> None:
         """Attach (or replace) the Flet page used for notifications."""
         self.page = page
+
+    @property
+    def is_updating(self) -> bool:
+        """Return ``True`` while a CA certificate store update is in progress.
+
+        Exposed so the UI (e.g. the Connect button) can block connections
+        while certificates are being written to disk (prevents dirty reads).
+        """
+        return self._update_lock.locked()
 
     # ------------------------------------------------------------------
     # Lifecycle hooks
@@ -87,12 +89,11 @@ class CACertUpdateService(BaseService):
 
     async def on_start(self) -> None:
         self.logger.info(
-            "CA cert update service starting; interval=%.0fs, check_on_start=%s",
-            self.interval,
-            self.check_on_start,
+            "CA cert update service starting; interval=%.0f days",
+            self.interval / 86_400,
         )
-        # Restore the persisted last-check timestamp so mandatory conditions
-        # are evaluated correctly even after an application restart.
+        # Restore the persisted last-check timestamp so the 90-day threshold
+        # is evaluated correctly even after an application restart.
         persisted = load_last_check_time(_CA_DIR)
         if persisted is not None:
             self.last_updated = persisted
@@ -100,75 +101,44 @@ class CACertUpdateService(BaseService):
                 "Restored last CA cert check timestamp: %s",
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(persisted)),
             )
-        self._first_run = True
 
     # ------------------------------------------------------------------
     # Periodic execution
     # ------------------------------------------------------------------
 
     async def execute(self) -> None:
-        """Run a CA certificate store update.
+        """Run a CA certificate store update if the 90-day threshold is met.
 
-        On the very first call (at service startup) the method evaluates
-        *mandatory check conditions* before honouring :attr:`check_on_start`:
+        Skips silently when a check was recorded less than
+        :attr:`~include.classes.services.base.BaseService.interval` seconds
+        ago (default 90 days), so the store is refreshed at most once per
+        90-day window even if the application is restarted frequently.
 
-        * **Never checked / first ever run**: no ``.last_check`` file exists.
-        * **Stale**: the last recorded check is older than
-          :data:`MANDATORY_CHECK_PERIOD` (90 days).
-        * **Expired certificate**: at least one local ``.pem``/``.crt`` file
-          has a *Not After* date in the past.
-
-        If any mandatory condition is met the update runs immediately.
-        Otherwise the normal *check_on_start* flag decides whether to run.
-        """
-        if self._first_run:
-            self._first_run = False
-            mandatory, reason = self._is_mandatory_check_needed()
-            if mandatory:
-                self.logger.info("Mandatory CA cert check triggered: %s", reason)
-                await self._run_update()
-            elif self.check_on_start:
-                await self._run_update()
-            else:
-                self.logger.info("Skipping startup CA cert check (check_on_start=False)")
-            return
-
-        # Subsequent interval-based runs always execute.
-        await self._run_update()
-
-    # ------------------------------------------------------------------
-    # Mandatory check helpers
-    # ------------------------------------------------------------------
-
-    def _is_mandatory_check_needed(self) -> tuple[bool, str]:
-        """Return ``(True, reason)`` when a mandatory check must run.
-
-        Checks (in order):
-
-        1. No previous check recorded (``last_updated`` is ``None``).
-        2. Last check is older than :data:`MANDATORY_CHECK_PERIOD`.
-        3. At least one local certificate has expired.
+        When ``last_updated`` is ``None`` (no check has ever been recorded
+        via :meth:`update_now`) the scheduled run is also skipped — the
+        first-time setup wizard takes care of prompting the user.
         """
         if self.last_updated is None:
-            return True, "no previous check recorded"
+            self.logger.debug(
+                "CA cert check: no prior check recorded; "
+                "waiting for user-initiated update or next 90-day window."
+            )
+            return
 
         elapsed = time.time() - self.last_updated
-        if elapsed >= MANDATORY_CHECK_PERIOD:
-            days = elapsed / DEFAULT_INTERVAL
-            return True, f"last check was {days:.0f} days ago (threshold: 90 days)"
+        if elapsed < self.interval:
+            self.logger.debug(
+                "CA cert check: last check was %.1f days ago (threshold %.0f days); skipping.",
+                elapsed / 86_400,
+                self.interval / 86_400,
+            )
+            return
 
-        # Run the potentially expensive expiry scan only when the time-based
-        # conditions are not already met.
-        try:
-            expired = has_expired_certificates(_CA_DIR)
-        except Exception as exc:
-            self.logger.warning("Could not check certificate expiry: %s", exc)
-            expired = False
-
-        if expired:
-            return True, "one or more local CA certificates have expired"
-
-        return False, ""
+        self.logger.info(
+            "CA cert periodic check: last check was %.1f days ago; running update.",
+            elapsed / 86_400,
+        )
+        await self._run_update()
 
     # ------------------------------------------------------------------
     # Core update logic
@@ -202,7 +172,7 @@ class CACertUpdateService(BaseService):
             self.last_updated = time.time()
             self.last_result = result
 
-            # Persist the timestamp so mandatory conditions survive restarts.
+            # Persist the timestamp so the 90-day threshold survives restarts.
             save_last_check_time(_CA_DIR, self.last_updated)
 
             self.logger.info("CA cert update finished: %s", result)
@@ -222,5 +192,3 @@ class CACertUpdateService(BaseService):
         """
         self.logger.info("Manual CA cert update requested")
         return await self._run_update()
-
-

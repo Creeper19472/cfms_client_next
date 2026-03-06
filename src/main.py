@@ -20,8 +20,6 @@ from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.util.locale import set_translation
-
-# Window configuration constants
 DEFAULT_WINDOW_WIDTH = 1366
 DEFAULT_WINDOW_HEIGHT = 768
 
@@ -76,6 +74,7 @@ async def main(page: ft.Page):
     # is set before any UI components are loaded
     from include.ui.controls.dialogs.dev import DevRequestDialog
     from include.ui.models.connect import ConnectToServerModel
+    from include.ui.models.init import AppInitModel
     from include.ui.models.login import LoginModel
     from include.ui.models.about import AboutModel
     from include.ui.models.home import HomeModel
@@ -207,12 +206,12 @@ async def main(page: ft.Page):
     service_manager.register(favorites_validation_service)
 
     # Register CA certificate update service
-    # Check once per day (86 400 seconds) and also on startup
+    # Checks at most once every 90 days; the schedule is enforced inside execute()
+    from include.classes.services.ca_update import DEFAULT_INTERVAL as _CA_CHECK_INTERVAL
     ca_cert_update_service = CACertUpdateService(
         page=page,
         enabled=True,
-        interval=86_400.0,  # 24 hours
-        check_on_start=True,
+        interval=_CA_CHECK_INTERVAL,
     )
     service_manager.register(ca_cert_update_service)
 
@@ -227,8 +226,17 @@ async def main(page: ft.Page):
 
     page.on_close = on_page_close
 
-    # Navigate to initial screen
-    await page.push_route("/connect")
+    # Navigate to initial screen.
+    # On first launch the CA cert manifest doesn't exist yet – show the
+    # initialisation wizard.  On subsequent launches go straight to connect.
+    from include.util.ca_update import manifest_exists
+    from include.constants import ROOT_PATH as _ROOT_PATH
+
+    _ca_dir = _ROOT_PATH / "include" / "ca"
+    if not manifest_exists(_ca_dir):
+        await page.push_route("/ca_init")
+    else:
+        await page.push_route("/connect")
 
 
 if __name__ == "__main__":

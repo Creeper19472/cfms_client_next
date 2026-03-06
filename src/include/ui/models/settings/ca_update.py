@@ -1,14 +1,19 @@
-"""CA Certificate Store settings / management page."""
+"""CA Certificate Store settings page – kept for reference only.
+
+This page has been merged into the Security settings page
+(:class:`~include.ui.models.settings.safety.SafetySettingsModel`).
+It is no longer registered in the settings overview.
+"""
 
 from __future__ import annotations
 
 import time
 
-from flet_model import Router, route
+from flet_model import route
 import flet as ft
 
 from include.classes.services.ca_update import CACertUpdateService
-from include.ui.frameworks.settings import DeclarativeActionPage, settings_page
+from include.ui.frameworks.settings import DeclarativeActionPage
 from include.ui.util.notifications import send_error, send_success
 from include.util.locale import get_translation
 
@@ -19,8 +24,8 @@ _ = t.gettext
 _MAX_DISPLAYED_ERRORS = 3
 
 
-@settings_page
-@route("ca_certs_settings")
+# NOTE: @settings_page and @route decorators removed – this page is no
+# longer reachable or registered in the settings overview.
 class CACertSettingsModel(DeclarativeActionPage):
     """Settings page for managing the local CA certificate store.
 

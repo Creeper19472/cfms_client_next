@@ -1,10 +1,13 @@
 """Utilities for checking and updating the local CA certificate store.
 
 The certificate store is fetched from the GitHub repository referenced by
-:data:`include.constants.CA_CERT_REPO`.  Only files whose extension is
-``.pem`` or ``.crt`` are downloaded.  A per-file manifest
-(:file:`.manifest.json`) is stored in the CA directory so that unchanged
-certificates are never re-downloaded.
+:data:`include.constants.CA_CERT_REPO`.  Certificate files use the OpenSSL
+``c_rehash`` naming convention (``{8-hex-chars}.{n}``) and therefore do NOT
+carry a ``.pem`` / ``.crt`` extension.  All non-hidden files (files whose
+name does not start with ``.``) are treated as certificate files.
+
+A per-file manifest (:file:`.manifest.json`) is stored in the CA directory
+so that unchanged certificates are never re-downloaded.
 """
 
 from __future__ import annotations
@@ -12,7 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-import os
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,22 +27,33 @@ from include.constants import CA_CERT_API_URL
 
 __all__ = [
     "CACertUpdateResult",
+    "build_initial_manifest",
     "check_and_update_ca_certs",
     "has_expired_certificates",
     "load_last_check_time",
+    "manifest_exists",
     "save_last_check_time",
 ]
 
 logger = logging.getLogger(__name__)
-
-# Only download files with these extensions from the remote repository.
-_ALLOWED_EXTENSIONS: frozenset[str] = frozenset({".pem", ".crt"})
 
 # Name of the local manifest file that stores per-file git-blob SHAs.
 _MANIFEST_FILENAME = ".manifest.json"
 
 # Name of the file that persists the Unix timestamp of the last successful check.
 _LAST_CHECK_FILENAME = ".last_check"
+
+
+def _is_cert_file(name: str) -> bool:
+    """Return ``True`` for files that should be managed in the CA directory.
+
+    Accepts any non-empty filename that does not start with ``'.'`` so that
+    OpenSSL ``c_rehash`` hash-number files (e.g. ``a1b2c3d4.0``) are
+    included alongside traditional ``.pem``/``.crt`` names.  Hidden helper
+    files such as :file:`.manifest.json` and :file:`.last_check` are
+    excluded.
+    """
+    return bool(name) and not name.startswith(".")
 
 
 @dataclass
@@ -138,12 +152,60 @@ def save_last_check_time(ca_dir: Path, timestamp: float) -> None:
         logger.warning("Could not write last-check timestamp: %s", exc)
 
 
+def manifest_exists(ca_dir: Path) -> bool:
+    """Return ``True`` if the CA certificate manifest already exists in *ca_dir*.
+
+    This is used at application startup to decide whether to run the
+    first-time initialisation wizard.
+    """
+    return (ca_dir / _MANIFEST_FILENAME).exists()
+
+
+def build_initial_manifest(ca_dir: Path) -> dict[str, str]:
+    """Build and persist the initial CA certificate manifest from local files.
+
+    Scans *ca_dir* for all non-hidden files (OpenSSL hash-number names such
+    as ``a1b2c3d4.0`` as well as any ``.pem``/``.crt`` files), computes their
+    git-blob SHAs, saves a :file:`.manifest.json`, and records the current
+    time as the last-check timestamp (so the 90-day periodic check clock
+    starts from the moment of first installation).
+
+    Parameters
+    ----------
+    ca_dir:
+        Path to the local CA certificate directory.
+
+    Returns
+    -------
+    dict[str, str]
+        Mapping of ``filename → git-blob SHA`` for every file that was found.
+    """
+    ca_dir.mkdir(parents=True, exist_ok=True)
+    manifest: dict[str, str] = {}
+    for cert_file in ca_dir.iterdir():
+        if not cert_file.is_file() or not _is_cert_file(cert_file.name):
+            continue
+        try:
+            content = cert_file.read_bytes()
+            manifest[cert_file.name] = _git_blob_sha(content)
+            logger.debug("Manifest: recorded %s", cert_file.name)
+        except Exception as exc:
+            logger.warning("Could not read %s for manifest: %s", cert_file.name, exc)
+
+    _save_manifest(ca_dir, manifest)
+    # Start the 90-day periodic-check clock from now.
+    save_last_check_time(ca_dir, time.time())
+    logger.info("Initial CA cert manifest built: %d file(s)", len(manifest))
+    return manifest
+
+
 def has_expired_certificates(ca_dir: Path) -> bool:
     """Return ``True`` if any certificate file in *ca_dir* has expired.
 
-    Uses :mod:`cryptography.x509` to parse PEM/DER certificates and compare
-    their *Not After* field against the current UTC time.  Files that cannot
-    be parsed are silently skipped (they are not considered expired).
+    Uses :mod:`cryptography.x509` to parse each non-hidden file as a PEM
+    certificate and compares its *Not After* field against the current UTC
+    time.  Files that cannot be parsed are silently skipped (they are not
+    considered expired).
 
     Parameters
     ----------
@@ -161,9 +223,7 @@ def has_expired_certificates(ca_dir: Path) -> bool:
 
     now = datetime.now(tz=timezone.utc)
     for cert_file in ca_dir.iterdir():
-        if not cert_file.is_file():
-            continue
-        if os.path.splitext(cert_file.name)[1].lower() not in _ALLOWED_EXTENSIONS:
+        if not cert_file.is_file() or not _is_cert_file(cert_file.name):
             continue
         try:
             cert = _x509.load_pem_x509_certificate(cert_file.read_bytes())
@@ -206,14 +266,14 @@ def check_and_update_ca_certs(
     ---------
     1. Fetch the directory listing from the GitHub Contents API.
     2. Load the local manifest (git-blob SHA per filename).
-    3. For each remote file whose extension is in :data:`_ALLOWED_EXTENSIONS`:
+    3. For each remote non-hidden file:
 
        * If the filename is not in the manifest **or** the SHA has changed,
          download the file, verify its integrity against the expected git-blob
          SHA, write it to disk, and record the new SHA.
        * Otherwise mark it as unchanged.
 
-    4. For each local certificate file *not* present in the remote listing,
+    4. For each local non-hidden file *not* present in the remote listing,
        delete the file and remove it from the manifest.
     5. Persist the updated manifest.
 
@@ -242,15 +302,14 @@ def check_and_update_ca_certs(
         result.errors.append(f"Failed to fetch remote listing: {exc}")
         return result
 
-    # Build a map of filename -> entry for easy lookup (files only, allowed ext)
+    # Build a map of filename → entry for easy lookup (non-hidden files only).
     remote_files: dict[str, dict[str, Any]] = {}
     for entry in remote_entries:
         if entry.get("type") != "file":
             continue
         name: str = entry.get("name", "")
-        ext = os.path.splitext(name)[1].lower()
-        if ext not in _ALLOWED_EXTENSIONS:
-            logger.debug("Skipping non-certificate file: %s", name)
+        if not _is_cert_file(name):
+            logger.debug("Skipping hidden/non-certificate file: %s", name)
             continue
         remote_files[name] = entry
 
@@ -314,7 +373,7 @@ def check_and_update_ca_certs(
     local_cert_files: set[str] = {
         p.name
         for p in ca_dir.iterdir()
-        if p.is_file() and os.path.splitext(p.name)[1].lower() in _ALLOWED_EXTENSIONS
+        if p.is_file() and _is_cert_file(p.name)
     }
     for name in local_cert_files - set(remote_files):
         try:

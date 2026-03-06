@@ -9,10 +9,9 @@ Models (in display order):
     - LanguageSettingsModel: Language and localization settings
     - ConnectionSettingsModel: Network and connection settings
     - StorageSettingsModel: Storage and cache settings
-    - SafetySettingsModel: Security and safety settings
+    - SafetySettingsModel: Security, safety and CA certificate management
     - UpdatesSettingsModel: Software updates and version settings
     - TwoFactorSettingsModel: Two-factor authentication settings
-    - CACertSettingsModel: CA certificate store management
 
 Note:
     The order of model imports directly corresponds to the order in which they appear 
@@ -26,7 +25,6 @@ from .storage import StorageSettingsModel
 from .safety import SafetySettingsModel
 from .updates import UpdatesSettingsModel
 from .twofa import TwoFactorSettingsModel
-from .ca_update import CACertSettingsModel
 
 __all__ = [
     "SettingsModel",
@@ -36,5 +34,4 @@ __all__ = [
     "SafetySettingsModel",
     "UpdatesSettingsModel",
     "TwoFactorSettingsModel",
-    "CACertSettingsModel",
 ]
