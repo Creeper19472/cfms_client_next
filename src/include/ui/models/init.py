@@ -26,7 +26,7 @@ _ = t.gettext
 _CA_DIR = ROOT_PATH / "include" / "ca"
 
 
-@route("ca_init")
+@route("init")
 class AppInitModel(Model):
     """Full-screen initialisation wizard displayed on first application launch.
 

@@ -236,7 +236,7 @@ async def main(page: ft.Page):
 
     _ca_dir = _ROOT_PATH / "include" / "ca"
     if not manifest_exists(_ca_dir):
-        await page.push_route("/ca_init")
+        await page.push_route("/init")
     else:
         await page.push_route("/connect")
 
