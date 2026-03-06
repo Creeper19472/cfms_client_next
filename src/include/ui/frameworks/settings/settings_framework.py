@@ -7,7 +7,8 @@ dependency management, and auto-registration in the Settings Overview.
 Basic usage (declarative)::
 
     from include.ui.frameworks.settings import (
-        DeclarativeSettingsPage, SettingsField, settings_page,
+        DeclarativeSettingsPage, SettingsField, SectionHeader, Separator,
+        HelpText, settings_page,
     )
     from flet_model import route
 
@@ -20,12 +21,16 @@ Basic usage (declarative)::
         settings_icon = ft.Icons.SETTINGS
         settings_route_suffix = "my_settings"
 
-        # Declarative fields
+        # Declarative fields with section headers and separators
+        _general_header = SectionHeader(_("General"))
         enable_feature: SettingsField[bool] = SettingsField(label=_("Enable feature"))
         feature_value: SettingsField[str] = SettingsField(
             label=_("Feature value"),
             depends_on="enable_feature",
         )
+        _divider = Separator()
+        _advanced_header = SectionHeader(_("Advanced"))
+        advanced_option: SettingsField[str] = SettingsField(label=_("Advanced option"))
 
 Non-declarative (existing complex) pages can still register for Overview
 auto-population by mixing in :class:`RegisteredSettingsPage`::
@@ -66,6 +71,9 @@ _T = TypeVar("_T")
 
 __all__ = [
     "SettingsField",
+    "SectionHeader",
+    "Separator",
+    "HelpText",
     "RegisteredSettingsPage",
     "DeclarativeSettingsPage",
     "DeclarativeActionPage",
@@ -406,6 +414,164 @@ class SettingsField(Generic[_T]):
 
 
 # ---------------------------------------------------------------------------
+# SectionHeader – declarative section heading
+# ---------------------------------------------------------------------------
+
+
+class SectionHeader:
+    """A declarative section header for settings pages.
+
+    Declare as a class attribute (without type annotation) to render a
+    section heading between settings fields::
+
+        class MyPage(DeclarativeSettingsPage):
+            _network_header = SectionHeader(_("Network"))
+            proxy_enabled: SettingsField[bool] = SettingsField(label=_("Enable proxy"))
+
+    String arguments are stored and returned as-is.  **Always pass them
+    through ``_()`` at the call site** so that translatable strings can be
+    extracted::
+
+        _section = SectionHeader(_("My Section"))
+
+    A zero-argument callable is also accepted for deferred evaluation::
+
+        _section = SectionHeader(lambda: _("My Section"))
+
+    Parameters
+    ----------
+    title:
+        Section heading text.  Pass an already-translated string
+        (``_("...")``) or a zero-argument callable for deferred evaluation.
+    """
+
+    def __init__(self, title: str | Callable[[], str]) -> None:
+        self._title = title
+        # Set by __set_name__ when the owning class body is processed.
+        self._attr_name: str = ""
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        self._attr_name = name
+
+    @property
+    def title(self) -> str:
+        return self._title() if callable(self._title) else self._title
+
+    def build_control(self) -> ft.Control:
+        """Return a styled ``ft.Text`` for this section header."""
+        return ft.Text(self.title, size=16, weight=ft.FontWeight.BOLD)
+
+
+# ---------------------------------------------------------------------------
+# Separator – declarative horizontal divider
+# ---------------------------------------------------------------------------
+
+
+class Separator:
+    """A declarative horizontal separator for settings pages.
+
+    Declare as a class attribute (without type annotation) to render a
+    horizontal divider between settings fields or sections::
+
+        class MyPage(DeclarativeSettingsPage):
+            first_field: SettingsField[bool] = SettingsField(label=_("First"))
+            _divider = Separator()
+            second_field: SettingsField[str] = SettingsField(label=_("Second"))
+
+    Parameters
+    ----------
+    thickness:
+        Divider thickness in logical pixels.  Defaults to ``1``.
+    color:
+        Divider color expressed as a Flet/CSS colour string or
+        ``ft.Colors`` constant.  Defaults to ``None`` (theme default).
+    """
+
+    def __init__(
+        self,
+        *,
+        thickness: float = 1,
+        color: str | None = None,
+    ) -> None:
+        self.thickness = thickness
+        self.color = color
+        # Set by __set_name__ when the owning class body is processed.
+        self._attr_name: str = ""
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        self._attr_name = name
+
+    def build_control(self) -> ft.Control:
+        """Return a ``ft.Divider`` for this separator."""
+        return ft.Divider(thickness=self.thickness, color=self.color)
+
+
+# ---------------------------------------------------------------------------
+# HelpText – declarative paragraph of help/description text
+# ---------------------------------------------------------------------------
+
+
+class HelpText:
+    """A declarative paragraph of help or description text for settings pages.
+
+    Declare as a class attribute (without a type annotation) to render a
+    block of informational text between settings fields::
+
+        class MyPage(DeclarativeSettingsPage):
+            _proxy_header = SectionHeader(_("Proxy"))
+            _proxy_help = HelpText(
+                _("Configure a proxy server for outbound connections."),
+            )
+            proxy_host: SettingsField[str] = SettingsField(label=_("Host"))
+
+    String arguments are stored and returned as-is.  **Always pass them
+    through ``_()`` at the call site** so that translatable strings can be
+    extracted::
+
+        _help = HelpText(_("Some helpful information."))
+
+    A zero-argument callable is also accepted for deferred evaluation::
+
+        _help = HelpText(lambda: _("Some helpful information."))
+
+    Parameters
+    ----------
+    text:
+        Paragraph text.  Pass an already-translated string (``_("...")``)
+        or a zero-argument callable for deferred evaluation.
+    size:
+        Font size in logical pixels.  Defaults to ``13``.
+    color:
+        Text color expressed as a Flet/CSS colour string or
+        ``ft.Colors`` constant.  Defaults to ``None`` (theme default).
+    """
+
+    def __init__(
+        self,
+        text: str | Callable[[], str],
+        *,
+        size: int = 13,
+        color: str | None = None,
+    ) -> None:
+        self._text = text
+        self.size = size
+        self.color = color
+        # Set by __set_name__ when the owning class body is processed.
+        self._attr_name: str = ""
+
+    def __set_name__(self, owner: type, name: str) -> None:
+        self._attr_name = name
+
+    @property
+    def text(self) -> str:
+        return self._text() if callable(self._text) else self._text
+
+    def build_control(self) -> ft.Control:
+        """Return a ``ft.Text`` for this help paragraph."""
+        return ft.Text(self.text, size=self.size, color=self.color)
+
+
+# ---------------------------------------------------------------------------
 # DeclarativeSettingsPage – base Model for declarative settings pages
 # ---------------------------------------------------------------------------
 
@@ -471,15 +637,24 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
     # Field introspection
     # ------------------------------------------------------------------
 
-    def _collect_fields(self) -> list[tuple[str, SettingsField, type]]:
-        """Return ``(attr_name, field, python_type)`` triples in declaration order.
+    def _collect_fields(
+        self,
+    ) -> list[tuple[str, "SettingsField | SectionHeader | Separator | HelpText", type | None]]:
+        """Return items in declaration order.
 
-        Only annotated class attributes whose value is a :class:`SettingsField`
-        instance are included.
+        Each element is a triple ``(attr_name, item, python_type)`` where
+        *item* is a :class:`SettingsField`, :class:`SectionHeader`,
+        :class:`Separator`, or :class:`HelpText` instance.
+        *python_type* is ``None`` for :class:`SectionHeader`,
+        :class:`Separator`, and :class:`HelpText`.
 
-        Because :meth:`SettingsField.__set_name__` is called by Python when the
-        class body is processed, each field already knows its own attribute name
-        — no external mutation is required here.
+        The class ``__dict__`` is walked (not just ``__annotations__``) so that
+        unannotated descriptors such as :class:`SectionHeader`,
+        :class:`Separator`, and :class:`HelpText` are discovered alongside
+        annotated :class:`SettingsField` entries, all in their original
+        declaration order.
+        The MRO is traversed in reverse so that base-class items appear before
+        subclass items.
         """
         cls = type(self)
         try:
@@ -487,47 +662,65 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         except Exception:
             hints = {}
 
-        result: list[tuple[str, SettingsField, type]] = []
+        result: list[
+            tuple[str, SettingsField | SectionHeader | Separator | HelpText, type | None]
+        ] = []
         # cls.__annotations__ preserves declaration order (Python 3.7+) and
         # only contains annotations defined directly on cls (not inherited ones).
         # We walk the MRO to support field inheritance in subclasses.
         seen: set[str] = set()
         for klass in reversed(cls.__mro__):
-            ann = getattr(klass, "__annotations__", {})
-            for attr_name in ann:
+            # klass.__dict__ is an ordered mapping (guaranteed since Python 3.7)
+            # that contains both annotated and unannotated class attributes in
+            # their declaration order.  This lets us discover SectionHeader /
+            # Separator instances (which have no type annotation) interleaved
+            # with SettingsField entries while preserving the visual order
+            # defined in the class body.
+            for attr_name, value in klass.__dict__.items():
                 if attr_name in seen:
                     continue
-                seen.add(attr_name)
-                # Class-level access returns the SettingsField descriptor itself
-                # (via __get__ with obj=None).
-                val = getattr(cls, attr_name, None)
-                if not isinstance(val, SettingsField):
-                    continue
-                # Prefer the fully-resolved hint from get_type_hints; fall back
-                # to the raw annotation object.
-                hint = hints.get(attr_name) or ann.get(attr_name)
-                # Support both the canonical SettingsField[T] annotation and
-                # legacy bare type annotations (str, bool, ...) for backward
-                # compatibility.
-                origin = getattr(hint, "__origin__", None)
-                if origin is SettingsField:
-                    # SettingsField[T] — extract the inner type T.
-                    args = get_args(hint)
-                    if not args:
-                        raise TypeError(
-                            f"{cls.__qualname__}.{attr_name}: "
-                            "SettingsField must be parameterised with a type, "
-                            "e.g. SettingsField[bool] or SettingsField[str]."
-                        )
-                    field_type: type = args[0]
-                elif isinstance(hint, type) and not issubclass(hint, SettingsField):
-                    # Legacy bare annotation e.g. `name: str = SettingsField(...)`
-                    # The `issubclass` guard prevents using the bare SettingsField
-                    # class itself as the field_type.
-                    field_type = hint
-                else:
-                    field_type = str
-                result.append((attr_name, val, field_type))
+
+                # Only reserve the name in `seen` once we know `value` is a
+                # framework item.  Regular methods, class constants, or other
+                # non-framework attributes in base classes must *not* block a
+                # subclass from declaring a SettingsField (or layout item) with
+                # the same name; silently dropping such a field would be hard to
+                # debug.  We still prevent the same framework-item name from
+                # being collected twice (e.g. inherited then re-declared).
+                if isinstance(value, (SectionHeader, Separator, HelpText)):
+                    seen.add(attr_name)
+                    result.append((attr_name, value, None))
+                elif isinstance(value, SettingsField):
+                    seen.add(attr_name)
+                    ann = getattr(klass, "__annotations__", {})
+                    # Prefer the fully-resolved hint from get_type_hints; fall
+                    # back to the raw annotation object.
+                    hint = hints.get(attr_name) or ann.get(attr_name)
+                    # Support both the canonical SettingsField[T] annotation
+                    # and legacy bare type annotations (str, bool, ...) for
+                    # backward compatibility.
+                    origin = getattr(hint, "__origin__", None)
+                    if origin is SettingsField:
+                        # SettingsField[T] — extract the inner type T.
+                        args = get_args(hint)
+                        if not args:
+                            raise TypeError(
+                                f"{cls.__qualname__}.{attr_name}: "
+                                "SettingsField must be parameterised with a type, "
+                                "e.g. SettingsField[bool] or SettingsField[str]."
+                            )
+                        field_type: type = args[0]
+                    elif isinstance(hint, type) and not issubclass(
+                        hint, SettingsField
+                    ):
+                        # Legacy bare annotation e.g.
+                        # `name: str = SettingsField(...)`
+                        # The `issubclass` guard prevents using the bare
+                        # SettingsField class itself as the field_type.
+                        field_type = hint
+                    else:
+                        field_type = str
+                    result.append((attr_name, value, field_type))
         return result
 
     # ------------------------------------------------------------------
@@ -580,6 +773,25 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             pending_option_desc_controls = []
 
         for attr_name, field, field_type in self._fields:
+            # Section headers, separators and help-text are rendered directly
+            # and never participate in row groups, dependency tracking, or
+            # persistence.
+            if isinstance(field, SectionHeader):
+                flush_pending_row()
+                controls.append(field.build_control())
+                continue
+            if isinstance(field, Separator):
+                flush_pending_row()
+                controls.append(field.build_control())
+                continue
+            if isinstance(field, HelpText):
+                flush_pending_row()
+                controls.append(field.build_control())
+                continue
+
+            # field_type is always set for SettingsField entries; the SectionHeader,
+            # Separator, and HelpText branches above handle the None cases and continue.
+            assert field_type is not None
             control = field.build_control(field_type)
 
             # Wire switch-change handler for automatic dependency flushing.
@@ -668,6 +880,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
+            if not isinstance(field, SettingsField):
+                continue
             if not field.persist:
                 continue
             value = section.get(field.config_key, field.default)
@@ -690,6 +904,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             type(self).settings_pref_section, {}
         )
         for attr_name, field, _ftype in self._fields:
+            if not isinstance(field, SettingsField):
+                continue
             if not field.persist:
                 continue
             # Use the descriptor __get__ to read the current control value.
@@ -721,6 +937,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         (``SettingsField.disabled is True``) are never re-enabled.
         """
         for attr_name, field, _ftype in self._fields:
+            if not isinstance(field, SettingsField):
+                continue
             if field.depends_on is None or field.disabled:
                 continue
             control = self._control_map.get(attr_name)

@@ -8,6 +8,9 @@ import flet as ft
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
+    HelpText,
+    SectionHeader,
+    Separator,
     SettingsField,
     settings_page,
 )
@@ -52,9 +55,23 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         ),
     )
 
+    # ---------------------------------------------------------------------------
+    # CA certificates section (static structure declared here)
+    # ---------------------------------------------------------------------------
+
+    _ca_separator = Separator()
+    _ca_header = SectionHeader(_("CA Certificates"))
+    _ca_description = HelpText(
+        _(
+            "The CA certificate store contains trusted root certificates "
+            "used to verify secure connections to your server."
+        ),
+        color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
+    )
+
     def __init__(self, page: ft.Page, router: Router) -> None:
-        # Create the CA cert controls *before* super().__init__() because the
-        # base class calls _build_controls() during __init__, and our override
+        # Create the dynamic CA cert controls *before* super().__init__() because
+        # the base class calls _build_controls() during __init__, and our override
         # of that method references these attributes.
         self._ca_last_checked_text = ft.Text(
             _("Last checked: Never"),
@@ -71,30 +88,14 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         super().__init__(page, router)
 
     # ------------------------------------------------------------------
-    # Extend the declarative control list with the CA cert section
+    # Extend the declarative control list with the dynamic CA cert controls
     # ------------------------------------------------------------------
 
     def _build_controls(self) -> list[ft.Control]:
-        """Build the declarative field controls, then append the CA cert section."""
+        """Build declarative field controls, then append the dynamic CA controls."""
         controls = super()._build_controls()
         controls += [
-            ft.Divider(height=24),
-            ft.Text(
-                _("CA Certificates"),
-                size=16,
-                weight=ft.FontWeight.BOLD,
-            ),
-            ft.Text(
-                _(
-                    "The CA certificate store contains trusted root certificates "
-                    "used to verify secure connections to your server."
-                ),
-                size=13,
-                color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
-            ),
-            ft.Divider(height=8, color=ft.Colors.TRANSPARENT),
             self._ca_last_checked_text,
-            ft.Divider(height=4, color=ft.Colors.TRANSPARENT),
             self._ca_update_button,
             self._ca_result_text,
         ]
