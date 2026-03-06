@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import time
-from typing import Optional
+from typing import Callable, Optional
 
 import flet as ft
 
@@ -144,10 +144,20 @@ class CACertUpdateService(BaseService):
     # Core update logic
     # ------------------------------------------------------------------
 
-    async def _run_update(self) -> CACertUpdateResult:
+    async def _run_update(
+        self,
+        on_progress: Optional[Callable[[str, str], None]] = None,
+    ) -> CACertUpdateResult:
         """Execute the update in a thread-pool executor and store the result.
 
         Acquires :attr:`_update_lock` so that only one update runs at a time.
+
+        Parameters
+        ----------
+        on_progress:
+            Optional two-argument callback ``(stage, detail)`` forwarded to
+            :func:`~include.util.ca_update.check_and_update_ca_certs`.
+            Called from the thread-pool thread — must be thread-safe.
 
         Returns
         -------
@@ -160,8 +170,9 @@ class CACertUpdateService(BaseService):
             try:
                 result: CACertUpdateResult = await loop.run_in_executor(
                     None,
-                    check_and_update_ca_certs,
-                    _CA_DIR,
+                    lambda: check_and_update_ca_certs(
+                        _CA_DIR, on_progress=on_progress
+                    ),
                 )
             except Exception as exc:
                 self.logger.error(
@@ -182,13 +193,27 @@ class CACertUpdateService(BaseService):
     # Public API – manual trigger
     # ------------------------------------------------------------------
 
-    async def update_now(self) -> CACertUpdateResult:
+    async def update_now(
+        self,
+        on_progress: Optional[Callable[[str, str], None]] = None,
+    ) -> CACertUpdateResult:
         """Manually trigger an immediate CA certificate store update.
 
         This method can be called from the UI to run an out-of-schedule
         update and returns the :class:`~include.util.ca_update.CACertUpdateResult`.
         If an update is already in progress the call will wait for it to
         finish before starting a new one.
+
+        Parameters
+        ----------
+        on_progress:
+            Optional two-argument callback ``(stage, detail)`` that receives
+            progress notifications during the update.  *stage* is one of the
+            ``STAGE_*`` constants exported by
+            :mod:`include.util.ca_update`; *detail* is an optional
+            human-readable string (e.g. the filename being downloaded).
+            The callback is invoked from a thread-pool thread and must be
+            thread-safe.
         """
         self.logger.info("Manual CA cert update requested")
-        return await self._run_update()
+        return await self._run_update(on_progress=on_progress)

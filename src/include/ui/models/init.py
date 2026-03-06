@@ -219,7 +219,9 @@ class AppInitModel(Model):
                 progress_dialog = CACertUpdateProgressDialog()
                 self.page.show_dialog(progress_dialog)
                 try:
-                    await ca_service.update_now()
+                    await ca_service.update_now(
+                        on_progress=progress_dialog.make_progress_callback()
+                    )
                 finally:
                     progress_dialog.close()
 

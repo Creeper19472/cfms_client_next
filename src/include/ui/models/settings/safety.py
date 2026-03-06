@@ -156,7 +156,9 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         self.page.show_dialog(progress_dialog)
 
         try:
-            result = await service.update_now()
+            result = await service.update_now(
+                on_progress=progress_dialog.make_progress_callback()
+            )
         except Exception as exc:
             send_error(self.page, _("Update failed: {error}").format(error=exc))
             return

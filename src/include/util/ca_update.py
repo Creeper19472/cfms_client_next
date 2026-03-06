@@ -31,7 +31,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 import requests
 
@@ -39,6 +39,11 @@ from include.constants import CA_CERT_API_URL
 
 __all__ = [
     "CACertUpdateResult",
+    "STAGE_CONNECTING",
+    "STAGE_CHECKING",
+    "STAGE_DOWNLOADING",
+    "STAGE_REMOVING",
+    "STAGE_SAVING",
     "build_initial_manifest",
     "check_and_update_ca_certs",
     "has_expired_certificates",
@@ -48,6 +53,21 @@ __all__ = [
 ]
 
 logger = logging.getLogger(__name__)
+
+# Progress stage identifiers passed to the on_progress callback.
+# Each constant identifies the current phase of a certificate store update:
+#
+#   STAGE_CONNECTING  – about to contact the remote repository
+#   STAGE_CHECKING    – remote listing fetched; comparing with local store
+#   STAGE_DOWNLOADING – downloading a new or updated certificate file
+#   STAGE_REMOVING    – deleting a certificate no longer in the remote store
+#   STAGE_SAVING      – persisting the updated manifest
+#
+STAGE_CONNECTING = "connecting"
+STAGE_CHECKING = "checking"
+STAGE_DOWNLOADING = "downloading"
+STAGE_REMOVING = "removing"
+STAGE_SAVING = "saving"
 
 # Name of the local manifest file.
 _MANIFEST_FILENAME = ".manifest.json"
@@ -314,6 +334,7 @@ def check_and_update_ca_certs(
     ca_dir: Path,
     *,
     timeout: int = 10,
+    on_progress: Optional[Callable[[str, str], None]] = None,
 ) -> CACertUpdateResult:
     """Check the remote CA certificate repository and sync the local store.
 
@@ -338,18 +359,33 @@ def check_and_update_ca_certs(
         Path to the local CA certificate directory.
     timeout:
         HTTP request timeout in seconds.
+    on_progress:
+        Optional callback invoked at each significant stage with two arguments:
+        ``(stage, detail)`` where *stage* is one of the ``STAGE_*`` constants
+        and *detail* is a short human-readable description (may be empty).
+        The callback is called from the thread that runs this function; it
+        must be thread-safe if Flet UI elements are updated inside it.
 
     Returns
     -------
     CACertUpdateResult
         Summary of the changes made.
     """
+
+    def _progress(stage: str, detail: str = "") -> None:
+        if on_progress is not None:
+            try:
+                on_progress(stage, detail)
+            except Exception:
+                pass
+
     result = CACertUpdateResult()
 
     ca_dir.mkdir(parents=True, exist_ok=True)
     manifest = _load_manifest(ca_dir)
 
     # --- fetch remote state ---------------------------------------------------
+    _progress(STAGE_CONNECTING)
     try:
         remote_entries = _fetch_remote_entries(timeout=timeout)
     except Exception as exc:
@@ -368,6 +404,8 @@ def check_and_update_ca_certs(
             continue
         remote_files[name] = entry
 
+    _progress(STAGE_CHECKING, str(len(remote_files)))
+
     # --- add / update ---------------------------------------------------------
     for name, entry in remote_files.items():
         remote_sha: str = entry.get("sha", "")
@@ -384,6 +422,7 @@ def check_and_update_ca_certs(
             result.errors.append(f"No download_url for {name}")
             continue
 
+        _progress(STAGE_DOWNLOADING, name)
         try:
             file_resp = requests.get(download_url, timeout=timeout)
             file_resp.raise_for_status()
@@ -431,6 +470,7 @@ def check_and_update_ca_certs(
         if p.is_file() and _is_cert_file(p.name)
     }
     for name in local_cert_files - set(remote_files):
+        _progress(STAGE_REMOVING, name)
         try:
             (ca_dir / name).unlink()
             manifest.pop(name, None)
@@ -440,6 +480,7 @@ def check_and_update_ca_certs(
             logger.error("Failed to remove %s: %s", name, exc)
             result.errors.append(f"Failed to remove {name}: {exc}")
 
+    _progress(STAGE_SAVING)
     _save_manifest(ca_dir, manifest)
 
     logger.info(
