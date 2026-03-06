@@ -6,10 +6,19 @@ The certificate store is fetched from the GitHub repository referenced by
 followed by a dot and a non-negative integer (e.g. ``a1b2c3d4.0``).  Only
 files matching this pattern are managed.
 
-A per-file manifest (:file:`.manifest.json`) is stored in the CA directory.
-It holds git-blob SHAs for every managed file and also stores the Unix
-timestamp of the last successful check under the reserved key
-``"__last_check__"``, eliminating the need for a separate ``.last_check`` file.
+A manifest (:file:`.manifest.json`) is stored in the CA directory with the
+following structure::
+
+    {
+      "last_check": 1772798128.0,
+      "files": {
+        "a1b2c3d4.0": "<git-blob-sha>",
+        ...
+      }
+    }
+
+``last_check`` is the Unix timestamp of the most recent successful sync.
+``files`` maps each managed certificate filename to its git-blob SHA.
 """
 
 from __future__ import annotations
@@ -40,11 +49,12 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-# Name of the local manifest file that stores per-file git-blob SHAs and metadata.
+# Name of the local manifest file.
 _MANIFEST_FILENAME = ".manifest.json"
 
-# Reserved key inside .manifest.json for the last-check Unix timestamp.
-_LAST_CHECK_KEY = "__last_check__"
+# Top-level keys used inside the manifest JSON.
+_KEY_LAST_CHECK = "last_check"
+_KEY_FILES = "files"
 
 # Compiled regex for the OpenSSL c_rehash naming convention: 8 lowercase hex
 # characters followed by a dot and a non-negative integer (e.g. a1b2c3d4.0).
@@ -103,9 +113,10 @@ def _git_blob_sha(content: bytes) -> str:
 
 
 def _load_manifest_raw(ca_dir: Path) -> dict[str, Any]:
-    """Load the full manifest JSON from *ca_dir* (including metadata keys).
+    """Load the full manifest JSON from *ca_dir*.
 
     Returns an empty dict if the manifest does not exist or is corrupt.
+    The returned dict has the shape ``{"last_check": float, "files": {name: sha, ...}}``.
     """
     manifest_path = ca_dir / _MANIFEST_FILENAME
     if not manifest_path.exists():
@@ -120,41 +131,48 @@ def _load_manifest_raw(ca_dir: Path) -> dict[str, Any]:
 
 
 def _load_manifest(ca_dir: Path) -> dict[str, str]:
-    """Load the git-blob SHA manifest from *ca_dir*.
+    """Load the git-blob SHA map from *ca_dir*.
 
-    Returns a mapping of ``filename → sha`` for certificate files only.
-    The reserved :data:`_LAST_CHECK_KEY` entry is excluded.
+    Returns the ``"files"`` sub-dict (``filename → sha``) from the manifest.
+    Returns an empty dict if the manifest does not exist or has no ``"files"``
+    section.
     """
     raw = _load_manifest_raw(ca_dir)
-    return {
-        str(k): str(v)
-        for k, v in raw.items()
-        if k != _LAST_CHECK_KEY and isinstance(v, str)
-    }
+    files = raw.get(_KEY_FILES)
+    if not isinstance(files, dict):
+        return {}
+    return {str(k): str(v) for k, v in files.items() if isinstance(v, str)}
 
 
 def _save_manifest(
     ca_dir: Path,
-    manifest: dict[str, str],
+    files: dict[str, str],
     *,
     last_check: Optional[float] = None,
 ) -> None:
-    """Persist *manifest* (cert SHA entries) to *ca_dir*.
+    """Persist the manifest to *ca_dir*.
 
-    If *last_check* is given it is stored under :data:`_LAST_CHECK_KEY`.
+    The written JSON has the structure::
+
+        {
+          "last_check": <float | omitted>,
+          "files": { "<name>": "<sha>", ... }
+        }
+
+    If *last_check* is given it is stored under ``"last_check"``.
     If *last_check* is ``None`` the existing timestamp (if any) is preserved.
     """
     manifest_path = ca_dir / _MANIFEST_FILENAME
 
-    # Preserve the existing last_check value if one isn't supplied.
+    # Preserve an existing last_check value when the caller doesn't supply one.
     if last_check is None:
         existing = _load_manifest_raw(ca_dir)
-        raw_val = existing.get(_LAST_CHECK_KEY)
+        raw_val = existing.get(_KEY_LAST_CHECK)
         last_check = float(raw_val) if isinstance(raw_val, (int, float)) else None
 
-    data: dict[str, Any] = dict(manifest)
+    data: dict[str, Any] = {_KEY_FILES: files}
     if last_check is not None:
-        data[_LAST_CHECK_KEY] = last_check
+        data[_KEY_LAST_CHECK] = last_check
 
     try:
         with manifest_path.open("w", encoding="utf-8") as fh:
@@ -167,12 +185,11 @@ def load_last_check_time(ca_dir: Path) -> Optional[float]:
     """Return the Unix timestamp of the last successful CA cert check, or
     ``None`` if no check has been recorded yet.
 
-    The timestamp is stored inside :file:`.manifest.json` under the
-    reserved key :data:`_LAST_CHECK_KEY` so that only one metadata file
-    is required in the CA directory.
+    The timestamp is read from ``"last_check"`` at the top level of
+    :file:`.manifest.json`.
     """
     raw = _load_manifest_raw(ca_dir)
-    value = raw.get(_LAST_CHECK_KEY)
+    value = raw.get(_KEY_LAST_CHECK)
     if value is None:
         return None
     try:
@@ -185,9 +202,8 @@ def load_last_check_time(ca_dir: Path) -> Optional[float]:
 def save_last_check_time(ca_dir: Path, timestamp: float) -> None:
     """Persist *timestamp* (Unix time) as the last successful CA cert check.
 
-    The timestamp is stored inside :file:`.manifest.json` under the
-    reserved key :data:`_LAST_CHECK_KEY`.  If the manifest file does not
-    yet exist, a new one containing only the timestamp is created.
+    The timestamp is stored under ``"last_check"`` in :file:`.manifest.json`.
+    The ``"files"`` section is left unchanged.
     """
     _save_manifest(ca_dir, _load_manifest(ca_dir), last_check=timestamp)
 
@@ -205,10 +221,10 @@ def build_initial_manifest(ca_dir: Path) -> dict[str, str]:
     """Build and persist the initial CA certificate manifest from local files.
 
     Scans *ca_dir* for all files matching the OpenSSL ``c_rehash`` naming
-    convention (``{8-hex-chars}.{n}``), computes their git-blob SHAs, saves
-    a :file:`.manifest.json` (including the current time as the
-    ``__last_check__`` timestamp), so the 90-day periodic check clock starts
-    from the moment of first installation.
+    convention (``{8-hex-chars}.{n}``), computes their git-blob SHAs, and
+    saves a :file:`.manifest.json` with the current time recorded as
+    ``last_check``, so the 90-day periodic check clock starts from the
+    moment of first installation.
 
     Parameters
     ----------
