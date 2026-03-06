@@ -504,9 +504,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 if not isinstance(val, SettingsField):
                     continue
                 # Prefer the fully-resolved hint from get_type_hints; fall back
-                # to the raw annotation object (which may already be a resolved
-                # generic alias when ``from __future__ import annotations`` is not
-                # in effect in the subclass's module).
+                # to the raw annotation object.
                 hint = hints.get(attr_name) or ann.get(attr_name)
                 # Support both the canonical SettingsField[T] annotation and
                 # legacy bare type annotations (str, bool, ...) for backward
