@@ -15,6 +15,7 @@ from include.constants import RUNTIME_PATH
 from include.classes.shared import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
+from include.classes.services.ca_update import CACertUpdateService
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
@@ -204,6 +205,16 @@ async def main(page: ft.Page):
         interval=300.0,  # Check every 5 minutes
     )
     service_manager.register(favorites_validation_service)
+
+    # Register CA certificate update service
+    # Check once per day (86 400 seconds) and also on startup
+    ca_cert_update_service = CACertUpdateService(
+        page=page,
+        enabled=True,
+        interval=86_400.0,  # 24 hours
+        check_on_start=True,
+    )
+    service_manager.register(ca_cert_update_service)
 
     # Start all registered services
     await service_manager.start_all()

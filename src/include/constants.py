@@ -16,6 +16,8 @@ __all__ = [
     "DEFAULT_WINDOW_TITLE",
     "GITHUB_REPO",
     "DEFAULT_UPDATE_CHANNEL",
+    "CA_CERT_REPO",
+    "CA_CERT_API_URL",
 ]
 
 # Path Configuration
@@ -32,6 +34,11 @@ USER_PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/user_preferences"
 # Application Info
 DEFAULT_WINDOW_TITLE = "CFMS Client"
 GITHUB_REPO = "Creeper19472/cfms_client_next"
+
+# CA certificate store repository (GitHub API)
+# Update this constant to change the certificate store source for the whole application.
+CA_CERT_REPO = "cfms-dev/ca"
+CA_CERT_API_URL = f"https://api.github.com/repos/{CA_CERT_REPO}/contents/"
 
 # Version Information
 CHANNEL = ChannelType.STABLE
