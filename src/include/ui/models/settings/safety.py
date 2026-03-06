@@ -61,14 +61,6 @@ class SafetySettingsModel(DeclarativeSettingsPage):
             size=13,
             color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
         )
-        self._ca_progress_ring = ft.ProgressRing(visible=False, width=20, height=20)
-        self._ca_progress_text = ft.Text(
-            _("Updating certificate store…"), visible=False
-        )
-        self._ca_progress_row = ft.Row(
-            controls=[self._ca_progress_ring, self._ca_progress_text],
-            visible=False,
-        )
         self._ca_result_text = ft.Text(visible=False, size=13)
         self._ca_update_button = ft.Button(
             _("Check and Update Now"),
@@ -97,7 +89,6 @@ class SafetySettingsModel(DeclarativeSettingsPage):
                 self._ca_last_checked_text,
                 ft.Divider(height=4, color=ft.Colors.TRANSPARENT),
                 self._ca_update_button,
-                self._ca_progress_row,
                 self._ca_result_text,
             ]
         )
@@ -138,37 +129,42 @@ class SafetySettingsModel(DeclarativeSettingsPage):
             time=formatted
         )
 
-    def _ca_set_busy(self, busy: bool) -> None:
-        """Toggle the CA cert progress indicator and button disabled state."""
-        self._ca_update_button.disabled = busy
-        self._ca_progress_ring.visible = busy
-        self._ca_progress_text.visible = busy
-        self._ca_progress_row.visible = busy
-        self.update()
-
     # ------------------------------------------------------------------
     # CA cert event handlers
     # ------------------------------------------------------------------
 
     async def _on_ca_update_click(self, event: ft.Event[ft.Button]) -> None:
-        """Handle the "Check and Update Now" button click."""
+        """Handle the "Check and Update Now" button click.
+
+        Shows a modal progress dialog while the update runs, then closes it
+        and displays a result summary together with a success/error SnackBar.
+        """
+        from include.ui.controls.dialogs.ca_update_progress import (
+            CACertUpdateProgressDialog,
+        )
+
         service = self._ca_get_service()
         if service is None:
             send_error(self.page, _("Certificate update service is not available."))
             return
 
+        self._ca_update_button.disabled = True
         self._ca_result_text.visible = False
-        self._ca_set_busy(True)
+        self.update()
+
+        progress_dialog = CACertUpdateProgressDialog()
+        self.page.show_dialog(progress_dialog)
 
         try:
             result = await service.update_now()
         except Exception as exc:
-            self._ca_set_busy(False)
             send_error(self.page, _("Update failed: {error}").format(error=exc))
             return
-
-        self._ca_set_busy(False)
-        self._ca_refresh_last_checked()
+        finally:
+            progress_dialog.close()
+            self._ca_update_button.disabled = False
+            self._ca_refresh_last_checked()
+            self.update()
 
         # Build result summary
         parts: list[str] = []
@@ -207,4 +203,5 @@ class SafetySettingsModel(DeclarativeSettingsPage):
             self._ca_result_text.visible = True
 
         self.update()
+
 

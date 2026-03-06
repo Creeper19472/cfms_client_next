@@ -1,13 +1,15 @@
 """Utilities for checking and updating the local CA certificate store.
 
 The certificate store is fetched from the GitHub repository referenced by
-:data:`include.constants.CA_CERT_REPO`.  Certificate files use the OpenSSL
-``c_rehash`` naming convention (``{8-hex-chars}.{n}``) and therefore do NOT
-carry a ``.pem`` / ``.crt`` extension.  All non-hidden files (files whose
-name does not start with ``.``) are treated as certificate files.
+:data:`include.constants.CA_CERT_REPO`.  Certificate files follow the OpenSSL
+``c_rehash`` naming convention: exactly 8 lowercase hexadecimal characters
+followed by a dot and a non-negative integer (e.g. ``a1b2c3d4.0``).  Only
+files matching this pattern are managed.
 
-A per-file manifest (:file:`.manifest.json`) is stored in the CA directory
-so that unchanged certificates are never re-downloaded.
+A per-file manifest (:file:`.manifest.json`) is stored in the CA directory.
+It holds git-blob SHAs for every managed file and also stores the Unix
+timestamp of the last successful check under the reserved key
+``"__last_check__"``, eliminating the need for a separate ``.last_check`` file.
 """
 
 from __future__ import annotations
@@ -15,6 +17,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -37,23 +40,25 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
-# Name of the local manifest file that stores per-file git-blob SHAs.
+# Name of the local manifest file that stores per-file git-blob SHAs and metadata.
 _MANIFEST_FILENAME = ".manifest.json"
 
-# Name of the file that persists the Unix timestamp of the last successful check.
-_LAST_CHECK_FILENAME = ".last_check"
+# Reserved key inside .manifest.json for the last-check Unix timestamp.
+_LAST_CHECK_KEY = "__last_check__"
+
+# Compiled regex for the OpenSSL c_rehash naming convention: 8 lowercase hex
+# characters followed by a dot and a non-negative integer (e.g. a1b2c3d4.0).
+_CERT_FILE_RE = re.compile(r"^[0-9a-f]{8}\.[0-9]+$")
 
 
 def _is_cert_file(name: str) -> bool:
-    """Return ``True`` for files that should be managed in the CA directory.
+    """Return ``True`` iff *name* matches the OpenSSL ``c_rehash`` convention.
 
-    Accepts any non-empty filename that does not start with ``'.'`` so that
-    OpenSSL ``c_rehash`` hash-number files (e.g. ``a1b2c3d4.0``) are
-    included alongside traditional ``.pem``/``.crt`` names.  Hidden helper
-    files such as :file:`.manifest.json` and :file:`.last_check` are
-    excluded.
+    Only files named ``{8-hex-chars}.{n}`` (e.g. ``a1b2c3d4.0``,
+    ``deadbeef.2``) are considered certificate files.  Any other file —
+    including :file:`.manifest.json` — is ignored.
     """
-    return bool(name) and not name.startswith(".")
+    return bool(_CERT_FILE_RE.match(name))
 
 
 @dataclass
@@ -97,8 +102,8 @@ def _git_blob_sha(content: bytes) -> str:
     return hashlib.sha1(header + content).hexdigest()  # noqa: S324 – git protocol uses SHA-1
 
 
-def _load_manifest(ca_dir: Path) -> dict[str, str]:
-    """Load the stored git-blob SHA manifest from *ca_dir*.
+def _load_manifest_raw(ca_dir: Path) -> dict[str, Any]:
+    """Load the full manifest JSON from *ca_dir* (including metadata keys).
 
     Returns an empty dict if the manifest does not exist or is corrupt.
     """
@@ -108,20 +113,52 @@ def _load_manifest(ca_dir: Path) -> dict[str, str]:
     try:
         with manifest_path.open("r", encoding="utf-8") as fh:
             data = json.load(fh)
-        if not isinstance(data, dict):
-            return {}
-        return {str(k): str(v) for k, v in data.items()}
+        return data if isinstance(data, dict) else {}
     except Exception as exc:
         logger.warning("Could not read CA manifest: %s", exc)
         return {}
 
 
-def _save_manifest(ca_dir: Path, manifest: dict[str, str]) -> None:
-    """Persist *manifest* to *ca_dir*."""
+def _load_manifest(ca_dir: Path) -> dict[str, str]:
+    """Load the git-blob SHA manifest from *ca_dir*.
+
+    Returns a mapping of ``filename → sha`` for certificate files only.
+    The reserved :data:`_LAST_CHECK_KEY` entry is excluded.
+    """
+    raw = _load_manifest_raw(ca_dir)
+    return {
+        str(k): str(v)
+        for k, v in raw.items()
+        if k != _LAST_CHECK_KEY and isinstance(v, str)
+    }
+
+
+def _save_manifest(
+    ca_dir: Path,
+    manifest: dict[str, str],
+    *,
+    last_check: Optional[float] = None,
+) -> None:
+    """Persist *manifest* (cert SHA entries) to *ca_dir*.
+
+    If *last_check* is given it is stored under :data:`_LAST_CHECK_KEY`.
+    If *last_check* is ``None`` the existing timestamp (if any) is preserved.
+    """
     manifest_path = ca_dir / _MANIFEST_FILENAME
+
+    # Preserve the existing last_check value if one isn't supplied.
+    if last_check is None:
+        existing = _load_manifest_raw(ca_dir)
+        raw_val = existing.get(_LAST_CHECK_KEY)
+        last_check = float(raw_val) if isinstance(raw_val, (int, float)) else None
+
+    data: dict[str, Any] = dict(manifest)
+    if last_check is not None:
+        data[_LAST_CHECK_KEY] = last_check
+
     try:
         with manifest_path.open("w", encoding="utf-8") as fh:
-            json.dump(manifest, fh, indent=2)
+            json.dump(data, fh, indent=2)
     except Exception as exc:
         logger.warning("Could not write CA manifest: %s", exc)
 
@@ -130,26 +167,29 @@ def load_last_check_time(ca_dir: Path) -> Optional[float]:
     """Return the Unix timestamp of the last successful CA cert check, or
     ``None`` if no check has been recorded yet.
 
-    The timestamp is persisted to :file:`.last_check` in *ca_dir* so it
-    survives application restarts.
+    The timestamp is stored inside :file:`.manifest.json` under the
+    reserved key :data:`_LAST_CHECK_KEY` so that only one metadata file
+    is required in the CA directory.
     """
-    check_path = ca_dir / _LAST_CHECK_FILENAME
-    if not check_path.exists():
+    raw = _load_manifest_raw(ca_dir)
+    value = raw.get(_LAST_CHECK_KEY)
+    if value is None:
         return None
     try:
-        return float(check_path.read_text(encoding="utf-8").strip())
-    except Exception as exc:
-        logger.warning("Could not read last-check timestamp: %s", exc)
+        return float(value)
+    except (TypeError, ValueError) as exc:
+        logger.warning("Could not parse last-check timestamp from manifest: %s", exc)
         return None
 
 
 def save_last_check_time(ca_dir: Path, timestamp: float) -> None:
-    """Persist *timestamp* (Unix time) as the last successful CA cert check."""
-    check_path = ca_dir / _LAST_CHECK_FILENAME
-    try:
-        check_path.write_text(str(timestamp), encoding="utf-8")
-    except Exception as exc:
-        logger.warning("Could not write last-check timestamp: %s", exc)
+    """Persist *timestamp* (Unix time) as the last successful CA cert check.
+
+    The timestamp is stored inside :file:`.manifest.json` under the
+    reserved key :data:`_LAST_CHECK_KEY`.  If the manifest file does not
+    yet exist, a new one containing only the timestamp is created.
+    """
+    _save_manifest(ca_dir, _load_manifest(ca_dir), last_check=timestamp)
 
 
 def manifest_exists(ca_dir: Path) -> bool:
@@ -164,11 +204,11 @@ def manifest_exists(ca_dir: Path) -> bool:
 def build_initial_manifest(ca_dir: Path) -> dict[str, str]:
     """Build and persist the initial CA certificate manifest from local files.
 
-    Scans *ca_dir* for all non-hidden files (OpenSSL hash-number names such
-    as ``a1b2c3d4.0`` as well as any ``.pem``/``.crt`` files), computes their
-    git-blob SHAs, saves a :file:`.manifest.json`, and records the current
-    time as the last-check timestamp (so the 90-day periodic check clock
-    starts from the moment of first installation).
+    Scans *ca_dir* for all files matching the OpenSSL ``c_rehash`` naming
+    convention (``{8-hex-chars}.{n}``), computes their git-blob SHAs, saves
+    a :file:`.manifest.json` (including the current time as the
+    ``__last_check__`` timestamp), so the 90-day periodic check clock starts
+    from the moment of first installation.
 
     Parameters
     ----------
@@ -192,9 +232,8 @@ def build_initial_manifest(ca_dir: Path) -> dict[str, str]:
         except Exception as exc:
             logger.warning("Could not read %s for manifest: %s", cert_file.name, exc)
 
-    _save_manifest(ca_dir, manifest)
-    # Start the 90-day periodic-check clock from now.
-    save_last_check_time(ca_dir, time.time())
+    # Store the manifest together with the initial last-check timestamp.
+    _save_manifest(ca_dir, manifest, last_check=time.time())
     logger.info("Initial CA cert manifest built: %d file(s)", len(manifest))
     return manifest
 
