@@ -171,7 +171,7 @@ class SettingsField(Generic[_T]):
     ----------
     label:
         Human-readable label.  Pass an already-translated string
-        (``_("…")``) or a zero-argument callable for deferred evaluation.
+        (``_("...")``) or a zero-argument callable for deferred evaluation.
     key:
         Key used in ``app_shared.preferences[settings_pref_section]``.
         Defaults to the attribute name.
@@ -183,7 +183,7 @@ class SettingsField(Generic[_T]):
     options:
         List of ``(config_value, display_text)`` tuples.  When provided, a
         ``ft.Dropdown`` is used regardless of the annotation type.
-        Pass display texts as ``_("…")`` strings or use a callable.
+        Pass display texts as ``_("...")`` strings or use a callable.
         A callable returning such a list is also accepted.
     description:
         Optional help text rendered below the control (or below the row when
@@ -225,11 +225,11 @@ class SettingsField(Generic[_T]):
         Mapping from option key to a short description string shown *below*
         the dropdown when that option is selected.  Only meaningful for
         dropdown fields (i.e. when *options* is also provided).  Pass an
-        already-translated dict (``{key: _("…")}``) or a zero-argument
+        already-translated dict (``{key: _("...")}``) or a zero-argument
         callable returning such a dict for deferred evaluation.  When the
         current selection has no entry, the description area is cleared.
     browse:
-        When ``True`` on a ``SettingsField[str]`` field, a ``Browse…``
+        When ``True`` on a ``SettingsField[str]`` field, a ``Browse...``
         button is rendered to the right of the text field.  Pressing it
         opens a directory-picker dialog and inserts the chosen path into the
         text field.  The button inherits the same disabled state as the text
@@ -378,7 +378,7 @@ class SettingsField(Generic[_T]):
         Parameters
         ----------
         field_type:
-            The Python type from the class annotation (``bool``, ``str``, …).
+            The Python type from the class annotation (``bool``, ``str``, ...).
         """
         opts = self.options
         if field_type is bool:
@@ -505,11 +505,11 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                     continue
                 # Prefer the fully-resolved hint from get_type_hints; fall back
                 # to the raw annotation object (which may already be a resolved
-                # generic alias when `from __future__ import annotations` is not
+                # generic alias when ``from __future__ import annotations`` is not
                 # in effect in the subclass's module).
                 hint = hints.get(attr_name) or ann.get(attr_name)
                 # Support both the canonical SettingsField[T] annotation and
-                # legacy bare type annotations (str, bool, …) for backward
+                # legacy bare type annotations (str, bool, ...) for backward
                 # compatibility.
                 origin = getattr(hint, "__origin__", None)
                 if origin is SettingsField:
@@ -545,7 +545,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         Extra layout rules for special field parameters:
 
-        * ``browse=True`` — the text field and a *Browse…* button are wrapped
+        * ``browse=True`` — the text field and a *Browse...* button are wrapped
           in a ``ft.Row``.  The button is stored in :attr:`_browse_button_map`
           so its disabled state can be updated by :meth:`_flush_dependencies`.
         * ``option_descriptions`` — a ``ft.Text`` is added immediately below
@@ -608,7 +608,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             # For browse fields, wrap the TextField in a Row with a Browse button.
             if field.browse and isinstance(control, ft.TextField):
                 browse_btn = ft.Button(
-                    _("Browse…"),
+                    _("Browse..."),
                     on_click=self._make_browse_handler(attr_name),
                     disabled=field.disabled,
                 )
@@ -886,7 +886,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
 
             def __init__(self, page, router):
                 super().__init__(page, router)
-                self.change_btn = ft.Button(_("Change…"), on_click=self._on_change)
+                self.change_btn = ft.Button(_("Change..."), on_click=self._on_change)
                 self.controls = [self.change_btn]
 
             async def _on_load(self):

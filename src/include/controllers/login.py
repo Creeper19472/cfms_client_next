@@ -86,9 +86,8 @@ class LoginFormController(Controller["LoginForm"]):
         # This prevents data loss when switching between users
         download_service = None
         if self.app_shared.service_manager:
-            download_service = cast(
-                DownloadManagerService,
-                self.app_shared.service_manager.get_service("download_manager"),
+            download_service = self.app_shared.service_manager.get_service(
+                "download_manager", DownloadManagerService
             )
 
         if self.app_shared.username and self.app_shared.username != username:

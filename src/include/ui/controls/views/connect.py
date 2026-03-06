@@ -136,4 +136,19 @@ class ConnectForm(ft.Container):
             self.enable_interactions()
             return  # Exit the function if the pattern is invalid
 
+        # Check if the CA certificate store is being updated to prevent
+        # a dirty read while certificates are being written to disk.
+        if self.app_shared.service_manager is not None:
+            ca_service = self.app_shared.service_manager.get_service("ca_cert_update")
+            if getattr(ca_service, "is_updating", False):
+                send_error(
+                    self.page,
+                    _(
+                        "CA certificate store is being updated. "
+                        "Please wait a moment and try again."
+                    ),
+                )
+                self.enable_interactions()
+                return
+
         self.page.run_task(self.controller.action_connect, server_address)

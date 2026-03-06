@@ -24,7 +24,7 @@ dependencies = [
   "pillow",
   "qrcode",
   "flet-code-editor>=0.81.0",
-#   "chardet==6.0.0.post1",
+  "cryptography>=46.0.5",
 ]
 
 [tool.flet]

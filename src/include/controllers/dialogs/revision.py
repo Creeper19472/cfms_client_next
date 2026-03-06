@@ -69,7 +69,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                     from typing import cast
 
                     task_id = task_data["task_id"]
-                    
+
                     if not is_current:
                         filename = f"rev{revision_id}_{self.control.filename}"
                     else:
@@ -77,15 +77,14 @@ class RevisionDialogController(Controller["RevisionDialog"]):
 
                     file_path = get_download_file_path(filename)
                     supports_resume = task_data.get("supports_resume", False)
-                    
+
                     # Get the download manager service
                     download_service = None
                     if self.app_shared.service_manager:
-                        download_service = cast(
-                            DownloadManagerService,
-                            self.app_shared.service_manager.get_service("download_manager"),
+                        download_service = self.app_shared.service_manager.get_service(
+                            "download_manager", DownloadManagerService
                         )
-                    
+
                     if download_service:
                         download_service.add_task(
                             task_id=task_id,
@@ -99,7 +98,9 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                             _("Download added: {filename}").format(filename=filename),
                         )
                     else:
-                        self.control.send_error(_("Download manager service not available"))
+                        self.control.send_error(
+                            _("Download manager service not available")
+                        )
                 else:
                     self.control.send_error(
                         _("Failed to get revision data: No task data returned")
@@ -133,9 +134,10 @@ class RevisionDialogController(Controller["RevisionDialog"]):
             if response.code == 200:
                 # Reload revisions to show updated status
                 await self.action_load_revisions()
-                
+
                 # Optionally refresh the file listview to show the updated document
                 from include.ui.util.path import get_directory
+
                 await get_directory(
                     id=self.control.parent_listview.parent_manager.current_directory_id,
                     view=self.control.parent_listview,

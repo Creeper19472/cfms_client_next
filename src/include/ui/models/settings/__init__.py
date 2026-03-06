@@ -9,7 +9,7 @@ Models (in display order):
     - LanguageSettingsModel: Language and localization settings
     - ConnectionSettingsModel: Network and connection settings
     - StorageSettingsModel: Storage and cache settings
-    - SafetySettingsModel: Security and safety settings
+    - SafetySettingsModel: Security, safety and CA certificate management
     - UpdatesSettingsModel: Software updates and version settings
     - TwoFactorSettingsModel: Two-factor authentication settings
 

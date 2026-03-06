@@ -68,13 +68,14 @@ class HomeNavigationBar(ft.NavigationBar):
             download_service.remove_active_count_callback(self._on_task_count_changed)
 
     def _get_download_service(self):
+        if not self.app_shared.service_manager:
+            return None
+
         from include.classes.services.download import DownloadManagerService
 
-        if self.app_shared.service_manager:
-            service = self.app_shared.service_manager.get_service("download_manager")
-            if isinstance(service, DownloadManagerService):
-                return service
-        return None
+        return self.app_shared.service_manager.get_service(
+            "download_manager", DownloadManagerService
+        )
 
     def _on_task_count_changed(self, count: int):
         self._set_tasks_badge(count)
