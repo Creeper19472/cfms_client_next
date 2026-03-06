@@ -57,7 +57,7 @@ class AppInitModel(Model):
         # --- step definitions (append here to add future setup tasks) ---------
         self._steps: list[dict[str, Any]] = [
             {
-                "title": _("Compiling CA certificate manifest"),
+                "title": _("Compile CA certificate manifest"),
                 "action": self._step_compile_manifest,
             },
         ]
@@ -80,7 +80,7 @@ class AppInitModel(Model):
 
         # --- current step description below progress bar ----------------------
         self.current_step_text = ft.Text(
-            _("Preparing…"),
+            _("Preparing..."),
             size=13,
             text_align=ft.TextAlign.CENTER,
             color=ft.Colors.with_opacity(0.7, ft.Colors.WHITE),
@@ -100,6 +100,8 @@ class AppInitModel(Model):
                 step["title"],
                 size=13,
                 color=ft.Colors.with_opacity(0.65, ft.Colors.WHITE),
+                expand=True,
+                expand_loose=True,
             )
             self._step_icons.append(icon)
             self._step_texts.append(label)
@@ -124,6 +126,8 @@ class AppInitModel(Model):
                                 size=22,
                                 weight=ft.FontWeight.BOLD,
                                 color=ft.Colors.WHITE,
+                                expand=True,
+                                expand_loose=True,
                             ),
                         ],
                         spacing=14,
@@ -179,7 +183,7 @@ class AppInitModel(Model):
 
             try:
                 await step["action"]()
-                self._step_icons[idx].icon = ft.Icons.CHECK_CIRCLE_OUTLINED
+                self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
                 self._step_icons[idx].color = ft.Colors.GREEN_300
                 self._step_texts[idx].color = ft.Colors.WHITE
             except Exception as exc:
@@ -191,14 +195,13 @@ class AppInitModel(Model):
             self.progress_bar.value = (idx + 1) / total
             self.update()
             # Brief pause so the user can see each step complete
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(3.05)
 
-        # All done — hide spinner, update label
-        self.progress_ring.visible = False
+        # All done — update label
         self.current_step_text.value = _("Setup complete.")
         self.update()
 
-        await asyncio.sleep(0.3)
+        await asyncio.sleep(3.3)
 
         # Navigate to the main connect screen
         await self.page.push_route("/connect")

@@ -87,6 +87,8 @@ class CACertUpdateProgressDialog(AlertDialog):
                 label,
                 size=13,
                 color=ft.Colors.with_opacity(0.55, ft.Colors.ON_SURFACE),
+                expand=True,
+                expand_loose=True,
             )
             self._step_icons.append(icon)
             self._step_texts.append(text)
@@ -100,7 +102,7 @@ class CACertUpdateProgressDialog(AlertDialog):
 
         # --- detail label (current item, e.g. filename being downloaded) ------
         self._detail_text = ft.Text(
-            _("Starting…"),
+            _("Starting..."),
             size=12,
             italic=True,
             color=ft.Colors.with_opacity(0.6, ft.Colors.ON_SURFACE),
@@ -129,6 +131,7 @@ class CACertUpdateProgressDialog(AlertDialog):
                 width=320,
             ),
             modal=True,
+            scrollable=True,
         )
 
     # ------------------------------------------------------------------
@@ -175,24 +178,24 @@ class CACertUpdateProgressDialog(AlertDialog):
 
             # Build a human-readable detail line
             if stage == STAGE_CONNECTING:
-                msg = _("Connecting to certificate repository…")
+                msg = _("Connecting to certificate repository...")
             elif stage == STAGE_CHECKING:
                 n = detail or "?"
-                msg = _("Fetched {n} remote certificate(s); comparing…").format(n=n)
+                msg = _("Fetched {n} remote certificate(s); comparing...").format(n=n)
             elif stage == STAGE_DOWNLOADING:
                 msg = (
-                    _("Downloading {name}…").format(name=detail)
+                    _("Downloading {name}...").format(name=detail)
                     if detail
-                    else _("Downloading…")
+                    else _("Downloading...")
                 )
             elif stage == STAGE_REMOVING:
                 msg = (
-                    _("Removing {name}…").format(name=detail)
+                    _("Removing {name}...").format(name=detail)
                     if detail
-                    else _("Removing…")
+                    else _("Removing...")
                 )
             elif stage == STAGE_SAVING:
-                msg = _("Saving manifest…")
+                msg = _("Saving manifest...")
             else:
                 msg = detail or stage
 

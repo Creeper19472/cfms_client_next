@@ -81,7 +81,9 @@ async def main(page: ft.Page):
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
     import include.ui.models.settings
-    
+
+    # Page settings
+
     page.title = "CFMS Client"
     page.theme_mode = ft.ThemeMode.DARK
     page.window.width = DEFAULT_WINDOW_WIDTH

@@ -163,7 +163,7 @@ class CACertUpdateService(BaseService):
             The result of the update run.
         """
         async with self._update_lock:
-            self.logger.info("Checking CA certificate store for updates…")
+            self.logger.info("Checking CA certificate store for updates...")
             loop = asyncio.get_running_loop()
             try:
                 result: CACertUpdateResult = await loop.run_in_executor(
