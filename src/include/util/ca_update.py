@@ -21,8 +21,6 @@ following structure::
 ``files`` maps each managed certificate filename to its git-blob SHA.
 """
 
-from __future__ import annotations
-
 import hashlib
 import json
 import logging
@@ -129,7 +127,9 @@ def _git_blob_sha(content: bytes) -> str:
     matches the ``sha`` field returned by the GitHub Contents API.
     """
     header = f"blob {len(content)}\0".encode()
-    return hashlib.sha1(header + content).hexdigest()  # noqa: S324 – git protocol uses SHA-1
+    return hashlib.sha1(
+        header + content
+    ).hexdigest()  # noqa: S324 – git protocol uses SHA-1
 
 
 def _load_manifest_raw(ca_dir: Path) -> dict[str, Any]:
@@ -465,9 +465,7 @@ def check_and_update_ca_certs(
 
     # --- remove ---------------------------------------------------------------
     local_cert_files: set[str] = {
-        p.name
-        for p in ca_dir.iterdir()
-        if p.is_file() and _is_cert_file(p.name)
+        p.name for p in ca_dir.iterdir() if p.is_file() and _is_cert_file(p.name)
     }
     for name in local_cert_files - set(remote_files):
         _progress(STAGE_REMOVING, name)
@@ -488,5 +486,3 @@ def check_and_update_ca_certs(
         result,
     )
     return result
-
-

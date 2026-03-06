@@ -1,8 +1,6 @@
 """Security settings model (declarative) — connection history policy
 and CA certificate store management."""
 
-from __future__ import annotations
-
 import time
 
 from flet_model import Router, route
@@ -30,7 +28,9 @@ class SafetySettingsModel(DeclarativeSettingsPage):
 
     # Overview metadata
     settings_name = _("Security")
-    settings_description = _("Connection history, CA certificates and security settings")
+    settings_description = _(
+        "Connection history, CA certificates and security settings"
+    )
     settings_icon = ft.Icons.SECURITY
     settings_route_suffix = "safety_settings"
 
@@ -112,6 +112,7 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         if sm is None:
             return None
         from include.classes.services.ca_update import CACertUpdateService
+
         service = sm.get_service("ca_cert_update")
         if not isinstance(service, CACertUpdateService):
             return None
@@ -173,13 +174,9 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         if result.added:
             parts.append(_("{n} certificate(s) added").format(n=len(result.added)))
         if result.updated:
-            parts.append(
-                _("{n} certificate(s) updated").format(n=len(result.updated))
-            )
+            parts.append(_("{n} certificate(s) updated").format(n=len(result.updated)))
         if result.removed:
-            parts.append(
-                _("{n} certificate(s) removed").format(n=len(result.removed))
-            )
+            parts.append(_("{n} certificate(s) removed").format(n=len(result.removed)))
         if result.unchanged:
             parts.append(
                 _("{n} certificate(s) already up-to-date").format(
@@ -205,5 +202,3 @@ class SafetySettingsModel(DeclarativeSettingsPage):
             self._ca_result_text.visible = True
 
         self.update()
-
-

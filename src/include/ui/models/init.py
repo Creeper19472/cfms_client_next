@@ -7,14 +7,13 @@ added by appending to :attr:`AppInitModel._steps` without restructuring the
 UI.
 """
 
-from __future__ import annotations
-
 import asyncio
-from typing import Any
+from typing import Any, cast
 
 from flet_model import Model, Router, route
 import flet as ft
 
+from include.classes.services.ca_update import CACertUpdateService
 from include.classes.shared import AppShared
 from include.constants import ROOT_PATH
 from include.util.ca_update import build_initial_manifest
@@ -171,7 +170,7 @@ class AppInitModel(Model):
 
         for idx, step in enumerate(self._steps):
             # Mark current step as in-progress
-            self._step_icons[idx].name = ft.Icons.RADIO_BUTTON_CHECKED
+            self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
             self._step_icons[idx].color = ft.Colors.BLUE_200
             self._step_texts[idx].color = ft.Colors.WHITE
             self.current_step_text.value = step["title"]
@@ -180,11 +179,11 @@ class AppInitModel(Model):
 
             try:
                 await step["action"]()
-                self._step_icons[idx].name = ft.Icons.CHECK_CIRCLE_OUTLINED
+                self._step_icons[idx].icon = ft.Icons.CHECK_CIRCLE_OUTLINED
                 self._step_icons[idx].color = ft.Colors.GREEN_300
                 self._step_texts[idx].color = ft.Colors.WHITE
             except Exception as exc:
-                self._step_icons[idx].name = ft.Icons.ERROR_OUTLINE
+                self._step_icons[idx].icon = ft.Icons.ERROR_OUTLINE
                 self._step_icons[idx].color = ft.Colors.ORANGE_300
                 label_val = self._step_texts[idx].value or ""
                 self._step_texts[idx].value = f"{label_val} ({exc})"
@@ -212,6 +211,10 @@ class AppInitModel(Model):
             async def _do_update(e: ft.Event) -> None:
                 if ca_service is None:
                     return
+                
+                nonlocal ca_service
+                ca_service = cast(CACertUpdateService, ca_service)
+
                 from include.ui.controls.dialogs.ca_update_progress import (
                     CACertUpdateProgressDialog,
                 )

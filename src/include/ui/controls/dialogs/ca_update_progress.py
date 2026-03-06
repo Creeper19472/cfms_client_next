@@ -22,8 +22,6 @@ Usage::
         dialog.close()
 """
 
-from __future__ import annotations
-
 from typing import Callable
 
 import flet as ft
@@ -143,11 +141,11 @@ class CACertUpdateProgressDialog(AlertDialog):
             return
         # Complete all steps between current and new
         for i in range(self._current_step + 1, idx):
-            self._step_icons[i].name = ft.Icons.CHECK_CIRCLE_OUTLINE
+            self._step_icons[i].icon = ft.Icons.CHECK_CIRCLE_OUTLINE
             self._step_icons[i].color = ft.Colors.GREEN_400
             self._step_texts[i].color = ft.Colors.ON_SURFACE
         # Activate the new step
-        self._step_icons[idx].name = ft.Icons.RADIO_BUTTON_CHECKED
+        self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
         self._step_icons[idx].color = ft.Colors.BLUE_400
         self._step_texts[idx].color = ft.Colors.ON_SURFACE
         self._current_step = idx
@@ -182,9 +180,17 @@ class CACertUpdateProgressDialog(AlertDialog):
                 n = detail or "?"
                 msg = _("Fetched {n} remote certificate(s); comparing…").format(n=n)
             elif stage == STAGE_DOWNLOADING:
-                msg = _("Downloading {name}…").format(name=detail) if detail else _("Downloading…")
+                msg = (
+                    _("Downloading {name}…").format(name=detail)
+                    if detail
+                    else _("Downloading…")
+                )
             elif stage == STAGE_REMOVING:
-                msg = _("Removing {name}…").format(name=detail) if detail else _("Removing…")
+                msg = (
+                    _("Removing {name}…").format(name=detail)
+                    if detail
+                    else _("Removing…")
+                )
             elif stage == STAGE_SAVING:
                 msg = _("Saving manifest…")
             else:

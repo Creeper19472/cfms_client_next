@@ -1,7 +1,5 @@
 """Background service for periodic CA certificate store updates."""
 
-from __future__ import annotations
-
 import asyncio
 import time
 from typing import Callable, Optional
@@ -170,9 +168,7 @@ class CACertUpdateService(BaseService):
             try:
                 result: CACertUpdateResult = await loop.run_in_executor(
                     None,
-                    lambda: check_and_update_ca_certs(
-                        _CA_DIR, on_progress=on_progress
-                    ),
+                    lambda: check_and_update_ca_certs(_CA_DIR, on_progress=on_progress),
                 )
             except Exception as exc:
                 self.logger.error(

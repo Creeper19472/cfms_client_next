@@ -5,11 +5,9 @@ This page has been merged into the Security settings page
 It is no longer registered in the settings overview.
 """
 
-from __future__ import annotations
-
 import time
 
-from flet_model import route
+from flet_model import Router
 import flet as ft
 
 from include.classes.services.ca_update import CACertUpdateService
@@ -159,17 +157,11 @@ class CACertSettingsModel(DeclarativeActionPage):
         # Build result summary
         parts: list[str] = []
         if result.added:
-            parts.append(
-                _("{n} certificate(s) added").format(n=len(result.added))
-            )
+            parts.append(_("{n} certificate(s) added").format(n=len(result.added)))
         if result.updated:
-            parts.append(
-                _("{n} certificate(s) updated").format(n=len(result.updated))
-            )
+            parts.append(_("{n} certificate(s) updated").format(n=len(result.updated)))
         if result.removed:
-            parts.append(
-                _("{n} certificate(s) removed").format(n=len(result.removed))
-            )
+            parts.append(_("{n} certificate(s) removed").format(n=len(result.removed)))
         if result.unchanged:
             parts.append(
                 _("{n} certificate(s) already up-to-date").format(
@@ -188,9 +180,7 @@ class CACertSettingsModel(DeclarativeActionPage):
         elif result.changed:
             send_success(self.page, _("Certificate store updated successfully."))
         else:
-            send_success(
-                self.page, _("Certificate store is already up-to-date.")
-            )
+            send_success(self.page, _("Certificate store is already up-to-date."))
 
         if parts:
             self.result_text.value = " · ".join(parts)
