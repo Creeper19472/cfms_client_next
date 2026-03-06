@@ -209,10 +209,11 @@ class AppInitModel(Model):
             ca_service = service_manager.get_service("ca_cert_update")
 
             async def _do_update(e: ft.Event) -> None:
+                nonlocal ca_service
+
                 if ca_service is None:
                     return
-                
-                nonlocal ca_service
+
                 ca_service = cast(CACertUpdateService, ca_service)
 
                 from include.ui.controls.dialogs.ca_update_progress import (
