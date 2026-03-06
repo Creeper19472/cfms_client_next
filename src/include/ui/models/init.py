@@ -212,12 +212,10 @@ class AppInitModel(Model):
             ca_service = service_manager.get_service("ca_cert_update")
 
             async def _do_update(e: ft.Event) -> None:
-                nonlocal ca_service
-
                 if ca_service is None:
                     return
 
-                ca_service = cast(CACertUpdateService, ca_service)
+                service = cast(CACertUpdateService, ca_service)
 
                 from include.ui.controls.dialogs.ca_update_progress import (
                     CACertUpdateProgressDialog,
@@ -226,7 +224,7 @@ class AppInitModel(Model):
                 progress_dialog = CACertUpdateProgressDialog()
                 self.page.show_dialog(progress_dialog)
                 try:
-                    await ca_service.update_now(
+                    await service.update_now(
                         on_progress=progress_dialog.make_progress_callback()
                     )
                 finally:
