@@ -14,8 +14,9 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import requests
 
@@ -24,6 +25,9 @@ from include.constants import CA_CERT_API_URL
 __all__ = [
     "CACertUpdateResult",
     "check_and_update_ca_certs",
+    "has_expired_certificates",
+    "load_last_check_time",
+    "save_last_check_time",
 ]
 
 logger = logging.getLogger(__name__)
@@ -33,6 +37,9 @@ _ALLOWED_EXTENSIONS: frozenset[str] = frozenset({".pem", ".crt"})
 
 # Name of the local manifest file that stores per-file git-blob SHAs.
 _MANIFEST_FILENAME = ".manifest.json"
+
+# Name of the file that persists the Unix timestamp of the last successful check.
+_LAST_CHECK_FILENAME = ".last_check"
 
 
 @dataclass
@@ -103,6 +110,73 @@ def _save_manifest(ca_dir: Path, manifest: dict[str, str]) -> None:
             json.dump(manifest, fh, indent=2)
     except Exception as exc:
         logger.warning("Could not write CA manifest: %s", exc)
+
+
+def load_last_check_time(ca_dir: Path) -> Optional[float]:
+    """Return the Unix timestamp of the last successful CA cert check, or
+    ``None`` if no check has been recorded yet.
+
+    The timestamp is persisted to :file:`.last_check` in *ca_dir* so it
+    survives application restarts.
+    """
+    check_path = ca_dir / _LAST_CHECK_FILENAME
+    if not check_path.exists():
+        return None
+    try:
+        return float(check_path.read_text(encoding="utf-8").strip())
+    except Exception as exc:
+        logger.warning("Could not read last-check timestamp: %s", exc)
+        return None
+
+
+def save_last_check_time(ca_dir: Path, timestamp: float) -> None:
+    """Persist *timestamp* (Unix time) as the last successful CA cert check."""
+    check_path = ca_dir / _LAST_CHECK_FILENAME
+    try:
+        check_path.write_text(str(timestamp), encoding="utf-8")
+    except Exception as exc:
+        logger.warning("Could not write last-check timestamp: %s", exc)
+
+
+def has_expired_certificates(ca_dir: Path) -> bool:
+    """Return ``True`` if any certificate file in *ca_dir* has expired.
+
+    Uses :mod:`cryptography.x509` to parse PEM/DER certificates and compare
+    their *Not After* field against the current UTC time.  Files that cannot
+    be parsed are silently skipped (they are not considered expired).
+
+    Parameters
+    ----------
+    ca_dir:
+        Path to the local CA certificate directory.
+    """
+    try:
+        from cryptography import x509 as _x509
+    except ImportError:
+        logger.debug("cryptography not available; skipping certificate expiry check")
+        return False
+
+    if not ca_dir.is_dir():
+        return False
+
+    now = datetime.now(tz=timezone.utc)
+    for cert_file in ca_dir.iterdir():
+        if not cert_file.is_file():
+            continue
+        if os.path.splitext(cert_file.name)[1].lower() not in _ALLOWED_EXTENSIONS:
+            continue
+        try:
+            cert = _x509.load_pem_x509_certificate(cert_file.read_bytes())
+            if cert.not_valid_after_utc < now:
+                logger.warning(
+                    "CA certificate has expired: %s (expired %s)",
+                    cert_file.name,
+                    cert.not_valid_after_utc.isoformat(),
+                )
+                return True
+        except Exception as exc:
+            logger.debug("Could not parse certificate %s: %s", cert_file.name, exc)
+    return False
 
 
 def _fetch_remote_entries(timeout: int = 10) -> list[dict[str, Any]]:
@@ -259,4 +333,5 @@ def check_and_update_ca_certs(
         result,
     )
     return result
+
 
