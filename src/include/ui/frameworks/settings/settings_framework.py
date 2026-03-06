@@ -8,7 +8,7 @@ Basic usage (declarative)::
 
     from include.ui.frameworks.settings import (
         DeclarativeSettingsPage, SettingsField, SectionHeader, Separator,
-        settings_page,
+        HelpText, settings_page,
     )
     from flet_model import route
 
@@ -73,7 +73,7 @@ __all__ = [
     "SettingsField",
     "SectionHeader",
     "Separator",
-    "CustomControl",
+    "HelpText",
     "RegisteredSettingsPage",
     "DeclarativeSettingsPage",
     "DeclarativeActionPage",
@@ -507,60 +507,68 @@ class Separator:
 
 
 # ---------------------------------------------------------------------------
-# CustomControl – declarative wrapper for arbitrary Flet controls
+# HelpText – declarative paragraph of help/description text
 # ---------------------------------------------------------------------------
 
 
-class CustomControl:
-    """A declarative wrapper for an arbitrary Flet control.
+class HelpText:
+    """A declarative paragraph of help or description text for settings pages.
 
-    Declare as a class attribute (without a type annotation) to embed a
-    custom Flet control inline among settings fields::
+    Declare as a class attribute (without a type annotation) to render a
+    block of informational text between settings fields::
 
         class MyPage(DeclarativeSettingsPage):
-            _info = CustomControl(
-                lambda model: ft.Text("Some informational text", size=13)
+            _proxy_header = SectionHeader(_("Proxy"))
+            _proxy_help = HelpText(
+                _("Configure a proxy server for outbound connections."),
             )
+            proxy_host: SettingsField[str] = SettingsField(label=_("Host"))
 
-    The *factory* callable receives the page instance as its single argument,
-    giving it access to instance methods needed for event wiring::
+    String arguments are stored and returned as-is.  **Always pass them
+    through ``_()`` at the call site** so that translatable strings can be
+    extracted::
 
-        _action_btn = CustomControl(
-            lambda model: ft.Button(
-                "Do something", on_click=model._on_action_click
-            )
-        )
+        _help = HelpText(_("Some helpful information."))
 
-    The instantiated control is stored in :attr:`_custom_control_map` and is
-    accessible as an instance attribute via the descriptor protocol — so
-    ``self._action_btn`` returns the live ``ft.Button`` after ``__init__``::
+    A zero-argument callable is also accepted for deferred evaluation::
 
-        async def _on_load(self) -> None:
-            self._action_btn.disabled = False
+        _help = HelpText(lambda: _("Some helpful information."))
 
     Parameters
     ----------
-    factory:
-        Callable that accepts the page instance and returns an
-        ``ft.Control``.
+    text:
+        Paragraph text.  Pass an already-translated string (``_("...")``)
+        or a zero-argument callable for deferred evaluation.
+    size:
+        Font size in logical pixels.  Defaults to ``13``.
+    color:
+        Text color expressed as a Flet/CSS colour string or
+        ``ft.Colors`` constant.  Defaults to ``None`` (theme default).
     """
 
-    def __init__(self, factory: Callable[[Any], ft.Control]) -> None:
-        self._factory = factory
+    def __init__(
+        self,
+        text: str | Callable[[], str],
+        *,
+        size: int = 13,
+        color: str | None = None,
+    ) -> None:
+        self._text = text
+        self.size = size
+        self.color = color
         # Set by __set_name__ when the owning class body is processed.
         self._attr_name: str = ""
 
     def __set_name__(self, owner: type, name: str) -> None:
         self._attr_name = name
 
-    def __get__(self, obj: Any, objtype: Any = None) -> "ft.Control | CustomControl":
-        if obj is None:
-            return self
-        return getattr(obj, "_custom_control_map", {}).get(self._attr_name)  # type: ignore[return-value]
+    @property
+    def text(self) -> str:
+        return self._text() if callable(self._text) else self._text
 
-    def build_control(self, instance: Any) -> ft.Control:
-        """Instantiate and return the Flet control for this item."""
-        return self._factory(instance)
+    def build_control(self) -> ft.Control:
+        """Return a ``ft.Text`` for this help paragraph."""
+        return ft.Text(self.text, size=self.size, color=self.color)
 
 
 # ---------------------------------------------------------------------------
@@ -619,8 +627,6 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         # Introspect fields, build controls, wire dependencies.
         self._fields = self._collect_fields()
         self._control_map: dict[str, ft.Control] = {}
-        # Maps attr_name → ft.Control for CustomControl instances.
-        self._custom_control_map: dict[str, ft.Control] = {}
         # Maps attr_name → ft.Text for option-specific descriptions.
         self._option_desc_controls: dict[str, ft.Text] = {}
         # Maps attr_name → ft.Button for browse-path buttons.
@@ -633,18 +639,18 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
     def _collect_fields(
         self,
-    ) -> list[tuple[str, "SettingsField | SectionHeader | Separator | CustomControl", type | None]]:
+    ) -> list[tuple[str, "SettingsField | SectionHeader | Separator | HelpText", type | None]]:
         """Return items in declaration order.
 
         Each element is a triple ``(attr_name, item, python_type)`` where
         *item* is a :class:`SettingsField`, :class:`SectionHeader`,
-        :class:`Separator`, or :class:`CustomControl` instance.
+        :class:`Separator`, or :class:`HelpText` instance.
         *python_type* is ``None`` for :class:`SectionHeader`,
-        :class:`Separator`, and :class:`CustomControl`.
+        :class:`Separator`, and :class:`HelpText`.
 
         The class ``__dict__`` is walked (not just ``__annotations__``) so that
         unannotated descriptors such as :class:`SectionHeader`,
-        :class:`Separator`, and :class:`CustomControl` are discovered alongside
+        :class:`Separator`, and :class:`HelpText` are discovered alongside
         annotated :class:`SettingsField` entries, all in their original
         declaration order.
         The MRO is traversed in reverse so that base-class items appear before
@@ -657,7 +663,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             hints = {}
 
         result: list[
-            tuple[str, SettingsField | SectionHeader | Separator | CustomControl, type | None]
+            tuple[str, SettingsField | SectionHeader | Separator | HelpText, type | None]
         ] = []
         # cls.__annotations__ preserves declaration order (Python 3.7+) and
         # only contains annotations defined directly on cls (not inherited ones).
@@ -675,7 +681,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                     continue
                 seen.add(attr_name)
 
-                if isinstance(value, (SectionHeader, Separator, CustomControl)):
+                if isinstance(value, (SectionHeader, Separator, HelpText)):
                     result.append((attr_name, value, None))
                 elif isinstance(value, SettingsField):
                     ann = getattr(klass, "__annotations__", {})
@@ -759,8 +765,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             pending_option_desc_controls = []
 
         for attr_name, field, field_type in self._fields:
-            # Section headers and separators are rendered directly and never
-            # participate in row groups, dependency tracking, or persistence.
+            # Section headers, separators and help-text are rendered directly
+            # and never participate in row groups, dependency tracking, or
+            # persistence.
             if isinstance(field, SectionHeader):
                 flush_pending_row()
                 controls.append(field.build_control())
@@ -769,15 +776,13 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 flush_pending_row()
                 controls.append(field.build_control())
                 continue
-            if isinstance(field, CustomControl):
+            if isinstance(field, HelpText):
                 flush_pending_row()
-                control = field.build_control(self)
-                self._custom_control_map[attr_name] = control
-                controls.append(control)
+                controls.append(field.build_control())
                 continue
 
-            # field_type is always set for SettingsField entries; the SectionHeader
-            # and Separator branches above handle the None cases and continue.
+            # field_type is always set for SettingsField entries; the SectionHeader,
+            # Separator, and HelpText branches above handle the None cases and continue.
             assert field_type is not None
             control = field.build_control(field_type)
 
