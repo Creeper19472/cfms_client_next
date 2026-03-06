@@ -679,11 +679,19 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             for attr_name, value in klass.__dict__.items():
                 if attr_name in seen:
                     continue
-                seen.add(attr_name)
 
+                # Only reserve the name in `seen` once we know `value` is a
+                # framework item.  Regular methods, class constants, or other
+                # non-framework attributes in base classes must *not* block a
+                # subclass from declaring a SettingsField (or layout item) with
+                # the same name; silently dropping such a field would be hard to
+                # debug.  We still prevent the same framework-item name from
+                # being collected twice (e.g. inherited then re-declared).
                 if isinstance(value, (SectionHeader, Separator, HelpText)):
+                    seen.add(attr_name)
                     result.append((attr_name, value, None))
                 elif isinstance(value, SettingsField):
+                    seen.add(attr_name)
                     ann = getattr(klass, "__annotations__", {})
                     # Prefer the fully-resolved hint from get_type_hints; fall
                     # back to the raw annotation object.
