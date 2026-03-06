@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Optional
 
 import flet as ft
 
@@ -133,9 +133,8 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     # Get the download manager service
     download_service = None
     if _app_shared.service_manager:
-        download_service = cast(
-            DownloadManagerService,
-            _app_shared.service_manager.get_service("download_manager"),
+        download_service = _app_shared.service_manager.get_service(
+            "download_manager", DownloadManagerService
         )
 
     if not download_service:

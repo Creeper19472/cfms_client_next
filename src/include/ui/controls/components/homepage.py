@@ -198,11 +198,9 @@ class HomeFavoritesContainer(ft.Container):
     def _get_favorites_validation_service(self):
         """Return the FavoritesValidationService instance, or None if unavailable."""
         if self.app_shared.service_manager:
-            service = self.app_shared.service_manager.get_service(
-                "favorites_validation"
+            return self.app_shared.service_manager.get_service(
+                "favorites_validation", FavoritesValidationService
             )
-            if isinstance(service, FavoritesValidationService):
-                return service
         return None
 
     def did_mount(self):

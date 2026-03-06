@@ -255,11 +255,9 @@ class FileManagerView(ft.Container):
         )
 
         if self.app_shared.service_manager:
-            service = self.app_shared.service_manager.get_service(
-                "favorites_validation"
+            return self.app_shared.service_manager.get_service(
+                "favorites_validation", FavoritesValidationService
             )
-            if isinstance(service, FavoritesValidationService):
-                return service
         return None
 
     def _on_favorites_changed(self):

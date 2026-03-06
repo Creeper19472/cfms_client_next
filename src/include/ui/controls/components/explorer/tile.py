@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, Callable
 
 import flet as ft
+from include.classes.services.favorites_validation import FavoritesValidationService
 from include.classes.shared import AppShared
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
@@ -14,12 +15,10 @@ _ = t.gettext
 def _notify_favorites_changed(app_shared: AppShared) -> None:
     """Notify the FavoritesValidationService that the favorites list has changed."""
     if app_shared.service_manager:
-        from include.classes.services.favorites_validation import (
-            FavoritesValidationService,
+        service = app_shared.service_manager.get_service(
+            "favorites_validation", FavoritesValidationService
         )
-
-        service = app_shared.service_manager.get_service("favorites_validation")
-        if isinstance(service, FavoritesValidationService):
+        if service:
             service.notify_favorites_changed()
 
 
