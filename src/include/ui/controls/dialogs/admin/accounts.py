@@ -3,6 +3,7 @@ import asyncio
 from datetime import datetime
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.management import (
@@ -69,7 +70,7 @@ class PasswdUserDialog(AlertDialog):
             expand=True,
         )
         self.dicing_button = ft.IconButton(
-            ft.Icons.CASINO_OUTLINED,
+            Symbols.IFL,
             on_click=self.dicing_button_click,
             tooltip=_("Generate a random password"),
         )

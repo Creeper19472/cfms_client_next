@@ -25,6 +25,7 @@ dependencies = [
   "qrcode",
   "flet-code-editor>=0.81.0",
   "cryptography>=46.0.5",
+  "flet-material-symbols @ git+https://github.com/creeper19472/flet-material-symbols",
 ]
 
 [tool.flet]
@@ -58,6 +59,9 @@ dev = [
 
 [tool.uv]
 prerelease = "allow"
+
+[tool.uv.sources]
+flet-material-symbols = { git = "https://github.com/creeper19472/flet-material-symbols.git" }
 
 [tool.poetry]
 package-mode = false

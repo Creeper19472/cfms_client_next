@@ -776,15 +776,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             # Section headers, separators and help-text are rendered directly
             # and never participate in row groups, dependency tracking, or
             # persistence.
-            if isinstance(field, SectionHeader):
-                flush_pending_row()
-                controls.append(field.build_control())
-                continue
-            if isinstance(field, Separator):
-                flush_pending_row()
-                controls.append(field.build_control())
-                continue
-            if isinstance(field, HelpText):
+            if isinstance(field, (SectionHeader, Separator, HelpText)):
                 flush_pending_row()
                 controls.append(field.build_control())
                 continue
