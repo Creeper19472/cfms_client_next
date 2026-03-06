@@ -210,8 +210,18 @@ class AppInitModel(Model):
             ca_service = service_manager.get_service("ca_cert_update")
 
             async def _do_update(e: ft.Event) -> None:
-                if ca_service is not None:
+                if ca_service is None:
+                    return
+                from include.ui.controls.dialogs.ca_update_progress import (
+                    CACertUpdateProgressDialog,
+                )
+
+                progress_dialog = CACertUpdateProgressDialog()
+                self.page.show_dialog(progress_dialog)
+                try:
                     await ca_service.update_now()
+                finally:
+                    progress_dialog.close()
 
             snackbar = ft.SnackBar(
                 content=ft.Text(
