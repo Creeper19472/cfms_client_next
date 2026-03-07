@@ -45,7 +45,9 @@ class HomeNavigationBar(ft.NavigationBar):
             ft.NavigationBarDestination(icon=Symbols.HOME, label=_("Home")),
             ft.NavigationBarDestination(icon=Symbols.MORE_HORIZ, label=_("More")),
             ft.NavigationBarDestination(
-                icon=Symbols.CLOUD_CIRCLE, label=_("Manage"), visible=False
+                icon=ft.Icon(Symbols.CLOUD_CIRCLE, fill=1),
+                label=_("Manage"),
+                visible=False,
             ),
         ]
 
