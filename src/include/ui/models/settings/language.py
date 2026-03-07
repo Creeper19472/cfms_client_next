@@ -9,6 +9,7 @@ from include.ui.frameworks.settings import (
     settings_page,
 )
 from include.util.locale import get_translation, set_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -22,7 +23,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Language")
     settings_description = _("Select your preferred language")
-    settings_icon = ft.Icons.LANGUAGE
+    settings_icon = Symbols.LANGUAGE
     settings_route_suffix = "language_settings"
 
     # ---------------------------------------------------------------------------

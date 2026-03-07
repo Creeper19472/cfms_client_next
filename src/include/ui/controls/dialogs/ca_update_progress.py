@@ -29,6 +29,7 @@ import flet as ft
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.ca_update import CACertUpdateStages
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -73,7 +74,7 @@ class CACertUpdateProgressDialog(AlertDialog):
         step_rows: list[ft.Control] = []
         for label in self._STEP_LABELS:
             icon = ft.Icon(
-                ft.Icons.RADIO_BUTTON_UNCHECKED,
+                Symbols.RADIO_BUTTON_UNCHECKED,
                 size=16,
                 color=ft.Colors.with_opacity(0.4, ft.Colors.ON_SURFACE),
             )
@@ -138,11 +139,11 @@ class CACertUpdateProgressDialog(AlertDialog):
             return
         # Complete all steps between current and new
         for i in range(self._current_step + 1, idx):
-            self._step_icons[i].icon = ft.Icons.CHECK_CIRCLE_OUTLINE
+            self._step_icons[i].icon = Symbols.CHECK_CIRCLE_OUTLINE
             self._step_icons[i].color = ft.Colors.GREEN_400
             self._step_texts[i].color = ft.Colors.ON_SURFACE
         # Activate the new step
-        self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
+        self._step_icons[idx].icon = Symbols.RADIO_BUTTON_CHECKED
         self._step_icons[idx].color = ft.Colors.BLUE_400
         self._step_texts[idx].color = ft.Colors.ON_SURFACE
         self._current_step = idx

@@ -15,6 +15,7 @@ from include.ui.frameworks.settings import (
 )
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -28,7 +29,7 @@ class StorageSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Storage")
     settings_description = _("Configure external storage options")
-    settings_icon = ft.Icons.STORAGE
+    settings_icon = Symbols.STORAGE
     settings_route_suffix = "storage_settings"
 
     # ---------------------------------------------------------------------------

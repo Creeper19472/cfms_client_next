@@ -1,6 +1,7 @@
 import flet as ft
 import flet_permission_handler as fph
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -9,7 +10,7 @@ _ = t.gettext
 class ExternalStorageWarningBanner(ft.Banner):
     def __init__(self):
         super().__init__(
-            leading=ft.Icon(ft.Icons.WARNING_OUTLINED, color=ft.Colors.PRIMARY),
+            leading=ft.Icon(Symbols.WARNING_OUTLINED, color=ft.Colors.PRIMARY),
             content=ft.Text(
                 _(
                     "The application has not yet been granted permission to access "

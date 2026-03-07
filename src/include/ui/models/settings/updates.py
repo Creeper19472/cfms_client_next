@@ -11,6 +11,7 @@ from include.ui.frameworks.settings import (
     settings_page,
 )
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -24,7 +25,7 @@ class UpdatesSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Updates")
     settings_description = _("Configure update channel preferences")
-    settings_icon = ft.Icons.BROWSER_UPDATED
+    settings_icon = Symbols.BROWSER_UPDATED
     settings_route_suffix = "updates_settings"
 
     # ---------------------------------------------------------------------------

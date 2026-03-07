@@ -11,6 +11,7 @@ from include.util.requests import do_request
 
 if TYPE_CHECKING:
     from include.ui.controls.views.admin.group import ManageGroupsView
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -197,11 +198,11 @@ class EditGroupPermissionDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.refresh_button = ft.IconButton(
-            ft.Icons.REFRESH,
+            Symbols.REFRESH,
             on_click=self.refresh_button_click,
         )
         self.add_button = ft.IconButton(
-            ft.Icons.ADD, on_click=self.add_permission_submit, disabled=True
+            Symbols.ADD, on_click=self.add_permission_submit, disabled=True
         )
         self.submit_button = ft.TextButton(_("Submit"), on_click=self.submit_button_click)
         self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)

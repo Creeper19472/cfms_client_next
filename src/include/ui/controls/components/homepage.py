@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -34,17 +35,17 @@ class HomeNavigationBar(ft.NavigationBar):
         self.views = views
         self._is_click_navigating = False
 
-        self._tasks_destination_icon = ft.Icon(ft.Icons.ARROW_CIRCLE_DOWN)
+        self._tasks_destination_icon = ft.Icon(Symbols.ARROW_CIRCLE_DOWN)
 
         nav_destinations = [
-            ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
+            ft.NavigationBarDestination(icon=Symbols.FOLDER, label=_("Files")),
             ft.NavigationBarDestination(
                 icon=self._tasks_destination_icon, label=_("Tasks")
             ),
-            ft.NavigationBarDestination(icon=ft.Icons.HOME, label=_("Home")),
-            ft.NavigationBarDestination(icon=ft.Icons.MORE_HORIZ, label=_("More")),
+            ft.NavigationBarDestination(icon=Symbols.HOME, label=_("Home")),
+            ft.NavigationBarDestination(icon=Symbols.MORE_HORIZ, label=_("More")),
             ft.NavigationBarDestination(
-                icon=ft.Icons.CLOUD_CIRCLE, label=_("Manage"), visible=False
+                icon=Symbols.CLOUD_CIRCLE, label=_("Manage"), visible=False
             ),
         ]
 
@@ -128,7 +129,7 @@ class WelcomeInfoCard(ft.Card):
             content=ft.Column(
                 [
                     ft.ListTile(
-                        leading=ft.Icon(ft.Icons.ACCESS_TIME_FILLED),
+                        leading=ft.Icon(Symbols.ACCESS_TIME_FILLED),
                         title=ft.Text(
                             _(
                                 "Welcome to Confidential Document Management System (CFMS)"

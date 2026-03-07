@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -42,7 +43,7 @@ class SearchResultDirectoryTile(ft.ListTile):
         )
 
         super().__init__(
-            leading=ft.Icon(ft.Icons.FOLDER),
+            leading=ft.Icon(Symbols.FOLDER),
             title=ft.Text(directory_name),
             subtitle=ft.Text(subtitle_text),
             on_click=self.handle_click,
@@ -89,7 +90,7 @@ class SearchResultFileTile(ft.ListTile):
         subtitle_text = f"{size_text} | {_('Last modified')}: {modified_text}"
 
         super().__init__(
-            leading=ft.Icon(ft.Icons.INSERT_DRIVE_FILE),
+            leading=ft.Icon(Symbols.INSERT_DRIVE_FILE),
             title=ft.Text(filename),
             subtitle=ft.Text(subtitle_text),
             on_click=self.handle_click,
@@ -206,7 +207,7 @@ class SearchDialog(AlertDialog):
         self.search_button = ft.TextButton(
             _("Search"),
             on_click=self.on_search_click,
-            icon=ft.Icons.SEARCH,
+            icon=Symbols.SEARCH,
         )
         self.close_button = ft.TextButton(
             _("Close"),

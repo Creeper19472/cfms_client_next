@@ -9,6 +9,7 @@ from include.ui.util.notifications import send_error
 from include.util.hash import get_server_hash, get_username_hash
 from include.util.locale import get_translation
 import include.ui.constants as const
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -84,7 +85,7 @@ class AvatarPreviewContainer(ft.Container):
         # Medium circular avatar for preview above login form
         self.preview_avatar = ft.CircleAvatar(
             radius=60,
-            content=ft.Icon(ft.Icons.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38),
+            content=ft.Icon(Symbols.ACCOUNT_CIRCLE, size=80, color=ft.Colors.WHITE_38),
             # bgcolor=ft.Colors.TRANSPARENT,
         )
 
@@ -96,7 +97,7 @@ class AvatarPreviewContainer(ft.Container):
             # No username, show default icon
             self.preview_avatar.foreground_image_src = None
             self.preview_avatar.content = ft.Icon(
-                ft.Icons.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE_38
+                Symbols.ACCOUNT_CIRCLE, size=120, color=ft.Colors.WHITE_38
             )
             self.update()
             return
@@ -210,12 +211,12 @@ class LoginForm(ft.Container):
         )
 
         self.login_button = ft.IconButton(
-            icon=ft.Icons.LOGIN_OUTLINED,
+            icon=Symbols.LOGIN_OUTLINED,
             on_click=self.request_login,
             tooltip=_("Login"),
         )
         self.disconnect_button = ft.IconButton(
-            icon=ft.Icons.CHEVRON_LEFT,
+            icon=Symbols.CHEVRON_LEFT,
             on_click=self.disconnect_button_click,
             tooltip=_("Disconnect"),
         )

@@ -15,6 +15,7 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -60,57 +61,57 @@ class FileContextMenu(ContextMenu2):
             ref=ref,
             menu_items=[
                 {
-                    "icon": ft.Icons.DELETE,
+                    "icon": Symbols.DELETE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
                     "require": {"delete_document"},
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
                     "require": {"rename_document"},
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_MOVE_OUTLINED,
                     "content": _("Move"),
                     "on_click": self.move_button_click,
                     "require": {"move"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                    "icon": Symbols.LOCK_PERSON_OUTLINED,
                     "content": _("Authorize"),
                     "on_click": self.authorize_button_click,
                     "require": {"manage_access"},
                 },
                 {
-                    "icon": ft.Icons.LIST_ALT,
+                    "icon": Symbols.LIST_ALT,
                     "content": _("View access entries"),
                     "on_click": self.view_access_entries_button_click,
                     "require": {"view_access_entries"},
                 },
                 {
-                    "icon": ft.Icons.SETTINGS_OUTLINED,
+                    "icon": Symbols.SETTINGS_OUTLINED,
                     "content": _("Set permissions"),
                     "on_click": self.set_access_rules_button_click,
                     "require": {"set_access_rules"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.UPLOAD_FILE_OUTLINED,
+                    "icon": Symbols.UPLOAD_FILE_OUTLINED,
                     "content": _("Upload new version"),
                     "on_click": self.new_revision_button_click,
                 },
                 {
-                    "icon": ft.Icons.HISTORY_OUTLINED,
+                    "icon": Symbols.HISTORY_OUTLINED,
                     "content": _("View Revisions"),
                     "on_click": self.view_revisions_button_click,
                     "require": {"list_revisions"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.INFO_OUTLINED,
+                    "icon": Symbols.INFO_OUTLINED,
                     "content": _("Properties"),
                     "on_click": self.open_document_info_click,
                 },
@@ -196,45 +197,45 @@ class DirectoryContextMenu(ContextMenu2):
 
         __menu_items = [
             {
-                "icon": ft.Icons.DELETE,
+                "icon": Symbols.DELETE,
                 "content": _("Delete"),
                 "on_click": self.delete_button_click,
                 "require": {"delete_directory"},
             },
             {
-                "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                 "content": _("Rename"),
                 "on_click": self.rename_button_click,
                 "require": {"rename_directory"},
             },
             {
-                "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_MOVE_OUTLINED,
                 "content": _("Move"),
                 "on_click": self.move_button_click,
                 "require": {"move"},
             },
             {},
             {
-                "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                "icon": Symbols.LOCK_PERSON_OUTLINED,
                 "content": _("Authorize"),
                 "on_click": self.authorize_button_click,
                 "require": {"manage_access"},
             },
             {
-                "icon": ft.Icons.LIST_ALT,
+                "icon": Symbols.LIST_ALT,
                 "content": _("View Access Entries"),
                 "on_click": self.view_access_entries_button_click,
                 "require": {"view_access_entries"},
             },
             {
-                "icon": ft.Icons.SETTINGS_OUTLINED,
+                "icon": Symbols.SETTINGS_OUTLINED,
                 "content": _("Set Permissions"),
                 "on_click": self.set_access_rules_button_click,
                 "require": {"set_access_rules"},
             },
             {},
             {
-                "icon": ft.Icons.INFO_OUTLINED,
+                "icon": Symbols.INFO_OUTLINED,
                 "content": _("Properties"),
                 "on_click": self.open_directory_info_click,
             },
@@ -246,9 +247,9 @@ class DirectoryContextMenu(ContextMenu2):
         #             {},
         #             {
         #                 "icon": (
-        #                     ft.Icons.STAR_OUTLINED
+        #                     Symbols.STAR_OUTLINED
         #                     if self.dirtile.starred
-        #                     else ft.Icons.STAR_BORDER_OUTLINED
+        #                     else Symbols.STAR_BORDER_OUTLINED
         #                 ),
         #                 "content": (
         #                     _("Star") if not self.dirtile.starred else _("Unstar")

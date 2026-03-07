@@ -7,6 +7,7 @@ if TYPE_CHECKING:
         SubRuleGroupCollectionArea,
         SubRuleGroupEditEntriesArea,
     )
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -29,7 +30,7 @@ class SubRuleGroupControlBar(ft.Row):
 
         self.progress_ring = ft.ProgressRing(visible=False)
         self.add_button = ft.IconButton(
-            icon=ft.Icons.ADD,
+            icon=Symbols.ADD,
             on_click=self.on_add_button_click,
         )
 
@@ -101,7 +102,7 @@ class EntryListTileControlBar(ft.Row):
             on_submit=self.on_textfield_submit,
         )
         self.submit_button = ft.IconButton(
-            icon=ft.Icons.ADD,
+            icon=Symbols.ADD,
             on_click=self.on_add_button_click,
         )
 

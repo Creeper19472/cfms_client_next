@@ -10,6 +10,7 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.components.account import AccountBadge
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -40,7 +41,7 @@ class AvatarSettingsDialog(AlertDialog):
         self.browse_button = ft.Button(
             _("Browse Documents"),
             on_click=self.browse_documents_click,
-            icon=ft.Icons.FOLDER_OPEN,
+            icon=Symbols.FOLDER_OPEN,
         )
 
         # Document ID input field

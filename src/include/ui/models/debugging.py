@@ -14,6 +14,7 @@ from include.constants import (
     FLET_APP_STORAGE_DATA,
 )
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -33,7 +34,7 @@ class DebuggingViewModel(Model):
         self.appbar = ft.AppBar(
             title=ft.Text(_("Debugging")),
             leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=self.back_button_click,
             ),
         )

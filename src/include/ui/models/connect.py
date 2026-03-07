@@ -7,6 +7,7 @@ from include.ui.constants import PLACEHOLDER_COLOR
 from include.ui.controls.buttons.upgrade import FloatingUpgradeButton
 from include.ui.controls.views.connect import ConnectForm
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -28,7 +29,7 @@ class ConnectToServerModel(Model):
             center_title=True,
             actions=[
                 ft.IconButton(
-                    ft.Icons.SETTINGS_OUTLINED,
+                    Symbols.SETTINGS_OUTLINED,
                     tooltip=_("Connection Settings"),
                     on_click=self.conn_settings_button_click,
                 ),

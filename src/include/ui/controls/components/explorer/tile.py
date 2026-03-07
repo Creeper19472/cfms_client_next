@@ -6,6 +6,7 @@ from include.classes.services.favorites_validation import FavoritesValidationSer
 from include.classes.shared import AppShared
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
+from flet_material_symbols import Symbols
 
 
 t = get_translation()
@@ -48,7 +49,7 @@ class FileTile(ft.ListTile):
 
         self.star_button = ft.IconButton(
             icon=(
-                ft.Icons.STAR_BORDER_OUTLINED if not starred else ft.Icons.STAR_OUTLINED
+                Symbols.STAR_BORDER_OUTLINED if not starred else Symbols.STAR_OUTLINED
             ),
             on_click=self.on_star_click,
             visible=starred,
@@ -85,7 +86,7 @@ class FileTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(ft.Icons.FILE_COPY)
+            leading_control = ft.Icon(Symbols.FILE_COPY)
 
         super().__init__(
             leading=leading_control,
@@ -143,9 +144,9 @@ class FileTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = ft.Icons.STAR_OUTLINED
+            self.star_button.icon = Symbols.STAR_OUTLINED
         else:
-            self.star_button.icon = ft.Icons.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER_OUTLINED
         self.update()
 
 
@@ -174,7 +175,7 @@ class DirectoryTile(ft.ListTile):
 
         self.star_button = ft.IconButton(
             icon=(
-                ft.Icons.STAR_BORDER_OUTLINED if not starred else ft.Icons.STAR_OUTLINED
+                Symbols.STAR_BORDER_OUTLINED if not starred else Symbols.STAR_OUTLINED
             ),
             on_click=self.on_star_click,
             visible=starred,
@@ -204,7 +205,7 @@ class DirectoryTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(ft.Icons.FOLDER)
+            leading_control = ft.Icon(Symbols.FOLDER)
 
         super().__init__(
             leading=leading_control,
@@ -263,7 +264,7 @@ class DirectoryTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = ft.Icons.STAR_OUTLINED
+            self.star_button.icon = Symbols.STAR_OUTLINED
         else:
-            self.star_button.icon = ft.Icons.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER_OUTLINED
         self.update()

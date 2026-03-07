@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from include.ui.controls.components.visualmgr.editor import (
         VisualRuleEditorEditSection,
     )
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -28,7 +29,7 @@ class CollectionAreasControlBar(ft.Row):
         self.progress_ring = ft.ProgressRing(visible=False)
         self.add_button = ft.FilledButton(
             content=_("Add Rule Group"),
-            icon=ft.Icons.ADD,
+            icon=Symbols.ADD,
             on_click=self.on_add_button_click,
         )
 

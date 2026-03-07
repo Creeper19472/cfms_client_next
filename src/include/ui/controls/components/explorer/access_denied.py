@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -54,7 +55,7 @@ class AccessDeniedView(ft.Container):
 
         # Create icon
         self.icon = ft.Icon(
-            ft.Icons.LOCK,
+            Symbols.LOCK,
             size=80,
             color=ft.Colors.WHITE,
         )
@@ -110,14 +111,14 @@ class AccessDeniedView(ft.Container):
         # Create back button
         self.back_button = ft.Button(
             content=_("Go Back"),
-            icon=ft.Icons.ARROW_BACK,
+            icon=Symbols.ARROW_BACK,
             on_click=self.back_button_click,
         )
 
         # # Create refresh button
         # self.refresh_button = ft.OutlinedButton(
         #     content=_("Try Again"),
-        #     icon=ft.Icons.REFRESH,
+        #     icon=Symbols.REFRESH,
         #     on_click=self.refresh_button_click,
         # )
 

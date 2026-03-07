@@ -22,6 +22,7 @@ from include.util.requests import do_request
 
 if TYPE_CHECKING:
     pass
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -131,14 +132,14 @@ class FileBrowserDialog(AlertDialog):
         # Action buttons
         self.select_here_button = ft.Button(
             select_button_text if select_button_text else _("Select Here"),
-            icon=select_button_icon if select_button_icon else ft.Icons.CHECK_CIRCLE,
+            icon=select_button_icon if select_button_icon else Symbols.CHECK_CIRCLE,
             on_click=self.select_here_button_click,
             visible=show_select_button,
         )
 
         self.go_to_root_button = ft.TextButton(
             _("Go to Root"),
-            icon=ft.Icons.HOME,
+            icon=Symbols.HOME,
             on_click=self.go_to_root_button_click,
             visible=False,
         )
@@ -375,7 +376,7 @@ class FileBrowserDialog(AlertDialog):
                 normalized_parent_id = None if parent_id == "/" else parent_id
 
                 parent_button = ft.ListTile(
-                    leading=ft.Icon(ft.Icons.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
+                    leading=ft.Icon(Symbols.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
                     title=ft.Text(
                         _(".. (Parent Directory)"), weight=ft.FontWeight.BOLD
                     ),
@@ -397,7 +398,7 @@ class FileBrowserDialog(AlertDialog):
                         continue
 
                     dir_tile = ft.ListTile(
-                        leading=ft.Icon(ft.Icons.FOLDER, color=ft.Colors.BLUE_400),
+                        leading=ft.Icon(Symbols.FOLDER, color=ft.Colors.BLUE_400),
                         title=ft.Text(dir_name),
                         on_click=lambda e, d_id=dir_id, d_name=dir_name: asyncio.create_task(
                             self.navigate_to_directory(d_id, d_name)
@@ -418,7 +419,7 @@ class FileBrowserDialog(AlertDialog):
 
                     doc_tile = ft.ListTile(
                         leading=ft.Icon(
-                            ft.Icons.INSERT_DRIVE_FILE, color=ft.Colors.GREEN_400
+                            Symbols.INSERT_DRIVE_FILE, color=ft.Colors.GREEN_400
                         ),
                         title=ft.Text(doc_title),
                         subtitle=ft.Text(

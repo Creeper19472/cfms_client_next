@@ -5,6 +5,7 @@ import flet as ft
 from include.ui.controls.dialogs.base import AlertDialog
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -85,7 +86,7 @@ class TwoFactorVerifyDialog(AlertDialog):
         # Toggle link to switch between code and recovery code
         self.toggle_link = ft.TextButton(
             DESCRIPTION_USE_RECOVERY_INSTEAD,
-            icon=ft.Icons.SETTINGS_BACKUP_RESTORE_OUTLINED,
+            icon=Symbols.SETTINGS_BACKUP_RESTORE_OUTLINED,
             on_click=self._on_toggle_input,
         )
 
@@ -154,7 +155,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             self.recovery_code_field.visible = True
             self.description_text.value = DESCRIPTION_ENTER_RECOVERY
             self.toggle_link.content = DESCRIPTION_USE_CODE_INSTEAD
-            self.toggle_link.icon = ft.Icons.PASSWORD_OUTLINED
+            self.toggle_link.icon = Symbols.PASSWORD_OUTLINED
             self.page.run_task(self.recovery_code_field.focus)
         else:
             # Switch to verification code mode
@@ -162,7 +163,7 @@ class TwoFactorVerifyDialog(AlertDialog):
             self.recovery_code_field.visible = False
             self.description_text.value = DESCRIPTION_ENTER_CODE
             self.toggle_link.content = DESCRIPTION_USE_RECOVERY_INSTEAD
-            self.toggle_link.icon = ft.Icons.SETTINGS_BACKUP_RESTORE_OUTLINED
+            self.toggle_link.icon = Symbols.SETTINGS_BACKUP_RESTORE_OUTLINED
             self.page.run_task(self.code_field.focus)
 
         # Clear any previous errors

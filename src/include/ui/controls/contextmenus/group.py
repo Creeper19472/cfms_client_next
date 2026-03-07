@@ -6,6 +6,7 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.admin.group import GroupListView
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -31,7 +32,7 @@ class GroupContextMenu(ContextMenu2):
         self.controller = GroupContextMenuController(self)
 
         self._listtile = ft.ListTile(
-            leading=ft.Icon(ft.Icons.GROUPS_3),
+            leading=ft.Icon(Symbols.GROUPS_3),
             title=ft.Text(display_name if display_name else group_name),
             subtitle=ft.Text(
                 _("Permissions: {permissions}\n").format(permissions=permissions)
@@ -46,17 +47,17 @@ class GroupContextMenu(ContextMenu2):
             ref=ref,
             menu_items=[
                 {
-                    "icon": ft.Icons.GROUP_REMOVE,
+                    "icon": Symbols.GROUP_REMOVE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
                 },
                 {
-                    "icon": ft.Icons.SETTINGS_OUTLINED,
+                    "icon": Symbols.SETTINGS_OUTLINED,
                     "content": _("Set Permissions"),
                     "on_click": self.settings_button_click,
                 },

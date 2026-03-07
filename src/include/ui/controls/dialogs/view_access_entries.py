@@ -13,6 +13,7 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -102,7 +103,7 @@ class ViewAccessEntriesDialog(AlertDialog):
 
         # Refresh button
         self.refresh_button = ft.IconButton(
-            icon=ft.Icons.REFRESH,
+            icon=Symbols.REFRESH,
             tooltip=_("Refresh"),
             on_click=self.refresh_button_click,
         )
@@ -202,7 +203,7 @@ class ViewAccessEntriesDialog(AlertDialog):
             # Create delete button for this entry
             entry_id = entry.get("id")
             delete_button = ft.IconButton(
-                icon=ft.Icons.DELETE,
+                icon=Symbols.DELETE,
                 icon_color=ft.Colors.RED_400,
                 tooltip=_("Revoke"),
                 data=entry_id,

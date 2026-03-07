@@ -25,6 +25,7 @@ from include.util.upgrade.updater import (
     get_latest_release,
     is_new_version,
 )
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -50,17 +51,17 @@ class AboutModel(Model):
         self.appbar = ft.AppBar(
             title=ft.Text(_("About")),
             leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=self.back_button_click,
             ),
             actions=[
                 ft.IconButton(
-                    icon=ft.Icons.BUG_REPORT_OUTLINED,
+                    icon=Symbols.BUG_REPORT_OUTLINED,
                     tooltip=_("Debugging..."),
                     on_click=self.debugging_button_click,
                 ),
                 ft.IconButton(
-                    icon=ft.Icons.SETTINGS_OUTLINED,
+                    icon=Symbols.SETTINGS_OUTLINED,
                     tooltip=_("Updates Settings"),
                     on_click=self.settings_button_click,
                 ),
@@ -112,7 +113,7 @@ class AboutModel(Model):
         )
 
         self.suc_update_button = ft.IconButton(
-            icon=ft.Icons.UPDATE,
+            icon=Symbols.UPDATE,
             on_click=self.suc_button_click,
         )
         self.suc_progress_ring = ft.ProgressRing(visible=False)

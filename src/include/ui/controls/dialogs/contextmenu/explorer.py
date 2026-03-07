@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -138,7 +139,7 @@ class GetDocumentInfoDialog(AlertDialog):
             controls=[
                 ft.Text(_("Document Details")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]
@@ -272,7 +273,7 @@ class GetDirectoryInfoDialog(AlertDialog):
             controls=[
                 ft.Text(_("Directory Details")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]

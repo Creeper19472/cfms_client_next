@@ -7,6 +7,7 @@ import flet as ft
 
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -43,7 +44,7 @@ class CorruptedConfigDialog(AlertDialog):
 
         self.content = ft.Column(
             [
-                ft.Icon(ft.Icons.WARNING_AMBER_ROUNDED, size=40, color=ft.Colors.AMBER),
+                ft.Icon(Symbols.WARNING_AMBER_ROUNDED, size=40, color=ft.Colors.AMBER),
                 ft.Text(
                     _(
                         "The local configuration file is encrypted with a key that is no longer "
@@ -68,7 +69,7 @@ class CorruptedConfigDialog(AlertDialog):
 
         self.delete_button = ft.FilledButton(
             _("Delete and Continue"),
-            icon=ft.Icons.DELETE_OUTLINE,
+            icon=Symbols.DELETE_OUTLINE,
             on_click=self._on_delete_click,
         )
 

@@ -16,6 +16,7 @@ from include.ui.frameworks.settings import (
 )
 from include.ui.util.notifications import send_error, send_success
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -34,7 +35,7 @@ class SafetySettingsModel(DeclarativeSettingsPage):
     settings_description = _(
         "Connection history, CA certificates and security settings"
     )
-    settings_icon = ft.Icons.SECURITY
+    settings_icon = Symbols.SECURITY
     settings_route_suffix = "safety_settings"
 
     # ---------------------------------------------------------------------------
@@ -81,7 +82,7 @@ class SafetySettingsModel(DeclarativeSettingsPage):
         self._ca_result_text = ft.Text(visible=False, size=13)
         self._ca_update_button = ft.Button(
             _("Check and Update Now"),
-            icon=ft.Icons.REFRESH,
+            icon=Symbols.REFRESH,
             on_click=self._on_ca_update_click,
         )
 

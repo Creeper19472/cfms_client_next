@@ -10,6 +10,7 @@ from include.ui.frameworks.settings import DeclarativeActionPage, settings_page
 from include.ui.util.notifications import send_success, send_error
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -31,7 +32,7 @@ class TwoFactorSettingsModel(DeclarativeActionPage):
     # Overview metadata
     settings_name = _("Two-Factor Authentication")
     settings_description = _("Manage two-factor authentication settings")
-    settings_icon = ft.Icons.LOCK
+    settings_icon = Symbols.LOCK
     settings_route_suffix = "twofa_settings"
 
     def __init__(self, page: ft.Page, router: Router):
@@ -57,13 +58,13 @@ class TwoFactorSettingsModel(DeclarativeActionPage):
         # Action buttons
         self.toggle_button = ft.Button(
             _("Enable Two-Factor Authentication"),
-            icon=ft.Icons.SECURITY,
+            icon=Symbols.SECURITY,
             on_click=self._on_toggle_2fa,
             disabled=True,
         )
         self.disable_button = ft.Button(
             _("Disable Two-Factor Authentication"),
-            icon=ft.Icons.SECURITY_UPDATE_WARNING,
+            icon=Symbols.SECURITY_UPDATE_WARNING,
             on_click=self._on_disable_2fa,
             visible=False,
             color=ft.Colors.ERROR,

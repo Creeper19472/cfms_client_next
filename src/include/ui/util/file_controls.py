@@ -6,6 +6,7 @@ from include.ui.controls.contextmenus.explorer import DirectoryContextMenu, File
 from include.ui.util.path import get_directory
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -39,7 +40,7 @@ def update_file_controls(
         # print("parent_id: ", parent_id)
         view.controls = [
             ft.ListTile(
-                leading=ft.Icon(ft.Icons.ARROW_BACK),
+                leading=ft.Icon(Symbols.ARROW_BACK),
                 title=ft.Text("<...>"),
                 subtitle=ft.Text(_("Parent directory")),
                 on_click=parent_button_click,

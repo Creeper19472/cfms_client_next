@@ -7,6 +7,7 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.admin.account import UserListView
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -32,7 +33,7 @@ class UserContextMenu(ContextMenu2):
         self.controller = UserContextMenuController(self)
 
         self._listtile = ft.ListTile(
-            leading=ft.Icon(ft.Icons.ACCOUNT_CIRCLE),
+            leading=ft.Icon(Symbols.ACCOUNT_CIRCLE),
             title=ft.Text(nickname or username),
             subtitle=ft.Text(
                 f"{groups}\n"
@@ -53,39 +54,39 @@ class UserContextMenu(ContextMenu2):
             ref=ref,
             menu_items=[
                 {
-                    "icon": ft.Icons.DELETE,
+                    "icon": Symbols.DELETE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
                     "content": _("Change Nickname"),
                     "on_click": self.rename_button_click,
                 },
                 {
-                    "icon": ft.Icons.FORMAT_LIST_BULLETED,
+                    "icon": Symbols.FORMAT_LIST_BULLETED,
                     "content": _("Edit User Group"),
                     "on_click": self.edit_group_button_click,
                 },
                 {
-                    "icon": ft.Icons.PASSWORD_OUTLINED,
+                    "icon": Symbols.PASSWORD_OUTLINED,
                     "content": _("Reset Password"),
                     "on_click": self.passwd_button_click,
                 },
                 {
-                    "icon": ft.Icons.INFO_OUTLINED,
+                    "icon": Symbols.INFO_OUTLINED,
                     "content": _("Properties"),
                     "on_click": self.properties_button_click,
                 },
                 {},
                 {
-                    "icon": ft.Icons.BLOCK,
+                    "icon": Symbols.BLOCK,
                     "content": _("Block User"),
                     "on_click": self.block_user_button_click,
                     "require": {"block"},
                 },
                 {
-                    "icon": ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
+                    "icon": Symbols.MANAGE_ACCOUNTS_OUTLINED,
                     "content": _("View/Revoke Blocks"),
                     "on_click": self.list_blocks_button_click,
                     "require": {"list_user_blocks"},

@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -71,7 +72,7 @@ class MoveDialog(FileBrowserDialog):
             excluded_directory_ids=excluded_ids,
             show_select_button=True,
             select_button_text=_("Move Here"),
-            select_button_icon=ft.Icons.CHECK_CIRCLE,
+            select_button_icon=Symbols.CHECK_CIRCLE,
             ref=ref,
             visible=visible,
         )

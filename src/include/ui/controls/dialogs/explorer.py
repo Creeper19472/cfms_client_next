@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -429,7 +430,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
             self.loading_row.visible = False
             self.details_container_content.controls = [
                 _row(
-                    ft.Icons.ERROR_OUTLINE,
+                    Symbols.ERROR_OUTLINE,
                     message,
                     color=ft.Colors.RED_400,
                     italic=True,
@@ -467,7 +468,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
             ):
                 details_controls.append(
                     _row(
-                        ft.Icons.DESCRIPTION,
+                        Symbols.DESCRIPTION,
                         _("File size: {size}").format(
                             size=self.format_file_size(int(doc_size))
                         ),
@@ -487,7 +488,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
             if (modified_str := _format_timestamp(last_modified)) is not None:
                 details_controls.append(
                     _row(
-                        ft.Icons.UPDATE,
+                        Symbols.UPDATE,
                         _("Last modified: {date}").format(date=modified_str),
                         color=ft.Colors.ORANGE_400,
                     )
@@ -496,7 +497,7 @@ class FileOverwriteConfirmDialog(AlertDialog):
             if (created_str := _format_timestamp(created_time)) is not None:
                 details_controls.append(
                     _row(
-                        ft.Icons.ACCESS_TIME,
+                        Symbols.ACCESS_TIME,
                         _("Created: {date}").format(date=created_str),
                         color=ft.Colors.GREEN_400,
                     )
@@ -767,7 +768,7 @@ class DirectorySelectorDialog(FileBrowserDialog):
             excluded_directory_ids=excluded_directory_ids or [],
             show_select_button=True,
             select_button_text=_("Select Here"),
-            select_button_icon=ft.Icons.CHECK_CIRCLE,
+            select_button_icon=Symbols.CHECK_CIRCLE,
             ref=ref,
             visible=visible,
         )
@@ -834,7 +835,7 @@ class AccessDeniedDialog(AlertDialog):
 
         # Create content with icon and message
         self.block_icon = ft.Icon(
-            ft.Icons.BLOCK,
+            Symbols.BLOCK,
             size=48,
             color=ft.Colors.ERROR,
         )

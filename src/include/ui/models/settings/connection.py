@@ -11,6 +11,7 @@ from include.ui.frameworks.settings import (
     settings_page,
 )
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -24,7 +25,7 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Connect")
     settings_description = _("Change application proxy settings")
-    settings_icon = ft.Icons.LINK
+    settings_icon = Symbols.LINK
     settings_route_suffix = "conn_settings"
 
     # ---------------------------------------------------------------------------

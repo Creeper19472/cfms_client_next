@@ -8,6 +8,7 @@ from include.classes.shared import AppShared
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
 from include.util.requests import do_request
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -104,15 +105,15 @@ class AuditLogView(ft.Container):
         )
 
         self.refresh_button = ft.IconButton(
-            ft.Icons.REFRESH,
+            Symbols.REFRESH,
             on_click=self.refresh_button_click,
         )
         self.navigate_before_button = ft.IconButton(
-            ft.Icons.NAVIGATE_BEFORE,
+            Symbols.NAVIGATE_BEFORE,
             on_click=self.audit_view_navigate_before_pressed,
         )
         self.navigate_next_button = ft.IconButton(
-            ft.Icons.NAVIGATE_NEXT,
+            Symbols.NAVIGATE_NEXT,
             on_click=self.audit_view_navigate_next_pressed,
         )
 

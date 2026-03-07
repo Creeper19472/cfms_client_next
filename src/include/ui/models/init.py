@@ -18,6 +18,7 @@ from include.classes.shared import AppShared
 from include.constants import ROOT_PATH
 from include.util.ca_update import build_initial_manifest
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -92,7 +93,7 @@ class AppInitModel(Model):
         step_rows: list[ft.Control] = []
         for step in self._steps:
             icon = ft.Icon(
-                ft.Icons.RADIO_BUTTON_UNCHECKED,
+                Symbols.RADIO_BUTTON_UNCHECKED,
                 size=16,
                 color=ft.Colors.with_opacity(0.45, ft.Colors.WHITE),
             )
@@ -174,7 +175,7 @@ class AppInitModel(Model):
 
         for idx, step in enumerate(self._steps):
             # Mark current step as in-progress
-            self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
+            self._step_icons[idx].icon = Symbols.RADIO_BUTTON_CHECKED
             self._step_icons[idx].color = ft.Colors.BLUE_200
             self._step_texts[idx].color = ft.Colors.WHITE
             self.current_step_text.value = step["title"]
@@ -183,11 +184,11 @@ class AppInitModel(Model):
 
             try:
                 await step["action"]()
-                self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
+                self._step_icons[idx].icon = Symbols.RADIO_BUTTON_CHECKED
                 self._step_icons[idx].color = ft.Colors.GREEN_300
                 self._step_texts[idx].color = ft.Colors.WHITE
             except Exception as exc:
-                self._step_icons[idx].icon = ft.Icons.ERROR_OUTLINE
+                self._step_icons[idx].icon = Symbols.ERROR_OUTLINE
                 self._step_icons[idx].color = ft.Colors.ORANGE_300
                 label_val = self._step_texts[idx].value or ""
                 self._step_texts[idx].value = f"{label_val} ({exc})"

@@ -9,6 +9,7 @@ from include.ui.util.notifications import send_error
 from include.ui.util.user_controls import update_user_controls
 from include.util.locale import get_translation
 from include.util.requests import do_request
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -63,9 +64,9 @@ class ManageAccountsView(ft.Container):
                 ft.Text(_("User List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
-                        ft.IconButton(ft.Icons.ADD, on_click=self.add_button_click),
+                        ft.IconButton(Symbols.ADD, on_click=self.add_button_click),
                         ft.IconButton(
-                            ft.Icons.REFRESH,
+                            Symbols.REFRESH,
                             on_click=lambda e: asyncio.create_task(
                                 self.refresh_user_list()
                             ),

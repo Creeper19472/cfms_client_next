@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
 from include.util.locale import get_translation
+from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -37,17 +38,17 @@ class MoreView(ft.Container):
                 ft.ListView(
                     controls=[
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.PASSWORD),
+                            leading=ft.Icon(Symbols.PASSWORD),
                             title=ft.Text(_("Change Password")),
                             on_click=self.passwd_listtile_click,
                         ),
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.SETTINGS),
+                            leading=ft.Icon(Symbols.SETTINGS),
                             title=ft.Text(_("Settings")),
                             on_click=self.settings_listtile_click,
                         ),
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.INFO),
+                            leading=ft.Icon(Symbols.INFO),
                             title=ft.Text(_("About")),
                             on_click=self.about_listtile_click,
                         ),
