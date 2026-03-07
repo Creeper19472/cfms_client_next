@@ -2528,7 +2528,7 @@ msgstr "日志"
 
 #: .\include\ui\models\debugging.py:83
 msgid "The last 10 lines of the logfile:"
-msgstr "日志文件的最后10行："
+msgstr "日志文件的最后 10 行："
 
 #: .\include\ui\models\debugging.py:92
 msgid "Yes"
