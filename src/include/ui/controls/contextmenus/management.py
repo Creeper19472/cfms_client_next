@@ -13,7 +13,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class UserContextMenu(ContextMenu2):
+class UserManagementContextMenu(ContextMenu2):
     def __init__(
         self,
         username: str,
@@ -33,7 +33,7 @@ class UserContextMenu(ContextMenu2):
         self.controller = UserContextMenuController(self)
 
         self._listtile = ft.ListTile(
-            leading=ft.Icon(Symbols.ACCOUNT_CIRCLE),
+            leading=ft.Icon(Symbols.ACCOUNT_CIRCLE, fill=1),
             title=ft.Text(nickname or username),
             subtitle=ft.Text(
                 f"{groups}\n"

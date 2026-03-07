@@ -14,14 +14,14 @@ from include.util.requests import do_request_2
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
-    from include.ui.controls.contextmenus.management import UserContextMenu
+    from include.ui.controls.contextmenus.management import UserManagementContextMenu
 
 t = get_translation()
 _ = t.gettext
 
 
-class UserContextMenuController(Controller["UserContextMenu"]):
-    def __init__(self, control: "UserContextMenu") -> None:
+class UserContextMenuController(Controller["UserManagementContextMenu"]):
+    def __init__(self, control: "UserManagementContextMenu") -> None:
         super().__init__(control)
 
     @wait("delete_user")
