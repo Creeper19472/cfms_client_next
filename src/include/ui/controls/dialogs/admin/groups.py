@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Optional
 import asyncio
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.base import AlertDialog
@@ -46,7 +47,9 @@ class AddUserGroupDialog(AlertDialog):
             _("Create"),
             on_click=self.request_create_group,
         )
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.content = ft.Column(
             controls=[self.display_name_field, self.group_name_field],
@@ -89,7 +92,12 @@ class AddUserGroupDialog(AlertDialog):
             token=self.app_shared.token,
         )
         if (code := response["code"]) != 200:
-            send_error(self.page, _("Failed to create user group: ({code}) {message}").format(code=code, message=response['message']))
+            send_error(
+                self.page,
+                _("Failed to create user group: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                ),
+            )
         else:
             await self.parent_view.refresh_group_list()
 
@@ -127,7 +135,9 @@ class RenameGroupDialog(AlertDialog):
             _("Submit"),
             on_click=self.ok_button_click,
         )
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.content = ft.Column(
             controls=[self.name_textfield, self.textfield_empty_message],
@@ -176,7 +186,12 @@ class RenameGroupDialog(AlertDialog):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _("Rename failed: ({code}) {message}").format(code=code, message=response['message']))
+            send_error(
+                self.page,
+                _("Rename failed: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                ),
+            )
         else:
             await self.parent_manager.refresh_group_list()
 
@@ -197,14 +212,18 @@ class EditGroupPermissionDialog(AlertDialog):
         super().__init__(ref=ref, visible=visible)
 
         self.refresh_button = ft.IconButton(
-            ft.Icons.REFRESH,
+            Symbols.REFRESH,
             on_click=self.refresh_button_click,
         )
         self.add_button = ft.IconButton(
-            ft.Icons.ADD, on_click=self.add_permission_submit, disabled=True
+            Symbols.ADD, on_click=self.add_permission_submit, disabled=True
         )
-        self.submit_button = ft.TextButton(_("Submit"), on_click=self.submit_button_click)
-        self.cancel_button = ft.TextButton(_("Cancel"), on_click=self.cancel_button_click)
+        self.submit_button = ft.TextButton(
+            _("Submit"), on_click=self.submit_button_click
+        )
+        self.cancel_button = ft.TextButton(
+            _("Cancel"), on_click=self.cancel_button_click
+        )
 
         self.add_textfield = ft.TextField(
             label=_("Add Permission"),
@@ -303,7 +322,9 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := response["code"]) != 200:
             send_error(
                 self.page,
-                _("Change user group permissions failed: ({code}) {message}").format(code=code, message=response['message']),
+                _("Change user group permissions failed: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                ),
             )
         else:
             await self.refresh_permission_list()
@@ -336,7 +357,9 @@ class EditGroupPermissionDialog(AlertDialog):
         if (code := group_info_response["code"]) != 200:
             send_error(
                 self.page,
-                _("Failed to fetch user group info: ({code}) {message}").format(code=code, message=group_info_response['message']),
+                _("Failed to fetch user group info: ({code}) {message}").format(
+                    code=code, message=group_info_response["message"]
+                ),
             )
             return
 

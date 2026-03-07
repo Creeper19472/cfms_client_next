@@ -8,6 +8,7 @@ with retry and navigation options. It supports both compact and full-screen mode
 from typing import Callable
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.util.locale import get_translation
 
@@ -128,11 +129,11 @@ class ErrorContent(ft.Column):
 
         # Create action buttons if requested
         button_row_controls = []
-        
+
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
                 content=_("Go Back"),
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=on_back_click,
             )
             button_row_controls.append(self.back_button)
@@ -140,7 +141,7 @@ class ErrorContent(ft.Column):
         if show_retry_button and on_retry_click:
             self.retry_button = ft.Button(
                 content=_("Retry"),
-                icon=ft.Icons.REFRESH,
+                icon=Symbols.REFRESH,
                 on_click=on_retry_click,
             )
             button_row_controls.append(self.retry_button)
@@ -165,47 +166,49 @@ class ErrorContent(ft.Column):
 
     _ERROR_METADATA = {
         0: {
-            "icon": ft.Icons.ERROR,
+            "icon": Symbols.ERROR,
             "title": _("Connection Error"),
-            "description": _("Could not connect to the server or an unexpected error occurred."),
+            "description": _(
+                "Could not connect to the server or an unexpected error occurred."
+            ),
         },
         404: {
-            "icon": ft.Icons.SEARCH_OFF,
+            "icon": Symbols.SEARCH_OFF,
             "title": _("Not Found"),
             "description": _("The requested directory or file could not be found."),
         },
         500: {
-            "icon": ft.Icons.ERROR_OUTLINE,
+            "icon": Symbols.ERROR_OUTLINE,
             "title": _("Server Error"),
             "description": _("The server encountered an internal error."),
         },
         502: {
-            "icon": ft.Icons.ERROR_OUTLINE,
+            "icon": Symbols.ERROR_OUTLINE,
             "title": _("Server Error"),
             "description": _("The server received an invalid response from upstream."),
         },
         503: {
-            "icon": ft.Icons.ERROR_OUTLINE,
+            "icon": Symbols.ERROR_OUTLINE,
             "title": _("Server Error"),
             "description": _("The server is temporarily unavailable."),
         },
         400: {
-            "icon": ft.Icons.WARNING,
+            "icon": Symbols.WARNING,
             "title": _("Bad Request"),
             "description": _("The request was invalid or malformed."),
         },
         401: {
-            "icon": ft.Icons.LOCK_CLOCK,
+            "icon": Symbols.LOCK_CLOCK,
             "title": _("Unauthorized"),
             "description": _("Your session may have expired. Please try again."),
         },
         408: {
-            "icon": ft.Icons.TIMER_OFF,
+            "icon": Symbols.TIMER_OFF,
             "title": _("Request Timeout"),
             "description": _("The request took too long to complete."),
         },
         "default": {
-            "icon": ft.Icons.ERROR,
+            "icon": Symbols.ERROR,
             "title": _("Error"),
             "description": _("An error occurred while processing your request."),
         },
@@ -231,7 +234,9 @@ class ErrorContent(ft.Column):
             if error_code == 0:
                 return _("Check your connection and try again.")
             elif error_code in (500, 502, 503):
-                return _("Please try again later or contact support if the problem persists.")
+                return _(
+                    "Please try again later or contact support if the problem persists."
+                )
             elif error_code == 404:
                 return _("The item may have been moved or deleted.")
             else:
@@ -272,17 +277,17 @@ class ErrorContent(ft.Column):
         """
         self.error_code = error_code
         self.error_message_value = error_message
-        
+
         # Update icon and title
         icon, title_text = self._get_icon_and_title(error_code)
         self.icon.icon = icon
         self.title_text.value = title_text
-        
+
         # Update message texts
         self.message_text.value = self._get_description(error_code)
         self.error_detail_text.value = error_message
         self.additional_info_text.value = self._get_additional_info(
             error_code, self.compact_mode
         )
-        
+
         self.update()

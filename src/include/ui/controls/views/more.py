@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.components.account import AccountBadge
@@ -37,17 +38,17 @@ class MoreView(ft.Container):
                 ft.ListView(
                     controls=[
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.PASSWORD),
+                            leading=ft.Icon(Symbols.PASSWORD),
                             title=ft.Text(_("Change Password")),
                             on_click=self.passwd_listtile_click,
                         ),
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.SETTINGS),
+                            leading=ft.Icon(Symbols.SETTINGS),
                             title=ft.Text(_("Settings")),
                             on_click=self.settings_listtile_click,
                         ),
                         ft.ListTile(
-                            leading=ft.Icon(ft.Icons.INFO),
+                            leading=ft.Icon(Symbols.INFO),
                             title=ft.Text(_("About")),
                             on_click=self.about_listtile_click,
                         ),

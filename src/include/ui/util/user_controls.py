@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from include.ui.controls.contextmenus.management import UserContextMenu
+from include.ui.controls.contextmenus.management import UserManagementContextMenu
 
 if TYPE_CHECKING:
     from include.ui.controls.views.admin.account import UserListView
@@ -13,7 +13,7 @@ def update_user_controls(view: "UserListView", users: list[dict], _update=True):
     view.controls = []  # reset
     view.controls.extend(
         [
-            UserContextMenu(
+            UserManagementContextMenu(
                 username=user["username"],
                 nickname=user.get("nickname"),
                 groups=user.get("groups", []),

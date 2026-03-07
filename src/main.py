@@ -115,6 +115,12 @@ async def main(page: ft.Page):
             )
         ),
         font_family="Source Han Serif SC Regular",
+        icon_theme=ft.IconTheme(
+            weight=400,
+            fill=0,
+            grade=0,
+            optical_size=24,
+        ),
     )
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER

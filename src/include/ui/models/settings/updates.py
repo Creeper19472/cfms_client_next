@@ -1,7 +1,7 @@
 """Update channel settings model (declarative)."""
 
 from flet_model import route
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.version import ChannelType
 from include.constants import DEFAULT_UPDATE_CHANNEL
@@ -24,7 +24,7 @@ class UpdatesSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Updates")
     settings_description = _("Configure update channel preferences")
-    settings_icon = ft.Icons.BROWSER_UPDATED
+    settings_icon = Symbols.BROWSER_UPDATED
     settings_route_suffix = "updates_settings"
 
     # ---------------------------------------------------------------------------

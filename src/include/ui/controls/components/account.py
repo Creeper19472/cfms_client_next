@@ -1,10 +1,11 @@
 import os
+import base64
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.util.quotes import get_quote
 from include.util.locale import get_translation
-import base64
 
 t = get_translation()
 _ = t.gettext
@@ -79,7 +80,7 @@ class AccountBadge(ft.Container):
         else:
             self.username_text.value = _("User")
             self.user_avatar.foreground_image_src = None
-            self.user_avatar.content = ft.Icon(ft.Icons.ACCOUNT_CIRCLE)
+            self.user_avatar.content = ft.Icon(Symbols.ACCOUNT_CIRCLE)
 
         self.update()
 

@@ -2,6 +2,7 @@ import platform
 import flet as ft
 import flet.version
 from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 from include.ui.util.route import get_parent_route
 from include.constants import (
     FLET_ASSETS_DIR,
@@ -33,7 +34,7 @@ class DebuggingViewModel(Model):
         self.appbar = ft.AppBar(
             title=ft.Text(_("Debugging")),
             leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=self.back_button_click,
             ),
         )

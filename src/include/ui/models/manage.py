@@ -1,7 +1,8 @@
 from typing import cast
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.views.admin.account import ManageAccountsView
@@ -32,16 +33,16 @@ class ManagementNavigationBar(ft.NavigationBar):
 
         nav_destinations = [
             ft.NavigationBarDestination(
-                icon=ft.Icons.SUPERVISOR_ACCOUNT_OUTLINED, label=_("Accounts")
+                icon=Symbols.SUPERVISOR_ACCOUNT, label=_("Accounts")
             ),
             ft.NavigationBarDestination(
-                icon=ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
+                icon=Symbols.ADMIN_PANEL_SETTINGS,
                 label=_("Groups"),
             ),
             # ft.NavigationBarDestination(
-            #     icon=ft.Icons.SETTINGS_APPLICATIONS, label="Settings"
+            #     icon=Symbols.SETTINGS_APPLICATIONS, label="Settings"
             # ),
-            ft.NavigationBarDestination(icon=ft.Icons.ARTICLE, label=_("Logs")),
+            ft.NavigationBarDestination(icon=Symbols.ARTICLE, label=_("Logs")),
         ]
 
         super().__init__(
@@ -80,7 +81,7 @@ class ManageModel(Model):
 
         self.appbar = ft.AppBar(
             title=ft.Text(_("Management")),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
+            leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
         )
 
         self.stored_views = [
@@ -101,7 +102,7 @@ class ManageModel(Model):
         )
 
         # self.floating_action_button = ft.FloatingActionButton(
-        #     icon=ft.Icons.LOCK, on_click=apply_lockdown
+        #     icon=Symbols.LOCK, on_click=apply_lockdown
         # )
         # self.floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
 

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import asyncio
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.admin.accounts import AddUserAccountDialog
@@ -63,9 +64,9 @@ class ManageAccountsView(ft.Container):
                 ft.Text(_("User List"), size=24, weight=ft.FontWeight.BOLD),
                 ft.Row(
                     controls=[
-                        ft.IconButton(ft.Icons.ADD, on_click=self.add_button_click),
+                        ft.IconButton(Symbols.ADD, on_click=self.add_button_click),
                         ft.IconButton(
-                            ft.Icons.REFRESH,
+                            Symbols.REFRESH,
                             on_click=lambda e: asyncio.create_task(
                                 self.refresh_user_list()
                             ),

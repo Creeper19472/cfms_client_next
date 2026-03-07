@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
@@ -28,7 +29,7 @@ class CollectionAreasControlBar(ft.Row):
         self.progress_ring = ft.ProgressRing(visible=False)
         self.add_button = ft.FilledButton(
             content=_("Add Rule Group"),
-            icon=ft.Icons.ADD,
+            icon=Symbols.ADD,
             on_click=self.on_add_button_click,
         )
 

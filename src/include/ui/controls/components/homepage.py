@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, Union, cast
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_document
-
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
@@ -34,17 +34,19 @@ class HomeNavigationBar(ft.NavigationBar):
         self.views = views
         self._is_click_navigating = False
 
-        self._tasks_destination_icon = ft.Icon(ft.Icons.ARROW_CIRCLE_DOWN)
+        self._tasks_destination_icon = ft.Icon(Symbols.ARROW_CIRCLE_DOWN)
 
         nav_destinations = [
-            ft.NavigationBarDestination(icon=ft.Icons.FOLDER, label=_("Files")),
+            ft.NavigationBarDestination(icon=Symbols.FOLDER, label=_("Files")),
             ft.NavigationBarDestination(
                 icon=self._tasks_destination_icon, label=_("Tasks")
             ),
-            ft.NavigationBarDestination(icon=ft.Icons.HOME, label=_("Home")),
-            ft.NavigationBarDestination(icon=ft.Icons.MORE_HORIZ, label=_("More")),
+            ft.NavigationBarDestination(icon=Symbols.HOME, label=_("Home")),
+            ft.NavigationBarDestination(icon=Symbols.MORE_HORIZ, label=_("More")),
             ft.NavigationBarDestination(
-                icon=ft.Icons.CLOUD_CIRCLE, label=_("Manage"), visible=False
+                icon=ft.Icon(Symbols.CLOUD_CIRCLE, fill=1),
+                label=_("Manage"),
+                visible=False,
             ),
         ]
 
@@ -128,7 +130,7 @@ class WelcomeInfoCard(ft.Card):
             content=ft.Column(
                 [
                     ft.ListTile(
-                        leading=ft.Icon(ft.Icons.ACCESS_TIME_FILLED),
+                        leading=ft.Icon(Symbols.ACCESS_TIME_FILLED),
                         title=ft.Text(
                             _(
                                 "Welcome to Confidential Document Management System (CFMS)"

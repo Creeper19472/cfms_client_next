@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import asyncio
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.admin.groups import AddUserGroupDialog
@@ -9,6 +10,7 @@ from include.ui.util.group_controls import update_group_controls
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
 from include.util.requests import do_request
+
 t = get_translation()
 _ = t.gettext
 
@@ -63,10 +65,10 @@ class ManageGroupsView(ft.Container):
                 ft.Row(
                     controls=[
                         ft.IconButton(
-                            ft.Icons.GROUP_ADD_OUTLINED, on_click=self.add_button_click
+                            Symbols.GROUP_ADD, on_click=self.add_button_click
                         ),
                         ft.IconButton(
-                            ft.Icons.REFRESH,
+                            Symbols.REFRESH,
                             on_click=lambda e: asyncio.create_task(
                                 self.refresh_group_list()
                             ),
@@ -108,7 +110,12 @@ class ManageGroupsView(ft.Container):
         )
 
         if (code := response["code"]) != 200:
-            send_error(self.page, _("Load failed: ({code}) {message}").format(code=code, message=response['message']))
+            send_error(
+                self.page,
+                _("Load failed: ({code}) {message}").format(
+                    code=code, message=response["message"]
+                ),
+            )
         else:
             update_group_controls(
                 self.group_listview, response["data"]["groups"], _update_page

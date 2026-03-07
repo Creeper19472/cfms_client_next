@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.explorer.tile import (
@@ -60,57 +60,57 @@ class FileContextMenu(ContextMenu2):
             ref=ref,
             menu_items=[
                 {
-                    "icon": ft.Icons.DELETE,
+                    "icon": Symbols.DELETE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
                     "require": {"delete_document"},
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
                     "require": {"rename_document"},
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_MOVE,
                     "content": _("Move"),
                     "on_click": self.move_button_click,
                     "require": {"move"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                    "icon": Symbols.LOCK_PERSON,
                     "content": _("Authorize"),
                     "on_click": self.authorize_button_click,
                     "require": {"manage_access"},
                 },
                 {
-                    "icon": ft.Icons.LIST_ALT,
+                    "icon": Symbols.LIST_ALT,
                     "content": _("View access entries"),
                     "on_click": self.view_access_entries_button_click,
                     "require": {"view_access_entries"},
                 },
                 {
-                    "icon": ft.Icons.SETTINGS_OUTLINED,
+                    "icon": Symbols.SETTINGS,
                     "content": _("Set permissions"),
                     "on_click": self.set_access_rules_button_click,
                     "require": {"set_access_rules"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.UPLOAD_FILE_OUTLINED,
+                    "icon": Symbols.UPLOAD_FILE,
                     "content": _("Upload new version"),
                     "on_click": self.new_revision_button_click,
                 },
                 {
-                    "icon": ft.Icons.HISTORY_OUTLINED,
+                    "icon": Symbols.HISTORY,
                     "content": _("View Revisions"),
                     "on_click": self.view_revisions_button_click,
                     "require": {"list_revisions"},
                 },
                 {},
                 {
-                    "icon": ft.Icons.INFO_OUTLINED,
+                    "icon": Symbols.INFO,
                     "content": _("Properties"),
                     "on_click": self.open_document_info_click,
                 },
@@ -150,7 +150,7 @@ class FileContextMenu(ContextMenu2):
     async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         # Create a new file picker each time (file picker is a singleton)
         file_picker = ft.FilePicker()
-        
+
         result = await file_picker.pick_files(allow_multiple=False)
         if result:
             self.page.run_task(self.controller.action_upload_new_revision, result[0])
@@ -196,45 +196,45 @@ class DirectoryContextMenu(ContextMenu2):
 
         __menu_items = [
             {
-                "icon": ft.Icons.DELETE,
+                "icon": Symbols.DELETE,
                 "content": _("Delete"),
                 "on_click": self.delete_button_click,
                 "require": {"delete_directory"},
             },
             {
-                "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                 "content": _("Rename"),
                 "on_click": self.rename_button_click,
                 "require": {"rename_directory"},
             },
             {
-                "icon": ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_MOVE,
                 "content": _("Move"),
                 "on_click": self.move_button_click,
                 "require": {"move"},
             },
             {},
             {
-                "icon": ft.Icons.LOCK_PERSON_OUTLINED,
+                "icon": Symbols.LOCK_PERSON,
                 "content": _("Authorize"),
                 "on_click": self.authorize_button_click,
                 "require": {"manage_access"},
             },
             {
-                "icon": ft.Icons.LIST_ALT,
+                "icon": Symbols.LIST_ALT,
                 "content": _("View Access Entries"),
                 "on_click": self.view_access_entries_button_click,
                 "require": {"view_access_entries"},
             },
             {
-                "icon": ft.Icons.SETTINGS_OUTLINED,
+                "icon": Symbols.SETTINGS,
                 "content": _("Set Permissions"),
                 "on_click": self.set_access_rules_button_click,
                 "require": {"set_access_rules"},
             },
             {},
             {
-                "icon": ft.Icons.INFO_OUTLINED,
+                "icon": Symbols.INFO,
                 "content": _("Properties"),
                 "on_click": self.open_directory_info_click,
             },
@@ -246,9 +246,9 @@ class DirectoryContextMenu(ContextMenu2):
         #             {},
         #             {
         #                 "icon": (
-        #                     ft.Icons.STAR_OUTLINED
+        #                     Symbols.STAR
         #                     if self.dirtile.starred
-        #                     else ft.Icons.STAR_BORDER_OUTLINED
+        #                     else Symbols.STAR_BORDER
         #                 ),
         #                 "content": (
         #                     _("Star") if not self.dirtile.starred else _("Unstar")

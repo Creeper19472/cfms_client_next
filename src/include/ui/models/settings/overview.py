@@ -2,6 +2,7 @@ from collections.abc import Awaitable, Callable
 
 from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings.settings_framework import get_settings_registry
 from include.ui.util.route import get_parent_route
@@ -25,7 +26,7 @@ class SettingsModel(Model):
         self.appbar = ft.AppBar(
             title=ft.Text(_("Settings")),
             # center_title=True,
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
+            leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
         )
 
         self.listtiles = [

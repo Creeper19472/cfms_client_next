@@ -8,6 +8,7 @@ in different contexts (dialogs, views, etc.). It supports both compact and full-
 from typing import Callable, Optional
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.util.locale import get_translation
 
@@ -56,7 +57,7 @@ class AccessDeniedContent(ft.Column):
 
         # Create icon
         self.icon = ft.Icon(
-            ft.Icons.LOCK,
+            Symbols.LOCK,
             size=icon_size,
             color=ft.Colors.WHITE,
         )
@@ -133,7 +134,7 @@ class AccessDeniedContent(ft.Column):
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
                 content=_("Go Back"),
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=on_back_click,
             )
             controls.extend(

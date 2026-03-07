@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional
 import asyncio
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.menus import (
@@ -138,7 +139,7 @@ class GetDocumentInfoDialog(AlertDialog):
             controls=[
                 ft.Text(_("Document Details")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]
@@ -272,7 +273,7 @@ class GetDirectoryInfoDialog(AlertDialog):
             controls=[
                 ft.Text(_("Directory Details")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]

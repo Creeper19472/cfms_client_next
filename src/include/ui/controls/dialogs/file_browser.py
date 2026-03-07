@@ -10,6 +10,7 @@ import asyncio
 from typing import TYPE_CHECKING, Callable, Optional, cast
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.components.common.access_denied_content import (
@@ -131,14 +132,14 @@ class FileBrowserDialog(AlertDialog):
         # Action buttons
         self.select_here_button = ft.Button(
             select_button_text if select_button_text else _("Select Here"),
-            icon=select_button_icon if select_button_icon else ft.Icons.CHECK_CIRCLE,
+            icon=select_button_icon if select_button_icon else Symbols.CHECK_CIRCLE,
             on_click=self.select_here_button_click,
             visible=show_select_button,
         )
 
         self.go_to_root_button = ft.TextButton(
             _("Go to Root"),
-            icon=ft.Icons.HOME,
+            icon=Symbols.HOME,
             on_click=self.go_to_root_button_click,
             visible=False,
         )
@@ -255,14 +256,14 @@ class FileBrowserDialog(AlertDialog):
 
     async def _navigate_back_from_error_screen(self, event):
         """Navigate back from any error screen (403 or other errors).
-        
+
         This is a shared helper for both _handle_back_from_error and
         _handle_back_from_access_denied to avoid code duplication.
-        
+
         Note: The navigation stack contains successfully loaded directories.
         When a directory fails to load, the stack still contains the previous
         directory we came from, so we can safely pop and navigate back.
-        
+
         Edge case: If the previous directory also fails to load (e.g., due to
         network issues), a new error screen will be shown with its own back
         button, allowing continued navigation or retry until a working directory
@@ -316,7 +317,7 @@ class FileBrowserDialog(AlertDialog):
                     # Show error UI with retry and back options for other errors
                     self._show_error(
                         error_code=response.get("code", 0),
-                        error_message=response.get("message", _("Unknown error"))
+                        error_message=response.get("message", _("Unknown error")),
                     )
                 self.enable_interactions()
                 return
@@ -375,7 +376,7 @@ class FileBrowserDialog(AlertDialog):
                 normalized_parent_id = None if parent_id == "/" else parent_id
 
                 parent_button = ft.ListTile(
-                    leading=ft.Icon(ft.Icons.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
+                    leading=ft.Icon(Symbols.ARROW_UPWARD, color=ft.Colors.ORANGE_400),
                     title=ft.Text(
                         _(".. (Parent Directory)"), weight=ft.FontWeight.BOLD
                     ),
@@ -397,7 +398,9 @@ class FileBrowserDialog(AlertDialog):
                         continue
 
                     dir_tile = ft.ListTile(
-                        leading=ft.Icon(ft.Icons.FOLDER, color=ft.Colors.BLUE_400),
+                        leading=ft.Icon(
+                            Symbols.FOLDER, color=ft.Colors.BLUE_400, fill=1
+                        ),
                         title=ft.Text(dir_name),
                         on_click=lambda e, d_id=dir_id, d_name=dir_name: asyncio.create_task(
                             self.navigate_to_directory(d_id, d_name)
@@ -418,7 +421,7 @@ class FileBrowserDialog(AlertDialog):
 
                     doc_tile = ft.ListTile(
                         leading=ft.Icon(
-                            ft.Icons.INSERT_DRIVE_FILE, color=ft.Colors.GREEN_400
+                            Symbols.DESCRIPTION, color=ft.Colors.GREEN_400, fill=1
                         ),
                         title=ft.Text(doc_title),
                         subtitle=ft.Text(
@@ -450,7 +453,7 @@ class FileBrowserDialog(AlertDialog):
             # Show error UI with retry and back options
             self._show_error(
                 error_code=0,  # 0 indicates a client-side exception
-                error_message=str(e)
+                error_message=str(e),
             )
             self.enable_interactions()
 

@@ -18,7 +18,7 @@ Basic usage (declarative)::
         # Overview metadata
         settings_name = _("My Settings")
         settings_description = _("Configure my settings")
-        settings_icon = ft.Icons.SETTINGS
+        settings_icon = Symbols.SETTINGS
         settings_route_suffix = "my_settings"
 
         # Declarative fields with section headers and separators
@@ -40,7 +40,7 @@ auto-population by mixing in :class:`RegisteredSettingsPage`::
     class ComplexSettingsModel(Model, RegisteredSettingsPage):
         settings_name = _("Complex Settings")
         settings_description = _("Complex configuration")
-        settings_icon = ft.Icons.SETTINGS
+        settings_icon = Symbols.SETTINGS
         settings_route_suffix = "complex_settings"
         ...
 """
@@ -57,6 +57,7 @@ from typing import (
 )
 
 import flet as ft
+from flet_material_symbols import Symbols
 from flet_model import Model, Router
 
 from include.classes.shared import AppShared
@@ -136,7 +137,7 @@ class RegisteredSettingsPage:
 
     settings_name: ClassVar[str] = ""
     settings_description: ClassVar[str] = ""
-    settings_icon: ClassVar[ft.IconData] = ft.Icons.SETTINGS
+    settings_icon: ClassVar[ft.IconData] = Symbols.SETTINGS
     settings_route_suffix: ClassVar[str] = ""
 
 
@@ -617,9 +618,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
         self.appbar = ft.AppBar(
             title=ft.Text(type(self).settings_name),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
+            leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
             actions=[
-                ft.IconButton(ft.Icons.SAVE_OUTLINED, on_click=self._save_button_click)
+                ft.IconButton(Symbols.SAVE, on_click=self._save_button_click)
             ],
             actions_padding=10,
         )
@@ -1089,7 +1090,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
         class PasswordSettingsModel(DeclarativeActionPage):
             settings_name = _("Change Password")
             settings_description = _("Update your account password")
-            settings_icon = ft.Icons.LOCK
+            settings_icon = Symbols.LOCK
             settings_route_suffix = "password_settings"
 
             def __init__(self, page, router):
@@ -1114,7 +1115,7 @@ class DeclarativeActionPage(Model, RegisteredSettingsPage):
 
         self.appbar = ft.AppBar(
             title=ft.Text(type(self).settings_name),
-            leading=ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=self._go_back),
+            leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
         )
 
     # ------------------------------------------------------------------

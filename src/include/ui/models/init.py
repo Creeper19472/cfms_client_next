@@ -10,8 +10,9 @@ UI.
 import asyncio
 from typing import Any
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 
 from include.classes.services.ca_update import CACertUpdateService
 from include.classes.shared import AppShared
@@ -92,7 +93,7 @@ class AppInitModel(Model):
         step_rows: list[ft.Control] = []
         for step in self._steps:
             icon = ft.Icon(
-                ft.Icons.RADIO_BUTTON_UNCHECKED,
+                Symbols.RADIO_BUTTON_UNCHECKED,
                 size=16,
                 color=ft.Colors.with_opacity(0.45, ft.Colors.WHITE),
             )
@@ -174,7 +175,7 @@ class AppInitModel(Model):
 
         for idx, step in enumerate(self._steps):
             # Mark current step as in-progress
-            self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
+            self._step_icons[idx].icon = Symbols.RADIO_BUTTON_CHECKED
             self._step_icons[idx].color = ft.Colors.BLUE_200
             self._step_texts[idx].color = ft.Colors.WHITE
             self.current_step_text.value = step["title"]
@@ -183,11 +184,11 @@ class AppInitModel(Model):
 
             try:
                 await step["action"]()
-                self._step_icons[idx].icon = ft.Icons.RADIO_BUTTON_CHECKED
+                self._step_icons[idx].icon = Symbols.RADIO_BUTTON_CHECKED
                 self._step_icons[idx].color = ft.Colors.GREEN_300
                 self._step_texts[idx].color = ft.Colors.WHITE
             except Exception as exc:
-                self._step_icons[idx].icon = ft.Icons.ERROR_OUTLINE
+                self._step_icons[idx].icon = Symbols.ERROR_OUTLINE
                 self._step_icons[idx].color = ft.Colors.ORANGE_300
                 label_val = self._step_texts[idx].value or ""
                 self._step_texts[idx].value = f"{label_val} ({exc})"
@@ -209,7 +210,9 @@ class AppInitModel(Model):
         # Offer an immediate CA certificate check via SnackBar action
         service_manager = self.app_shared.service_manager
         if service_manager is not None:
-            ca_service = service_manager.get_service("ca_cert_update", CACertUpdateService)
+            ca_service = service_manager.get_service(
+                "ca_cert_update", CACertUpdateService
+            )
 
             async def _do_update(e: ft.Event) -> None:
                 if ca_service is None:

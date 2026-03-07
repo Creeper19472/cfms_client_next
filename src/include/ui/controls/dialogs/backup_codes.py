@@ -1,6 +1,7 @@
 """Backup codes display dialog."""
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
@@ -83,9 +84,7 @@ class BackupCodesDialog(AlertDialog):
                 ft.Container(height=10),
                 ft.Row(
                     [
-                        ft.Icon(
-                            ft.Icons.WARNING_AMBER, color=ft.Colors.ORANGE, size=20
-                        ),
+                        ft.Icon(Symbols.WARNING_AMBER, color=ft.Colors.ORANGE, size=20),
                         ft.Text(
                             _("Store these codes safely - they won't be shown again!"),
                             size=12,

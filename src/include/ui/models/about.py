@@ -1,8 +1,8 @@
 import asyncio
-import os
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
+from flet_model import Model, Router, route
 import requests
 
 from include.classes.shared import AppShared
@@ -50,17 +50,17 @@ class AboutModel(Model):
         self.appbar = ft.AppBar(
             title=ft.Text(_("About")),
             leading=ft.IconButton(
-                icon=ft.Icons.ARROW_BACK,
+                icon=Symbols.ARROW_BACK,
                 on_click=self.back_button_click,
             ),
             actions=[
                 ft.IconButton(
-                    icon=ft.Icons.BUG_REPORT_OUTLINED,
+                    icon=Symbols.BUG_REPORT,
                     tooltip=_("Debugging..."),
                     on_click=self.debugging_button_click,
                 ),
                 ft.IconButton(
-                    icon=ft.Icons.SETTINGS_OUTLINED,
+                    icon=Symbols.SETTINGS,
                     tooltip=_("Updates Settings"),
                     on_click=self.settings_button_click,
                 ),
@@ -112,7 +112,7 @@ class AboutModel(Model):
         )
 
         self.suc_update_button = ft.IconButton(
-            icon=ft.Icons.UPDATE,
+            icon=Symbols.UPDATE,
             on_click=self.suc_button_click,
         )
         self.suc_progress_ring = ft.ProgressRing(visible=False)

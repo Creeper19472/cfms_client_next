@@ -3,7 +3,7 @@
 from typing import Literal
 
 from flet_model import route
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
@@ -24,7 +24,7 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Connect")
     settings_description = _("Change application proxy settings")
-    settings_icon = ft.Icons.LINK
+    settings_icon = Symbols.LINK
     settings_route_suffix = "conn_settings"
 
     # ---------------------------------------------------------------------------

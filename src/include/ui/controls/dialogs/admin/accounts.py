@@ -300,7 +300,7 @@ class EditUserGroupDialog(AlertDialog):
         self.app_shared = AppShared()
 
         self.refresh_button = ft.IconButton(
-            ft.Icons.REFRESH,
+            Symbols.REFRESH,
             on_click=self.refresh_button_click,
         )
         self.submit_button = ft.TextButton(
@@ -394,7 +394,7 @@ class ViewUserInfoDialog(AlertDialog):
             controls=[
                 ft.Text(_("User Details")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]
@@ -451,7 +451,7 @@ class BlockUserDialog(AlertDialog):
 
         # --- Block types ---
         self.block_types_button = ft.SegmentedButton(
-            selected_icon=ft.Icon(ft.Icons.BLOCK),
+            selected_icon=ft.Icon(Symbols.BLOCK),
             selected=["read", "write", "move"],
             allow_empty_selection=False,
             allow_multiple_selection=True,
@@ -459,17 +459,17 @@ class BlockUserDialog(AlertDialog):
                 ft.Segment(
                     value="read",
                     label=ft.Text(_("Read")),
-                    icon=ft.Icon(ft.Icons.VISIBILITY_OUTLINED),
+                    icon=ft.Icon(Symbols.VISIBILITY),
                 ),
                 ft.Segment(
                     value="write",
                     label=ft.Text(_("Write")),
-                    icon=ft.Icon(ft.Icons.EDIT_OUTLINED),
+                    icon=ft.Icon(Symbols.EDIT),
                 ),
                 ft.Segment(
                     value="move",
                     label=ft.Text(_("Move")),
-                    icon=ft.Icon(ft.Icons.DRIVE_FILE_MOVE_OUTLINED),
+                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                 ),
             ],
         )
@@ -491,7 +491,7 @@ class BlockUserDialog(AlertDialog):
         )
         self.browse_target_button = ft.TextButton(
             _("Browse..."),
-            icon=ft.Icons.FOLDER_OPEN_OUTLINED,
+            icon=Symbols.FOLDER_EYE,
             on_click=self.browse_target_click,
             visible=False,
         )
@@ -514,13 +514,13 @@ class BlockUserDialog(AlertDialog):
         )
         self.date_button = ft.TextButton(
             _("Pick Date"),
-            icon=ft.Icons.CALENDAR_TODAY,
+            icon=Symbols.CALENDAR_TODAY,
             on_click=lambda _: self.page.show_dialog(self.date_picker),
             visible=False,
         )
         self.time_button = ft.TextButton(
             _("Pick Time"),
-            icon=ft.Icons.ACCESS_TIME,
+            icon=Symbols.ACCESS_TIME,
             on_click=lambda _: self.page.show_dialog(self.time_picker),
             visible=False,
         )
@@ -685,7 +685,7 @@ class ListUserBlocksDialog(AlertDialog):
             controls=[
                 ft.Text(_("User Blocks")),
                 ft.IconButton(
-                    ft.Icons.REFRESH,
+                    Symbols.REFRESH,
                     on_click=self.refresh_button_click,
                 ),
             ]
@@ -812,7 +812,7 @@ class ListUserBlocksDialog(AlertDialog):
 
             self.blocks_listview.controls.append(
                 ft.ListTile(
-                    leading=ft.Icon(ft.Icons.BLOCK),
+                    leading=ft.Icon(Symbols.BLOCK),
                     title=ft.Text(
                         _("Types: {types} | Target: {target}").format(
                             types=(

@@ -1,7 +1,7 @@
 """Language settings model (declarative)."""
 
 from flet_model import route
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
@@ -22,7 +22,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Language")
     settings_description = _("Select your preferred language")
-    settings_icon = ft.Icons.LANGUAGE
+    settings_icon = Symbols.LANGUAGE
     settings_route_suffix = "language_settings"
 
     # ---------------------------------------------------------------------------

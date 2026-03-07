@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.ui.enum import SortMode, SortOrder
 from include.controllers.base import Controller
@@ -28,7 +28,7 @@ class FileSortBarController(Controller["FileSortBar"]):
         sort_mode = self.sort_mode_mapping[dropdown_value]
         sort_order = (
             SortOrder.ASCENDING
-            if self.control.order_button.icon == ft.Icons.ARROW_UPWARD
+            if self.control.order_button.icon == Symbols.ARROW_UPWARD
             else SortOrder.DESCENDING
         )
         self.control.parent_view.file_listview.sort_files(

@@ -1,5 +1,6 @@
-from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
+from flet_model import Model, Router, route
 
 from include.classes.shared import AppShared
 from include.constants import APP_VERSION
@@ -28,7 +29,7 @@ class ConnectToServerModel(Model):
             center_title=True,
             actions=[
                 ft.IconButton(
-                    ft.Icons.SETTINGS_OUTLINED,
+                    Symbols.SETTINGS,
                     tooltip=_("Connection Settings"),
                     on_click=self.conn_settings_button_click,
                 ),

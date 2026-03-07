@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.explorer import (
@@ -48,37 +49,37 @@ class SelectionToolbar(ft.Row):
         # Action buttons
         self.select_all_button = ft.TextButton(
             content=_("Select All"),
-            icon=ft.Icons.SELECT_ALL,
+            icon=Symbols.SELECT_ALL,
             on_click=self.on_select_all_click,
         )
 
         self.clear_selection_button = ft.TextButton(
             content=_("Clear"),
-            icon=ft.Icons.CLEAR,
+            icon=Symbols.CLEAR,
             on_click=self.on_clear_selection_click,
         )
 
         self.download_button = ft.TextButton(
             content=_("Download"),
-            icon=ft.Icons.DOWNLOAD,
+            icon=Symbols.DOWNLOAD,
             on_click=self.on_download_click,
         )
 
         self.move_button = ft.TextButton(
             content=_("Move"),
-            icon=ft.Icons.DRIVE_FILE_MOVE,
+            icon=Symbols.DRIVE_FILE_MOVE,
             on_click=self.on_move_click,
         )
 
         self.delete_button = ft.TextButton(
             content=_("Delete"),
-            icon=ft.Icons.DELETE,
+            icon=Symbols.DELETE,
             on_click=self.on_delete_click,
         )
 
         self.cancel_button = ft.TextButton(
             content=_("Cancel"),
-            icon=ft.Icons.CLOSE,
+            icon=Symbols.CLOSE,
             on_click=self.on_cancel_click,
         )
 
@@ -147,13 +148,13 @@ class ExplorerTopBar(ft.Row):
     ):
         # Create selection toggle button first
         self.selection_toggle_button = ft.IconButton(
-            ft.Icons.CHECKLIST,
+            Symbols.CHECKLIST,
             on_click=self.on_selection_toggle_click,
             tooltip=_("Select items"),
         )
 
         self.root_permissions_button = ft.IconButton(
-            ft.Icons.ADMIN_PANEL_SETTINGS_OUTLINED,
+            Symbols.ADMIN_PANEL_SETTINGS,
             on_click=self.on_set_root_permissions_click,
             tooltip=_("Set root directory permissions"),
             visible=False,
@@ -164,22 +165,22 @@ class ExplorerTopBar(ft.Row):
                 ft.Row(
                     controls=[
                         ft.IconButton(
-                            ft.Icons.ADD, on_click=self.on_upload_button_click
+                            Symbols.ADD, on_click=self.on_upload_button_click
                         ),
                         ft.IconButton(
-                            ft.Icons.DRIVE_FOLDER_UPLOAD_OUTLINED,
+                            Symbols.DRIVE_FOLDER_UPLOAD,
                             on_click=self.on_upload_directory_button_click,
                         ),
                         ft.IconButton(
-                            ft.Icons.CREATE_NEW_FOLDER_OUTLINED,
+                            Symbols.CREATE_NEW_FOLDER,
                             on_click=self.on_create_directory_button_click,
                         ),
                         ft.IconButton(
-                            ft.Icons.REFRESH,
+                            Symbols.REFRESH,
                             on_click=self.on_refresh_button_click,
                         ),
                         ft.IconButton(
-                            ft.Icons.SEARCH,
+                            Symbols.SEARCH,
                             on_click=self.on_search_button_click,
                             tooltip=_("Search"),
                         ),
@@ -192,7 +193,7 @@ class ExplorerTopBar(ft.Row):
                     controls=[
                         self.root_permissions_button,
                         ft.IconButton(
-                            ft.Icons.FOLDER_OPEN_OUTLINED,
+                            Symbols.FOLDER_EYE,
                             on_click=self.on_open_folder_button_click,
                         ),
                     ],
@@ -305,7 +306,7 @@ class FileSortBar(ft.Row):
             expand_loose=True,
         )
         self.order_button = ft.IconButton(
-            icon=ft.Icons.ARROW_UPWARD,
+            icon=Symbols.ARROW_UPWARD,
             tooltip=_("Toggle Sort Order"),
             on_click=self.order_button_on_click,
         )
@@ -320,9 +321,9 @@ class FileSortBar(ft.Row):
         self.page.run_task(self.controller.apply_sorting)
 
     async def order_button_on_click(self, event: ft.Event[ft.IconButton]) -> None:
-        if self.order_button.icon == ft.Icons.ARROW_UPWARD:
-            self.order_button.icon = ft.Icons.ARROW_DOWNWARD
+        if self.order_button.icon == Symbols.ARROW_UPWARD:
+            self.order_button.icon = Symbols.ARROW_DOWNWARD
         else:
-            self.order_button.icon = ft.Icons.ARROW_UPWARD
+            self.order_button.icon = Symbols.ARROW_UPWARD
 
         self.page.run_task(self.controller.apply_sorting)

@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional
 import flet as ft
+from flet_material_symbols import Symbols
 
 if TYPE_CHECKING:
     from include.ui.controls.components.rulemanager import VisualRuleEditor
@@ -33,7 +34,7 @@ class EntryListTile(ft.ListTile):
 
         self.title = ft.Text(self.entry_name)
         self.trailing = ft.IconButton(
-            icon=ft.Icons.REMOVE,
+            icon=Symbols.REMOVE,
             on_click=self.on_remove_clicked,
         )
 
@@ -65,12 +66,12 @@ class SubRuleGroupEditEntriesArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "all",
                     _("All"),
-                    leading_icon=ft.Icons.SELECT_ALL,
+                    leading_icon=Symbols.SELECT_ALL,
                 ),
                 ft.DropdownOption(
                     "any",
                     _("Any"),
-                    leading_icon=ft.Icons.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),
@@ -151,12 +152,12 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "all",
                     _("All (AND)"),
-                    leading_icon=ft.Icons.SELECT_ALL,
+                    leading_icon=Symbols.SELECT_ALL,
                 ),
                 ft.DropdownOption(
                     "any",
                     _("Any (OR)"),
-                    leading_icon=ft.Icons.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),
@@ -168,7 +169,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
 
         # Create delete button
         self.delete_button = ft.IconButton(
-            icon=ft.Icons.REMOVE_CIRCLE_OUTLINE,
+            icon=Symbols.REMOVE_CIRCLE_OUTLINE,
             tooltip=_("Delete Subgroup"),
             on_click=self.on_delete_button_click,
         )
@@ -227,7 +228,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         if not self.match_rights:
             self.add_rights_button = ft.OutlinedButton(
                 content=_("Add Rights Section"),
-                icon=ft.Icons.ADD,
+                icon=Symbols.ADD,
                 on_click=self.on_add_rights_section,
             )
             add_buttons.append(self.add_rights_button)
@@ -237,7 +238,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
         if not self.match_groups:
             self.add_groups_button = ft.OutlinedButton(
                 content=_("Add Groups Section"),
-                icon=ft.Icons.ADD,
+                icon=Symbols.ADD,
                 on_click=self.on_add_groups_section,
             )
             add_buttons.append(self.add_groups_button)
@@ -379,12 +380,12 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "all",
                     _("All (AND)"),
-                    leading_icon=ft.Icons.SELECT_ALL,
+                    leading_icon=Symbols.SELECT_ALL,
                 ),
                 ft.DropdownOption(
                     "any",
                     _("Any (OR)"),
-                    leading_icon=ft.Icons.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),
@@ -396,7 +397,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
 
         # Create delete button
         self.delete_button = ft.IconButton(
-            icon=ft.Icons.DELETE,
+            icon=Symbols.DELETE,
             tooltip=_("Delete Rule Group"),
             on_click=self.on_delete_button_click,
         )
@@ -593,23 +594,23 @@ class VisualRuleEditorNavigationRail(ft.NavigationRail):
             group_alignment=0.0,
             destinations=[
                 ft.NavigationRailDestination(
-                    icon=ft.Icons.PAGEVIEW_OUTLINED,
-                    selected_icon=ft.Icons.PAGEVIEW,
+                    icon=Symbols.PAGEVIEW,
+                    selected_icon=Symbols.PAGEVIEW,
                     label=_("Read"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=ft.Icon(ft.Icons.EDIT_OUTLINED),
-                    selected_icon=ft.Icon(ft.Icons.EDIT),
+                    icon=ft.Icon(Symbols.EDIT),
+                    selected_icon=ft.Icon(Symbols.EDIT),
                     label=_("Write"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=ft.Icons.DRIVE_FILE_MOVE_OUTLINED,
-                    selected_icon=ft.Icon(ft.Icons.DRIVE_FILE_MOVE),
+                    icon=Symbols.DRIVE_FILE_MOVE,
+                    selected_icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                     label=_("Move"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
-                    selected_icon=ft.Icon(ft.Icons.MANAGE_ACCOUNTS),
+                    icon=Symbols.MANAGE_ACCOUNTS,
+                    selected_icon=ft.Icon(Symbols.MANAGE_ACCOUNTS),
                     label=_("Manage"),
                 ),
             ],

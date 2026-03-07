@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Literal, cast
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.authorize import AuthorizeDialogController
@@ -70,7 +71,7 @@ class AuthorizeDialog(AlertDialog):
 
         # Search button (only visible if user has list permissions)
         self.search_button = ft.IconButton(
-            icon=ft.Icons.SEARCH,
+            icon=Symbols.SEARCH,
             tooltip=_("Search"),
             on_click=self.search_entity,
             visible=False,  # Will be set based on entity type
@@ -103,7 +104,7 @@ class AuthorizeDialog(AlertDialog):
 
         # Access type selector
         self.access_types_row = ft.SegmentedButton(
-            selected_icon=ft.Icon(ft.Icons.CHECK_SHARP),
+            selected_icon=ft.Icon(Symbols.CHECK_SHARP),
             selected=["read"],
             allow_empty_selection=False,
             allow_multiple_selection=True,
@@ -111,22 +112,22 @@ class AuthorizeDialog(AlertDialog):
                 ft.Segment(
                     value="read",
                     label=ft.Text(_("Read")),
-                    icon=ft.Icon(ft.Icons.SCREEN_SEARCH_DESKTOP_OUTLINED),
+                    icon=ft.Icon(Symbols.SCREEN_SEARCH_DESKTOP),
                 ),
                 ft.Segment(
                     value="write",
                     label=ft.Text(_("Write")),
-                    icon=ft.Icon(ft.Icons.EDIT_OUTLINED),
+                    icon=ft.Icon(Symbols.EDIT),
                 ),
                 ft.Segment(
                     value="move",
                     label=ft.Text(_("Move")),
-                    icon=ft.Icon(ft.Icons.DRIVE_FILE_MOVE_OUTLINED),
+                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                 ),
                 ft.Segment(
                     value="manage",
                     label=ft.Text(_("Manage")),
-                    icon=ft.Icon(ft.Icons.MANAGE_HISTORY_ROUNDED),
+                    icon=ft.Icon(Symbols.MANAGE_HISTORY_ROUNDED),
                 ),
             ],
         )
@@ -136,7 +137,7 @@ class AuthorizeDialog(AlertDialog):
         # Date and time pickers for start time
         self.date_range_button = ft.Button(
             _("Date Range"),
-            icon=ft.Icons.CALENDAR_TODAY,
+            icon=Symbols.CALENDAR_TODAY,
             on_click=lambda _: self.page.show_dialog(self.date_range_picker),
         )
         self.start_date_text = ft.Text(now.strftime("%Y-%m-%d"), size=14)
@@ -149,7 +150,7 @@ class AuthorizeDialog(AlertDialog):
 
         self.start_time_button = ft.Button(
             _("Start Time"),
-            icon=ft.Icons.ACCESS_TIME,
+            icon=Symbols.ACCESS_TIME,
             on_click=lambda _: self.page.show_dialog(self.start_time_picker),
         )
         self.start_time_text = ft.Text(now.strftime("%H:%M:%S"), size=14)
@@ -166,7 +167,7 @@ class AuthorizeDialog(AlertDialog):
 
         self.end_time_button = ft.Button(
             _("End Time"),
-            icon=ft.Icons.ACCESS_TIME,
+            icon=Symbols.ACCESS_TIME,
             on_click=lambda _: self.page.show_dialog(self.end_time_picker),
         )
         self.end_time_text = ft.Text(

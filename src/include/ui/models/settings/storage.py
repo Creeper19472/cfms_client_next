@@ -2,9 +2,10 @@
 
 from typing import cast
 
-from flet_model import route
-import flet_permission_handler as fph
 import flet as ft
+import flet_permission_handler as fph
+from flet_model import route
+from flet_material_symbols import Symbols
 
 from include.classes.preferences import UserPreference
 from include.ui.controls.banners.settings import ExternalStorageWarningBanner
@@ -28,7 +29,7 @@ class StorageSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Storage")
     settings_description = _("Configure external storage options")
-    settings_icon = ft.Icons.STORAGE
+    settings_icon = Symbols.STORAGE
     settings_route_suffix = "storage_settings"
 
     # ---------------------------------------------------------------------------

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.revision import RevisionDialogController
@@ -51,14 +52,14 @@ class RevisionTile(ft.ListTile):
             )
 
         # Icon based on current status
-        icon = ft.Icons.HISTORY if not is_current else ft.Icons.CHECK_CIRCLE
+        icon = Symbols.HISTORY if not is_current else Symbols.CHECK_CIRCLE
 
         # Build action buttons
         action_buttons = []
 
         # View button (always available)
         view_button = ft.IconButton(
-            icon=ft.Icons.VISIBILITY,
+            icon=Symbols.VISIBILITY,
             tooltip=_("View/Download"),
             on_click=self.on_view_click,
         )
@@ -67,7 +68,7 @@ class RevisionTile(ft.ListTile):
         # Set as current button (only for non-current revisions)
         if not is_current:
             set_current_button = ft.IconButton(
-                icon=ft.Icons.PUBLISHED_WITH_CHANGES,
+                icon=Symbols.PUBLISHED_WITH_CHANGES,
                 tooltip=_("Set as Current"),
                 on_click=self.on_set_current_click,
             )
@@ -75,7 +76,7 @@ class RevisionTile(ft.ListTile):
 
             # Delete button (only for non-current revisions)
             delete_button = ft.IconButton(
-                icon=ft.Icons.DELETE,
+                icon=Symbols.DELETE,
                 tooltip=_("Delete"),
                 on_click=self.on_delete_click,
             )
@@ -90,7 +91,7 @@ class RevisionTile(ft.ListTile):
                 expand=True,
                 expand_loose=True,
                 spacing=5,
-                width=len(action_buttons)*40,
+                width=len(action_buttons) * 40,
                 alignment=ft.MainAxisAlignment.END,
             ),
             expand=True,
@@ -138,11 +139,7 @@ class RevisionDialog(AlertDialog):
 
         # Revisions list
         self.revisions_listview = ft.ListView(
-            controls=[],
-            spacing=5,
-            expand=True,
-            expand_loose=True,
-            width=800
+            controls=[], spacing=5, expand=True, expand_loose=True, width=800
         )
 
         # Progress indicator
@@ -155,7 +152,7 @@ class RevisionDialog(AlertDialog):
         # Refresh button
         self.refresh_button = ft.TextButton(
             _("Refresh"),
-            icon=ft.Icons.REFRESH,
+            icon=Symbols.REFRESH,
             on_click=self.on_refresh_click,
         )
 

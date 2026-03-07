@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.contextmenus.explorer import DirectoryContextMenu, FileContextMenu
 from include.ui.util.path import get_directory
@@ -39,7 +40,7 @@ def update_file_controls(
         # print("parent_id: ", parent_id)
         view.controls = [
             ft.ListTile(
-                leading=ft.Icon(ft.Icons.ARROW_BACK),
+                leading=ft.Icon(Symbols.ARROW_BACK),
                 title=ft.Text("<...>"),
                 subtitle=ft.Text(_("Parent directory")),
                 on_click=parent_button_click,

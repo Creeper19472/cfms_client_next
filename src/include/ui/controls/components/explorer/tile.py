@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Optional, Callable
 
 import flet as ft
+from flet_material_symbols import Symbols
+
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.classes.shared import AppShared
 from include.util.locale import get_translation
@@ -47,13 +49,11 @@ class FileTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(
-                ft.Icons.STAR_BORDER_OUTLINED if not starred else ft.Icons.STAR_OUTLINED
-            ),
+            icon=(Symbols.STAR_BORDER if not starred else ft.Icon(Symbols.STAR, fill=1)),
             on_click=self.on_star_click,
             visible=starred,
         )
-        
+
         # Checkbox for selection mode
         self.checkbox = ft.Checkbox(
             value=is_selected,
@@ -85,7 +85,7 @@ class FileTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(ft.Icons.FILE_COPY)
+            leading_control = ft.Icon(Symbols.DESCRIPTION, fill=1)
 
         super().__init__(
             leading=leading_control,
@@ -93,17 +93,19 @@ class FileTile(ft.ListTile):
             subtitle=ft.Text(subtitle_text) if subtitle_text else None,
             trailing=self.star_button,
             is_three_line=is_three_line,
-            on_click=on_click if not selection_mode else self.on_tile_click_selection_mode,
+            on_click=(
+                on_click if not selection_mode else self.on_tile_click_selection_mode
+            ),
             align=ft.Alignment.CENTER,
             ref=ref,
         )
-    
+
     async def on_checkbox_change(self, event: ft.Event[ft.Checkbox]):
         """Handle checkbox state change."""
         self.is_selected = bool(event.control.value)
         if self.on_selection_changed:
             self.on_selection_changed(self.file_id, self.is_selected)
-    
+
     async def on_tile_click_selection_mode(self, event: ft.Event[ft.ListTile]):
         """Handle tile click in selection mode - toggle checkbox."""
         self.checkbox.value = not self.checkbox.value
@@ -143,9 +145,9 @@ class FileTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = ft.Icons.STAR_OUTLINED
+            self.star_button.icon = ft.Icon(Symbols.STAR, fill=1)
         else:
-            self.star_button.icon = ft.Icons.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER
         self.update()
 
 
@@ -173,13 +175,11 @@ class DirectoryTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(
-                ft.Icons.STAR_BORDER_OUTLINED if not starred else ft.Icons.STAR_OUTLINED
-            ),
+            icon=(Symbols.STAR_BORDER if not starred else ft.Icon(Symbols.STAR, fill=1)),
             on_click=self.on_star_click,
             visible=starred,
         )
-        
+
         # Checkbox for selection mode
         self.checkbox = ft.Checkbox(
             value=is_selected,
@@ -204,24 +204,26 @@ class DirectoryTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(ft.Icons.FOLDER)
+            leading_control = ft.Icon(Symbols.FOLDER, fill=1)
 
         super().__init__(
             leading=leading_control,
             title=dir_name,
             subtitle=ft.Text(subtitle_text) if subtitle_text else None,
             trailing=self.star_button,
-            on_click=on_click if not selection_mode else self.on_tile_click_selection_mode,
+            on_click=(
+                on_click if not selection_mode else self.on_tile_click_selection_mode
+            ),
             align=ft.Alignment.CENTER,
             ref=ref,
         )
-    
+
     async def on_checkbox_change(self, event: ft.Event[ft.Checkbox]):
         """Handle checkbox state change."""
         self.is_selected = bool(event.control.value)
         if self.on_selection_changed:
             self.on_selection_changed(self.directory_id, self.is_selected)
-    
+
     async def on_tile_click_selection_mode(self, event: ft.Event[ft.ListTile]):
         """Handle tile click in selection mode - toggle checkbox."""
         self.checkbox.value = not self.checkbox.value
@@ -263,7 +265,7 @@ class DirectoryTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = ft.Icons.STAR_OUTLINED
+            self.star_button.icon = ft.Icon(Symbols.STAR, fill=1)
         else:
-            self.star_button.icon = ft.Icons.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER
         self.update()

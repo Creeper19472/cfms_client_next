@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Optional
 import os
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
@@ -58,7 +59,7 @@ class TaskTile(ft.Card):
         # Open file button (only visible for completed tasks)
 
         self.open_file_button = ft.IconButton(
-            icon=ft.Icons.OPEN_IN_NEW,
+            icon=Symbols.OPEN_IN_NEW,
             icon_size=16,
             tooltip=_("Open file"),
             on_click=self._on_open_file,
@@ -67,7 +68,7 @@ class TaskTile(ft.Card):
 
         # Delete file button (only visible for completed tasks)
         self.delete_file_button = ft.IconButton(
-            icon=ft.Icons.DELETE,
+            icon=Symbols.DELETE,
             icon_size=16,
             tooltip=_("Delete file and task"),
             on_click=self._on_delete_file,
@@ -78,9 +79,9 @@ class TaskTile(ft.Card):
         # If resume not supported, only show cancel button
         self.pause_resume_button = ft.IconButton(
             icon=(
-                ft.Icons.PAUSE
+                Symbols.PAUSE
                 if task.status == DownloadTaskStatus.DOWNLOADING
-                else ft.Icons.PLAY_ARROW
+                else Symbols.PLAY_ARROW
             ),
             icon_size=16,
             tooltip=(
@@ -103,7 +104,7 @@ class TaskTile(ft.Card):
         # Cancel button
         # If resume not supported, show for downloading tasks too
         self.cancel_button = ft.IconButton(
-            icon=ft.Icons.CANCEL,
+            icon=Symbols.CANCEL,
             icon_size=16,
             tooltip=_("Cancel"),
             on_click=self._on_cancel,
@@ -211,17 +212,17 @@ class TaskTile(ft.Card):
     def _get_status_icondata(self) -> ft.IconData:
         """Get icon based on task status."""
         status_icons = {
-            DownloadTaskStatus.PENDING: ft.Icons.SCHEDULE,
-            DownloadTaskStatus.DOWNLOADING: ft.Icons.DOWNLOAD,
-            DownloadTaskStatus.PAUSED: ft.Icons.PAUSE_CIRCLE,
-            DownloadTaskStatus.DECRYPTING: ft.Icons.LOCK_OPEN,
-            DownloadTaskStatus.VERIFYING: ft.Icons.VERIFIED,
-            DownloadTaskStatus.COMPLETED: ft.Icons.CHECK_CIRCLE,
-            DownloadTaskStatus.FAILED: ft.Icons.ERROR,
-            DownloadTaskStatus.CANCELLED: ft.Icons.CANCEL,
-            DownloadTaskStatus.SCHEDULED: ft.Icons.ACCESS_TIME,
+            DownloadTaskStatus.PENDING: Symbols.SCHEDULE,
+            DownloadTaskStatus.DOWNLOADING: Symbols.DOWNLOAD,
+            DownloadTaskStatus.PAUSED: Symbols.PAUSE_CIRCLE,
+            DownloadTaskStatus.DECRYPTING: Symbols.LOCK_OPEN,
+            DownloadTaskStatus.VERIFYING: Symbols.VERIFIED,
+            DownloadTaskStatus.COMPLETED: Symbols.CHECK_CIRCLE,
+            DownloadTaskStatus.FAILED: Symbols.ERROR,
+            DownloadTaskStatus.CANCELLED: Symbols.CANCEL,
+            DownloadTaskStatus.SCHEDULED: Symbols.ACCESS_TIME,
         }
-        return status_icons.get(self.task.status, ft.Icons.HELP)
+        return status_icons.get(self.task.status, Symbols.HELP)
 
     def _get_status_color(self) -> str:
         """Get color based on task status."""
@@ -343,9 +344,9 @@ class TaskTile(ft.Card):
             DownloadTaskStatus.PENDING,
         ]
         self.pause_resume_button.icon = (
-            ft.Icons.PAUSE
+            Symbols.PAUSE
             if task.status == DownloadTaskStatus.DOWNLOADING
-            else ft.Icons.PLAY_ARROW
+            else Symbols.PLAY_ARROW
         )
         self.pause_resume_button.tooltip = (
             _("Pause") if task.status == DownloadTaskStatus.DOWNLOADING else _("Resume")
@@ -483,7 +484,7 @@ class TasksView(ft.Container):
             content=ft.Column(
                 controls=[
                     ft.Icon(
-                        icon=ft.Icons.DOWNLOAD_DONE,
+                        icon=Symbols.DOWNLOAD_DONE,
                         size=64,
                         color=ft.Colors.GREY,
                     ),
@@ -515,39 +516,39 @@ class TasksView(ft.Container):
                                 controls=[
                                     self.filter_dropdown,
                                     ft.PopupMenuButton(
-                                        icon=ft.Icons.MORE_VERT,
+                                        icon=Symbols.MORE_VERT,
                                         tooltip=_("More actions"),
                                         items=[
                                             ft.PopupMenuItem(
                                                 content=_("Pause all active"),
-                                                icon=ft.Icons.PAUSE,
+                                                icon=Symbols.PAUSE,
                                                 on_click=self._on_pause_all,
                                             ),
                                             ft.PopupMenuItem(
                                                 content=_("Resume all paused"),
-                                                icon=ft.Icons.PLAY_ARROW,
+                                                icon=Symbols.PLAY_ARROW,
                                                 on_click=self._on_resume_all,
                                             ),
                                             ft.PopupMenuItem(
                                                 content=_("Cancel all pending"),
-                                                icon=ft.Icons.CANCEL,
+                                                icon=Symbols.CANCEL,
                                                 on_click=self._on_cancel_all_pending,
                                             ),
                                             ft.PopupMenuItem(),  # Divider
                                             ft.PopupMenuItem(
                                                 content=_("Clear completed"),
-                                                icon=ft.Icons.CLEAR_ALL,
+                                                icon=Symbols.CLEAR_ALL,
                                                 on_click=self._on_clear_completed,
                                             ),
                                             ft.PopupMenuItem(
                                                 content=_("Clear failed"),
-                                                icon=ft.Icons.DELETE_SWEEP,
+                                                icon=Symbols.DELETE_SWEEP,
                                                 on_click=self._on_clear_failed,
                                             ),
                                         ],
                                     ),
                                     ft.IconButton(
-                                        icon=ft.Icons.REFRESH,
+                                        icon=Symbols.REFRESH,
                                         tooltip=_("Refresh"),
                                         on_click=self._on_refresh,
                                     ),

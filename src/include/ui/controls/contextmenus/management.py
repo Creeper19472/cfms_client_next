@@ -1,6 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 from datetime import datetime
 import flet as ft
+from flet_material_symbols import Symbols
 from include.controllers.contextmenus.management import UserContextMenuController
 from include.ui.controls.menus.base import ContextMenu2
 from include.util.locale import get_translation
@@ -12,7 +13,7 @@ t = get_translation()
 _ = t.gettext
 
 
-class UserContextMenu(ContextMenu2):
+class UserManagementContextMenu(ContextMenu2):
     def __init__(
         self,
         username: str,
@@ -32,7 +33,7 @@ class UserContextMenu(ContextMenu2):
         self.controller = UserContextMenuController(self)
 
         self._listtile = ft.ListTile(
-            leading=ft.Icon(ft.Icons.ACCOUNT_CIRCLE),
+            leading=ft.Icon(Symbols.ACCOUNT_CIRCLE, fill=1),
             title=ft.Text(nickname or username),
             subtitle=ft.Text(
                 f"{groups}\n"
@@ -53,39 +54,39 @@ class UserContextMenu(ContextMenu2):
             ref=ref,
             menu_items=[
                 {
-                    "icon": ft.Icons.DELETE,
+                    "icon": Symbols.DELETE,
                     "content": _("Delete"),
                     "on_click": self.delete_button_click,
                 },
                 {
-                    "icon": ft.Icons.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                     "content": _("Change Nickname"),
                     "on_click": self.rename_button_click,
                 },
                 {
-                    "icon": ft.Icons.FORMAT_LIST_BULLETED,
+                    "icon": Symbols.FORMAT_LIST_BULLETED,
                     "content": _("Edit User Group"),
                     "on_click": self.edit_group_button_click,
                 },
                 {
-                    "icon": ft.Icons.PASSWORD_OUTLINED,
+                    "icon": Symbols.PASSWORD,
                     "content": _("Reset Password"),
                     "on_click": self.passwd_button_click,
                 },
                 {
-                    "icon": ft.Icons.INFO_OUTLINED,
+                    "icon": Symbols.INFO,
                     "content": _("Properties"),
                     "on_click": self.properties_button_click,
                 },
                 {},
                 {
-                    "icon": ft.Icons.BLOCK,
+                    "icon": Symbols.BLOCK,
                     "content": _("Block User"),
                     "on_click": self.block_user_button_click,
                     "require": {"block"},
                 },
                 {
-                    "icon": ft.Icons.MANAGE_ACCOUNTS_OUTLINED,
+                    "icon": Symbols.MANAGE_ACCOUNTS,
                     "content": _("View/Revoke Blocks"),
                     "on_click": self.list_blocks_button_click,
                     "require": {"list_user_blocks"},

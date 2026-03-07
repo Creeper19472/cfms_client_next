@@ -2,6 +2,7 @@ import copy
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.file_browser import FileBrowserDialog
 from include.ui.util.notifications import send_error, send_success
@@ -71,7 +72,7 @@ class MoveDialog(FileBrowserDialog):
             excluded_directory_ids=excluded_ids,
             show_select_button=True,
             select_button_text=_("Move Here"),
-            select_button_icon=ft.Icons.CHECK_CIRCLE,
+            select_button_icon=Symbols.CHECK_CIRCLE,
             ref=ref,
             visible=visible,
         )
