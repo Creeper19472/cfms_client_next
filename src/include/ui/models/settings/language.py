@@ -34,8 +34,8 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
         key="language",
         hint_text=_("Select your preferred language"),
         options=[
-            ("zh_CN", _("中文 (Chinese Simplified)")),
-            ("en", _("English")),
+            ("zh_CN", "中文 (Chinese Simplified)"),
+            ("en", "English"),
         ],
         default="zh_CN",
         description=_(

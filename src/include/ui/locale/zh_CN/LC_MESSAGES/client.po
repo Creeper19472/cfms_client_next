@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-04 19:33+0800\n"
+"POT-Creation-Date: 2026-03-07 23:40+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -137,7 +137,7 @@ msgid "User nickname: {nickname}"
 msgstr "用户昵称：{nickname}"
 
 #: .\include\controllers\dialogs\management.py:202
-#: .\include\ui\controls\dialogs\admin\accounts.py:818
+#: .\include\ui\controls\dialogs\admin\accounts.py:819
 msgid "(None)"
 msgstr "（无）"
 
@@ -154,7 +154,7 @@ msgid "User registration time: {created_time}"
 msgstr "用户注册时间：{created_time}"
 
 #: .\include\controllers\dialogs\management.py:222
-#: .\include\ui\controls\contextmenus\management.py:39
+#: .\include\ui\controls\contextmenus\management.py:40
 msgid "Last login: {last_login}"
 msgstr "最后登录于：{last_login}"
 
@@ -187,7 +187,7 @@ msgid "Failed to revoke block: ({code}) {message}"
 msgstr "解除封禁失败：({code}) {message}"
 
 #: .\include\controllers\dialogs\menus.py:59
-#: .\include\ui\controls\dialogs\admin\groups.py:179
+#: .\include\ui\controls\dialogs\admin\groups.py:191
 msgid "Rename failed: ({code}) {message}"
 msgstr "重命名失败：({code}) {message}"
 
@@ -208,18 +208,18 @@ msgid "Child object count: {child_count}"
 msgstr "子对象数：{child_count}"
 
 #: .\include\controllers\dialogs\menus.py:113
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:220
-#: .\include\ui\controls\dialogs\search.py:38
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:221
+#: .\include\ui\controls\dialogs\search.py:39
 msgid "Created: {created_time}"
 msgstr "创建于：{created_time}"
 
 #: .\include\controllers\dialogs\menus.py:120
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:234
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:235
 msgid "Parent directory ID: {parent_id}"
 msgstr "父级目录ID：{parent_id}"
 
 #: .\include\controllers\dialogs\menus.py:126
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:240
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:241
 msgid "Access rules: {access_rules}"
 msgstr "访问规则：{access_rules}"
 
@@ -243,45 +243,49 @@ msgstr "加载修订版本失败：({code}) {message}"
 msgid "Failed to load revisions: {error}"
 msgstr "加载修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\revision.py:99 .\include\ui\util\path.py:156
+#: .\include\controllers\dialogs\revision.py:98 .\include\ui\util\path.py:155
 msgid "Download added: {filename}"
 msgstr "已添加下载：{filename}"
 
 #: .\include\controllers\dialogs\revision.py:102
-#: .\include\util\batch_operations.py:138
-#: .\include\util\batch_operations.py:146
+#: .\include\util\batch_operations.py:137
+#: .\include\util\batch_operations.py:145
 msgid "Download manager service not available"
 msgstr "下载管理器服务不可用"
 
-#: .\include\controllers\dialogs\revision.py:105
+#: .\include\controllers\dialogs\revision.py:106
 msgid "Failed to get revision data: No task data returned"
 msgstr "获取修订版本数据失败：未返回任务数据"
 
-#: .\include\controllers\dialogs\revision.py:109
+#: .\include\controllers\dialogs\revision.py:110
 msgid "Failed to view revision: ({code}) {message}"
 msgstr "查看修订版本失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\revision.py:116
+#: .\include\controllers\dialogs\revision.py:117
 msgid "Failed to view revision: {error}"
 msgstr "查看修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\revision.py:145
+#: .\include\controllers\dialogs\revision.py:147
 msgid "Failed to set current revision: ({code}) {message}"
 msgstr "设定当前修订版本失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\revision.py:152
+#: .\include\controllers\dialogs\revision.py:154
 msgid "Failed to set current revision: {error}"
 msgstr "设定当前修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\revision.py:171
+#: .\include\controllers\dialogs\revision.py:173
 msgid "Failed to delete revision: ({code}) {message}"
 msgstr "删除修订版本失败：({code}) {message}"
 
-#: .\include\controllers\dialogs\revision.py:178
+#: .\include\controllers\dialogs\revision.py:180
 msgid "Failed to delete revision: {error}"
 msgstr "删除修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\rulemanager.py:80
+#: .\include\controllers\dialogs\rulemanager.py:45
+msgid "Failed to fetch rules: {message}"
+msgstr "拉取规则失败：{message}"
+
+#: .\include\controllers\dialogs\rulemanager.py:86
 msgid "Modification failed: {message}"
 msgstr "修改失败：{message}"
 
@@ -475,37 +479,37 @@ msgstr "在登录前必须修改密码。"
 msgid "Login failed: ({code}) {message}"
 msgstr "登录失败：({code}) {message}"
 
-#: .\include\controllers\login.py:120
+#: .\include\controllers\login.py:119
 msgid "Setting up encryption"
 msgstr "正在设置加密"
 
-#: .\include\controllers\login.py:133
+#: .\include\controllers\login.py:132
 msgid "Downloading avatar"
 msgstr "正在下载头像"
 
-#: .\include\controllers\login.py:156
+#: .\include\controllers\login.py:155
 msgid "Loading tasks"
 msgstr "正在载入任务"
 
-#: .\include\ui\controls\banners\settings.py:14
+#: .\include\ui\controls\banners\settings.py:15
 msgid ""
 "The application has not yet been granted permission to access external "
 "storage. Please grant the permission to allow this feature to function "
 "correctly."
 msgstr "应用尚未获得访问外部存储的权限。请授予权限以使此功能正常运行。"
 
-#: .\include\ui\controls\banners\settings.py:21
+#: .\include\ui\controls\banners\settings.py:22
 #: .\include\ui\controls\contextmenus\explorer.py:83
 #: .\include\ui\controls\contextmenus\explorer.py:219
-#: .\include\ui\controls\dialogs\authorize.py:183
+#: .\include\ui\controls\dialogs\authorize.py:184
 msgid "Authorize"
 msgstr "授权"
 
-#: .\include\ui\controls\banners\settings.py:22
+#: .\include\ui\controls\banners\settings.py:23
 msgid "Dismiss"
 msgstr "关闭"
 
-#: .\include\ui\controls\buttons\upgrade.py:14
+#: .\include\ui\controls\buttons\upgrade.py:15
 msgid "Check for Updates"
 msgstr "检查更新"
 
@@ -546,35 +550,35 @@ msgstr ""
 "虽然此阶段的应用程序仍在测试中，但已经变得相对稳定，更适合普通用户尝试。在发"
 "布一个或多个版本后，应用程序可能会进入稳定版本。"
 
-#: .\include\ui\controls\components\account.py:31
+#: .\include\ui\controls\components\account.py:32
 msgid "Click to change avatar"
 msgstr "点击更改头像"
 
-#: .\include\ui\controls\components\account.py:80
-#: .\include\ui\controls\dialogs\authorize.py:93
+#: .\include\ui\controls\components\account.py:81
+#: .\include\ui\controls\dialogs\authorize.py:94
 msgid "User"
 msgstr "用户"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:66
-#: .\include\ui\controls\components\explorer\access_denied.py:64
-#: .\include\ui\controls\dialogs\explorer.py:833
+#: .\include\ui\controls\components\common\access_denied_content.py:67
+#: .\include\ui\controls\components\explorer\access_denied.py:65
+#: .\include\ui\controls\dialogs\explorer.py:834
 msgid "Access Denied"
 msgstr "拒绝访问"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:74
-#: .\include\ui\controls\components\explorer\access_denied.py:72
+#: .\include\ui\controls\components\common\access_denied_content.py:75
+#: .\include\ui\controls\components\explorer\access_denied.py:73
 msgid ""
 "You don't have permission to access this directory. The reasons are as "
 "follows:"
 msgstr "您无权访问此目录。理由如下："
 
-#: .\include\ui\controls\components\common\access_denied_content.py:100
+#: .\include\ui\controls\components\common\access_denied_content.py:101
 msgid ""
 "Please contact your system administrator if you believe this is an error."
 msgstr "若您认为这是一个错误，请与您的系统管理员联系。"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:105
-#: .\include\ui\controls\components\explorer\access_denied.py:97
+#: .\include\ui\controls\components\common\access_denied_content.py:106
+#: .\include\ui\controls\components\explorer\access_denied.py:98
 msgid ""
 "According to the server's protocol, you do not have permission to access the "
 "requested directory. There could be various reasons for this. If you have "
@@ -584,99 +588,99 @@ msgstr ""
 "根据服务器之协议，您无权访问请求的目录。导致此结果的原因可能是多样的。如果您"
 "对此情况有任何疑问，请联系您的系统管理员。此事件将被报告。"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:135
-#: .\include\ui\controls\components\common\error_content.py:134
-#: .\include\ui\controls\components\explorer\access_denied.py:112
+#: .\include\ui\controls\components\common\access_denied_content.py:136
+#: .\include\ui\controls\components\common\error_content.py:135
+#: .\include\ui\controls\components\explorer\access_denied.py:113
 msgid "Go Back"
 msgstr "返回"
 
-#: .\include\ui\controls\components\common\error_content.py:142
+#: .\include\ui\controls\components\common\error_content.py:143
 msgid "Retry"
 msgstr "重试"
 
-#: .\include\ui\controls\components\common\error_content.py:169
+#: .\include\ui\controls\components\common\error_content.py:170
 msgid "Connection Error"
 msgstr "连接错误"
 
-#: .\include\ui\controls\components\common\error_content.py:170
+#: .\include\ui\controls\components\common\error_content.py:171
 msgid "Could not connect to the server or an unexpected error occurred."
 msgstr "无法连接到服务器，或发生了意料之外的错误。"
 
-#: .\include\ui\controls\components\common\error_content.py:174
+#: .\include\ui\controls\components\common\error_content.py:177
 msgid "Not Found"
 msgstr "未找到"
 
-#: .\include\ui\controls\components\common\error_content.py:175
+#: .\include\ui\controls\components\common\error_content.py:178
 msgid "The requested directory or file could not be found."
 msgstr "未能找到请求的目录或文件。"
 
-#: .\include\ui\controls\components\common\error_content.py:179
-#: .\include\ui\controls\components\common\error_content.py:184
-#: .\include\ui\controls\components\common\error_content.py:189
+#: .\include\ui\controls\components\common\error_content.py:182
+#: .\include\ui\controls\components\common\error_content.py:187
+#: .\include\ui\controls\components\common\error_content.py:192
 msgid "Server Error"
 msgstr "服务器错误"
 
-#: .\include\ui\controls\components\common\error_content.py:180
+#: .\include\ui\controls\components\common\error_content.py:183
 msgid "The server encountered an internal error."
 msgstr "服务器发生了一个内部错误。"
 
-#: .\include\ui\controls\components\common\error_content.py:185
+#: .\include\ui\controls\components\common\error_content.py:188
 msgid "The server received an invalid response from upstream."
 msgstr "服务器自上游收到了一个非法响应。"
 
-#: .\include\ui\controls\components\common\error_content.py:190
+#: .\include\ui\controls\components\common\error_content.py:193
 msgid "The server is temporarily unavailable."
 msgstr "服务器暂时不可用。"
 
-#: .\include\ui\controls\components\common\error_content.py:194
+#: .\include\ui\controls\components\common\error_content.py:197
 msgid "Bad Request"
 msgstr "错误请求"
 
-#: .\include\ui\controls\components\common\error_content.py:195
+#: .\include\ui\controls\components\common\error_content.py:198
 msgid "The request was invalid or malformed."
 msgstr "请求非法或格式错误。"
 
-#: .\include\ui\controls\components\common\error_content.py:199
+#: .\include\ui\controls\components\common\error_content.py:202
 msgid "Unauthorized"
 msgstr "未授权"
 
-#: .\include\ui\controls\components\common\error_content.py:200
+#: .\include\ui\controls\components\common\error_content.py:203
 msgid "Your session may have expired. Please try again."
 msgstr "您的会话可能已经过期。请您重试。"
 
-#: .\include\ui\controls\components\common\error_content.py:204
+#: .\include\ui\controls\components\common\error_content.py:207
 msgid "Request Timeout"
 msgstr "请求超时"
 
-#: .\include\ui\controls\components\common\error_content.py:205
+#: .\include\ui\controls\components\common\error_content.py:208
 msgid "The request took too long to complete."
 msgstr "请求花了过长的时间来完成。"
 
-#: .\include\ui\controls\components\common\error_content.py:209
+#: .\include\ui\controls\components\common\error_content.py:212
 msgid "Error"
 msgstr "错误"
 
-#: .\include\ui\controls\components\common\error_content.py:210
+#: .\include\ui\controls\components\common\error_content.py:213
 msgid "An error occurred while processing your request."
 msgstr "处理请求时发生错误。"
 
-#: .\include\ui\controls\components\common\error_content.py:232
+#: .\include\ui\controls\components\common\error_content.py:235
 msgid "Check your connection and try again."
 msgstr "请检查您的连接，然后再试。"
 
-#: .\include\ui\controls\components\common\error_content.py:234
+#: .\include\ui\controls\components\common\error_content.py:237
 msgid "Please try again later or contact support if the problem persists."
 msgstr "请稍后再试，如果问题仍然存在，请联系支持。"
 
-#: .\include\ui\controls\components\common\error_content.py:236
+#: .\include\ui\controls\components\common\error_content.py:241
 msgid "The item may have been moved or deleted."
 msgstr "项目可能已被移动或删除。"
 
-#: .\include\ui\controls\components\common\error_content.py:238
+#: .\include\ui\controls\components\common\error_content.py:243
 msgid "Please try again or contact support if needed."
 msgstr "请重试，必要时请联系支持。"
 
-#: .\include\ui\controls\components\common\error_content.py:241
+#: .\include\ui\controls\components\common\error_content.py:246
 msgid ""
 "A connection error or unexpected exception occurred. Please check your "
 "network connection and try again. If the problem persists, contact your "
@@ -685,7 +689,7 @@ msgstr ""
 "发生连接错误或意外异常。请检查您的网络连接并重试。如果问题仍然存在，请联系您"
 "的系统管理员。"
 
-#: .\include\ui\controls\components\common\error_content.py:247
+#: .\include\ui\controls\components\common\error_content.py:252
 msgid ""
 "The server is experiencing technical difficulties. This is typically a "
 "temporary issue. Please wait a moment and try again. If the problem "
@@ -694,7 +698,7 @@ msgstr ""
 "服务器出现技术故障。这种问题通常是暂时的。请稍等片刻后重试。如果问题仍然存"
 "在，请联系您的系统管理员。"
 
-#: .\include\ui\controls\components\common\error_content.py:253
+#: .\include\ui\controls\components\common\error_content.py:258
 msgid ""
 "The requested resource could not be found on the server. It may have been "
 "moved, renamed, or deleted. Please verify the path and try again."
@@ -702,147 +706,147 @@ msgstr ""
 "未在服务器上找到请求的资源。该资源可能已被移动、重命名或删除。请检查路径并重"
 "试。"
 
-#: .\include\ui\controls\components\common\error_content.py:259
+#: .\include\ui\controls\components\common\error_content.py:264
 msgid ""
 "An unexpected error occurred. Please try again. If the problem persists, "
 "contact your system administrator for assistance."
 msgstr "发生意外错误，请重试。如果问题仍然存在，请联系系统管理员寻求帮助。"
 
-#: .\include\ui\controls\components\explorer\bar.py:43
-#: .\include\ui\controls\components\explorer\bar.py:101
+#: .\include\ui\controls\components\explorer\bar.py:44
+#: .\include\ui\controls\components\explorer\bar.py:102
 msgid "0 items selected"
 msgstr "选择了 0 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:50
+#: .\include\ui\controls\components\explorer\bar.py:51
 msgid "Select All"
 msgstr "全选"
 
-#: .\include\ui\controls\components\explorer\bar.py:56
+#: .\include\ui\controls\components\explorer\bar.py:57
 msgid "Clear"
 msgstr "清除"
 
-#: .\include\ui\controls\components\explorer\bar.py:62
+#: .\include\ui\controls\components\explorer\bar.py:63
 msgid "Download"
 msgstr "下载"
 
-#: .\include\ui\controls\components\explorer\bar.py:68
-#: .\include\ui\controls\components\visualmgr\editor.py:608
+#: .\include\ui\controls\components\explorer\bar.py:69
+#: .\include\ui\controls\components\visualmgr\editor.py:609
 #: .\include\ui\controls\contextmenus\explorer.py:76
 #: .\include\ui\controls\contextmenus\explorer.py:212
-#: .\include\ui\controls\dialogs\admin\accounts.py:470
-#: .\include\ui\controls\dialogs\authorize.py:123
+#: .\include\ui\controls\dialogs\admin\accounts.py:471
+#: .\include\ui\controls\dialogs\authorize.py:124
 msgid "Move"
 msgstr "移动"
 
-#: .\include\ui\controls\components\explorer\bar.py:74
+#: .\include\ui\controls\components\explorer\bar.py:75
 #: .\include\ui\controls\contextmenus\explorer.py:64
 #: .\include\ui\controls\contextmenus\explorer.py:200
-#: .\include\ui\controls\contextmenus\group.py:50
-#: .\include\ui\controls\contextmenus\management.py:57
-#: .\include\ui\controls\dialogs\explorer.py:711
-#: .\include\ui\controls\dialogs\revision.py:79
+#: .\include\ui\controls\contextmenus\group.py:51
+#: .\include\ui\controls\contextmenus\management.py:58
+#: .\include\ui\controls\dialogs\explorer.py:712
+#: .\include\ui\controls\dialogs\revision.py:80
 msgid "Delete"
 msgstr "删除"
 
-#: .\include\ui\controls\components\explorer\bar.py:80
+#: .\include\ui\controls\components\explorer\bar.py:81
 #: .\include\ui\controls\components\rulemanager.py:111
-#: .\include\ui\controls\dialogs\admin\accounts.py:93
-#: .\include\ui\controls\dialogs\admin\accounts.py:186
-#: .\include\ui\controls\dialogs\admin\accounts.py:252
-#: .\include\ui\controls\dialogs\admin\accounts.py:309
-#: .\include\ui\controls\dialogs\admin\accounts.py:405
-#: .\include\ui\controls\dialogs\admin\accounts.py:532
-#: .\include\ui\controls\dialogs\admin\groups.py:49
-#: .\include\ui\controls\dialogs\admin\groups.py:130
-#: .\include\ui\controls\dialogs\admin\groups.py:207
-#: .\include\ui\controls\dialogs\authorize.py:187
-#: .\include\ui\controls\dialogs\avatar_settings.py:60
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:71
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:149
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:285
+#: .\include\ui\controls\dialogs\admin\accounts.py:94
+#: .\include\ui\controls\dialogs\admin\accounts.py:187
+#: .\include\ui\controls\dialogs\admin\accounts.py:253
+#: .\include\ui\controls\dialogs\admin\accounts.py:310
+#: .\include\ui\controls\dialogs\admin\accounts.py:406
+#: .\include\ui\controls\dialogs\admin\accounts.py:533
+#: .\include\ui\controls\dialogs\admin\groups.py:51
+#: .\include\ui\controls\dialogs\admin\groups.py:139
+#: .\include\ui\controls\dialogs\admin\groups.py:225
+#: .\include\ui\controls\dialogs\authorize.py:188
+#: .\include\ui\controls\dialogs\avatar_settings.py:61
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:72
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:150
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:286
 #: .\include\ui\controls\dialogs\dev.py:39
-#: .\include\ui\controls\dialogs\explorer.py:57
-#: .\include\ui\controls\dialogs\explorer.py:120
-#: .\include\ui\controls\dialogs\explorer.py:166
-#: .\include\ui\controls\dialogs\explorer.py:232
-#: .\include\ui\controls\dialogs\explorer.py:367
-#: .\include\ui\controls\dialogs\explorer.py:607
-#: .\include\ui\controls\dialogs\explorer.py:715
-#: .\include\ui\controls\dialogs\file_browser.py:147
+#: .\include\ui\controls\dialogs\explorer.py:58
+#: .\include\ui\controls\dialogs\explorer.py:121
+#: .\include\ui\controls\dialogs\explorer.py:167
+#: .\include\ui\controls\dialogs\explorer.py:233
+#: .\include\ui\controls\dialogs\explorer.py:368
+#: .\include\ui\controls\dialogs\explorer.py:608
+#: .\include\ui\controls\dialogs\explorer.py:716
+#: .\include\ui\controls\dialogs\file_browser.py:148
 #: .\include\ui\controls\dialogs\password_confirm.py:61
 #: .\include\ui\controls\dialogs\twofa_setup.py:91
 #: .\include\ui\controls\dialogs\twofa_verify.py:81
 #: .\include\ui\controls\dialogs\upgrade.py:41
-#: .\include\ui\controls\views\tasks.py:108
+#: .\include\ui\controls\views\tasks.py:109
 msgid "Cancel"
 msgstr "取消"
 
-#: .\include\ui\controls\components\explorer\bar.py:103
+#: .\include\ui\controls\components\explorer\bar.py:104
 msgid "1 item selected"
 msgstr "选择了 1 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:105
+#: .\include\ui\controls\components\explorer\bar.py:106
 msgid "{count} items selected"
 msgstr "选择了 {count} 个项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:152
+#: .\include\ui\controls\components\explorer\bar.py:153
 msgid "Select items"
 msgstr "选择项目"
 
-#: .\include\ui\controls\components\explorer\bar.py:158
+#: .\include\ui\controls\components\explorer\bar.py:159
 msgid "Set root directory permissions"
 msgstr "设置根目录权限"
 
-#: .\include\ui\controls\components\explorer\bar.py:184
-#: .\include\ui\controls\dialogs\authorize.py:74
-#: .\include\ui\controls\dialogs\search.py:131
-#: .\include\ui\controls\dialogs\search.py:207
+#: .\include\ui\controls\components\explorer\bar.py:185
+#: .\include\ui\controls\dialogs\authorize.py:75
+#: .\include\ui\controls\dialogs\search.py:132
+#: .\include\ui\controls\dialogs\search.py:208
 msgid "Search"
 msgstr "搜索"
 
-#: .\include\ui\controls\components\explorer\bar.py:293
+#: .\include\ui\controls\components\explorer\bar.py:294
 msgid "Sort by:"
 msgstr "排序方式："
 
-#: .\include\ui\controls\components\explorer\bar.py:296
-#: .\include\ui\controls\dialogs\search.py:156
+#: .\include\ui\controls\components\explorer\bar.py:297
+#: .\include\ui\controls\dialogs\search.py:157
 msgid "Name"
 msgstr "名称"
 
-#: .\include\ui\controls\components\explorer\bar.py:297
+#: .\include\ui\controls\components\explorer\bar.py:298
 msgid "Created at"
 msgstr "创建时间"
 
-#: .\include\ui\controls\components\explorer\bar.py:298
+#: .\include\ui\controls\components\explorer\bar.py:299
 msgid "Last Modified"
 msgstr "最后修改"
 
-#: .\include\ui\controls\components\explorer\bar.py:299
-#: .\include\ui\controls\dialogs\search.py:159
+#: .\include\ui\controls\components\explorer\bar.py:300
+#: .\include\ui\controls\dialogs\search.py:160
 msgid "Size"
 msgstr "大小"
 
-#: .\include\ui\controls\components\explorer\bar.py:300
+#: .\include\ui\controls\components\explorer\bar.py:301
 msgid "Type"
 msgstr "类型"
 
-#: .\include\ui\controls\components\explorer\bar.py:309
+#: .\include\ui\controls\components\explorer\bar.py:310
 msgid "Toggle Sort Order"
 msgstr "切换排序顺序"
 
-#: .\include\ui\controls\components\explorer\tile.py:66
+#: .\include\ui\controls\components\explorer\tile.py:65
 msgid "ID: {file_id}"
 msgstr "ID：{file_id}"
 
-#: .\include\ui\controls\components\explorer\tile.py:72
+#: .\include\ui\controls\components\explorer\tile.py:71
 msgid "Last modified: {last_modified}\n"
 msgstr "最后更改时间：{last_modified}\n"
 
-#: .\include\ui\controls\components\explorer\tile.py:192
+#: .\include\ui\controls\components\explorer\tile.py:191
 msgid "ID: {dir_id}"
 msgstr "ID：{dir_id}"
 
-#: .\include\ui\controls\components\explorer\tile.py:198
+#: .\include\ui\controls\components\explorer\tile.py:197
 msgid "Created at: {created_at}"
 msgstr "创建于：{created_at}"
 
@@ -862,47 +866,47 @@ msgstr "主页"
 msgid "More"
 msgstr "更多"
 
-#: .\include\ui\controls\components\homepage.py:47
-#: .\include\ui\controls\components\visualmgr\editor.py:613
-#: .\include\ui\controls\dialogs\authorize.py:128
+#: .\include\ui\controls\components\homepage.py:48
+#: .\include\ui\controls\components\visualmgr\editor.py:614
+#: .\include\ui\controls\dialogs\authorize.py:129
 msgid "Manage"
 msgstr "管理"
 
-#: .\include\ui\controls\components\homepage.py:132
+#: .\include\ui\controls\components\homepage.py:135
 msgid "Welcome to Confidential Document Management System (CFMS)"
 msgstr "欢迎访问 保密文档管理系统（CFMS）"
 
-#: .\include\ui\controls\components\homepage.py:137
+#: .\include\ui\controls\components\homepage.py:140
 msgid ""
 "The sunset glow and the lone wild duck fly together, autumn water shares the "
 "same color with the vast sky."
 msgstr "落霞与孤鹜齐飞，秋水共长天一色。"
 
-#: .\include\ui\controls\components\homepage.py:173
+#: .\include\ui\controls\components\homepage.py:176
 msgid "ID: {id} (No longer exists)"
 msgstr "ID：{id}（不再存在）"
 
-#: .\include\ui\controls\components\homepage.py:192
+#: .\include\ui\controls\components\homepage.py:195
 msgid "ID: {id} (Access denied)"
 msgstr "ID：{id}（拒绝访问）"
 
-#: .\include\ui\controls\components\homepage.py:296
+#: .\include\ui\controls\components\homepage.py:299
 msgid "This document no longer exists on the server."
 msgstr "此文档不再存在于服务器上。"
 
-#: .\include\ui\controls\components\homepage.py:319
+#: .\include\ui\controls\components\homepage.py:322
 msgid "Failed to download document: ({code}) {message}"
 msgstr "文档下载失败：({code}) {message}"
 
-#: .\include\ui\controls\components\homepage.py:327
+#: .\include\ui\controls\components\homepage.py:330
 msgid "Failed to download document: {error}"
 msgstr "文档下载失败：{error}"
 
-#: .\include\ui\controls\components\homepage.py:390
+#: .\include\ui\controls\components\homepage.py:393
 msgid "You have not favorited any documents or folders yet."
 msgstr "您尚未收藏任何文档或文件夹。"
 
-#: .\include\ui\controls\components\homepage.py:410
+#: .\include\ui\controls\components\homepage.py:413
 msgid "Favorites"
 msgstr "收藏"
 
@@ -919,13 +923,13 @@ msgstr ""
 "doc.readthedocs.io/zh-cn/latest/access_control.html)。"
 
 #: .\include\ui\controls\components\rulemanager.py:58
-#: .\include\ui\controls\dialogs\admin\accounts.py:90
-#: .\include\ui\controls\dialogs\admin\accounts.py:306
-#: .\include\ui\controls\dialogs\admin\groups.py:127
-#: .\include\ui\controls\dialogs\admin\groups.py:206
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:67
+#: .\include\ui\controls\dialogs\admin\accounts.py:91
+#: .\include\ui\controls\dialogs\admin\accounts.py:307
+#: .\include\ui\controls\dialogs\admin\groups.py:135
+#: .\include\ui\controls\dialogs\admin\groups.py:222
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:68
 #: .\include\ui\controls\dialogs\dev.py:38
-#: .\include\ui\controls\dialogs\explorer.py:228
+#: .\include\ui\controls\dialogs\explorer.py:229
 msgid "Submit"
 msgstr "提交"
 
@@ -946,96 +950,96 @@ msgstr "源代码"
 msgid "The submitted rule is not valid JSON"
 msgstr "提交的规则不是有效的JSON"
 
-#: .\include\ui\controls\components\visualmgr\bars.py:100
+#: .\include\ui\controls\components\visualmgr\bars.py:101
 msgid "Add..."
 msgstr "添加..."
 
-#: .\include\ui\controls\components\visualmgr\columns.py:30
+#: .\include\ui\controls\components\visualmgr\columns.py:31
 msgid "Add Rule Group"
 msgstr "添加规则组"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:67
-#: .\include\ui\controls\dialogs\admin\accounts.py:480
-#: .\include\ui\controls\dialogs\admin\accounts.py:779
-#: .\include\ui\controls\views\tasks.py:462
+#: .\include\ui\controls\components\visualmgr\editor.py:68
+#: .\include\ui\controls\dialogs\admin\accounts.py:481
+#: .\include\ui\controls\dialogs\admin\accounts.py:780
+#: .\include\ui\controls\views\tasks.py:463
 msgid "All"
 msgstr "全部"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:72
+#: .\include\ui\controls\components\visualmgr\editor.py:73
 msgid "Any"
 msgstr "任意"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:76
-#: .\include\ui\controls\components\visualmgr\editor.py:162
-#: .\include\ui\controls\components\visualmgr\editor.py:390
+#: .\include\ui\controls\components\visualmgr\editor.py:77
+#: .\include\ui\controls\components\visualmgr\editor.py:163
+#: .\include\ui\controls\components\visualmgr\editor.py:391
 msgid "Match Mode"
 msgstr "匹配模式"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:102
-#: .\include\ui\models\manage.py:39
+#: .\include\ui\controls\components\visualmgr\editor.py:103
+#: .\include\ui\models\manage.py:40
 msgid "Groups"
 msgstr "用户组"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:104
+#: .\include\ui\controls\components\visualmgr\editor.py:105
 msgid "Rights"
 msgstr "权限"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:153
-#: .\include\ui\controls\components\visualmgr\editor.py:268
-#: .\include\ui\controls\components\visualmgr\editor.py:381
-#: .\include\ui\controls\components\visualmgr\editor.py:457
+#: .\include\ui\controls\components\visualmgr\editor.py:154
+#: .\include\ui\controls\components\visualmgr\editor.py:269
+#: .\include\ui\controls\components\visualmgr\editor.py:382
+#: .\include\ui\controls\components\visualmgr\editor.py:458
 msgid "All (AND)"
 msgstr "全部（与）"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:158
-#: .\include\ui\controls\components\visualmgr\editor.py:268
-#: .\include\ui\controls\components\visualmgr\editor.py:386
-#: .\include\ui\controls\components\visualmgr\editor.py:457
+#: .\include\ui\controls\components\visualmgr\editor.py:159
+#: .\include\ui\controls\components\visualmgr\editor.py:269
+#: .\include\ui\controls\components\visualmgr\editor.py:387
+#: .\include\ui\controls\components\visualmgr\editor.py:458
 msgid "Any (OR)"
 msgstr "任意（或）"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:172
+#: .\include\ui\controls\components\visualmgr\editor.py:173
 msgid "Delete Subgroup"
 msgstr "删除子组"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:229
+#: .\include\ui\controls\components\visualmgr\editor.py:230
 msgid "Add Rights Section"
 msgstr "添加权限部分"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:239
+#: .\include\ui\controls\components\visualmgr\editor.py:240
 msgid "Add Groups Section"
 msgstr "添加组部分"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:256
-#: .\include\ui\controls\components\visualmgr\editor.py:338
+#: .\include\ui\controls\components\visualmgr\editor.py:257
+#: .\include\ui\controls\components\visualmgr\editor.py:339
 msgid "Subgroup #{index}"
 msgstr "子组 #{index}"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:259
-#: .\include\ui\controls\components\visualmgr\editor.py:272
-#: .\include\ui\controls\components\visualmgr\editor.py:445
-#: .\include\ui\controls\components\visualmgr\editor.py:461
+#: .\include\ui\controls\components\visualmgr\editor.py:260
+#: .\include\ui\controls\components\visualmgr\editor.py:273
+#: .\include\ui\controls\components\visualmgr\editor.py:446
+#: .\include\ui\controls\components\visualmgr\editor.py:462
 msgid "Mode: {mode}"
 msgstr "模式：{mode}"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:400
+#: .\include\ui\controls\components\visualmgr\editor.py:401
 msgid "Delete Rule Group"
 msgstr "删除规则组"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:442
-#: .\include\ui\controls\components\visualmgr\editor.py:477
+#: .\include\ui\controls\components\visualmgr\editor.py:443
+#: .\include\ui\controls\components\visualmgr\editor.py:478
 msgid "Rule Group #{index}"
 msgstr "规则组 #{index}"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:598
-#: .\include\ui\controls\dialogs\admin\accounts.py:460
-#: .\include\ui\controls\dialogs\authorize.py:113
+#: .\include\ui\controls\components\visualmgr\editor.py:599
+#: .\include\ui\controls\dialogs\admin\accounts.py:461
+#: .\include\ui\controls\dialogs\authorize.py:114
 msgid "Read"
 msgstr "读取"
 
-#: .\include\ui\controls\components\visualmgr\editor.py:603
-#: .\include\ui\controls\dialogs\admin\accounts.py:465
-#: .\include\ui\controls\dialogs\authorize.py:118
+#: .\include\ui\controls\components\visualmgr\editor.py:604
+#: .\include\ui\controls\dialogs\admin\accounts.py:466
+#: .\include\ui\controls\dialogs\authorize.py:119
 msgid "Write"
 msgstr "写入"
 
@@ -1054,8 +1058,8 @@ msgstr ""
 
 #: .\include\ui\controls\contextmenus\explorer.py:70
 #: .\include\ui\controls\contextmenus\explorer.py:206
-#: .\include\ui\controls\contextmenus\group.py:55
-#: .\include\ui\controls\dialogs\admin\accounts.py:249
+#: .\include\ui\controls\contextmenus\group.py:56
+#: .\include\ui\controls\dialogs\admin\accounts.py:250
 msgid "Rename"
 msgstr "重命名"
 
@@ -1077,7 +1081,7 @@ msgstr "查看修订版本"
 
 #: .\include\ui\controls\contextmenus\explorer.py:114
 #: .\include\ui\controls\contextmenus\explorer.py:238
-#: .\include\ui\controls\contextmenus\management.py:77
+#: .\include\ui\controls\contextmenus\management.py:78
 msgid "Properties"
 msgstr "属性"
 
@@ -1086,223 +1090,223 @@ msgid "View Access Entries"
 msgstr "查看访问条目"
 
 #: .\include\ui\controls\contextmenus\explorer.py:231
-#: .\include\ui\controls\contextmenus\group.py:60
+#: .\include\ui\controls\contextmenus\group.py:61
 msgid "Set Permissions"
 msgstr "设置权限"
 
-#: .\include\ui\controls\contextmenus\group.py:37
+#: .\include\ui\controls\contextmenus\group.py:38
 msgid "Permissions: {permissions}\n"
 msgstr "权限：{permissions}\n"
 
-#: .\include\ui\controls\contextmenus\group.py:38
+#: .\include\ui\controls\contextmenus\group.py:39
 msgid "Members: {members}"
 msgstr "成员：{members}"
 
-#: .\include\ui\controls\contextmenus\management.py:43
-#: .\include\ui\controls\dialogs\admin\accounts.py:789
+#: .\include\ui\controls\contextmenus\management.py:44
+#: .\include\ui\controls\dialogs\admin\accounts.py:790
 msgid "(Unknown)"
 msgstr "（未知）"
 
-#: .\include\ui\controls\contextmenus\management.py:62
+#: .\include\ui\controls\contextmenus\management.py:63
 msgid "Change Nickname"
 msgstr "更改昵称"
 
-#: .\include\ui\controls\contextmenus\management.py:67
+#: .\include\ui\controls\contextmenus\management.py:68
 msgid "Edit User Group"
 msgstr "编辑用户组"
 
-#: .\include\ui\controls\contextmenus\management.py:72
+#: .\include\ui\controls\contextmenus\management.py:73
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: .\include\ui\controls\contextmenus\management.py:83
-#: .\include\ui\controls\dialogs\admin\accounts.py:447
+#: .\include\ui\controls\contextmenus\management.py:84
+#: .\include\ui\controls\dialogs\admin\accounts.py:448
 msgid "Block User"
 msgstr "封禁用户"
 
-#: .\include\ui\controls\contextmenus\management.py:89
+#: .\include\ui\controls\contextmenus\management.py:90
 msgid "View/Revoke Blocks"
 msgstr "查看/解除封禁"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:49
+#: .\include\ui\controls\dialogs\admin\accounts.py:50
 msgid "{action_type} User Password"
 msgstr "{action_type}用户密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:50
+#: .\include\ui\controls\dialogs\admin\accounts.py:51
 msgid "Change"
 msgstr "更改"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:50
+#: .\include\ui\controls\dialogs\admin\accounts.py:51
 msgid "Reset"
 msgstr "重置"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:57
+#: .\include\ui\controls\dialogs\admin\accounts.py:58
 msgid "Old Password"
 msgstr "旧密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:65
+#: .\include\ui\controls\dialogs\admin\accounts.py:66
 msgid "New Password"
 msgstr "新密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:74
+#: .\include\ui\controls\dialogs\admin\accounts.py:75
 msgid "Generate a random password"
 msgstr "生成随机密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:79
+#: .\include\ui\controls\dialogs\admin\accounts.py:80
 msgid "Bypass password requirements"
 msgstr "跳过密码要求"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:84
+#: .\include\ui\controls\dialogs\admin\accounts.py:85
 msgid "Force user to update password after next login"
 msgstr "强制用户在下次登录后更新密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:159
-#: .\include\ui\controls\dialogs\admin\groups.py:32
+#: .\include\ui\controls\dialogs\admin\accounts.py:160
+#: .\include\ui\controls\dialogs\admin\groups.py:33
 msgid "Create User"
 msgstr "创建用户"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:164
+#: .\include\ui\controls\dialogs\admin\accounts.py:165
 #: .\include\ui\controls\dialogs\password_confirm.py:46
-#: .\include\ui\controls\views\login.py:196
+#: .\include\ui\controls\views\login.py:197
 msgid "Password"
 msgstr "密码"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:171
+#: .\include\ui\controls\dialogs\admin\accounts.py:172
 msgid "Nickname"
 msgstr "昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:176
-#: .\include\ui\controls\views\admin\audit.py:35
-#: .\include\ui\controls\views\login.py:203
+#: .\include\ui\controls\dialogs\admin\accounts.py:177
+#: .\include\ui\controls\views\admin\audit.py:36
+#: .\include\ui\controls\views\login.py:204
 msgid "Username"
 msgstr "用户名"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:182
-#: .\include\ui\controls\dialogs\admin\groups.py:46
-#: .\include\ui\controls\dialogs\explorer.py:53
+#: .\include\ui\controls\dialogs\admin\accounts.py:183
+#: .\include\ui\controls\dialogs\admin\groups.py:47
+#: .\include\ui\controls\dialogs\explorer.py:54
 msgid "Create"
 msgstr "创建"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:239
+#: .\include\ui\controls\dialogs\admin\accounts.py:240
 msgid "Rename User Nickname"
 msgstr "重命名用户昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:244
+#: .\include\ui\controls\dialogs\admin\accounts.py:245
 msgid "User's New Nickname"
 msgstr "用户的新昵称"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:317
+#: .\include\ui\controls\dialogs\admin\accounts.py:318
 msgid "Change User Group"
 msgstr "更改用户组"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:394
+#: .\include\ui\controls\dialogs\admin\accounts.py:395
 msgid "User Details"
 msgstr "用户详情"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:481
-#: .\include\ui\controls\dialogs\authorize.py:44
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:46
-#: .\include\ui\controls\dialogs\contextmenu\move.py:55
-#: .\include\ui\controls\dialogs\view_access_entries.py:44
+#: .\include\ui\controls\dialogs\admin\accounts.py:482
+#: .\include\ui\controls\dialogs\authorize.py:45
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:47
+#: .\include\ui\controls\dialogs\contextmenu\move.py:56
+#: .\include\ui\controls\dialogs\view_access_entries.py:47
 msgid "Directory"
 msgstr "目录"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:482
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:44
-#: .\include\ui\controls\dialogs\contextmenu\move.py:53
+#: .\include\ui\controls\dialogs\admin\accounts.py:483
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:45
+#: .\include\ui\controls\dialogs\contextmenu\move.py:54
 msgid "Document"
 msgstr "文档"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:489
-#: .\include\ui\controls\dialogs\admin\accounts.py:621
+#: .\include\ui\controls\dialogs\admin\accounts.py:490
+#: .\include\ui\controls\dialogs\admin\accounts.py:622
 msgid "(No target selected)"
 msgstr "（未选择目标）"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:492
-#: .\include\ui\models\settings\storage.py:49
+#: .\include\ui\controls\dialogs\admin\accounts.py:493
+#: .\include\ui\frameworks\settings\settings_framework.py:818
 msgid "Browse..."
 msgstr "浏览..."
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:501
+#: .\include\ui\controls\dialogs\admin\accounts.py:502
 msgid "Set expiry time"
 msgstr "设置到期时间"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:515
+#: .\include\ui\controls\dialogs\admin\accounts.py:516
 msgid "Pick Date"
 msgstr "选择日期"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:521
+#: .\include\ui\controls\dialogs\admin\accounts.py:522
 msgid "Pick Time"
 msgstr "选择时间"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:530
+#: .\include\ui\controls\dialogs\admin\accounts.py:531
 msgid "Block"
 msgstr "封禁"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:537
+#: .\include\ui\controls\dialogs\admin\accounts.py:538
 msgid "Block Types"
 msgstr "封禁类型"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:540
-#: .\include\ui\controls\views\admin\audit.py:37
+#: .\include\ui\controls\dialogs\admin\accounts.py:541
+#: .\include\ui\controls\views\admin\audit.py:38
 msgid "Target"
 msgstr "目标"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:547
+#: .\include\ui\controls\dialogs\admin\accounts.py:548
 msgid "Expiry"
 msgstr "到期时间"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:643
+#: .\include\ui\controls\dialogs\admin\accounts.py:644
 msgid "Select Directory"
 msgstr "选择目录"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:650
+#: .\include\ui\controls\dialogs\admin\accounts.py:651
 msgid "Select Document"
 msgstr "选择文档"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:685
+#: .\include\ui\controls\dialogs\admin\accounts.py:686
 msgid "User Blocks"
 msgstr "用户封禁记录"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:697
-#: .\include\ui\controls\dialogs\revision.py:164
-#: .\include\ui\controls\dialogs\search.py:212
-#: .\include\ui\controls\dialogs\view_access_entries.py:112
+#: .\include\ui\controls\dialogs\admin\accounts.py:698
+#: .\include\ui\controls\dialogs\revision.py:161
+#: .\include\ui\controls\dialogs\search.py:213
+#: .\include\ui\controls\dialogs\view_access_entries.py:114
 msgid "Close"
 msgstr "关闭"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:727
+#: .\include\ui\controls\dialogs\admin\accounts.py:728
 msgid "No active blocks found."
 msgstr "未找到有效的封禁记录。"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:743
-#: .\include\ui\controls\dialogs\admin\accounts.py:796
+#: .\include\ui\controls\dialogs\admin\accounts.py:744
+#: .\include\ui\controls\dialogs\admin\accounts.py:797
 msgid "Permanent"
 msgstr "永久"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:752
-#: .\include\ui\controls\dialogs\admin\accounts.py:803
+#: .\include\ui\controls\dialogs\admin\accounts.py:753
+#: .\include\ui\controls\dialogs\admin\accounts.py:804
 msgid "Immediate"
 msgstr "立即生效"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:758
+#: .\include\ui\controls\dialogs\admin\accounts.py:759
 msgid "Effective block: from {since}, expires {expires}"
 msgstr "有效封禁：开始于 {since}，到期时间：{expires}"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:765
+#: .\include\ui\controls\dialogs\admin\accounts.py:766
 msgid "{count} underlying record(s)"
 msgstr "共 {count} 条记录"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:807
-#: .\include\ui\controls\dialogs\view_access_entries.py:207
+#: .\include\ui\controls\dialogs\admin\accounts.py:808
+#: .\include\ui\controls\dialogs\view_access_entries.py:208
 msgid "Revoke"
 msgstr "解除"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:816
+#: .\include\ui\controls\dialogs\admin\accounts.py:817
 msgid "Types: {types} | Target: {target}"
 msgstr "类型：{types} | 目标：{target}"
 
-#: .\include\ui\controls\dialogs\admin\accounts.py:824
+#: .\include\ui\controls\dialogs\admin\accounts.py:825
 msgid ""
 "ID: {id}\n"
 "Created: {created}\n"
@@ -1312,172 +1316,172 @@ msgstr ""
 "创建于：{created}\n"
 "期限：{not_before} - {expires}"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:37
+#: .\include\ui\controls\dialogs\admin\groups.py:38
 msgid "Display Name"
 msgstr "展示名称"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:40
+#: .\include\ui\controls\dialogs\admin\groups.py:41
 msgid "User Group Name"
 msgstr "用户组名称"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:92
+#: .\include\ui\controls\dialogs\admin\groups.py:97
 msgid "Failed to create user group: ({code}) {message}"
 msgstr "创建用户组失败：({code}) {message}"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:110
+#: .\include\ui\controls\dialogs\admin\groups.py:118
 msgid "Rename User Group"
 msgstr "重命名用户组"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:118
+#: .\include\ui\controls\dialogs\admin\groups.py:126
 msgid "New User Group Name"
 msgstr "新用户组名称"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:123
+#: .\include\ui\controls\dialogs\admin\groups.py:131
 msgid "Group name cannot be empty"
 msgstr "用户组名称不能为空"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:210
+#: .\include\ui\controls\dialogs\admin\groups.py:229
 msgid "Add Permission"
 msgstr "新增权限"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:221
+#: .\include\ui\controls\dialogs\admin\groups.py:240
 msgid "Change User Group Permissions"
 msgstr "更改用户组权限"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:306
+#: .\include\ui\controls\dialogs\admin\groups.py:325
 msgid "Change user group permissions failed: ({code}) {message}"
 msgstr "更改用户组权限失败：({code}) {message}"
 
-#: .\include\ui\controls\dialogs\admin\groups.py:339
+#: .\include\ui\controls\dialogs\admin\groups.py:360
 msgid "Failed to fetch user group info: ({code}) {message}"
 msgstr "拉取用户组信息失败：({code}) {message}"
 
-#: .\include\ui\controls\dialogs\authorize.py:42
-#: .\include\ui\controls\dialogs\view_access_entries.py:42
+#: .\include\ui\controls\dialogs\authorize.py:43
+#: .\include\ui\controls\dialogs\view_access_entries.py:45
 msgid "File"
 msgstr "文件"
 
-#: .\include\ui\controls\dialogs\authorize.py:50
+#: .\include\ui\controls\dialogs\authorize.py:51
 msgid "Authorize Access to {display_name}"
 msgstr "授权访问 {display_name}"
 
-#: .\include\ui\controls\dialogs\authorize.py:65
+#: .\include\ui\controls\dialogs\authorize.py:66
 msgid "Username or Group Name"
 msgstr "用户名或组名"
 
-#: .\include\ui\controls\dialogs\authorize.py:66
-#: .\include\ui\controls\dialogs\authorize.py:271
+#: .\include\ui\controls\dialogs\authorize.py:67
+#: .\include\ui\controls\dialogs\authorize.py:272
 msgid "Enter username or group name"
 msgstr "输入用户名或组名"
 
-#: .\include\ui\controls\dialogs\authorize.py:81
+#: .\include\ui\controls\dialogs\authorize.py:82
 msgid "Select Entity"
 msgstr "选择实体"
 
-#: .\include\ui\controls\dialogs\authorize.py:82
+#: .\include\ui\controls\dialogs\authorize.py:83
 msgid "Search to see available options"
 msgstr "搜索以查看可用选项"
 
-#: .\include\ui\controls\dialogs\authorize.py:94
+#: .\include\ui\controls\dialogs\authorize.py:95
 msgid "Group"
 msgstr "组"
 
-#: .\include\ui\controls\dialogs\authorize.py:138
+#: .\include\ui\controls\dialogs\authorize.py:139
 msgid "Date Range"
 msgstr "日期范围"
 
-#: .\include\ui\controls\dialogs\authorize.py:151
-#: .\include\ui\controls\dialogs\view_access_entries.py:86
+#: .\include\ui\controls\dialogs\authorize.py:152
+#: .\include\ui\controls\dialogs\view_access_entries.py:89
 msgid "Start Time"
 msgstr "开始时间"
 
-#: .\include\ui\controls\dialogs\authorize.py:168
-#: .\include\ui\controls\dialogs\view_access_entries.py:90
+#: .\include\ui\controls\dialogs\authorize.py:169
+#: .\include\ui\controls\dialogs\view_access_entries.py:93
 msgid "End Time"
 msgstr "结束时间"
 
-#: .\include\ui\controls\dialogs\authorize.py:194
+#: .\include\ui\controls\dialogs\authorize.py:195
 msgid "Select Target"
 msgstr "选择目标"
 
-#: .\include\ui\controls\dialogs\authorize.py:204
+#: .\include\ui\controls\dialogs\authorize.py:205
 msgid "Authorization Period"
 msgstr "授权期限"
 
-#: .\include\ui\controls\dialogs\authorize.py:209
+#: .\include\ui\controls\dialogs\authorize.py:210
 msgid "Date Range:"
 msgstr "日期范围："
 
-#: .\include\ui\controls\dialogs\authorize.py:219
+#: .\include\ui\controls\dialogs\authorize.py:220
 msgid "Start Time:"
 msgstr "开始时间："
 
-#: .\include\ui\controls\dialogs\authorize.py:228
+#: .\include\ui\controls\dialogs\authorize.py:229
 msgid "End Time:"
 msgstr "结束时间："
 
-#: .\include\ui\controls\dialogs\authorize.py:269
+#: .\include\ui\controls\dialogs\authorize.py:270
 msgid "Enter username or group name to search"
 msgstr "输入用户名或组名以搜索"
 
-#: .\include\ui\controls\dialogs\authorize.py:337
+#: .\include\ui\controls\dialogs\authorize.py:338
 msgid "Please enter a search term"
 msgstr "请输入搜索词"
 
-#: .\include\ui\controls\dialogs\authorize.py:395
+#: .\include\ui\controls\dialogs\authorize.py:396
 msgid "Please select a target"
 msgstr "请选择一个目标"
 
-#: .\include\ui\controls\dialogs\authorize.py:402
+#: .\include\ui\controls\dialogs\authorize.py:403
 msgid "Please enter a username or group name"
 msgstr "请输入用户名或组名"
 
-#: .\include\ui\controls\dialogs\authorize.py:425
+#: .\include\ui\controls\dialogs\authorize.py:426
 msgid "End time must be after start time"
 msgstr "结束时间必须晚于开始时间"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:34
-#: .\include\ui\controls\dialogs\avatar_settings.py:56
+#: .\include\ui\controls\dialogs\avatar_settings.py:35
+#: .\include\ui\controls\dialogs\avatar_settings.py:57
 msgid "Set Avatar"
 msgstr "设置头像"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:41
+#: .\include\ui\controls\dialogs\avatar_settings.py:42
 msgid "Browse Documents"
 msgstr "浏览文档"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:48
+#: .\include\ui\controls\dialogs\avatar_settings.py:49
 msgid "Document ID"
 msgstr "文档 ID"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:49
+#: .\include\ui\controls\dialogs\avatar_settings.py:50
 msgid "Enter the ID of an image document"
 msgstr "输入图片文档的 ID"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:72
+#: .\include\ui\controls\dialogs\avatar_settings.py:73
 msgid "Choose an image document to use as your avatar"
 msgstr "选择一个图片文档作为您的头像"
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:74
+#: .\include\ui\controls\dialogs\avatar_settings.py:75
 msgid "Or enter document ID manually:"
 msgstr "或手动输入文档 ID："
 
-#: .\include\ui\controls\dialogs\avatar_settings.py:136
+#: .\include\ui\controls\dialogs\avatar_settings.py:139
 msgid "Document ID cannot be empty"
 msgstr "文档 ID 不能为空"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:31
+#: .\include\ui\controls\dialogs\backup_codes.py:32
 msgid "Save Your Backup Codes"
 msgstr "保存您的备份代码"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:54
+#: .\include\ui\controls\dialogs\backup_codes.py:55
 msgid "I Have Saved My Codes"
 msgstr "我已保存我的代码"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:62
+#: .\include\ui\controls\dialogs\backup_codes.py:63
 msgid "Two-Factor Authentication has been enabled successfully!"
 msgstr "双因素认证已成功启用！"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:69
+#: .\include\ui\controls\dialogs\backup_codes.py:70
 msgid ""
 "Save these backup codes in a secure location. You can use them to access "
 "your account if you lose access to your authenticator app."
@@ -1485,71 +1489,124 @@ msgstr ""
 "请将这些备份代码保存在安全的位置。如果您无法访问验证器应用，可以使用这些代码"
 "访问您的账户。"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:76
+#: .\include\ui\controls\dialogs\backup_codes.py:77
 msgid "Each code can only be used once."
 msgstr "每个代码只能使用一次。"
 
-#: .\include\ui\controls\dialogs\backup_codes.py:90
+#: .\include\ui\controls\dialogs\backup_codes.py:89
 msgid "Store these codes safely - they won't be shown again!"
 msgstr "请安全保存这些代码 - 它们不会再次显示！"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:52
+#: .\include\ui\controls\dialogs\ca_update_progress.py:62
+msgid "Connecting to repository"
+msgstr "正在连接到存储库"
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:63
+#: .\include\ui\models\about.py:119
+msgid "Checking for updates"
+msgstr "正在检查更新"
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:64
+msgid "Downloading / removing files"
+msgstr "下载 / 移除文件中"
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:65
+msgid "Saving manifest"
+msgstr "保存清单中"
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:100
+msgid "Starting..."
+msgstr "正在开始..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:108
+msgid "Updating CA Certificates"
+msgstr "正在更新 CA 证书"
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:176
+msgid "Connecting to certificate repository..."
+msgstr "正在连接到证书库..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:179
+msgid "Fetched {n} remote certificate(s); comparing..."
+msgstr "已获取 {n} 个远程证书；正在比较..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:182
+msgid "Downloading {name}..."
+msgstr "下载 {name} 中..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:184
+msgid "Downloading..."
+msgstr "下载中..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:188
+msgid "Removing {name}..."
+msgstr "移除 {name} 中..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:190
+msgid "Removing..."
+msgstr "移除中..."
+
+#: .\include\ui\controls\dialogs\ca_update_progress.py:193
+msgid "Saving manifest..."
+msgstr "正在保存清单..."
+
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:53
 msgid "Rename {display_name}"
 msgstr "重命名{display_name}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:57
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:58
 msgid "New {display_name} name"
 msgstr "新{display_name}名称"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:106
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:107
 msgid "{display_name} name cannot be empty"
 msgstr "{display_name} 名称不能为空"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:139
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:140
 msgid "Document Details"
 msgstr "文档详情"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:196
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:197
 msgid "Failed to fetch document info: ({code}) {message}"
 msgstr "拉取文档信息失败：({code}) {message}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:203
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:204
 msgid "Document ID: {doc_id}"
 msgstr "文档ID：{doc_id}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:209
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:210
 msgid "Document title: {doc_title}"
 msgstr "文档标题：{doc_title}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:215
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:216
 msgid "Document size: {doc_size}"
 msgstr "文档大小：{doc_size}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:227
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:228
 msgid "Last modified: {last_modified}"
 msgstr "最后更改时间：{last_modified}"
 
-#: .\include\ui\controls\dialogs\contextmenu\explorer.py:273
+#: .\include\ui\controls\dialogs\contextmenu\explorer.py:274
 msgid "Directory Details"
 msgstr "目录详情"
 
-#: .\include\ui\controls\dialogs\contextmenu\move.py:64
+#: .\include\ui\controls\dialogs\contextmenu\move.py:65
 msgid "Move {display_name}"
 msgstr "移动{display_name}"
 
-#: .\include\ui\controls\dialogs\contextmenu\move.py:73
+#: .\include\ui\controls\dialogs\contextmenu\move.py:74
 msgid "Move Here"
 msgstr "移动到此处"
 
-#: .\include\ui\controls\dialogs\contextmenu\move.py:135
+#: .\include\ui\controls\dialogs\contextmenu\move.py:136
 msgid "Move failed: ({code}) {message}"
 msgstr "移动失败：({code}) {message}"
 
-#: .\include\ui\controls\dialogs\contextmenu\move.py:143
+#: .\include\ui\controls\dialogs\contextmenu\move.py:144
 msgid "{display_name} moved successfully"
 msgstr "{display_name} 移动成功"
 
-#: .\include\ui\controls\dialogs\contextmenu\move.py:159
+#: .\include\ui\controls\dialogs\contextmenu\move.py:160
 msgid "Error moving {display_name}: {error}"
 msgstr "移动 {display_name} 时出错：{error}"
 
@@ -1589,7 +1646,7 @@ msgid "Request Data"
 msgstr "请求数据"
 
 #: .\include\ui\controls\dialogs\dev.py:27
-#: .\include\ui\controls\views\admin\audit.py:45
+#: .\include\ui\controls\views\admin\audit.py:46
 msgid "Result"
 msgstr "结果"
 
@@ -1601,181 +1658,181 @@ msgstr "必须指定请求名称"
 msgid "Select Image Document"
 msgstr "选择图片文档"
 
-#: .\include\ui\controls\dialogs\explorer.py:40
+#: .\include\ui\controls\dialogs\explorer.py:41
 msgid "Create Directory"
 msgstr "创建目录"
 
-#: .\include\ui\controls\dialogs\explorer.py:47
+#: .\include\ui\controls\dialogs\explorer.py:48
 msgid "Directory Name"
 msgstr "目录名称"
 
-#: .\include\ui\controls\dialogs\explorer.py:90
+#: .\include\ui\controls\dialogs\explorer.py:91
 msgid "Directory name cannot be empty"
 msgstr "目录名称不能为空"
 
-#: .\include\ui\controls\dialogs\explorer.py:111
+#: .\include\ui\controls\dialogs\explorer.py:112
 msgid "Batch Upload"
 msgstr "批量上传"
 
-#: .\include\ui\controls\dialogs\explorer.py:117
-#: .\include\ui\controls\dialogs\explorer.py:163
-#: .\include\ui\controls\dialogs\explorer.py:602
-#: .\include\ui\controls\dialogs\explorer.py:881
+#: .\include\ui\controls\dialogs\explorer.py:118
+#: .\include\ui\controls\dialogs\explorer.py:164
+#: .\include\ui\controls\dialogs\explorer.py:603
+#: .\include\ui\controls\dialogs\explorer.py:882
 #: .\include\ui\controls\dialogs\whatsnew.py:79
 msgid "OK"
 msgstr "确定"
 
-#: .\include\ui\controls\dialogs\explorer.py:157
+#: .\include\ui\controls\dialogs\explorer.py:158
 msgid "Upload Directory"
 msgstr "上传目录"
 
-#: .\include\ui\controls\dialogs\explorer.py:214
+#: .\include\ui\controls\dialogs\explorer.py:215
 msgid "Jump to..."
 msgstr "跳转至..."
 
-#: .\include\ui\controls\dialogs\explorer.py:221
+#: .\include\ui\controls\dialogs\explorer.py:222
 msgid "Directory ID"
 msgstr "目录ID"
 
-#: .\include\ui\controls\dialogs\explorer.py:222
+#: .\include\ui\controls\dialogs\explorer.py:223
 msgid "If you want to go back to the root directory, enter '/'."
 msgstr "如果要返回根目录，请输入 '/'。"
 
-#: .\include\ui\controls\dialogs\explorer.py:267
+#: .\include\ui\controls\dialogs\explorer.py:268
 msgid "Directory id cannot be empty"
 msgstr "目录ID不能为空"
 
-#: .\include\ui\controls\dialogs\explorer.py:296
+#: .\include\ui\controls\dialogs\explorer.py:297
 msgid "File Already Exists"
 msgstr "文件已存在"
 
-#: .\include\ui\controls\dialogs\explorer.py:326
+#: .\include\ui\controls\dialogs\explorer.py:327
 msgid "A file named \"{filename}\" already exists."
 msgstr "名为 \"{filename}\" 的文件已存在。"
 
-#: .\include\ui\controls\dialogs\explorer.py:335
+#: .\include\ui\controls\dialogs\explorer.py:336
 msgid "Loading file details..."
 msgstr "正在加载文件详情..."
 
-#: .\include\ui\controls\dialogs\explorer.py:349
+#: .\include\ui\controls\dialogs\explorer.py:350
 msgid "Do you want to overwrite it?"
 msgstr "您要覆盖它吗？"
 
-#: .\include\ui\controls\dialogs\explorer.py:359
+#: .\include\ui\controls\dialogs\explorer.py:360
 msgid "Overwrite"
 msgstr "覆盖"
 
-#: .\include\ui\controls\dialogs\explorer.py:363
+#: .\include\ui\controls\dialogs\explorer.py:364
 msgid "Skip"
 msgstr "跳过"
 
-#: .\include\ui\controls\dialogs\explorer.py:373
+#: .\include\ui\controls\dialogs\explorer.py:374
 msgid "Always Overwrite"
 msgstr "始终覆盖"
 
-#: .\include\ui\controls\dialogs\explorer.py:378
+#: .\include\ui\controls\dialogs\explorer.py:379
 msgid "Always Skip"
 msgstr "始终跳过"
 
-#: .\include\ui\controls\dialogs\explorer.py:453
+#: .\include\ui\controls\dialogs\explorer.py:454
 msgid "Could not load file details"
 msgstr "无法加载文件详情"
 
-#: .\include\ui\controls\dialogs\explorer.py:471
+#: .\include\ui\controls\dialogs\explorer.py:472
 msgid "File size: {size}"
 msgstr "文件大小：{size}"
 
-#: .\include\ui\controls\dialogs\explorer.py:491
+#: .\include\ui\controls\dialogs\explorer.py:492
 msgid "Last modified: {date}"
 msgstr "最后修改时间：{date}"
 
-#: .\include\ui\controls\dialogs\explorer.py:500
+#: .\include\ui\controls\dialogs\explorer.py:501
 msgid "Created: {date}"
 msgstr "创建时间：{date}"
 
-#: .\include\ui\controls\dialogs\explorer.py:506
+#: .\include\ui\controls\dialogs\explorer.py:507
 msgid "No details available"
 msgstr "无详细信息"
 
-#: .\include\ui\controls\dialogs\explorer.py:522
+#: .\include\ui\controls\dialogs\explorer.py:523
 msgid "Error loading file details"
 msgstr "加载文件详情时出错"
 
-#: .\include\ui\controls\dialogs\explorer.py:678
+#: .\include\ui\controls\dialogs\explorer.py:679
 msgid "Confirm Delete"
 msgstr "确认删除"
 
-#: .\include\ui\controls\dialogs\explorer.py:688
+#: .\include\ui\controls\dialogs\explorer.py:689
 msgid "Delete {count} items ({file_count} files, {dir_count} directories)?"
 msgstr "删除 {count} 个项目（{file_count} 个文件，{dir_count} 个目录）？"
 
-#: .\include\ui\controls\dialogs\explorer.py:694
+#: .\include\ui\controls\dialogs\explorer.py:695
 msgid "Delete {count} file(s)?"
 msgstr "删除 {count} 个文件？"
 
-#: .\include\ui\controls\dialogs\explorer.py:696
+#: .\include\ui\controls\dialogs\explorer.py:697
 msgid "Delete {count} directory(ies)?"
 msgstr "删除 {count} 个目录？"
 
-#: .\include\ui\controls\dialogs\explorer.py:702
+#: .\include\ui\controls\dialogs\explorer.py:703
 msgid "This action cannot be undone."
 msgstr "此操作不能撤销。"
 
-#: .\include\ui\controls\dialogs\explorer.py:762
+#: .\include\ui\controls\dialogs\explorer.py:763
 msgid "Select Target Directory"
 msgstr "选择目标目录"
 
-#: .\include\ui\controls\dialogs\explorer.py:769
-#: .\include\ui\controls\dialogs\file_browser.py:133
+#: .\include\ui\controls\dialogs\explorer.py:770
+#: .\include\ui\controls\dialogs\file_browser.py:134
 msgid "Select Here"
 msgstr "选择此处"
 
-#: .\include\ui\controls\dialogs\explorer.py:843
+#: .\include\ui\controls\dialogs\explorer.py:844
 msgid "You don't have permission to {operation} this document."
 msgstr "您无权{operation}此文档。"
 
-#: .\include\ui\controls\dialogs\explorer.py:858
+#: .\include\ui\controls\dialogs\explorer.py:859
 msgid "Reason: "
 msgstr "原因："
 
-#: .\include\ui\controls\dialogs\file_browser.py:110
+#: .\include\ui\controls\dialogs\file_browser.py:111
 msgid "Browse Files and Directories"
 msgstr "浏览文件和目录"
 
-#: .\include\ui\controls\dialogs\file_browser.py:117
-#: .\include\ui\controls\dialogs\file_browser.py:360
+#: .\include\ui\controls\dialogs\file_browser.py:118
+#: .\include\ui\controls\dialogs\file_browser.py:361
 msgid "Current location: {path}"
 msgstr "当前位置：{path}"
 
-#: .\include\ui\controls\dialogs\file_browser.py:140
+#: .\include\ui\controls\dialogs\file_browser.py:141
 msgid "Go to Root"
 msgstr "返回根目录"
 
-#: .\include\ui\controls\dialogs\file_browser.py:319
+#: .\include\ui\controls\dialogs\file_browser.py:320
 msgid "Unknown error"
 msgstr "未知错误"
 
-#: .\include\ui\controls\dialogs\file_browser.py:358
+#: .\include\ui\controls\dialogs\file_browser.py:359
 msgid "(current directory)"
 msgstr "（当前目录）"
 
-#: .\include\ui\controls\dialogs\file_browser.py:380
+#: .\include\ui\controls\dialogs\file_browser.py:381
 msgid ".. (Parent Directory)"
 msgstr ".. （上级目录）"
 
-#: .\include\ui\controls\dialogs\file_browser.py:461
+#: .\include\ui\controls\dialogs\file_browser.py:464
 msgid "No matching files found in this directory"
 msgstr "未在此目录中找到符合要求的文件"
 
-#: .\include\ui\controls\dialogs\file_browser.py:462
+#: .\include\ui\controls\dialogs\file_browser.py:465
 msgid "No files found in this directory"
 msgstr "未在此目录中找到文件"
 
-#: .\include\ui\controls\dialogs\file_browser.py:464
+#: .\include\ui\controls\dialogs\file_browser.py:467
 msgid "No subdirectories found in this directory"
 msgstr "未在此目录中找到子目录"
 
-#: .\include\ui\controls\dialogs\file_browser.py:466
+#: .\include\ui\controls\dialogs\file_browser.py:469
 msgid "This directory is empty"
 msgstr "目录为空"
 
@@ -1788,7 +1845,7 @@ msgid "Confirm"
 msgstr "确认"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:120
-#: .\include\ui\controls\views\login.py:296
+#: .\include\ui\controls\views\login.py:297
 msgid "Password cannot be empty"
 msgstr "密码不能为空"
 
@@ -1796,114 +1853,114 @@ msgstr "密码不能为空"
 msgid "Invalid password"
 msgstr "密码无效"
 
-#: .\include\ui\controls\dialogs\revision.py:43
+#: .\include\ui\controls\dialogs\revision.py:44
 msgid "Revision #{id}"
 msgstr "修订版本 #{id}"
 
-#: .\include\ui\controls\dialogs\revision.py:45
+#: .\include\ui\controls\dialogs\revision.py:46
 msgid " (Current)"
 msgstr " （当前）"
 
-#: .\include\ui\controls\dialogs\revision.py:47
+#: .\include\ui\controls\dialogs\revision.py:48
 msgid "Created: {time}"
 msgstr "创建于：{time}"
 
-#: .\include\ui\controls\dialogs\revision.py:50
+#: .\include\ui\controls\dialogs\revision.py:51
 msgid "Parent: Revision #{id}"
 msgstr "父修订版本：#{id}"
 
-#: .\include\ui\controls\dialogs\revision.py:62
+#: .\include\ui\controls\dialogs\revision.py:63
 msgid "View/Download"
 msgstr "浏览/下载"
 
-#: .\include\ui\controls\dialogs\revision.py:71
+#: .\include\ui\controls\dialogs\revision.py:72
 msgid "Set as Current"
 msgstr "设为当前"
 
-#: .\include\ui\controls\dialogs\revision.py:133
+#: .\include\ui\controls\dialogs\revision.py:134
 msgid "View Revisions of {filename}"
 msgstr "查看 {filename} 的修订版本"
 
-#: .\include\ui\controls\dialogs\revision.py:150
+#: .\include\ui\controls\dialogs\revision.py:147
 msgid "Loading revisions..."
 msgstr "正在加载修订版本..."
 
-#: .\include\ui\controls\dialogs\revision.py:157
-#: .\include\ui\controls\dialogs\view_access_entries.py:106
-#: .\include\ui\controls\views\tasks.py:551
+#: .\include\ui\controls\dialogs\revision.py:154
+#: .\include\ui\controls\dialogs\view_access_entries.py:109
+#: .\include\ui\controls\views\tasks.py:552
 msgid "Refresh"
 msgstr "刷新"
 
-#: .\include\ui\controls\dialogs\revision.py:223
+#: .\include\ui\controls\dialogs\revision.py:220
 msgid "No revisions found."
 msgstr "未找到修订版本"
 
-#: .\include\ui\controls\dialogs\search.py:89
-#: .\include\ui\controls\dialogs\search.py:158
+#: .\include\ui\controls\dialogs\search.py:90
+#: .\include\ui\controls\dialogs\search.py:159
 msgid "Last modified"
 msgstr "最后修改时间"
 
-#: .\include\ui\controls\dialogs\search.py:135
+#: .\include\ui\controls\dialogs\search.py:136
 msgid "Search query"
 msgstr "搜索关键词"
 
-#: .\include\ui\controls\dialogs\search.py:136
+#: .\include\ui\controls\dialogs\search.py:137
 msgid "Enter search term"
 msgstr "输入搜索词"
 
-#: .\include\ui\controls\dialogs\search.py:144
+#: .\include\ui\controls\dialogs\search.py:145
 msgid "Documents"
 msgstr "文档"
 
-#: .\include\ui\controls\dialogs\search.py:148
+#: .\include\ui\controls\dialogs\search.py:149
 msgid "Directories"
 msgstr "目录"
 
-#: .\include\ui\controls\dialogs\search.py:154
+#: .\include\ui\controls\dialogs\search.py:155
 msgid "Sort by"
 msgstr "排序方式"
 
-#: .\include\ui\controls\dialogs\search.py:157
+#: .\include\ui\controls\dialogs\search.py:158
 msgid "Created time"
 msgstr "创建时间"
 
-#: .\include\ui\controls\dialogs\search.py:167
+#: .\include\ui\controls\dialogs\search.py:168
 msgid "Sort order"
 msgstr "排序顺序"
 
-#: .\include\ui\controls\dialogs\search.py:169
+#: .\include\ui\controls\dialogs\search.py:170
 msgid "Ascending"
 msgstr "升序"
 
-#: .\include\ui\controls\dialogs\search.py:170
+#: .\include\ui\controls\dialogs\search.py:171
 msgid "Descending"
 msgstr "降序"
 
-#: .\include\ui\controls\dialogs\search.py:179
+#: .\include\ui\controls\dialogs\search.py:180
 msgid "Results limit"
 msgstr "结果限制"
 
-#: .\include\ui\controls\dialogs\search.py:203
+#: .\include\ui\controls\dialogs\search.py:204
 msgid "Searching..."
 msgstr "搜索中..."
 
-#: .\include\ui\controls\dialogs\search.py:223
+#: .\include\ui\controls\dialogs\search.py:224
 msgid "Search Options"
 msgstr "搜索选项"
 
-#: .\include\ui\controls\dialogs\search.py:294
+#: .\include\ui\controls\dialogs\search.py:295
 msgid "No results found for \"{query}\""
 msgstr "未找到与\"{query}\"匹配的结果"
 
-#: .\include\ui\controls\dialogs\search.py:298
+#: .\include\ui\controls\dialogs\search.py:299
 msgid "Found {count} result(s) for \"{query}\""
 msgstr "找到 {count} 个与\"{query}\"匹配的结果"
 
-#: .\include\ui\controls\dialogs\twofa_setup.py:43
+#: .\include\ui\controls\dialogs\twofa_setup.py:42
 msgid "Set Up Two-Factor Authentication"
 msgstr "设置双因素认证"
 
-#: .\include\ui\controls\dialogs\twofa_setup.py:66
+#: .\include\ui\controls\dialogs\twofa_setup.py:65
 msgid "Secret Key (manual entry)"
 msgstr "密钥（手动输入）"
 
@@ -1957,7 +2014,6 @@ msgid "Use recovery code instead"
 msgstr "改用恢复代码"
 
 #: .\include\ui\controls\dialogs\twofa_verify.py:38
-#: .\include\ui\models\settings\overview.py:62
 #: .\include\ui\models\settings\twofa.py:33
 msgid "Two-Factor Authentication"
 msgstr "双因素认证"
@@ -2052,49 +2108,49 @@ msgstr "下载超时，请检查网络连接"
 msgid "Unknown error occurred during download: {strerr}"
 msgstr "下载过程中发生未知错误：{strerr}"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:50
+#: .\include\ui\controls\dialogs\view_access_entries.py:53
 msgid "View Access Entries for {display_name}"
 msgstr "查看 {display_name} 的访问条目"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:62
-#: .\include\ui\controls\views\admin\audit.py:29
+#: .\include\ui\controls\dialogs\view_access_entries.py:65
+#: .\include\ui\controls\views\admin\audit.py:30
 msgid "ID"
 msgstr "ID"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:66
+#: .\include\ui\controls\dialogs\view_access_entries.py:69
 msgid "Entity Type"
 msgstr "实体类型"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:70
+#: .\include\ui\controls\dialogs\view_access_entries.py:73
 msgid "Entity Identifier"
 msgstr "实体标识符"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:74
+#: .\include\ui\controls\dialogs\view_access_entries.py:77
 msgid "Target Type"
 msgstr "目标类型"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:78
+#: .\include\ui\controls\dialogs\view_access_entries.py:81
 msgid "Target Identifier"
 msgstr "目标标识符"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:82
+#: .\include\ui\controls\dialogs\view_access_entries.py:85
 msgid "Access Type"
 msgstr "访问类型"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:94
+#: .\include\ui\controls\dialogs\view_access_entries.py:97
 msgid "Actions"
 msgstr "操作"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:121
+#: .\include\ui\controls\dialogs\view_access_entries.py:122
 msgid "Access entries for this {type}"
 msgstr "此{type}的访问条目"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:189
-#: .\include\ui\controls\dialogs\view_access_entries.py:198
+#: .\include\ui\controls\dialogs\view_access_entries.py:190
+#: .\include\ui\controls\dialogs\view_access_entries.py:199
 msgid "Invalid date"
 msgstr "无效日期"
 
-#: .\include\ui\controls\dialogs\view_access_entries.py:200
+#: .\include\ui\controls\dialogs\view_access_entries.py:201
 msgid "No expiry"
 msgstr "无过期时间"
 
@@ -2134,224 +2190,233 @@ msgstr "查看历史"
 msgid "Got it!"
 msgstr "知道了！"
 
-#: .\include\ui\controls\views\admin\account.py:63
+#: .\include\ui\controls\views\admin\account.py:64
 msgid "User List"
 msgstr "用户列表"
 
-#: .\include\ui\controls\views\admin\account.py:112
-#: .\include\ui\controls\views\admin\group.py:111 .\include\ui\util\path.py:66
+#: .\include\ui\controls\views\admin\account.py:113
+#: .\include\ui\controls\views\admin\group.py:115 .\include\ui\util\path.py:66
 msgid "Load failed: ({code}) {message}"
 msgstr "加载失败：({code}) {message}"
 
-#: .\include\ui\controls\views\admin\audit.py:34
+#: .\include\ui\controls\views\admin\audit.py:35
 msgid "Action"
 msgstr "操作"
 
-#: .\include\ui\controls\views\admin\audit.py:41
+#: .\include\ui\controls\views\admin\audit.py:42
 msgid "Data"
 msgstr "数据"
 
-#: .\include\ui\controls\views\admin\audit.py:48
+#: .\include\ui\controls\views\admin\audit.py:49
 msgid "Remote Address"
 msgstr "远程地址"
 
-#: .\include\ui\controls\views\admin\audit.py:51
+#: .\include\ui\controls\views\admin\audit.py:52
 msgid "Time"
 msgstr "时间"
 
-#: .\include\ui\controls\views\admin\audit.py:124
+#: .\include\ui\controls\views\admin\audit.py:125
 msgid "Audit Logs"
 msgstr "审计日志"
 
-#: .\include\ui\controls\views\admin\audit.py:217
+#: .\include\ui\controls\views\admin\audit.py:218
 msgid "Load failed: ({code}) {errmsg}"
 msgstr "加载失败：({code}) {errmsg}"
 
-#: .\include\ui\controls\views\admin\audit.py:230
+#: .\include\ui\controls\views\admin\audit.py:231
 msgid "{view_start} - {view_end} of {total} items"
 msgstr "{view_start} - {view_end} 条，共 {total} 条"
 
-#: .\include\ui\controls\views\admin\audit.py:252
+#: .\include\ui\controls\views\admin\audit.py:253
 msgid "Load failed: {errstr}"
 msgstr "加载失败：{errstr}"
 
-#: .\include\ui\controls\views\admin\group.py:62
+#: .\include\ui\controls\views\admin\group.py:64
 msgid "User Group List"
 msgstr "用户组列表"
 
-#: .\include\ui\controls\views\connect.py:37
+#: .\include\ui\controls\views\connect.py:38
 msgid "Server Address"
 msgstr "服务器地址"
 
-#: .\include\ui\controls\views\connect.py:53
+#: .\include\ui\controls\views\connect.py:54
 msgid "Disable SSL verification (Insecure)"
 msgstr "禁用SSL检查（不安全）"
 
-#: .\include\ui\controls\views\connect.py:60
-#: .\include\ui\models\settings\overview.py:38
+#: .\include\ui\controls\views\connect.py:61
+#: .\include\ui\models\settings\connection.py:25
 msgid "Connect"
 msgstr "连接"
 
-#: .\include\ui\controls\views\connect.py:135
+#: .\include\ui\controls\views\connect.py:136
 msgid "Invalid server address"
 msgstr "无效的服务器地址"
 
-#: .\include\ui\controls\views\explorer.py:221
+#: .\include\ui\controls\views\connect.py:149
+msgid ""
+"CA certificate store is being updated. Please wait a moment and try again."
+msgstr "CA 证书存储库正在更新。请稍后再试。"
+
+#: .\include\ui\controls\views\explorer.py:224
 msgid "File Management"
 msgstr "文件管理"
 
-#: .\include\ui\controls\views\login.py:143
-#: .\include\ui\controls\views\login.py:164
+#: .\include\ui\controls\views\login.py:144
+#: .\include\ui\controls\views\login.py:165
 msgid "Loading user data"
 msgstr "正在加载用户数据"
 
-#: .\include\ui\controls\views\login.py:215
-#: .\include\ui\controls\views\login.py:226
+#: .\include\ui\controls\views\login.py:216
+#: .\include\ui\controls\views\login.py:227
 msgid "Login"
 msgstr "登录"
 
-#: .\include\ui\controls\views\login.py:220
+#: .\include\ui\controls\views\login.py:221
 msgid "Disconnect"
 msgstr "断开连接"
 
-#: .\include\ui\controls\views\login.py:294
+#: .\include\ui\controls\views\login.py:295
 msgid "Username cannot be empty"
 msgstr "用户名不能为空"
 
-#: .\include\ui\controls\views\more.py:41
+#: .\include\ui\controls\views\more.py:42
 msgid "Change Password"
 msgstr "修改密码"
 
-#: .\include\ui\controls\views\more.py:46
-#: .\include\ui\models\settings\overview.py:24
+#: .\include\ui\controls\views\more.py:47
+#: .\include\ui\models\settings\overview.py:27
 msgid "Settings"
 msgstr "设置"
 
-#: .\include\ui\controls\views\more.py:51 .\include\ui\models\about.py:51
+#: .\include\ui\controls\views\more.py:52 .\include\ui\models\about.py:51
 msgid "About"
 msgstr "关于"
 
-#: .\include\ui\controls\views\tasks.py:63
+#: .\include\ui\controls\views\tasks.py:64
 msgid "Open file"
 msgstr "打开文件"
 
-#: .\include\ui\controls\views\tasks.py:72
+#: .\include\ui\controls\views\tasks.py:73
 msgid "Delete file and task"
 msgstr "删除文件和任务"
 
-#: .\include\ui\controls\views\tasks.py:87
-#: .\include\ui\controls\views\tasks.py:351
+#: .\include\ui\controls\views\tasks.py:88
+#: .\include\ui\controls\views\tasks.py:352
 msgid "Pause"
 msgstr "暂停"
 
-#: .\include\ui\controls\views\tasks.py:89
-#: .\include\ui\controls\views\tasks.py:351
+#: .\include\ui\controls\views\tasks.py:90
+#: .\include\ui\controls\views\tasks.py:352
 msgid "Resume"
 msgstr "恢复"
 
-#: .\include\ui\controls\views\tasks.py:146
+#: .\include\ui\controls\views\tasks.py:147
 msgid "File missing"
 msgstr "文件缺失"
 
-#: .\include\ui\controls\views\tasks.py:248
+#: .\include\ui\controls\views\tasks.py:249
 msgid "Pending"
 msgstr "等待中"
 
-#: .\include\ui\controls\views\tasks.py:249
+#: .\include\ui\controls\views\tasks.py:250
 msgid "Downloading"
 msgstr "下载中"
 
-#: .\include\ui\controls\views\tasks.py:250
-#: .\include\ui\controls\views\tasks.py:464
+#: .\include\ui\controls\views\tasks.py:251
+#: .\include\ui\controls\views\tasks.py:465
 msgid "Paused"
 msgstr "已暂停"
 
-#: .\include\ui\controls\views\tasks.py:251
+#: .\include\ui\controls\views\tasks.py:252
 msgid "Decrypting"
 msgstr "解密中"
 
-#: .\include\ui\controls\views\tasks.py:252
+#: .\include\ui\controls\views\tasks.py:253
 msgid "Verifying"
 msgstr "验证中"
 
-#: .\include\ui\controls\views\tasks.py:253
-#: .\include\ui\controls\views\tasks.py:466
+#: .\include\ui\controls\views\tasks.py:254
+#: .\include\ui\controls\views\tasks.py:467
 msgid "Completed"
 msgstr "已完成"
 
-#: .\include\ui\controls\views\tasks.py:254
-#: .\include\ui\controls\views\tasks.py:467
+#: .\include\ui\controls\views\tasks.py:255
+#: .\include\ui\controls\views\tasks.py:468
 msgid "Failed"
 msgstr "失败"
 
-#: .\include\ui\controls\views\tasks.py:255
+#: .\include\ui\controls\views\tasks.py:256
 msgid "Cancelled"
 msgstr "已取消"
 
-#: .\include\ui\controls\views\tasks.py:256
-#: .\include\ui\controls\views\tasks.py:465
+#: .\include\ui\controls\views\tasks.py:257
+#: .\include\ui\controls\views\tasks.py:466
 msgid "Scheduled"
 msgstr "已计划"
 
-#: .\include\ui\controls\views\tasks.py:258
+#: .\include\ui\controls\views\tasks.py:259
 msgid "Unknown"
 msgstr "未知"
 
-#: .\include\ui\controls\views\tasks.py:272
+#: .\include\ui\controls\views\tasks.py:273
 msgid "Download completed"
 msgstr "下载完成"
 
-#: .\include\ui\controls\views\tasks.py:287
+#: .\include\ui\controls\views\tasks.py:288
 msgid "Waiting to start..."
 msgstr "等待开始..."
 
-#: .\include\ui\controls\views\tasks.py:411
+#: .\include\ui\controls\views\tasks.py:412
 msgid "Failed to open file: {error}"
 msgstr "打开文件失败：{error}"
 
-#: .\include\ui\controls\views\tasks.py:433
+#: .\include\ui\controls\views\tasks.py:434
 msgid "Failed to delete: {error}"
 msgstr "删除失败：{error}"
 
-#: .\include\ui\controls\views\tasks.py:459
+#: .\include\ui\controls\views\tasks.py:460
 msgid "Filter"
 msgstr "筛选"
 
-#: .\include\ui\controls\views\tasks.py:463
+#: .\include\ui\controls\views\tasks.py:464
 msgid "Active"
 msgstr "活跃"
 
-#: .\include\ui\controls\views\tasks.py:491
+#: .\include\ui\controls\views\tasks.py:492
 msgid "No download tasks"
 msgstr "无下载任务"
 
-#: .\include\ui\controls\views\tasks.py:510
+#: .\include\ui\controls\views\tasks.py:511
 msgid "Download Tasks"
 msgstr "下载任务"
 
-#: .\include\ui\controls\views\tasks.py:519
+#: .\include\ui\controls\views\tasks.py:520
 msgid "More actions"
 msgstr "更多操作"
 
-#: .\include\ui\controls\views\tasks.py:522
+#: .\include\ui\controls\views\tasks.py:523
 msgid "Pause all active"
 msgstr "暂停所有活跃中的任务"
 
-#: .\include\ui\controls\views\tasks.py:527
+#: .\include\ui\controls\views\tasks.py:528
 msgid "Resume all paused"
 msgstr "恢复所有已暂停任务"
 
-#: .\include\ui\controls\views\tasks.py:532
+#: .\include\ui\controls\views\tasks.py:533
 msgid "Cancel all pending"
 msgstr "取消所有等待任务"
 
-#: .\include\ui\controls\views\tasks.py:538
+#: .\include\ui\controls\views\tasks.py:539
 msgid "Clear completed"
 msgstr "清除已完成"
 
-#: .\include\ui\controls\views\tasks.py:543
+#: .\include\ui\controls\views\tasks.py:544
 msgid "Clear failed"
 msgstr "清除失败"
+
+#: .\include\ui\frameworks\settings\settings_framework.py:915
+msgid "Settings Saved."
+msgstr "设置已保存。"
 
 #: .\include\ui\models\about.py:59
 msgid "Debugging..."
@@ -2376,10 +2441,6 @@ msgstr "使用 Apache License 2.0 版本授权。"
 #: .\include\ui\models\about.py:103
 msgid "View changelogs"
 msgstr "查看更新日志"
-
-#: .\include\ui\models\about.py:119
-msgid "Checking for updates"
-msgstr "正在检查更新"
 
 #: .\include\ui\models\about.py:121
 msgid "Cannot update: Cannot check for updates when running from source code."
@@ -2437,131 +2498,138 @@ msgstr "未在最新版本中找到对应架构的包"
 msgid "No update found: Unsupported architecture"
 msgstr "没有找到更新：不支持的架构"
 
-#: .\include\ui\models\connect.py:27
+#: .\include\ui\models\connect.py:28
 msgid "Connect To Server"
 msgstr "连接到服务器"
 
-#: .\include\ui\models\connect.py:32
+#: .\include\ui\models\connect.py:33
 msgid "Connection Settings"
 msgstr "连接设置"
 
-#: .\include\ui\models\debugging.py:34
+#: .\include\ui\models\debugging.py:36
 msgid "Debugging"
 msgstr "调试"
 
-#: .\include\ui\models\debugging.py:43
+#: .\include\ui\models\debugging.py:53 .\include\ui\models\debugging.py:92
+msgid "LOGFILE exists: "
+msgstr "LOGFILE 是否存在："
+
+#: .\include\ui\models\debugging.py:56
 msgid "General Information"
 msgstr "基本信息"
 
-#: .\include\ui\models\debugging.py:57
+#: .\include\ui\models\debugging.py:70
 msgid "Environment Variables"
 msgstr "环境变量"
 
-#: .\include\ui\models\manage.py:35
-msgid "Accounts"
-msgstr "账户"
-
-#: .\include\ui\models\manage.py:44
+#: .\include\ui\models\debugging.py:81 .\include\ui\models\manage.py:45
 msgid "Logs"
 msgstr "日志"
 
-#: .\include\ui\models\manage.py:82
+#: .\include\ui\models\debugging.py:83
+msgid "The last 10 lines of the logfile:"
+msgstr "日志文件的最后10行："
+
+#: .\include\ui\models\debugging.py:92
+msgid "Yes"
+msgstr "是"
+
+#: .\include\ui\models\debugging.py:92
+msgid "No"
+msgstr "否"
+
+#: .\include\ui\models\debugging.py:101
+msgid "Logfile not found."
+msgstr "未找到日志文件。"
+
+#: .\include\ui\models\init.py:61
+msgid "Compile CA certificate manifest"
+msgstr "编制 CA 证书清单"
+
+#: .\include\ui\models\init.py:84
+msgid "Preparing..."
+msgstr "准备中..."
+
+#: .\include\ui\models\init.py:126
+msgid "Initializing"
+msgstr "正在初始化"
+
+#: .\include\ui\models\init.py:202
+msgid "Setup complete."
+msgstr "设置完成。"
+
+#: .\include\ui\models\init.py:238
+msgid ""
+"CA certificate manifest is ready. Would you like to check for updates now?"
+msgstr "CA 证书清单准备就绪。您是否希望现在检查更新？"
+
+#: .\include\ui\models\init.py:243
+msgid "Update Now"
+msgstr "现在更新"
+
+#: .\include\ui\models\manage.py:36
+msgid "Accounts"
+msgstr "账户"
+
+#: .\include\ui\models\manage.py:83
 msgid "Management"
 msgstr "管理"
 
-#: .\include\ui\models\settings\connection.py:27
-msgid "Connection"
-msgstr "连接"
+#: .\include\ui\models\settings\connection.py:26
+msgid "Change application proxy settings"
+msgstr "更改应用使用代理的规则"
 
-#: .\include\ui\models\settings\connection.py:37
+#: .\include\ui\models\settings\connection.py:39
 msgid "Enable proxy"
 msgstr "启用代理"
 
-#: .\include\ui\models\settings\connection.py:40
+#: .\include\ui\models\settings\connection.py:43
 msgid "Follow system proxy settings"
 msgstr "跟随系统代理设置"
 
-#: .\include\ui\models\settings\connection.py:43
+#: .\include\ui\models\settings\connection.py:50
 msgid "Custom Proxy"
 msgstr "自定义代理"
 
-#: .\include\ui\models\settings\connection.py:49
+#: .\include\ui\models\settings\connection.py:58
 msgid "Force IPv4"
 msgstr "强制使用 IPv4"
 
-#: .\include\ui\models\settings\connection.py:85
-#: .\include\ui\models\settings\safety.py:66
-#: .\include\ui\models\settings\storage.py:93
-#: .\include\ui\models\settings\updates.py:86
-msgid "Settings Saved."
-msgstr "设置已保存。"
-
-#: .\include\ui\models\settings\language.py:25
-#: .\include\ui\models\settings\language.py:36
-#: .\include\ui\models\settings\overview.py:32
+#: .\include\ui\models\settings\language.py:23
+#: .\include\ui\models\settings\language.py:33
 msgid "Language"
 msgstr "语言"
 
-#: .\include\ui\models\settings\language.py:37
-#: .\include\ui\models\settings\overview.py:33
+#: .\include\ui\models\settings\language.py:24
+#: .\include\ui\models\settings\language.py:35
 msgid "Select your preferred language"
 msgstr "选择您偏好的语言"
 
-#: .\include\ui\models\settings\language.py:48
+#: .\include\ui\models\settings\language.py:41
 msgid ""
 "Select your preferred language for the application interface. You may need "
 "to restart the application for changes to take full effect."
 msgstr "选择您偏好的应用界面语言。您可能需要重启应用来令更改彻底生效。"
 
-#: .\include\ui\models\settings\language.py:74
+#: .\include\ui\models\settings\language.py:57
 msgid ""
 "Language setting saved. Please restart the application for changes to take "
 "effect."
 msgstr "语言设置已保存。请重新启动应用，以使更改生效。"
 
-#: .\include\ui\models\settings\overview.py:39
-msgid "Change application proxy settings"
-msgstr "更改应用使用代理的规则"
-
-#: .\include\ui\models\settings\overview.py:44
-#: .\include\ui\models\settings\storage.py:31
-msgid "Storage"
-msgstr "存储"
-
-#: .\include\ui\models\settings\overview.py:45
-msgid "Configure external storage options"
-msgstr "配置外部存储选项"
-
-#: .\include\ui\models\settings\overview.py:50
+#: .\include\ui\models\settings\safety.py:34
 msgid "Security"
 msgstr "安全"
 
-#: .\include\ui\models\settings\overview.py:51
-msgid "Adjust application connection history policy"
-msgstr "调整应用记住连接历史的策略"
+#: .\include\ui\models\settings\safety.py:35
+msgid "Connection history, CA certificates and security settings"
+msgstr "连接历史，CA 证书和安全设置"
 
-#: .\include\ui\models\settings\overview.py:56
-#: .\include\ui\models\settings\updates.py:27
-msgid "Updates"
-msgstr "更新"
-
-#: .\include\ui\models\settings\overview.py:57
-msgid "Configure update channel preferences"
-msgstr "配置更新频道偏好"
-
-#: .\include\ui\models\settings\overview.py:63
-msgid "Manage two-factor authentication settings"
-msgstr "管理双因素认证设置"
-
-#: .\include\ui\models\settings\safety.py:25
-msgid "Safety"
-msgstr "安全"
-
-#: .\include\ui\models\settings\safety.py:36
+#: .\include\ui\models\settings\safety.py:46
 msgid "Enable connection history logging"
 msgstr "启用连接历史记录"
 
-#: .\include\ui\models\settings\safety.py:42
+#: .\include\ui\models\settings\safety.py:50
 msgid ""
 "Decide whether the app should log the server address of the last connection. "
 "While this feature increases convenience, it may also increase the risk of "
@@ -2570,15 +2638,82 @@ msgstr ""
 "决定应用程序是否应记录上次连接的服务器地址。虽然此功能提高了便利性，但也可能"
 "增加服务器地址泄露的风险。"
 
-#: .\include\ui\models\settings\storage.py:40
+#: .\include\ui\models\settings\safety.py:64
+msgid "CA Certificates"
+msgstr "CA 证书"
+
+#: .\include\ui\models\settings\safety.py:66
+msgid ""
+"The CA certificate store contains trusted root certificates used to verify "
+"secure connections to your server."
+msgstr "CA 证书存储库包含用于验证与服务器安全连接的受信任根证书。"
+
+#: .\include\ui\models\settings\safety.py:78
+#: .\include\ui\models\settings\safety.py:131
+msgid "Last checked: Never"
+msgstr "上次检查于：从未"
+
+#: .\include\ui\models\settings\safety.py:84
+msgid "Check and Update Now"
+msgstr "立即检查和执行更新"
+
+#: .\include\ui\models\settings\safety.py:135
+msgid "Last checked: {time}"
+msgstr "上次检查于：{time}"
+
+#: .\include\ui\models\settings\safety.py:155
+msgid "Certificate update service is not available."
+msgstr "证书更新服务不可用"
+
+#: .\include\ui\models\settings\safety.py:170
+msgid "Update failed: {error}"
+msgstr "更新失败：{error}"
+
+#: .\include\ui\models\settings\safety.py:181
+msgid "{n} certificate(s) added"
+msgstr "添加了 {n} 个证书"
+
+#: .\include\ui\models\settings\safety.py:183
+msgid "{n} certificate(s) updated"
+msgstr "更新了 {n} 个证书"
+
+#: .\include\ui\models\settings\safety.py:185
+msgid "{n} certificate(s) removed"
+msgstr "移除了 {n} 个证书"
+
+#: .\include\ui\models\settings\safety.py:188
+msgid "{n} certificate(s) already up-to-date"
+msgstr "{n} 个证书已是最新"
+
+#: .\include\ui\models\settings\safety.py:197
+msgid "Update completed with errors: {errors}"
+msgstr "更新完成，但出现错误：{errors}"
+
+#: .\include\ui\models\settings\safety.py:202
+msgid "Certificate store updated successfully."
+msgstr "证书存储库更新成功。"
+
+#: .\include\ui\models\settings\safety.py:204
+msgid "Certificate store is already up-to-date."
+msgstr "证书存储库已是最新。"
+
+#: .\include\ui\models\settings\storage.py:30
+msgid "Storage"
+msgstr "存储"
+
+#: .\include\ui\models\settings\storage.py:31
+msgid "Configure external storage options"
+msgstr "配置外部存储选项"
+
+#: .\include\ui\models\settings\storage.py:42
 msgid "Use external storage"
 msgstr "使用外部存储"
 
-#: .\include\ui\models\settings\storage.py:43
+#: .\include\ui\models\settings\storage.py:46
 msgid "External storage path"
 msgstr "外部存储路径"
 
-#: .\include\ui\models\settings\storage.py:52
+#: .\include\ui\models\settings\storage.py:50
 msgid ""
 "The application will only save files to the specified location if the \"Use "
 "external storage\" switch is enabled and an external storage path is set."
@@ -2586,11 +2721,15 @@ msgstr ""
 "仅当启用“使用外部存储”开关并设置外部存储路径时，应用程序才会将文件保存到指定"
 "位置。"
 
-#: .\include\ui\models\settings\twofa.py:43
+#: .\include\ui\models\settings\twofa.py:34
+msgid "Manage two-factor authentication settings"
+msgstr "管理双因素认证设置"
+
+#: .\include\ui\models\settings\twofa.py:46
 msgid "Two-Factor Authentication Status: Checking..."
 msgstr "双因素认证状态：检查中..."
 
-#: .\include\ui\models\settings\twofa.py:50
+#: .\include\ui\models\settings\twofa.py:51
 msgid ""
 "Two-factor authentication adds an extra layer of security to your account. "
 "You'll need to enter a code from your authenticator app in addition to your "
@@ -2599,109 +2738,113 @@ msgstr ""
 "双因素认证为您的账户增加了额外的安全层。登录时，除了密码外，您还需要输入验证"
 "器应用中的代码。"
 
-#: .\include\ui\models\settings\twofa.py:59
+#: .\include\ui\models\settings\twofa.py:60
 msgid "Enable Two-Factor Authentication"
 msgstr "启用双因素认证"
 
-#: .\include\ui\models\settings\twofa.py:67
-#: .\include\ui\models\settings\twofa.py:263
+#: .\include\ui\models\settings\twofa.py:66
+#: .\include\ui\models\settings\twofa.py:253
 msgid "Disable Two-Factor Authentication"
 msgstr "禁用双因素认证"
 
-#: .\include\ui\models\settings\twofa.py:113
+#: .\include\ui\models\settings\twofa.py:108
 msgid "Failed to load 2FA status: {resp_msg}"
 msgstr "加载双因素身份验证状态失败：{resp_msg}"
 
-#: .\include\ui\models\settings\twofa.py:120
+#: .\include\ui\models\settings\twofa.py:115
 msgid "Error loading 2FA status: {strerr}"
 msgstr "加载双因素身份验证状态时出错：{strerr}"
 
-#: .\include\ui\models\settings\twofa.py:130
+#: .\include\ui\models\settings\twofa.py:129
 msgid "Two-Factor Authentication Status: Enabled"
 msgstr "双因素认证状态：已启用"
 
-#: .\include\ui\models\settings\twofa.py:135
+#: .\include\ui\models\settings\twofa.py:134
 msgid "Two-Factor Authentication Status: Disabled"
 msgstr "双因素认证状态：已禁用"
 
-#: .\include\ui\models\settings\twofa.py:177
+#: .\include\ui\models\settings\twofa.py:175
 msgid "Invalid setup data received from server"
 msgstr "从服务器接收到的配置数据无效"
 
-#: .\include\ui\models\settings\twofa.py:181
+#: .\include\ui\models\settings\twofa.py:179
 msgid "Failed to initiate 2FA setup: {resp_msg}"
 msgstr "初始化双因素身份验证设置失败：{resp_msg}"
 
-#: .\include\ui\models\settings\twofa.py:188
+#: .\include\ui\models\settings\twofa.py:186
 msgid "Error setting up 2FA: {strerror}"
 msgstr "设置双因素身份验证时出错：{strerror}"
 
-#: .\include\ui\models\settings\twofa.py:223
-#: .\include\ui\models\settings\twofa.py:241
+#: .\include\ui\models\settings\twofa.py:216
+#: .\include\ui\models\settings\twofa.py:231
 msgid "Two-Factor Authentication enabled successfully!"
 msgstr "双因素认证已成功启用！"
 
-#: .\include\ui\models\settings\twofa.py:264
+#: .\include\ui\models\settings\twofa.py:254
 msgid "Please enter your password to disable two-factor authentication."
 msgstr "请输入您的密码以禁用双因素认证。"
 
-#: .\include\ui\models\settings\twofa.py:289
+#: .\include\ui\models\settings\twofa.py:274
 msgid "Two-Factor Authentication disabled"
 msgstr "双因素认证已禁用"
 
-#: .\include\ui\models\settings\twofa.py:295
+#: .\include\ui\models\settings\twofa.py:280
 msgid "Failed to disable 2FA: {resp_msg}"
 msgstr "禁用双因素身份验证失败：{resp_msg}"
 
-#: .\include\ui\models\settings\twofa.py:303
+#: .\include\ui\models\settings\twofa.py:288
 msgid "Error disabling 2FA: {strerr}"
 msgstr "禁用双因素身份验证时出错：{strerr}"
 
-#: .\include\ui\models\settings\updates.py:37
+#: .\include\ui\models\settings\updates.py:25
+msgid "Updates"
+msgstr "更新"
+
+#: .\include\ui\models\settings\updates.py:26
+msgid "Configure update channel preferences"
+msgstr "配置更新频道偏好"
+
+#: .\include\ui\models\settings\updates.py:35
 msgid "Update Channel"
 msgstr "更新频道"
 
-#: .\include\ui\models\settings\updates.py:38
+#: .\include\ui\models\settings\updates.py:37
 msgid "Select the update channel to check for updates"
 msgstr "选择要检查的更新频道"
 
-#: .\include\ui\models\settings\updates.py:42
+#: .\include\ui\models\settings\updates.py:40
 msgid "Stable - Most stable releases"
 msgstr "Stable - 最稳定的发行版本"
 
-#: .\include\ui\models\settings\updates.py:46
+#: .\include\ui\models\settings\updates.py:41
 msgid "Beta - Pre-release testing versions"
 msgstr "Beta - 预发布的测试版本"
 
-#: .\include\ui\models\settings\updates.py:50
+#: .\include\ui\models\settings\updates.py:42
 msgid "Alpha - Cutting edge, frequent updates"
 msgstr "Alpha - 频繁更新的前沿开发版本"
 
-#: .\include\ui\models\settings\updates.py:106
+#: .\include\ui\models\settings\updates.py:45
 msgid "You will receive only stable, thoroughly tested releases."
 msgstr "您只会收到稳定且经过全面测试的版本。"
 
-#: .\include\ui\models\settings\updates.py:109
+#: .\include\ui\models\settings\updates.py:48
 msgid ""
 "You will receive pre-release versions with new features that are generally "
 "stable."
 msgstr "您将收到包含新功能的预发布版本，这些版本通常稳定。"
 
-#: .\include\ui\models\settings\updates.py:112
+#: .\include\ui\models\settings\updates.py:52
 msgid ""
 "You will receive the latest development versions with cutting-edge features. "
 "Expect frequent updates."
 msgstr "您将收到包含前沿功能的最新开发版本。预期有频繁的更新。"
 
-#: .\include\ui\models\settings\updates.py:117
-msgid "Select a channel to see its description"
-msgstr "选择一个频道来查看它的描述"
-
 #: .\include\ui\models\wizards\welcome.py:24
 msgid "Intro Wizard"
 msgstr "引导向导"
 
-#: .\include\ui\util\file_controls.py:44
+#: .\include\ui\util\file_controls.py:45
 msgid "Parent directory"
 msgstr "上级目录"
 
@@ -2736,16 +2879,16 @@ msgid ""
 msgstr "相寻梦里路，飞雨落花中。"
 
 #: .\include\util\batch_operations.py:57 .\include\util\batch_operations.py:83
-#: .\include\util\batch_operations.py:184
-#: .\include\util\batch_operations.py:376
-#: .\include\util\batch_operations.py:402
+#: .\include\util\batch_operations.py:183
+#: .\include\util\batch_operations.py:375
+#: .\include\util\batch_operations.py:401
 msgid "({code}) {message}"
 msgstr "({code}) {message}"
 
-#: .\include\util\batch_operations.py:193
+#: .\include\util\batch_operations.py:192
 msgid "Failed to get download task ID"
 msgstr "获取下载任务ID失败"
 
-#: .\include\util\batch_operations.py:259
+#: .\include\util\batch_operations.py:258
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
