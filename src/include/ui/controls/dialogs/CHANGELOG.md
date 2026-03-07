@@ -29,6 +29,8 @@ better type annotation support.
 ## Fixed
 - Fixed inconsistent placeholder icon sizes on the login screen.
 - Fixed case sensitivity issue in the server address hash generator.
+- Fixed an issue where pressing the back button on mobile devices caused 
+unexpected screen transitions.
 
 ---
 ## v0.8.0
