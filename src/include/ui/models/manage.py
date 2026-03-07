@@ -1,7 +1,8 @@
 from typing import cast
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.views.admin.account import ManageAccountsView
@@ -9,7 +10,6 @@ from include.ui.controls.views.admin.audit import AuditLogView
 from include.ui.controls.views.admin.group import ManageGroupsView
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -33,10 +33,10 @@ class ManagementNavigationBar(ft.NavigationBar):
 
         nav_destinations = [
             ft.NavigationBarDestination(
-                icon=Symbols.SUPERVISOR_ACCOUNT_OUTLINED, label=_("Accounts")
+                icon=Symbols.SUPERVISOR_ACCOUNT, label=_("Accounts")
             ),
             ft.NavigationBarDestination(
-                icon=Symbols.ADMIN_PANEL_SETTINGS_OUTLINED,
+                icon=Symbols.ADMIN_PANEL_SETTINGS,
                 label=_("Groups"),
             ),
             # ft.NavigationBarDestination(

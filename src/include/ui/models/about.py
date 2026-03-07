@@ -1,8 +1,8 @@
 import asyncio
-import os
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
+from flet_model import Model, Router, route
 import requests
 
 from include.classes.shared import AppShared
@@ -25,7 +25,6 @@ from include.util.upgrade.updater import (
     get_latest_release,
     is_new_version,
 )
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -56,12 +55,12 @@ class AboutModel(Model):
             ),
             actions=[
                 ft.IconButton(
-                    icon=Symbols.BUG_REPORT_OUTLINED,
+                    icon=Symbols.BUG_REPORT,
                     tooltip=_("Debugging..."),
                     on_click=self.debugging_button_click,
                 ),
                 ft.IconButton(
-                    icon=Symbols.SETTINGS_OUTLINED,
+                    icon=Symbols.SETTINGS,
                     tooltip=_("Updates Settings"),
                     on_click=self.settings_button_click,
                 ),

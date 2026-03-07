@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Literal, cast
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.authorize import AuthorizeDialogController
@@ -13,7 +14,6 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -112,17 +112,17 @@ class AuthorizeDialog(AlertDialog):
                 ft.Segment(
                     value="read",
                     label=ft.Text(_("Read")),
-                    icon=ft.Icon(Symbols.SCREEN_SEARCH_DESKTOP_OUTLINED),
+                    icon=ft.Icon(Symbols.SCREEN_SEARCH_DESKTOP),
                 ),
                 ft.Segment(
                     value="write",
                     label=ft.Text(_("Write")),
-                    icon=ft.Icon(Symbols.EDIT_OUTLINED),
+                    icon=ft.Icon(Symbols.EDIT),
                 ),
                 ft.Segment(
                     value="move",
                     label=ft.Text(_("Move")),
-                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE_OUTLINED),
+                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                 ),
                 ft.Segment(
                     value="manage",

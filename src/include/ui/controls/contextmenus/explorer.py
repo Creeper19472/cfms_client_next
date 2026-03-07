@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.explorer.tile import (
@@ -15,7 +15,6 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -67,20 +66,20 @@ class FileContextMenu(ContextMenu2):
                     "require": {"delete_document"},
                 },
                 {
-                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
                     "require": {"rename_document"},
                 },
                 {
-                    "icon": Symbols.DRIVE_FILE_MOVE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_MOVE,
                     "content": _("Move"),
                     "on_click": self.move_button_click,
                     "require": {"move"},
                 },
                 {},
                 {
-                    "icon": Symbols.LOCK_PERSON_OUTLINED,
+                    "icon": Symbols.LOCK_PERSON,
                     "content": _("Authorize"),
                     "on_click": self.authorize_button_click,
                     "require": {"manage_access"},
@@ -92,26 +91,26 @@ class FileContextMenu(ContextMenu2):
                     "require": {"view_access_entries"},
                 },
                 {
-                    "icon": Symbols.SETTINGS_OUTLINED,
+                    "icon": Symbols.SETTINGS,
                     "content": _("Set permissions"),
                     "on_click": self.set_access_rules_button_click,
                     "require": {"set_access_rules"},
                 },
                 {},
                 {
-                    "icon": Symbols.UPLOAD_FILE_OUTLINED,
+                    "icon": Symbols.UPLOAD_FILE,
                     "content": _("Upload new version"),
                     "on_click": self.new_revision_button_click,
                 },
                 {
-                    "icon": Symbols.HISTORY_OUTLINED,
+                    "icon": Symbols.HISTORY,
                     "content": _("View Revisions"),
                     "on_click": self.view_revisions_button_click,
                     "require": {"list_revisions"},
                 },
                 {},
                 {
-                    "icon": Symbols.INFO_OUTLINED,
+                    "icon": Symbols.INFO,
                     "content": _("Properties"),
                     "on_click": self.open_document_info_click,
                 },
@@ -151,7 +150,7 @@ class FileContextMenu(ContextMenu2):
     async def new_revision_button_click(self, event: ft.Event[ft.PopupMenuItem]):
         # Create a new file picker each time (file picker is a singleton)
         file_picker = ft.FilePicker()
-        
+
         result = await file_picker.pick_files(allow_multiple=False)
         if result:
             self.page.run_task(self.controller.action_upload_new_revision, result[0])
@@ -203,20 +202,20 @@ class DirectoryContextMenu(ContextMenu2):
                 "require": {"delete_directory"},
             },
             {
-                "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                 "content": _("Rename"),
                 "on_click": self.rename_button_click,
                 "require": {"rename_directory"},
             },
             {
-                "icon": Symbols.DRIVE_FILE_MOVE_OUTLINED,
+                "icon": Symbols.DRIVE_FILE_MOVE,
                 "content": _("Move"),
                 "on_click": self.move_button_click,
                 "require": {"move"},
             },
             {},
             {
-                "icon": Symbols.LOCK_PERSON_OUTLINED,
+                "icon": Symbols.LOCK_PERSON,
                 "content": _("Authorize"),
                 "on_click": self.authorize_button_click,
                 "require": {"manage_access"},
@@ -228,14 +227,14 @@ class DirectoryContextMenu(ContextMenu2):
                 "require": {"view_access_entries"},
             },
             {
-                "icon": Symbols.SETTINGS_OUTLINED,
+                "icon": Symbols.SETTINGS,
                 "content": _("Set Permissions"),
                 "on_click": self.set_access_rules_button_click,
                 "require": {"set_access_rules"},
             },
             {},
             {
-                "icon": Symbols.INFO_OUTLINED,
+                "icon": Symbols.INFO,
                 "content": _("Properties"),
                 "on_click": self.open_directory_info_click,
             },
@@ -247,9 +246,9 @@ class DirectoryContextMenu(ContextMenu2):
         #             {},
         #             {
         #                 "icon": (
-        #                     Symbols.STAR_OUTLINED
+        #                     Symbols.STAR
         #                     if self.dirtile.starred
-        #                     else Symbols.STAR_BORDER_OUTLINED
+        #                     else Symbols.STAR_BORDER
         #                 ),
         #                 "content": (
         #                     _("Star") if not self.dirtile.starred else _("Unstar")

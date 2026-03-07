@@ -1,5 +1,6 @@
-from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
+from flet_model import Model, Router, route
 
 from include.classes.shared import AppShared
 from include.constants import APP_VERSION
@@ -7,7 +8,6 @@ from include.ui.constants import PLACEHOLDER_COLOR
 from include.ui.controls.buttons.upgrade import FloatingUpgradeButton
 from include.ui.controls.views.connect import ConnectForm
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -29,7 +29,7 @@ class ConnectToServerModel(Model):
             center_title=True,
             actions=[
                 ft.IconButton(
-                    Symbols.SETTINGS_OUTLINED,
+                    Symbols.SETTINGS,
                     tooltip=_("Connection Settings"),
                     on_click=self.conn_settings_button_click,
                 ),

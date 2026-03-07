@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 from include.controllers.contextmenus.group import GroupContextMenuController
 from include.ui.controls.menus.base import ContextMenu2
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.admin.group import GroupListView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -52,12 +52,12 @@ class GroupContextMenu(ContextMenu2):
                     "on_click": self.delete_button_click,
                 },
                 {
-                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE_OUTLINED,
+                    "icon": Symbols.DRIVE_FILE_RENAME_OUTLINE,
                     "content": _("Rename"),
                     "on_click": self.rename_button_click,
                 },
                 {
-                    "icon": Symbols.SETTINGS_OUTLINED,
+                    "icon": Symbols.SETTINGS,
                     "content": _("Set Permissions"),
                     "on_click": self.settings_button_click,
                 },

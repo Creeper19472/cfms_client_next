@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional
 import flet as ft
+from flet_material_symbols import Symbols
 
 if TYPE_CHECKING:
     from include.ui.controls.components.rulemanager import VisualRuleEditor
@@ -14,7 +15,6 @@ from include.ui.controls.components.visualmgr.bars import (
     EntryListTileControlBar,
     SubRuleGroupControlBar,
 )
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -594,22 +594,22 @@ class VisualRuleEditorNavigationRail(ft.NavigationRail):
             group_alignment=0.0,
             destinations=[
                 ft.NavigationRailDestination(
-                    icon=Symbols.PAGEVIEW_OUTLINED,
+                    icon=Symbols.PAGEVIEW,
                     selected_icon=Symbols.PAGEVIEW,
                     label=_("Read"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=ft.Icon(Symbols.EDIT_OUTLINED),
+                    icon=ft.Icon(Symbols.EDIT),
                     selected_icon=ft.Icon(Symbols.EDIT),
                     label=_("Write"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=Symbols.DRIVE_FILE_MOVE_OUTLINED,
+                    icon=Symbols.DRIVE_FILE_MOVE,
                     selected_icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                     label=_("Move"),
                 ),
                 ft.NavigationRailDestination(
-                    icon=Symbols.MANAGE_ACCOUNTS_OUTLINED,
+                    icon=Symbols.MANAGE_ACCOUNTS,
                     selected_icon=ft.Icon(Symbols.MANAGE_ACCOUNTS),
                     label=_("Manage"),
                 ),

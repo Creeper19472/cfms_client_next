@@ -1,6 +1,7 @@
 import os
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.constants import FLET_APP_STORAGE_DATA
@@ -9,7 +10,6 @@ from include.ui.util.notifications import send_error
 from include.util.hash import get_server_hash, get_username_hash
 from include.util.locale import get_translation
 import include.ui.constants as const
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -211,7 +211,7 @@ class LoginForm(ft.Container):
         )
 
         self.login_button = ft.IconButton(
-            icon=Symbols.LOGIN_OUTLINED,
+            icon=Symbols.LOGIN,
             on_click=self.request_login,
             tooltip=_("Login"),
         )

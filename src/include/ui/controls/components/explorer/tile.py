@@ -2,11 +2,12 @@ from datetime import datetime
 from typing import Optional, Callable
 
 import flet as ft
+from flet_material_symbols import Symbols
+
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.classes.shared import AppShared
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
-from flet_material_symbols import Symbols
 
 
 t = get_translation()
@@ -48,13 +49,11 @@ class FileTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(
-                Symbols.STAR_BORDER_OUTLINED if not starred else Symbols.STAR_OUTLINED
-            ),
+            icon=(Symbols.STAR_BORDER if not starred else Symbols.STAR),
             on_click=self.on_star_click,
             visible=starred,
         )
-        
+
         # Checkbox for selection mode
         self.checkbox = ft.Checkbox(
             value=is_selected,
@@ -94,17 +93,19 @@ class FileTile(ft.ListTile):
             subtitle=ft.Text(subtitle_text) if subtitle_text else None,
             trailing=self.star_button,
             is_three_line=is_three_line,
-            on_click=on_click if not selection_mode else self.on_tile_click_selection_mode,
+            on_click=(
+                on_click if not selection_mode else self.on_tile_click_selection_mode
+            ),
             align=ft.Alignment.CENTER,
             ref=ref,
         )
-    
+
     async def on_checkbox_change(self, event: ft.Event[ft.Checkbox]):
         """Handle checkbox state change."""
         self.is_selected = bool(event.control.value)
         if self.on_selection_changed:
             self.on_selection_changed(self.file_id, self.is_selected)
-    
+
     async def on_tile_click_selection_mode(self, event: ft.Event[ft.ListTile]):
         """Handle tile click in selection mode - toggle checkbox."""
         self.checkbox.value = not self.checkbox.value
@@ -144,9 +145,9 @@ class FileTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = Symbols.STAR_OUTLINED
+            self.star_button.icon = Symbols.STAR
         else:
-            self.star_button.icon = Symbols.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER
         self.update()
 
 
@@ -174,13 +175,11 @@ class DirectoryTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(
-                Symbols.STAR_BORDER_OUTLINED if not starred else Symbols.STAR_OUTLINED
-            ),
+            icon=(Symbols.STAR_BORDER if not starred else Symbols.STAR),
             on_click=self.on_star_click,
             visible=starred,
         )
-        
+
         # Checkbox for selection mode
         self.checkbox = ft.Checkbox(
             value=is_selected,
@@ -212,17 +211,19 @@ class DirectoryTile(ft.ListTile):
             title=dir_name,
             subtitle=ft.Text(subtitle_text) if subtitle_text else None,
             trailing=self.star_button,
-            on_click=on_click if not selection_mode else self.on_tile_click_selection_mode,
+            on_click=(
+                on_click if not selection_mode else self.on_tile_click_selection_mode
+            ),
             align=ft.Alignment.CENTER,
             ref=ref,
         )
-    
+
     async def on_checkbox_change(self, event: ft.Event[ft.Checkbox]):
         """Handle checkbox state change."""
         self.is_selected = bool(event.control.value)
         if self.on_selection_changed:
             self.on_selection_changed(self.directory_id, self.is_selected)
-    
+
     async def on_tile_click_selection_mode(self, event: ft.Event[ft.ListTile]):
         """Handle tile click in selection mode - toggle checkbox."""
         self.checkbox.value = not self.checkbox.value
@@ -264,7 +265,7 @@ class DirectoryTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = Symbols.STAR_OUTLINED
+            self.star_button.icon = Symbols.STAR
         else:
-            self.star_button.icon = Symbols.STAR_BORDER_OUTLINED
+            self.star_button.icon = Symbols.STAR_BORDER
         self.update()

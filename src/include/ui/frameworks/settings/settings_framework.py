@@ -57,13 +57,13 @@ from typing import (
 )
 
 import flet as ft
+from flet_material_symbols import Symbols
 from flet_model import Model, Router
 
 from include.classes.shared import AppShared
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -620,7 +620,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             title=ft.Text(type(self).settings_name),
             leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
             actions=[
-                ft.IconButton(Symbols.SAVE_OUTLINED, on_click=self._save_button_click)
+                ft.IconButton(Symbols.SAVE, on_click=self._save_button_click)
             ],
             actions_padding=10,
         )

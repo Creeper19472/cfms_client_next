@@ -3,6 +3,7 @@ import asyncio
 from datetime import datetime
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.management import (
@@ -22,7 +23,6 @@ if TYPE_CHECKING:
     from include.ui.controls.views.admin.account import ManageAccountsView
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -459,17 +459,17 @@ class BlockUserDialog(AlertDialog):
                 ft.Segment(
                     value="read",
                     label=ft.Text(_("Read")),
-                    icon=ft.Icon(Symbols.VISIBILITY_OUTLINED),
+                    icon=ft.Icon(Symbols.VISIBILITY),
                 ),
                 ft.Segment(
                     value="write",
                     label=ft.Text(_("Write")),
-                    icon=ft.Icon(Symbols.EDIT_OUTLINED),
+                    icon=ft.Icon(Symbols.EDIT),
                 ),
                 ft.Segment(
                     value="move",
                     label=ft.Text(_("Move")),
-                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE_OUTLINED),
+                    icon=ft.Icon(Symbols.DRIVE_FILE_MOVE),
                 ),
             ],
         )
@@ -491,7 +491,7 @@ class BlockUserDialog(AlertDialog):
         )
         self.browse_target_button = ft.TextButton(
             _("Browse..."),
-            icon=Symbols.FOLDER_OPEN_OUTLINED,
+            icon=Symbols.FOLDER_OPEN,
             on_click=self.browse_target_click,
             visible=False,
         )

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.explorer import (
@@ -14,7 +15,6 @@ from include.ui.controls.components.rulemanager import RuleManager
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -154,7 +154,7 @@ class ExplorerTopBar(ft.Row):
         )
 
         self.root_permissions_button = ft.IconButton(
-            Symbols.ADMIN_PANEL_SETTINGS_OUTLINED,
+            Symbols.ADMIN_PANEL_SETTINGS,
             on_click=self.on_set_root_permissions_click,
             tooltip=_("Set root directory permissions"),
             visible=False,
@@ -168,11 +168,11 @@ class ExplorerTopBar(ft.Row):
                             Symbols.ADD, on_click=self.on_upload_button_click
                         ),
                         ft.IconButton(
-                            Symbols.DRIVE_FOLDER_UPLOAD_OUTLINED,
+                            Symbols.DRIVE_FOLDER_UPLOAD,
                             on_click=self.on_upload_directory_button_click,
                         ),
                         ft.IconButton(
-                            Symbols.CREATE_NEW_FOLDER_OUTLINED,
+                            Symbols.CREATE_NEW_FOLDER,
                             on_click=self.on_create_directory_button_click,
                         ),
                         ft.IconButton(
@@ -193,7 +193,7 @@ class ExplorerTopBar(ft.Row):
                     controls=[
                         self.root_permissions_button,
                         ft.IconButton(
-                            Symbols.FOLDER_OPEN_OUTLINED,
+                            Symbols.FOLDER_OPEN,
                             on_click=self.on_open_folder_button_click,
                         ),
                     ],
