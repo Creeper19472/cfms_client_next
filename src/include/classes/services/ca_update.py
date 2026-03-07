@@ -114,15 +114,27 @@ class CACertUpdateService(BaseService):
         90-day window even if the application is restarted frequently.
 
         When ``last_updated`` is ``None`` (no check has ever been recorded
-        via :meth:`update_now`) the scheduled run is also skipped — the
+        in memory) the method re-reads the persisted timestamp from disk.
+        This handles the first-launch case where the init wizard calls
+        :func:`~include.util.ca_update.build_initial_manifest` *after* the
+        service has already started (so ``on_start`` found no timestamp).
+        If no timestamp is found on disk either, the run is skipped — the
         first-time setup wizard takes care of prompting the user.
         """
         if self.last_updated is None:
-            self.logger.debug(
-                "CA cert check: no prior check recorded; "
-                "waiting for user-initiated update or next 90-day window."
-            )
-            return
+            persisted = load_last_check_time(_CA_DIR)
+            if persisted is not None:
+                self.last_updated = persisted
+                self.logger.debug(
+                    "CA cert check: re-read last-check timestamp from disk: %s",
+                    time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(persisted)),
+                )
+            else:
+                self.logger.debug(
+                    "CA cert check: no prior check recorded; "
+                    "waiting for user-initiated update or next 90-day window."
+                )
+                return
 
         elapsed = time.time() - self.last_updated
         if elapsed < self.interval:
