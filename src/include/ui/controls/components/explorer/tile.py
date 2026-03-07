@@ -49,7 +49,7 @@ class FileTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(Symbols.STAR_BORDER if not starred else Symbols.STAR),
+            icon=(Symbols.STAR_BORDER if not starred else ft.Icon(Symbols.STAR, fill=1)),
             on_click=self.on_star_click,
             visible=starred,
         )
@@ -85,7 +85,7 @@ class FileTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(Symbols.FILE_COPY)
+            leading_control = ft.Icon(Symbols.DESCRIPTION, fill=1)
 
         super().__init__(
             leading=leading_control,
@@ -145,7 +145,7 @@ class FileTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = Symbols.STAR
+            self.star_button.icon = ft.Icon(Symbols.STAR, fill=1)
         else:
             self.star_button.icon = Symbols.STAR_BORDER
         self.update()
@@ -175,7 +175,7 @@ class DirectoryTile(ft.ListTile):
         self.on_selection_changed = on_selection_changed
 
         self.star_button = ft.IconButton(
-            icon=(Symbols.STAR_BORDER if not starred else Symbols.STAR),
+            icon=(Symbols.STAR_BORDER if not starred else ft.Icon(Symbols.STAR, fill=1)),
             on_click=self.on_star_click,
             visible=starred,
         )
@@ -204,7 +204,7 @@ class DirectoryTile(ft.ListTile):
         if selection_mode:
             leading_control = self.checkbox
         else:
-            leading_control = ft.Icon(Symbols.FOLDER)
+            leading_control = ft.Icon(Symbols.FOLDER, fill=1)
 
         super().__init__(
             leading=leading_control,
@@ -265,7 +265,7 @@ class DirectoryTile(ft.ListTile):
 
     def update_state(self):
         if self.starred:
-            self.star_button.icon = Symbols.STAR
+            self.star_button.icon = ft.Icon(Symbols.STAR, fill=1)
         else:
             self.star_button.icon = Symbols.STAR_BORDER
         self.update()

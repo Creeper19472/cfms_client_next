@@ -71,7 +71,7 @@ class SubRuleGroupEditEntriesArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "any",
                     _("Any"),
-                    leading_icon=Symbols.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),
@@ -157,7 +157,7 @@ class SubRuleGroupEditArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "any",
                     _("Any (OR)"),
-                    leading_icon=Symbols.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),
@@ -385,7 +385,7 @@ class SubRuleGroupCollectionArea(ft.ExpansionTile):
                 ft.DropdownOption(
                     "any",
                     _("Any (OR)"),
-                    leading_icon=Symbols.FILE_COPY,
+                    leading_icon=ft.Icon(Symbols.DESCRIPTION, fill=1),
                 ),
             ],
             label=_("Match Mode"),

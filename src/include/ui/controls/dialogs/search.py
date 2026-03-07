@@ -43,7 +43,7 @@ class SearchResultDirectoryTile(ft.ListTile):
         )
 
         super().__init__(
-            leading=ft.Icon(Symbols.FOLDER),
+            leading=ft.Icon(Symbols.FOLDER, fill=1),
             title=ft.Text(directory_name),
             subtitle=ft.Text(subtitle_text),
             on_click=self.handle_click,

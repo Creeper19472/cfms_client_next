@@ -193,7 +193,7 @@ class ExplorerTopBar(ft.Row):
                     controls=[
                         self.root_permissions_button,
                         ft.IconButton(
-                            Symbols.FOLDER_OPEN,
+                            Symbols.FOLDER_EYE,
                             on_click=self.on_open_folder_button_click,
                         ),
                     ],

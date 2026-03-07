@@ -41,7 +41,7 @@ class AvatarSettingsDialog(AlertDialog):
         self.browse_button = ft.Button(
             _("Browse Documents"),
             on_click=self.browse_documents_click,
-            icon=Symbols.FOLDER_OPEN,
+            icon=Symbols.FOLDER_EYE,
         )
 
         # Document ID input field

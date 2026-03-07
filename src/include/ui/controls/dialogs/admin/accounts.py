@@ -491,7 +491,7 @@ class BlockUserDialog(AlertDialog):
         )
         self.browse_target_button = ft.TextButton(
             _("Browse..."),
-            icon=Symbols.FOLDER_OPEN,
+            icon=Symbols.FOLDER_EYE,
             on_click=self.browse_target_click,
             visible=False,
         )

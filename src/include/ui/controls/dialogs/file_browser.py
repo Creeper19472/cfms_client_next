@@ -398,7 +398,7 @@ class FileBrowserDialog(AlertDialog):
                         continue
 
                     dir_tile = ft.ListTile(
-                        leading=ft.Icon(Symbols.FOLDER, color=ft.Colors.BLUE_400),
+                        leading=ft.Icon(Symbols.FOLDER, color=ft.Colors.BLUE_400, fill=1),
                         title=ft.Text(dir_name),
                         on_click=lambda e, d_id=dir_id, d_name=dir_name: asyncio.create_task(
                             self.navigate_to_directory(d_id, d_name)
