@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.ui.enum import SortMode, SortOrder
 from include.controllers.base import Controller
 
 if TYPE_CHECKING:
     from include.ui.controls.components.explorer.bar import FileSortBar
-from flet_material_symbols import Symbols
 
 
 class FileSortBarController(Controller["FileSortBar"]):
