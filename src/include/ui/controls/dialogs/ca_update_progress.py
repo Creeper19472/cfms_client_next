@@ -139,7 +139,7 @@ class CACertUpdateProgressDialog(AlertDialog):
             return
         # Complete all steps between current and new
         for i in range(self._current_step + 1, idx):
-            self._step_icons[i].icon = Symbols.CHECK_CIRCLE_OUTLINE
+            self._step_icons[i].icon = Symbols.RADIO_BUTTON_CHECKED
             self._step_icons[i].color = ft.Colors.GREEN_400
             self._step_texts[i].color = ft.Colors.ON_SURFACE
         # Activate the new step

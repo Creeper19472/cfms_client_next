@@ -620,7 +620,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             title=ft.Text(type(self).settings_name),
             leading=ft.IconButton(icon=Symbols.ARROW_BACK, on_click=self._go_back),
             actions=[
-                ft.IconButton(Symbols.SAVE, on_click=self._save_button_click)
+                ft.IconButton(
+                    ft.Icon(Symbols.SAVE, fill=1), on_click=self._save_button_click
+                )
             ],
             actions_padding=10,
         )
@@ -640,7 +642,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
 
     def _collect_fields(
         self,
-    ) -> list[tuple[str, "SettingsField | SectionHeader | Separator | HelpText", type | None]]:
+    ) -> list[
+        tuple[str, "SettingsField | SectionHeader | Separator | HelpText", type | None]
+    ]:
         """Return items in declaration order.
 
         Each element is a triple ``(attr_name, item, python_type)`` where
@@ -664,7 +668,9 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             hints = {}
 
         result: list[
-            tuple[str, SettingsField | SectionHeader | Separator | HelpText, type | None]
+            tuple[
+                str, SettingsField | SectionHeader | Separator | HelpText, type | None
+            ]
         ] = []
         # cls.__annotations__ preserves declaration order (Python 3.7+) and
         # only contains annotations defined directly on cls (not inherited ones).
@@ -711,9 +717,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                                 "e.g. SettingsField[bool] or SettingsField[str]."
                             )
                         field_type: type = args[0]
-                    elif isinstance(hint, type) and not issubclass(
-                        hint, SettingsField
-                    ):
+                    elif isinstance(hint, type) and not issubclass(hint, SettingsField):
                         # Legacy bare annotation e.g.
                         # `name: str = SettingsField(...)`
                         # The `issubclass` guard prevents using the bare

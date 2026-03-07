@@ -32,7 +32,7 @@ class TwoFactorSettingsModel(DeclarativeActionPage):
     # Overview metadata
     settings_name = _("Two-Factor Authentication")
     settings_description = _("Manage two-factor authentication settings")
-    settings_icon = Symbols.LOCK
+    settings_icon = Symbols.SIGNATURE
     settings_route_suffix = "twofa_settings"
 
     def __init__(self, page: ft.Page, router: Router):

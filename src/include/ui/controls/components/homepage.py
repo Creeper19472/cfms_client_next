@@ -130,7 +130,7 @@ class WelcomeInfoCard(ft.Card):
             content=ft.Column(
                 [
                     ft.ListTile(
-                        leading=ft.Icon(Symbols.ACCESS_TIME_FILLED),
+                        leading=ft.Icon(Symbols.GUARDIAN),
                         title=ft.Text(
                             _(
                                 "Welcome to Confidential Document Management System (CFMS)"
