@@ -53,6 +53,7 @@ class AppShared:
         get_not_none_attribute(name): Retrieves an attribute value, asserting it is not None.
         _init_preferences(): Initializes the preferences file with default values.
         dump_preferences(): Saves the current preferences to disk.
+        clear_user_state(): Clears all user authentication and session state (for logout).
     """
 
     _instance = None
@@ -169,3 +170,23 @@ class AppShared:
         if self.username is not None and self.user_perference is not None:
             from include.util.userpref import save_user_preference
             save_user_preference(self.username, self.user_perference)
+
+    def clear_user_state(self) -> None:
+        """Clear all user-specific authentication and session state.
+
+        Call this when logging out.  Server connection and server
+        configuration are intentionally preserved so the login screen can
+        reuse the existing connection.
+        """
+        self.username = None
+        self.token = None
+        self.token_exp = None
+        self.nickname = None
+        self.avatar_id = None
+        self.avatar_path = None
+        self.user_permissions = []
+        self.user_groups = []
+        self.user_2fa_enabled = False
+        self.pending_2fa_verification = False
+        self.user_perference = None
+        self.dek = None

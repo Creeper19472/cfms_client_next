@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import flet as ft
 from flet_material_symbols import Symbols
 
+from include.classes.services.download import DownloadManagerService
 from include.classes.shared import AppShared
 from include.ui.controls.components.account import AccountBadge
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
@@ -52,6 +53,11 @@ class MoreView(ft.Container):
                             title=ft.Text(_("About")),
                             on_click=self.about_listtile_click,
                         ),
+                        ft.ListTile(
+                            leading=ft.Icon(Symbols.LOGOUT),
+                            title=ft.Text(_("Logout")),
+                            on_click=self.logout_listtile_click,
+                        ),
                     ]
                 ),
             ],
@@ -71,3 +77,23 @@ class MoreView(ft.Container):
     async def about_listtile_click(self, event: ft.Event[ft.ListTile]):
         assert type(self.page) == ft.Page
         await self.page.push_route("/home/about")
+
+    async def logout_listtile_click(self, event: ft.Event[ft.ListTile]):
+        assert type(self.page) == ft.Page
+
+        # Save tasks for the current user before clearing session state.
+        if self.app_shared.service_manager:
+            download_service = self.app_shared.service_manager.get_service(
+                "download_manager", DownloadManagerService
+            )
+            if download_service:
+                await download_service._save_tasks()
+
+        # Persist application and user preferences.
+        self.app_shared.dump_preferences()
+
+        # Wipe all user-specific state (token, permissions, DEK, etc.).
+        self.app_shared.clear_user_state()
+
+        # Return to the login screen, reusing the existing server connection.
+        await self.page.push_route("/login")

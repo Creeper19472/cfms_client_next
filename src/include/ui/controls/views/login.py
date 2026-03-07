@@ -248,6 +248,7 @@ class LoginForm(ft.Container):
         self.parent_view.welcome_text.value = (
             f"{self.server_info.get('server_name', 'CFMS Server')}"
         )
+        self.clear_fields()
 
     def disable_interactions(self):
         self.login_button.visible = False
