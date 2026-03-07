@@ -89,9 +89,8 @@ class DebuggingViewModel(Model):
     async def back_button_click(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
 
-    def did_mount(self) -> None:
-        super().did_mount()
-        console_log_path = ft.StoragePaths().get_console_log_filename()
+    async def _load_dynamic_info(self) -> None:
+        console_log_path = await ft.StoragePaths().get_console_log_filename()
         self.console_log_alt_text.value = _("Alternative console.log path: ") + (
             console_log_path if console_log_path else _("(Not Set)")
         )
@@ -108,3 +107,7 @@ class DebuggingViewModel(Model):
             else _("Logfile not found.")
         )
         self.update()
+
+    def did_mount(self) -> None:
+        super().did_mount()
+        self.page.run_task(self._load_dynamic_info)
