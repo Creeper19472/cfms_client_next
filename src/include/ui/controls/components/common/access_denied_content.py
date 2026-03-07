@@ -8,9 +8,9 @@ in different contexts (dialogs, views, etc.). It supports both compact and full-
 from typing import Callable, Optional
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
