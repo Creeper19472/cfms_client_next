@@ -24,7 +24,7 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Connect")
     settings_description = _("Change application proxy settings")
-    settings_icon = Symbols.LINK
+    settings_icon = Symbols.LINK_2
     settings_route_suffix = "conn_settings"
 
     # ---------------------------------------------------------------------------

@@ -22,7 +22,7 @@ class LanguageSettingsModel(DeclarativeSettingsPage):
     # Overview metadata
     settings_name = _("Language")
     settings_description = _("Select your preferred language")
-    settings_icon = Symbols.LANGUAGE
+    settings_icon = Symbols.TRANSLATE
     settings_route_suffix = "language_settings"
 
     # ---------------------------------------------------------------------------
