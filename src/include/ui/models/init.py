@@ -196,13 +196,13 @@ class AppInitModel(Model):
             self.progress_bar.value = (idx + 1) / total
             self.update()
             # Brief pause so the user can see each step complete
-            await asyncio.sleep(3.05)
+            await asyncio.sleep(0.05)
 
         # All done — update label
         self.current_step_text.value = _("Setup complete.")
         self.update()
 
-        await asyncio.sleep(3.3)
+        await asyncio.sleep(0.3)
 
         # Navigate to the main connect screen
         await self.page.push_route("/connect")
