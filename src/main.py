@@ -11,11 +11,14 @@ import warnings
 import flet as ft
 import flet_permission_handler as fph
 
-from include.constants import RUNTIME_PATH, ROOT_PATH
+from include.constants import LOGFILE_PATH, RUNTIME_PATH, ROOT_PATH
 from include.classes.shared import AppShared
 from include.classes.services.manager import ServiceManager
 from include.classes.services.autoupdate import AutoUpdateService
-from include.classes.services.ca_update import CACertUpdateService, DEFAULT_INTERVAL as _CA_CHECK_INTERVAL
+from include.classes.services.ca_update import (
+    CACertUpdateService,
+    DEFAULT_INTERVAL as _CA_CHECK_INTERVAL,
+)
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
@@ -30,7 +33,7 @@ import logging
 logging.basicConfig(
     level=logging.DEBUG,
     format="[%(asctime)s %(levelname)s] | %(name)s | %(message)s",
-    filename="cfms_client.log",
+    filename=LOGFILE_PATH,
     filemode="w",
     # datefmt="%Y-%m-%d %H:%M:%S",
 )

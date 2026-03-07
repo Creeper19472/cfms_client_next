@@ -13,6 +13,7 @@ from include.constants import (
     FLET_APP_CONSOLE,
     FLET_APP_STORAGE_TEMP,
     FLET_APP_STORAGE_DATA,
+    LOGFILE_PATH,
 )
 from include.util.locale import get_translation
 
@@ -40,6 +41,15 @@ class DebuggingViewModel(Model):
         )
         self.scroll = ft.ScrollMode.AUTO
 
+        self.log_textfield = ft.TextField(
+            multiline=True,
+            read_only=True,
+            expand=True,
+            expand_loose=True,
+            min_lines=5,
+            max_lines=15,
+        )
+
         self.controls = [
             ft.Text(_("General Information"), size=16, weight=ft.FontWeight.BOLD),
             ft.Text(
@@ -58,13 +68,34 @@ class DebuggingViewModel(Model):
             ft.Text(_("Environment Variables"), size=16, weight=ft.FontWeight.BOLD),
             ft.Text(f"CONSTANT_FILE_ABSPATH: {CONSTANT_FILE_ABSPATH}"),
             ft.Text(f"ROOT_PATH: {ROOT_PATH}"),
-            ft.Text(f"LOCALE_PATH: {LOCALE_PATH}"),
             ft.Text(f"RUNTIME_PATH: {RUNTIME_PATH or '(Not Set)'}"),
+            ft.Text(f"LOCALE_PATH: {LOCALE_PATH}"),
+            ft.Text(f"LOGFILE_PATH: {LOGFILE_PATH}"),
             ft.Text(f"FLET_APP_CONSOLE: {FLET_APP_CONSOLE or '(Not Set)'}"),
+            ft.Text(_("Alternative console.log path: ")),  # TBD
             ft.Text(f"FLET_APP_STORAGE_TEMP: {FLET_APP_STORAGE_TEMP}"),
             ft.Text(f"FLET_APP_STORAGE_DATA: {FLET_APP_STORAGE_DATA}"),
             ft.Text(f"FLET_ASSETS_DIR: {FLET_ASSETS_DIR or '(Not Set)'}"),
+            ft.Divider(),
+            ft.Text(_("Logs"), size=16, weight=ft.FontWeight.BOLD),
+            ft.Text(
+                _("LOGFILE exists: ") + (_("Yes") if LOGFILE_PATH.exists() else _("No"))
+            ),
+            ft.Text(_("The last 10 lines of the logfile:")),
+            self.log_textfield,
         ]
 
     async def back_button_click(self, event: ft.Event[ft.IconButton]):
         await self.page.push_route(get_parent_route(self.page.route))
+
+    def did_mount(self) -> None:
+        super().did_mount()
+        self.log_textfield.value = (
+            "\n".join(
+                LOGFILE_PATH.read_text(encoding="utf-8", errors="ignore").split("\n")[
+                    -10:
+                ]
+            )
+            if LOGFILE_PATH.exists()
+            else _("Logfile not found.")
+        )

@@ -23,7 +23,8 @@ __all__ = [
 # Path Configuration
 CONSTANT_FILE_ABSPATH = os.path.abspath(__file__)
 ROOT_PATH = Path(CONSTANT_FILE_ABSPATH).resolve().parent.parent
-LOCALE_PATH = f"{ROOT_PATH}/include/ui/locale"
+LOGFILE_PATH = ROOT_PATH / "cfms_client.log"
+LOCALE_PATH = ROOT_PATH / "include" / "ui" / "locale"
 RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
 FLET_APP_CONSOLE = os.environ.get("FLET_APP_CONSOLE", "")
 FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
