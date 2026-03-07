@@ -23,13 +23,13 @@ __all__ = [
 # Path Configuration
 CONSTANT_FILE_ABSPATH = os.path.abspath(__file__)
 ROOT_PATH = Path(CONSTANT_FILE_ABSPATH).resolve().parent.parent
-LOGFILE_PATH = ROOT_PATH / "cfms_client.log"
 LOCALE_PATH = ROOT_PATH / "include" / "ui" / "locale"
 RUNTIME_PATH = os.environ.get("PYTHONHOME", "")
 FLET_APP_CONSOLE = os.environ.get("FLET_APP_CONSOLE", "")
 FLET_APP_STORAGE_TEMP = os.environ.get("FLET_APP_STORAGE_TEMP", ".")
 FLET_APP_STORAGE_DATA = os.environ.get("FLET_APP_STORAGE_DATA", ".")
 FLET_ASSETS_DIR = os.environ.get("FLET_ASSETS_DIR", None)
+LOGFILE_PATH = Path(FLET_APP_STORAGE_TEMP) / "cfms_client.log"
 USER_PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/user_preferences"
 
 # Application Info
