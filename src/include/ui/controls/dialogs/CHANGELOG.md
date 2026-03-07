@@ -3,6 +3,34 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.9.0
+**Released on:** 2026-03-07
+
+**Title:** Minor Release
+
+This version includes several optimizations and fixes for issues discovered 
+in previous versions.
+
+## Added
+- Added certificate store update functionality that supports both periodic and 
+manual updates, along with a new initialization interface.
+- (Technical) Added several new framework controls for creating section titles 
+and descriptive text.
+
+## Improved
+- Introduced Material Symbols and updated icon displays throughout the app 
+accordingly.
+- (Technical) Refactored all applicable settings interfaces to use declarative 
+patterns.
+- (Technical) Optimized the settings framework implementation.
+- (Technical) Enhanced the `get_service` method with generic overloads for 
+better type annotation support.
+
+## Fixed
+- Fixed inconsistent placeholder icon sizes on the login screen.
+- Fixed case sensitivity issue in the server address hash generator.
+
+---
 ## v0.8.0
 **Released on:** 2026-03-04
 
