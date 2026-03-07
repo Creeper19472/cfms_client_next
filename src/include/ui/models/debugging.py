@@ -50,6 +50,9 @@ class DebuggingViewModel(Model):
             max_lines=15,
         )
 
+        self.console_log_alt_text = ft.Text(_("Alternative console.log path: "))
+        self.logfile_exists_text = ft.Text(_("LOGFILE exists: "))
+
         self.controls = [
             ft.Text(_("General Information"), size=16, weight=ft.FontWeight.BOLD),
             ft.Text(
@@ -72,15 +75,13 @@ class DebuggingViewModel(Model):
             ft.Text(f"LOCALE_PATH: {LOCALE_PATH}"),
             ft.Text(f"LOGFILE_PATH: {LOGFILE_PATH}"),
             ft.Text(f"FLET_APP_CONSOLE: {FLET_APP_CONSOLE or '(Not Set)'}"),
-            ft.Text(_("Alternative console.log path: ")),  # TBD
+            self.console_log_alt_text,
             ft.Text(f"FLET_APP_STORAGE_TEMP: {FLET_APP_STORAGE_TEMP}"),
             ft.Text(f"FLET_APP_STORAGE_DATA: {FLET_APP_STORAGE_DATA}"),
             ft.Text(f"FLET_ASSETS_DIR: {FLET_ASSETS_DIR or '(Not Set)'}"),
             ft.Divider(),
             ft.Text(_("Logs"), size=16, weight=ft.FontWeight.BOLD),
-            ft.Text(
-                _("LOGFILE exists: ") + (_("Yes") if LOGFILE_PATH.exists() else _("No"))
-            ),
+            self.logfile_exists_text,
             ft.Text(_("The last 10 lines of the logfile:")),
             self.log_textfield,
         ]
@@ -90,6 +91,13 @@ class DebuggingViewModel(Model):
 
     def did_mount(self) -> None:
         super().did_mount()
+        console_log_path = ft.StoragePaths().get_console_log_filename()
+        self.console_log_alt_text.value = _("Alternative console.log path: ") + (
+            console_log_path if console_log_path else _("(Not Set)")
+        )
+        self.logfile_exists_text.value = (
+            _("LOGFILE exists: ") + (_("Yes") if LOGFILE_PATH.exists() else _("No"))
+        )
         self.log_textfield.value = (
             "\n".join(
                 LOGFILE_PATH.read_text(encoding="utf-8", errors="ignore").split("\n")[
@@ -99,3 +107,4 @@ class DebuggingViewModel(Model):
             if LOGFILE_PATH.exists()
             else _("Logfile not found.")
         )
+        self.update()
