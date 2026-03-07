@@ -33,8 +33,9 @@ class LoginView(ft.Row):
         self.avatar_preview = AvatarPreviewContainer()
 
         # Create login form
-        self.login_form = LoginForm(parent_view=self)
-        self.login_form.avatar_preview = self.avatar_preview
+        self.login_form = LoginForm(
+            parent_view=self, avatar_preview=self.avatar_preview
+        )
 
         # Create data loading view (hidden initially)
         self.data_loading_view = DataLoadingView(visible=False)
@@ -170,7 +171,7 @@ class LoginForm(ft.Container):
     def __init__(
         self,
         parent_view: "LoginView",
-        avatar_preview: "AvatarPreviewContainer | None" = None,
+        avatar_preview: "AvatarPreviewContainer",
         ref: ft.Ref | None = None,
         visible=True,
     ):
@@ -273,6 +274,7 @@ class LoginForm(ft.Container):
     def clear_fields(self):
         self.username_field.value = ""
         self.password_field.value = ""
+        self.avatar_preview.update_preview("")
         self.update()
 
     def send_error(self, message: str):
@@ -280,9 +282,8 @@ class LoginForm(ft.Container):
 
     def username_changed(self, e: ft.Event[ft.TextField]):
         """Update avatar preview when username changes."""
-        if self.avatar_preview:
-            username = self.username_field.value or ""
-            self.avatar_preview.update_preview(username)
+        username = self.username_field.value or ""
+        self.avatar_preview.update_preview(username)
 
     async def disconnect_button_click(self, event: ft.Event[ft.IconButton]):
         assert isinstance(self.page, ft.Page)
