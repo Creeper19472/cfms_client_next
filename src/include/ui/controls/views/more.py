@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 import flet as ft
 from flet_material_symbols import Symbols
 
-from include.classes.services.download import DownloadManagerService
 from include.classes.shared import AppShared
 from include.ui.controls.components.account import AccountBadge
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
@@ -81,18 +80,8 @@ class MoreView(ft.Container):
     async def logout_listtile_click(self, event: ft.Event[ft.ListTile]):
         assert type(self.page) == ft.Page
 
-        # Save tasks for the current user before clearing session state.
-        if self.app_shared.service_manager:
-            download_service = self.app_shared.service_manager.get_service(
-                "download_manager", DownloadManagerService
-            )
-            if download_service:
-                await download_service._save_tasks()
-
-        # Persist application and user preferences.
-        self.app_shared.dump_preferences()
-
-        # Wipe all user-specific state (token, permissions, DEK, etc.).
+        # Save tasks and persist preferences, then wipe user session state.
+        await self.app_shared.prepare_logout()
         self.app_shared.clear_user_state()
 
         # Return to the login screen, reusing the existing server connection.

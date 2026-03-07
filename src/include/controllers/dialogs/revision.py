@@ -82,7 +82,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                     download_service = None
                     if self.app_shared.service_manager:
                         download_service = self.app_shared.service_manager.get_service(
-                            "download_manager", DownloadManagerService
+                            DownloadManagerService.SERVICE_NAME, DownloadManagerService
                         )
 
                     if download_service:

@@ -64,6 +64,8 @@ class DownloadManagerService(BaseService):
         enable_persistence: Whether to save/load tasks across restarts
     """
 
+    SERVICE_NAME = "download_manager"
+
     def __init__(
         self,
         app_shared: AppShared,
@@ -83,7 +85,7 @@ class DownloadManagerService(BaseService):
             on_task_update: Optional callback when task state changes
         """
         super().__init__(
-            name="download_manager",
+            name=self.SERVICE_NAME,
             enabled=enabled,
             interval=1.0,  # Check queue every second
         )

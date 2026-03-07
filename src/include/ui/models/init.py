@@ -211,7 +211,7 @@ class AppInitModel(Model):
         service_manager = self.app_shared.service_manager
         if service_manager is not None:
             ca_service = service_manager.get_service(
-                "ca_cert_update", CACertUpdateService
+                CACertUpdateService.SERVICE_NAME, CACertUpdateService
             )
 
             async def _do_update(e: ft.Event) -> None:

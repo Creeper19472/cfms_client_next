@@ -123,7 +123,7 @@ async def batch_download_items(
     download_service = None
     if app_shared.service_manager:
         download_service = app_shared.service_manager.get_service(
-            "download_manager", DownloadManagerService
+            DownloadManagerService.SERVICE_NAME, DownloadManagerService
         )
 
     if not download_service:

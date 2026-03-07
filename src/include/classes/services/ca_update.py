@@ -57,13 +57,15 @@ class CACertUpdateService(BaseService):
             the most recent run, or ``None``.
     """
 
+    SERVICE_NAME = "ca_cert_update"
+
     def __init__(
         self,
         page: Optional[ft.Page] = None,
         enabled: bool = True,
         interval: float = DEFAULT_INTERVAL,
     ) -> None:
-        super().__init__(name="ca_cert_update", enabled=enabled, interval=interval)
+        super().__init__(name=self.SERVICE_NAME, enabled=enabled, interval=interval)
         self.page = page
         self.last_updated: Optional[float] = None
         self.last_result: Optional[CACertUpdateResult] = None

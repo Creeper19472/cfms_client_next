@@ -18,7 +18,7 @@ def _notify_favorites_changed(app_shared: AppShared) -> None:
     """Notify the FavoritesValidationService that the favorites list has changed."""
     if app_shared.service_manager:
         service = app_shared.service_manager.get_service(
-            "favorites_validation", FavoritesValidationService
+            FavoritesValidationService.SERVICE_NAME, FavoritesValidationService
         )
         if service:
             service.notify_favorites_changed()

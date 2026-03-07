@@ -84,16 +84,14 @@ class LoginFormController(Controller["LoginForm"]):
         """Complete the login process after authentication."""
         # Save current user's tasks before switching users
         # This prevents data loss when switching between users
+        if self.app_shared.username and self.app_shared.username != username:
+            await self.app_shared.save_current_user_tasks()
+
         download_service = None
         if self.app_shared.service_manager:
             download_service = self.app_shared.service_manager.get_service(
-                "download_manager", DownloadManagerService
+                DownloadManagerService.SERVICE_NAME, DownloadManagerService
             )
-
-        if self.app_shared.username and self.app_shared.username != username:
-            if download_service:
-                await download_service._save_tasks()
-
         self.app_shared.username = username
         self.app_shared.nickname = data.get("nickname")
         self.app_shared.token = data["token"]

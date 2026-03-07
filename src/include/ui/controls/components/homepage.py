@@ -76,7 +76,7 @@ class HomeNavigationBar(ft.NavigationBar):
         from include.classes.services.download import DownloadManagerService
 
         return self.app_shared.service_manager.get_service(
-            "download_manager", DownloadManagerService
+            DownloadManagerService.SERVICE_NAME, DownloadManagerService
         )
 
     def _on_task_count_changed(self, count: int):
@@ -201,7 +201,7 @@ class HomeFavoritesContainer(ft.Container):
         """Return the FavoritesValidationService instance, or None if unavailable."""
         if self.app_shared.service_manager:
             return self.app_shared.service_manager.get_service(
-                "favorites_validation", FavoritesValidationService
+                FavoritesValidationService.SERVICE_NAME, FavoritesValidationService
             )
         return None
 
