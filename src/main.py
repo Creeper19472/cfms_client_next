@@ -7,6 +7,7 @@ and sets up the UI components and page settings.
 
 import os
 import warnings
+import logging
 
 import flet as ft
 import flet_permission_handler as fph
@@ -28,15 +29,19 @@ from include.util.ca_update import manifest_exists
 DEFAULT_WINDOW_WIDTH = 1366
 DEFAULT_WINDOW_HEIGHT = 768
 
-import logging
+# There's a reason why the following steps are used to set up logging.
+#
+# `serious_python` configures a StreamHandler before any user code execution to enable
+# console output forwarding on Android, causing :meth:`logging.basicConfig()` to fail.
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(asctime)s %(levelname)s] | %(name)s | %(message)s",
-    filename=LOGFILE_PATH,
-    filemode="w",
-    # datefmt="%Y-%m-%d %H:%M:%S",
-)
+_formatter = logging.Formatter("[%(asctime)s %(levelname)s] | %(name)s | %(message)s")
+
+_file_handler = logging.FileHandler(LOGFILE_PATH, encoding="utf-8")
+_file_handler.setFormatter(_formatter)
+
+_root_logger = logging.getLogger()
+_root_logger.addHandler(_file_handler)
+_root_logger.setLevel(logging.DEBUG)
 
 
 async def main(page: ft.Page):

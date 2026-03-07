@@ -50,7 +50,6 @@ class DebuggingViewModel(Model):
             max_lines=15,
         )
 
-        self.console_log_alt_text = ft.Text(_("Alternative console.log path: "))
         self.logfile_exists_text = ft.Text(_("LOGFILE exists: "))
 
         self.controls = [
@@ -75,7 +74,6 @@ class DebuggingViewModel(Model):
             ft.Text(f"LOCALE_PATH: {LOCALE_PATH}"),
             ft.Text(f"LOGFILE_PATH: {LOGFILE_PATH}"),
             ft.Text(f"FLET_APP_CONSOLE: {FLET_APP_CONSOLE or '(Not Set)'}"),
-            self.console_log_alt_text,
             ft.Text(f"FLET_APP_STORAGE_TEMP: {FLET_APP_STORAGE_TEMP}"),
             ft.Text(f"FLET_APP_STORAGE_DATA: {FLET_APP_STORAGE_DATA}"),
             ft.Text(f"FLET_ASSETS_DIR: {FLET_ASSETS_DIR or '(Not Set)'}"),
@@ -90,10 +88,6 @@ class DebuggingViewModel(Model):
         await self.page.push_route(get_parent_route(self.page.route))
 
     async def _load_dynamic_info(self) -> None:
-        console_log_path = await ft.StoragePaths().get_console_log_filename()
-        self.console_log_alt_text.value = _("Alternative console.log path: ") + (
-            console_log_path if console_log_path else _("(Not Set)")
-        )
         self.logfile_exists_text.value = (
             _("LOGFILE exists: ") + (_("Yes") if LOGFILE_PATH.exists() else _("No"))
         )
