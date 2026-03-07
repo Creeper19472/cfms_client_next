@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.controllers.dialogs.avatar_settings import AvatarSettingsDialogController
 from include.ui.controls.dialogs.base import AlertDialog
@@ -10,7 +11,6 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.components.account import AccountBadge
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -115,14 +115,16 @@ class AvatarSettingsDialog(AlertDialog):
     async def browse_documents_click(self, event: ft.Event[ft.Button]):
         """Handle browse documents button click."""
         from include.ui.controls.dialogs.document_selector import DocumentSelectorDialog
-        
+
         # Create and show document selector dialog
         def on_document_selected(document_id: str, document_name: str):
             """Callback when user selects a document."""
             self.document_id_field.value = document_id
             self.document_id_field.update()
-        
-        selector_dialog = DocumentSelectorDialog(on_select_callback=on_document_selected)
+
+        selector_dialog = DocumentSelectorDialog(
+            on_select_callback=on_document_selected
+        )
         self.page.show_dialog(selector_dialog)
 
     async def set_avatar_click(

@@ -10,15 +10,15 @@ UI.
 import asyncio
 from typing import Any
 
-from flet_model import Model, Router, route
 import flet as ft
+from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 
 from include.classes.services.ca_update import CACertUpdateService
 from include.classes.shared import AppShared
 from include.constants import ROOT_PATH
 from include.util.ca_update import build_initial_manifest
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -210,7 +210,9 @@ class AppInitModel(Model):
         # Offer an immediate CA certificate check via SnackBar action
         service_manager = self.app_shared.service_manager
         if service_manager is not None:
-            ca_service = service_manager.get_service("ca_cert_update", CACertUpdateService)
+            ca_service = service_manager.get_service(
+                "ca_cert_update", CACertUpdateService
+            )
 
             async def _do_update(e: ft.Event) -> None:
                 if ca_service is None:

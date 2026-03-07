@@ -2,11 +2,11 @@ from collections.abc import Awaitable, Callable
 
 from flet_model import Model, Router, route
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings.settings_framework import get_settings_registry
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

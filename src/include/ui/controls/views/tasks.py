@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Optional
 import os
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
@@ -12,7 +13,6 @@ from include.ui.util.notifications import send_error
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

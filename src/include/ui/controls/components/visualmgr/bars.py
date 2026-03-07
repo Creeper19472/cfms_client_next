@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
@@ -7,7 +8,6 @@ if TYPE_CHECKING:
         SubRuleGroupCollectionArea,
         SubRuleGroupEditEntriesArea,
     )
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

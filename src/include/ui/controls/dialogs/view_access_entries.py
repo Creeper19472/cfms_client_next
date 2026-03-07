@@ -5,15 +5,17 @@ from typing import TYPE_CHECKING, Literal
 
 import flet as ft
 import flet_datatable2 as fdt
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
-from include.controllers.dialogs.view_access_entries import ViewAccessEntriesDialogController
+from include.controllers.dialogs.view_access_entries import (
+    ViewAccessEntriesDialogController,
+)
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -109,9 +111,7 @@ class ViewAccessEntriesDialog(AlertDialog):
         )
 
         # Close button
-        self.close_button = ft.TextButton(
-            _("Close"), on_click=self.close_button_click
-        )
+        self.close_button = ft.TextButton(_("Close"), on_click=self.close_button_click)
 
         # Build content layout
         self.content = ft.Column(
@@ -188,7 +188,7 @@ class ViewAccessEntriesDialog(AlertDialog):
                 )
             except (ValueError, OSError, KeyError):
                 start_time_str = _("Invalid date")
-            
+
             # Check for end_time properly (None check to handle timestamp 0)
             if entry.get("end_time") is not None:
                 try:

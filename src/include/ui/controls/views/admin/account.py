@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 import asyncio
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.controls.dialogs.admin.accounts import AddUserAccountDialog
@@ -9,7 +10,6 @@ from include.ui.util.notifications import send_error
 from include.ui.util.user_controls import update_user_controls
 from include.util.locale import get_translation
 from include.util.requests import do_request
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

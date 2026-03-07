@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.search import SearchDialogController
@@ -13,7 +14,6 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

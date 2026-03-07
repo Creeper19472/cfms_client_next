@@ -2,6 +2,7 @@ import copy
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.file_browser import FileBrowserDialog
 from include.ui.util.notifications import send_error, send_success
@@ -11,7 +12,6 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

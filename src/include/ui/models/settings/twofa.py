@@ -2,6 +2,7 @@
 
 from flet_model import Router, route
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.twofa_setup import TwoFactorSetupDialog
 from include.ui.controls.dialogs.password_confirm import PasswordConfirmDialog
@@ -10,7 +11,6 @@ from include.ui.frameworks.settings import DeclarativeActionPage, settings_page
 from include.ui.util.notifications import send_success, send_error
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

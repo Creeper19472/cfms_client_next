@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING, Optional
 
 import flet as ft
 import flet_datatable2 as fdt
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.ui.util.notifications import send_error
 from include.util.locale import get_translation
 from include.util.requests import do_request
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

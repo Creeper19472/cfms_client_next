@@ -3,7 +3,7 @@
 from typing import Literal
 
 from flet_model import route
-import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
@@ -11,7 +11,6 @@ from include.ui.frameworks.settings import (
     settings_page,
 )
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

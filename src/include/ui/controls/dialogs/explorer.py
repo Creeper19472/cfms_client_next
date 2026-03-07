@@ -4,6 +4,7 @@ from datetime import datetime
 import logging
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.directory import (
@@ -18,7 +19,6 @@ if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileManagerView
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -772,27 +772,27 @@ class DirectorySelectorDialog(FileBrowserDialog):
             ref=ref,
             visible=visible,
         )
-        
+
         # Store for compatibility
         self.file_listview = file_listview
         self.excluded_directory_ids = excluded_directory_ids or []
-        
+
         # Override callbacks to use base class selection mechanism
         async def wrapped_select_click(event):
             # Use base class selected_item_id
             self.selected_item_id = self.current_directory_id
             self.selection_event.set()
             self.close()
-        
+
         def wrapped_cancel_click(event):
             # Use base class selected_item_id
             self.selected_item_id = None
             self.selection_event.set()
             self.close()
-        
+
         self.select_here_button.on_click = wrapped_select_click
         self.cancel_button.on_click = wrapped_cancel_click
-    
+
     async def wait_for_selection(self) -> str | None:
         """Wait for the user to select a directory or cancel.
 

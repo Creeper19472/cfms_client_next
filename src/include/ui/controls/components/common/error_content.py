@@ -8,9 +8,9 @@ with retry and navigation options. It supports both compact and full-screen mode
 from typing import Callable
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -129,7 +129,7 @@ class ErrorContent(ft.Column):
 
         # Create action buttons if requested
         button_row_controls = []
-        
+
         if show_back_button and on_back_click:
             self.back_button = ft.Button(
                 content=_("Go Back"),
@@ -168,7 +168,9 @@ class ErrorContent(ft.Column):
         0: {
             "icon": Symbols.ERROR,
             "title": _("Connection Error"),
-            "description": _("Could not connect to the server or an unexpected error occurred."),
+            "description": _(
+                "Could not connect to the server or an unexpected error occurred."
+            ),
         },
         404: {
             "icon": Symbols.SEARCH_OFF,
@@ -232,7 +234,9 @@ class ErrorContent(ft.Column):
             if error_code == 0:
                 return _("Check your connection and try again.")
             elif error_code in (500, 502, 503):
-                return _("Please try again later or contact support if the problem persists.")
+                return _(
+                    "Please try again later or contact support if the problem persists."
+                )
             elif error_code == 404:
                 return _("The item may have been moved or deleted.")
             else:
@@ -273,17 +277,17 @@ class ErrorContent(ft.Column):
         """
         self.error_code = error_code
         self.error_message_value = error_message
-        
+
         # Update icon and title
         icon, title_text = self._get_icon_and_title(error_code)
         self.icon.icon = icon
         self.title_text.value = title_text
-        
+
         # Update message texts
         self.message_text.value = self._get_description(error_code)
         self.error_detail_text.value = error_message
         self.additional_info_text.value = self._get_additional_info(
             error_code, self.compact_mode
         )
-        
+
         self.update()

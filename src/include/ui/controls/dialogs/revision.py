@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from datetime import datetime
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.controllers.dialogs.revision import RevisionDialogController
@@ -12,7 +13,6 @@ from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.views.explorer import FileListView
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
@@ -91,7 +91,7 @@ class RevisionTile(ft.ListTile):
                 expand=True,
                 expand_loose=True,
                 spacing=5,
-                width=len(action_buttons)*40,
+                width=len(action_buttons) * 40,
                 alignment=ft.MainAxisAlignment.END,
             ),
             expand=True,
@@ -139,11 +139,7 @@ class RevisionDialog(AlertDialog):
 
         # Revisions list
         self.revisions_listview = ft.ListView(
-            controls=[],
-            spacing=5,
-            expand=True,
-            expand_loose=True,
-            width=800
+            controls=[], spacing=5, expand=True, expand_loose=True, width=800
         )
 
         # Progress indicator

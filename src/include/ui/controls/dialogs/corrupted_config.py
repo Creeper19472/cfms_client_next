@@ -1,13 +1,12 @@
 """Dialog shown when an encrypted local config file cannot be decrypted."""
 
 import asyncio
-from typing import Optional
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

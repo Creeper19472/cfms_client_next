@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 import flet as ft
+from flet_material_symbols import Symbols
 from include.util.locale import get_translation
 
 if TYPE_CHECKING:
     from include.ui.controls.components.visualmgr.editor import (
         VisualRuleEditorEditSection,
     )
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

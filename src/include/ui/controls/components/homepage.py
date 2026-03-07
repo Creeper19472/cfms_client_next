@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Union, cast
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.classes.shared import AppShared
 from include.classes.services.favorites_validation import FavoritesValidationService
@@ -8,12 +9,10 @@ from include.ui.controls.components.explorer.tile import DirectoryTile, FileTile
 from include.ui.util.notifications import send_error
 from include.ui.util.path import get_document
 
-
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

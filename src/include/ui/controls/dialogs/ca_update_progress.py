@@ -25,11 +25,11 @@ Usage::
 from typing import Callable
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.dialogs.base import AlertDialog
 from include.util.ca_update import CACertUpdateStages
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

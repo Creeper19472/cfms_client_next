@@ -2,9 +2,10 @@
 
 from typing import cast
 
-from flet_model import route
-import flet_permission_handler as fph
 import flet as ft
+import flet_permission_handler as fph
+from flet_model import route
+from flet_material_symbols import Symbols
 
 from include.classes.preferences import UserPreference
 from include.ui.controls.banners.settings import ExternalStorageWarningBanner
@@ -15,7 +16,6 @@ from include.ui.frameworks.settings import (
 )
 from include.util.locale import get_translation
 from include.util.userpref import save_user_preference
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

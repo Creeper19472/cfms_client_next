@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.controls.contextmenus.explorer import DirectoryContextMenu, FileContextMenu
 from include.ui.util.path import get_directory
 
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

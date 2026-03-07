@@ -2,6 +2,7 @@ import platform
 import flet as ft
 import flet.version
 from flet_model import Model, Router, route
+from flet_material_symbols import Symbols
 from include.ui.util.route import get_parent_route
 from include.constants import (
     FLET_ASSETS_DIR,
@@ -14,7 +15,6 @@ from include.constants import (
     FLET_APP_STORAGE_DATA,
 )
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext

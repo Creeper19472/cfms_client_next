@@ -5,6 +5,7 @@ import time
 
 from flet_model import Router, route
 import flet as ft
+from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
@@ -16,7 +17,6 @@ from include.ui.frameworks.settings import (
 )
 from include.ui.util.notifications import send_error, send_success
 from include.util.locale import get_translation
-from flet_material_symbols import Symbols
 
 t = get_translation()
 _ = t.gettext
