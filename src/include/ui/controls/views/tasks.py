@@ -581,7 +581,7 @@ class TasksView(ft.Container):
         # Get download service
         if self.app_shared.service_manager:
             self.download_service = self.app_shared.service_manager.get_service(
-                DownloadManagerService.SERVICE_NAME, DownloadManagerService
+                "download_manager", DownloadManagerService
             )
 
             # Set up task update callback

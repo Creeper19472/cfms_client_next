@@ -134,7 +134,7 @@ async def get_document(id: str | None, filename: str, page: ft.Page):
     download_service = None
     if _app_shared.service_manager:
         download_service = _app_shared.service_manager.get_service(
-            DownloadManagerService.SERVICE_NAME, DownloadManagerService
+            "download_manager", DownloadManagerService
         )
 
     if not download_service:

@@ -27,8 +27,6 @@ class FavoritesValidationService(BaseService):
         validation_in_progress: Flag indicating if validation is currently running
     """
 
-    SERVICE_NAME = "favorites_validation"
-
     def __init__(
         self,
         app_shared: AppShared,
@@ -45,7 +43,7 @@ class FavoritesValidationService(BaseService):
             check_on_mount: Whether to check on first mount (when user views homepage)
         """
         super().__init__(
-            name=self.SERVICE_NAME, enabled=enabled, interval=interval
+            name="favorites_validation", enabled=enabled, interval=interval
         )
         self.app_shared = app_shared
 

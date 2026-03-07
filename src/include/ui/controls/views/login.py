@@ -168,6 +168,8 @@ class DataLoadingView(ft.Container):
 
 
 class LoginForm(ft.Container):
+    _previous_server_address: "str | None" = None
+
     def __init__(
         self,
         parent_view: "LoginView",
@@ -249,7 +251,10 @@ class LoginForm(ft.Container):
         self.parent_view.welcome_text.value = (
             f"{self.server_info.get('server_name', 'CFMS Server')}"
         )
-        self.clear_fields()
+        current_address = self.app_shared.server_address
+        if LoginForm._previous_server_address != current_address:
+            self.clear_fields()
+            LoginForm._previous_server_address = current_address
 
     def disable_interactions(self):
         self.login_button.visible = False

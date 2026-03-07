@@ -54,8 +54,6 @@ class AppShared:
         _init_preferences(): Initializes the preferences file with default values.
         dump_preferences(): Saves the current preferences to disk.
         clear_user_state(): Clears all user authentication and session state (for logout).
-        save_current_user_tasks(): Saves the current user's download tasks to disk.
-        prepare_logout(): Saves tasks and preferences before clearing user state.
     """
 
     _instance = None
@@ -192,32 +190,3 @@ class AppShared:
         self.pending_2fa_verification = False
         self.user_perference = None
         self.dek = None
-
-    async def save_current_user_tasks(self) -> None:
-        """Save the current user's in-progress download tasks to disk.
-
-        This is a convenience wrapper around the download manager service's
-        persistence method.  It is safe to call even when no user is logged in
-        or when the service is not available — in those cases it does nothing.
-        """
-        if self.service_manager:
-            from include.classes.services.download import DownloadManagerService
-
-            download_service = self.service_manager.get_service(
-                DownloadManagerService.SERVICE_NAME, DownloadManagerService
-            )
-            if download_service:
-                await download_service._save_tasks()
-
-    async def prepare_logout(self) -> None:
-        """Persist state and save in-progress tasks before clearing user session.
-
-        Call this immediately before :meth:`clear_user_state` when logging out
-        or switching accounts.  It saves the current user's download tasks to
-        disk and flushes application and user preferences so nothing is lost.
-
-        This coroutine is separated from :meth:`clear_user_state` so that the
-        caller remains responsible for navigation after the state is cleared.
-        """
-        await self.save_current_user_tasks()
-        self.dump_preferences()

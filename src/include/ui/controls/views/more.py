@@ -80,9 +80,5 @@ class MoreView(ft.Container):
     async def logout_listtile_click(self, event: ft.Event[ft.ListTile]):
         assert type(self.page) == ft.Page
 
-        # Save tasks and persist preferences, then wipe user session state.
-        await self.app_shared.prepare_logout()
         self.app_shared.clear_user_state()
-
-        # Return to the login screen, reusing the existing server connection.
         await self.page.push_route("/login")

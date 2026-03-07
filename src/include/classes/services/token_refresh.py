@@ -27,8 +27,6 @@ class TokenRefreshService(BaseService):
         refresh_threshold: Seconds before expiration to trigger refresh
     """
 
-    SERVICE_NAME = "token_refresh"
-
     def __init__(
         self,
         enabled: bool = True,
@@ -43,7 +41,7 @@ class TokenRefreshService(BaseService):
             interval: Check interval in seconds (default: 60)
             refresh_threshold: Seconds before expiration to refresh (default: 300)
         """
-        super().__init__(name=self.SERVICE_NAME, enabled=enabled, interval=interval)
+        super().__init__(name="token_refresh", enabled=enabled, interval=interval)
         self.app_shared = AppShared()
         self.refresh_threshold = refresh_threshold
 

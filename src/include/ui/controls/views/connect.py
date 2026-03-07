@@ -141,7 +141,7 @@ class ConnectForm(ft.Container):
         # a dirty read while certificates are being written to disk.
         if self.app_shared.service_manager is not None:
             ca_service = self.app_shared.service_manager.get_service(
-                CACertUpdateService.SERVICE_NAME, CACertUpdateService
+                "ca_cert_update", CACertUpdateService
             )
             if ca_service is not None and ca_service.is_updating:
                 send_error(

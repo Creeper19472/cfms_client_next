@@ -122,7 +122,7 @@ class SafetySettingsModel(DeclarativeSettingsPage):
             return None
         from include.classes.services.ca_update import CACertUpdateService
 
-        return sm.get_service(CACertUpdateService.SERVICE_NAME, CACertUpdateService)
+        return sm.get_service("ca_cert_update", CACertUpdateService)
 
     def _ca_refresh_last_checked(self) -> None:
         """Update the last-checked label from the service state."""

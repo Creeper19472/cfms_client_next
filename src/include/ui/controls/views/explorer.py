@@ -255,7 +255,7 @@ class FileManagerView(ft.Container):
         """Return the FavoritesValidationService instance, or None if unavailable."""
         if self.app_shared.service_manager:
             return self.app_shared.service_manager.get_service(
-                FavoritesValidationService.SERVICE_NAME, FavoritesValidationService
+                "favorites_validation", FavoritesValidationService
             )
         return None
 
