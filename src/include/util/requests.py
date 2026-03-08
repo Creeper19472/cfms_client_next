@@ -174,7 +174,7 @@ async def _request(
         Dictionary response from server
     """
     
-    t1 = time.time()
+    t1 = time.perf_counter()
 
     request = {
         "action": action,
@@ -194,7 +194,7 @@ async def _request(
 
     loaded_response: dict[str, Any] = json.loads(response)
 
-    t2 = time.time()
+    t2 = time.perf_counter()
     
     _monitor_ref = AppShared().monitor_ref
     if _monitor_ref is not None and _monitor_ref.current is not None:

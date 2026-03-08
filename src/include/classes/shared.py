@@ -6,17 +6,18 @@ import hashlib
 from typing import Any, Optional, TYPE_CHECKING
 
 import yaml
-import flet as ft
+
 from flet_permission_handler import PermissionHandler
 from websockets.asyncio.client import ClientConnection
 
 from include.classes.preferences import UserPreference
 from include.constants import FLET_APP_STORAGE_DATA, DEFAULT_UPDATE_CHANNEL
-from include.ui.controls.components.common.monitor import MonitorStack
 
 if TYPE_CHECKING:
     from include.classes.services.manager import ServiceManager
     from include.ui.controls.buttons.upgrade import FloatingUpgradeButton
+    from include.ui.controls.components.common.monitor import MonitorStack
+    import flet as ft
 
 PREFERENCES_PATH = f"{FLET_APP_STORAGE_DATA}/preferences.yaml"
 
@@ -107,7 +108,7 @@ class AppShared:
         self.dek: Optional[bytes] = None
 
         # Control refs 
-        self.monitor_ref: Optional[ft.Ref[MonitorStack]] = None
+        self.monitor_ref: Optional["ft.Ref[MonitorStack]"] = None
 
         # Load preferences
         if not os.path.exists(PREFERENCES_PATH):
