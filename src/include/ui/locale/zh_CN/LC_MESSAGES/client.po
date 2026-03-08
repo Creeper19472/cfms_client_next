@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-07 23:40+0800\n"
+"POT-Creation-Date: 2026-03-08 13:00+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -711,6 +711,10 @@ msgid ""
 "An unexpected error occurred. Please try again. If the problem persists, "
 "contact your system administrator for assistance."
 msgstr "发生意外错误，请重试。如果问题仍然存在，请联系系统管理员寻求帮助。"
+
+#: .\include\ui\controls\components\common\monitor.py:12
+msgid "Ready"
+msgstr "就绪"
 
 #: .\include\ui\controls\components\explorer\bar.py:44
 #: .\include\ui\controls\components\explorer\bar.py:102
@@ -2892,3 +2896,7 @@ msgstr "获取下载任务ID失败"
 #: .\include\util\batch_operations.py:258
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
+
+#: .\include\util\requests.py:201
+msgid "Request '{}' completed in {:.3f} seconds"
+msgstr "请求 '{}' 完成，用时 {:.3f} 秒"

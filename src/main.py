@@ -254,7 +254,7 @@ async def main(page: ft.Page):
         await page.push_route("/connect")
 
     monitor_ref = ft.Ref[MonitorStack]()
-    monitor = MonitorStack(ref=monitor_ref)
+    monitor = MonitorStack(ref=monitor_ref, visible=not AppShared().is_production)
     AppShared().monitor_ref = monitor_ref
     page.overlay.append(monitor)
 

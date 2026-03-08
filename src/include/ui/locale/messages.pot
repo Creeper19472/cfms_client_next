@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-03-07 23:40+0800\n"
+"POT-Creation-Date: 2026-03-08 13:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -674,6 +674,10 @@ msgstr ""
 
 #: .\include\ui\controls\components\common\error_content.py:264
 msgid "An unexpected error occurred. Please try again. If the problem persists, contact your system administrator for assistance."
+msgstr ""
+
+#: .\include\ui\controls\components\common\monitor.py:12
+msgid "Ready"
 msgstr ""
 
 #: .\include\ui\controls\components\explorer\bar.py:44
@@ -2788,5 +2792,9 @@ msgstr ""
 
 #: .\include\util\batch_operations.py:258
 msgid "Failed to list directory: ({code}) {message}"
+msgstr ""
+
+#: .\include\util\requests.py:201
+msgid "Request '{}' completed in {:.3f} seconds"
 msgstr ""
 

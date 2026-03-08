@@ -6,8 +6,8 @@ _ = t.gettext
 
 
 class MonitorStack(ft.Stack):
-    def __init__(self, ref: ft.Ref[MonitorStack] | None = None):
-        super().__init__(ref=ref, expand=True)
+    def __init__(self, ref: ft.Ref[MonitorStack] | None = None, visible=True):
+        super().__init__(ref=ref, expand=True, visible=visible)
 
         self.status_text = ft.Text(_("Ready"), size=14, color=ft.Colors.WHITE)
         self.controls = [
@@ -16,8 +16,8 @@ class MonitorStack(ft.Stack):
                 bgcolor=ft.Colors.TRANSPARENT,
                 padding=8,
                 border_radius=6,
-                bottom=10,
-                left=10,
+                bottom=1,
+                left=1,
             )
         ]
 
