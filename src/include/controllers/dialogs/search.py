@@ -1,6 +1,5 @@
 """Controller for the search dialog."""
 
-import time
 from typing import TYPE_CHECKING
 
 from include.controllers.base import Controller
@@ -60,7 +59,6 @@ class SearchDialogController(Controller["SearchDialog"]):
 
         try:
             # Make the search request
-            t1 = time.time()
             response = await do_request_2(
                 action="search",
                 data={
@@ -77,9 +75,7 @@ class SearchDialogController(Controller["SearchDialog"]):
 
             if response.code == 200:
                 # Update results
-                t2 = time.time()
-                print(f"Search request completed in {t2 - t1:.2f} seconds")
-                await self.control.display_results(response.data, query.strip())
+                self.control.display_results(response.data, query.strip())
             else:
                 self.control.send_error(
                     _("Search failed: ({code}) {message}").format(
