@@ -169,6 +169,9 @@ async def _request(
     Returns:
         Dictionary response from server
     """
+    
+    t1 = time.time()
+
     request = {
         "action": action,
         "data": data,
@@ -186,4 +189,10 @@ async def _request(
         response = await conn.recv()
 
     loaded_response: dict[str, Any] = json.loads(response)
+
+    t2 = time.time()
+    
+    _monitor_ref = AppShared().monitor_ref
+    if _monitor_ref is not None and _monitor_ref.current is not None:
+        _monitor_ref.current.update_status("Request '{}' completed in {:.3f} seconds".format(action, t2 - t1))
     return loaded_response

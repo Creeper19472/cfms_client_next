@@ -23,6 +23,7 @@ from include.classes.services.ca_update import (
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
+from include.ui.controls.components.common.monitor import MonitorStack
 from include.util.locale import set_translation
 from include.util.ca_update import manifest_exists
 
@@ -251,6 +252,11 @@ async def main(page: ft.Page):
         await page.push_route("/init")
     else:
         await page.push_route("/connect")
+
+    monitor_ref = ft.Ref[MonitorStack]()
+    monitor = MonitorStack(ref=monitor_ref)
+    AppShared().monitor_ref = monitor_ref
+    page.overlay.append(monitor)
 
 
 if __name__ == "__main__":
