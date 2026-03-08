@@ -1,5 +1,6 @@
 """Search dialog for finding documents and directories."""
 
+import time
 from typing import TYPE_CHECKING
 from datetime import datetime
 
@@ -257,7 +258,7 @@ class SearchDialog(AlertDialog):
         self, event: ft.Event[ft.TextButton] | ft.Event[ft.TextField]
     ):
         """Handle search button click."""
-        await self.controller.action_search()
+        self.page.run_task(self.controller.action_search)
 
     async def on_close_click(self, event: ft.Event[ft.TextButton]):
         """Handle close button click."""
@@ -282,8 +283,10 @@ class SearchDialog(AlertDialog):
         self.progress_text.visible = False
         self.update()
 
-    def display_results(self, data: dict, query: str):
+    async def display_results(self, data: dict, query: str):
         """Display search results."""
+        print("in display_results with data:", data)
+        t1  = time.time()
         self.hide_loading()
 
         documents = data.get("documents", [])
@@ -307,6 +310,10 @@ class SearchDialog(AlertDialog):
         # Clear previous results
         self.results_listview.controls.clear()
 
+        self.results_listview.visible = True if total_count > 0 else False
+        self.update()
+        print(f"Displaying {len(directories)} directories and {len(documents)} documents in results listview")
+
         # Add directory results - clicking navigates to the directory itself
         for directory in directories:
             tile = SearchResultDirectoryTile(
@@ -317,6 +324,8 @@ class SearchDialog(AlertDialog):
                 dialog=self,
             )
             self.results_listview.controls.append(tile)
+            self.update()
+            print(f"Added directory tile for '{directory['name']}' (ID: {directory['id']})")
 
         # Add document results - clicking navigates to the parent directory
         for document in documents:
@@ -330,6 +339,8 @@ class SearchDialog(AlertDialog):
                 dialog=self,
             )
             self.results_listview.controls.append(tile)
+            self.update()
+            print(f"Added document tile for '{document['name']}' (ID: {document['id']})")
 
-        self.results_listview.visible = True if total_count > 0 else False
-        self.update()
+        t2 = time.time()
+        print(f"Finished displaying results in {t2 - t1:.2f} seconds")
