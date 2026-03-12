@@ -160,6 +160,12 @@ class ExplorerTopBar(ft.Row):
             visible=False,
         )
 
+        self.trash_button = ft.IconButton(
+            Symbols.DELETE_SWEEP,
+            on_click=self.on_trash_button_click,
+            tooltip=_("Recycle Bin"),
+        )
+
         super().__init__(
             controls=[
                 ft.Row(
@@ -191,6 +197,7 @@ class ExplorerTopBar(ft.Row):
                 ),
                 ft.Row(
                     controls=[
+                        self.trash_button,
                         self.root_permissions_button,
                         ft.IconButton(
                             Symbols.FOLDER_EYE,
@@ -257,6 +264,12 @@ class ExplorerTopBar(ft.Row):
     async def on_search_button_click(self, event: ft.Event[ft.IconButton]):
         """Handle search button click."""
         self.page.show_dialog(SearchDialog(self.parent_view))
+
+    async def on_trash_button_click(self, event: ft.Event[ft.IconButton]):
+        """Navigate to the Recycle Bin for the current directory."""
+        assert type(self.page) == ft.Page
+        current_dir = self.parent_view.current_directory_id or "/"
+        await self.page.push_route(f"/home/trash#folder_id={current_dir}")
 
     async def on_selection_toggle_click(self, event: ft.Event[ft.IconButton]):
         """Handle selection mode toggle button click."""

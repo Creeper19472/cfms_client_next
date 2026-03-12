@@ -92,6 +92,7 @@ async def main(page: ft.Page):
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
     from include.ui.models.misc import DisclaimerModel
+    from include.ui.models.trash import TrashModel
     import include.ui.models.settings
 
     # Page settings

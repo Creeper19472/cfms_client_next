@@ -2991,3 +2991,143 @@ msgstr "列出目录失败：({code}) {message}"
 #: .\include\util\requests.py:202
 msgid "Request '{}' completed in {:.3f} seconds"
 msgstr "请求 '{}' 完成，用时 {:.3f} 秒"
+
+#: .\include\controllers\trash\view.py
+msgid "Permission denied: cannot list deleted items."
+msgstr "权限不足：无法列出已删除项目。"
+
+#: .\include\controllers\trash\view.py
+msgid "Directory not found."
+msgstr "目录未找到。"
+
+#: .\include\controllers\trash\view.py
+msgid "Failed to list deleted items: ({code}) {message}"
+msgstr "列出已删除项目失败：({code}) {message}"
+
+#: .\include\controllers\trash\view.py
+msgid "Document restored successfully."
+msgstr "文档已成功恢复。"
+
+#: .\include\controllers\trash\view.py
+msgid "Permission denied: cannot restore document."
+msgstr "权限不足：无法恢复文档。"
+
+#: .\include\controllers\trash\view.py
+msgid "Deleted document not found."
+msgstr "已删除的文档未找到。"
+
+#: .\include\controllers\trash\view.py
+msgid "Cannot restore: a name conflict exists in the destination."
+msgstr "无法恢复：目标位置存在同名项目。"
+
+#: .\include\controllers\trash\view.py
+msgid "Failed to restore document: ({code}) {message}"
+msgstr "恢复文档失败：({code}) {message}"
+
+#: .\include\controllers\trash\view.py
+msgid "Directory restored successfully."
+msgstr "目录已成功恢复。"
+
+#: .\include\controllers\trash\view.py
+msgid "Permission denied: cannot restore directory."
+msgstr "权限不足：无法恢复目录。"
+
+#: .\include\controllers\trash\view.py
+msgid "Deleted directory not found."
+msgstr "已删除的目录未找到。"
+
+#: .\include\controllers\trash\view.py
+msgid "Failed to restore directory: ({code}) {message}"
+msgstr "恢复目录失败：({code}) {message}"
+
+#: .\include\controllers\trash\view.py
+msgid "Document permanently deleted."
+msgstr "文档已永久删除。"
+
+#: .\include\controllers\trash\view.py
+msgid "Permission denied: cannot permanently delete document."
+msgstr "权限不足：无法永久删除文档。"
+
+#: .\include\controllers\trash\view.py
+msgid "Document must be marked as deleted before it can be purged."
+msgstr "文档必须先标记为已删除，才能被永久清除。"
+
+#: .\include\controllers\trash\view.py
+msgid "Failed to purge document: ({code}) {message}"
+msgstr "永久删除文档失败：({code}) {message}"
+
+#: .\include\controllers\trash\view.py
+msgid "Directory permanently deleted."
+msgstr "目录已永久删除。"
+
+#: .\include\controllers\trash\view.py
+msgid "Permission denied: cannot permanently delete directory."
+msgstr "权限不足：无法永久删除目录。"
+
+#: .\include\controllers\trash\view.py
+msgid "Directory must be marked as deleted before it can be purged."
+msgstr "目录必须先标记为已删除，才能被永久清除。"
+
+#: .\include\controllers\trash\view.py
+msgid "Failed to purge directory: ({code}) {message}"
+msgstr "永久删除目录失败：({code}) {message}"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Recycle Bin"
+msgstr "回收站"
+
+#: .\include\ui\controls\views\trash.py
+msgid "View and manage deleted items. Restore items to bring them back, or permanently delete them."
+msgstr "查看和管理已删除项目。恢复项目以将其还原，或永久删除。"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Folder ID (use / for root)"
+msgstr "文件夹 ID（使用 / 表示根目录）"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Load deleted items"
+msgstr "加载已删除项目"
+
+#: .\include\ui\controls\views\trash.py
+msgid "No deleted items found in this directory."
+msgstr "此目录中未找到已删除项目。"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Directories ({count})"
+msgstr "目录（{count}）"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Documents ({count})"
+msgstr "文档（{count}）"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Restore"
+msgstr "恢复"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Permanently Delete"
+msgstr "永久删除"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Restore Item"
+msgstr "恢复项目"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Restore with name (leave blank to keep original)"
+msgstr "恢复时使用的名称（留空保留原名）"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Restore \"{name}\"?"
+msgstr "恢复 \"{name}\"？"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Are you sure you want to permanently delete \"{name}\"?"
+msgstr "您确定要永久删除 \"{name}\" 吗？"
+
+#: .\include\ui\controls\components\explorer\bar.py
+msgid "Recycle Bin"
+msgstr "回收站"
+
+#: .\include\ui\models\trash.py
+msgid "Back"
+msgstr "返回"
