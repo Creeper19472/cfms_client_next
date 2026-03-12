@@ -8,6 +8,7 @@ from flet_material_symbols import Symbols
 from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
 from include.classes.services.download import DownloadManagerService
+from include.ui.controls.components.misc.tasks import AddTaskComponent
 from include.util.locale import get_translation
 from include.ui.util.notifications import send_error
 
@@ -547,6 +548,7 @@ class TasksView(ft.Container):
                                             ),
                                         ],
                                     ),
+                                    AddTaskComponent(),
                                     ft.IconButton(
                                         icon=Symbols.REFRESH,
                                         tooltip=_("Refresh"),
