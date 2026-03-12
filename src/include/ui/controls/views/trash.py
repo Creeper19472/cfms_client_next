@@ -90,8 +90,8 @@ class RestoreDialog(ft.AlertDialog):
         self.on_confirm = on_confirm
 
         self.new_name_field = ft.TextField(
-            label=_("Restore with name (leave blank to keep original)"),
-            hint_text=item_name,
+            label=_("Restore with name"),
+            hint_text=_("Leave blank to keep original"),
             expand=True,
         )
 
@@ -118,6 +118,7 @@ class RestoreDialog(ft.AlertDialog):
                 tight=True,
             ),
             actions=[self.confirm_button, self.cancel_button],
+            scrollable=True,
         )
 
     async def _on_confirm_click(self, event):
@@ -172,6 +173,7 @@ class PurgeConfirmDialog(ft.AlertDialog):
                 tight=True,
             ),
             actions=[self.confirm_button, self.cancel_button],
+            scrollable=True,
         )
 
     async def _on_confirm_click(self, event):
@@ -252,7 +254,7 @@ class TrashView(ft.Container):
                         "Restore items to bring them back, or permanently delete them."
                     ),
                     color=ft.Colors.GREY_500,
-                    size=13,
+                    size=14,
                 ),
                 ft.Divider(),
                 ft.Row(
@@ -388,8 +390,6 @@ class TrashView(ft.Container):
                 item_type=item_type,
                 on_confirm=self._on_restore_confirm,
             )
-            # Store item_type in the dialog for the confirm callback
-            dialog._item_type = item_type
             self.page.show_dialog(dialog)
 
         return handler
