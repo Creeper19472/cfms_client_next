@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from include.controllers.base import Controller
 from include.util.requests import do_request
-from include.ui.util.notifications import send_error, send_info, send_success
+from include.ui.util.notifications import send_error, send_success
 
 from include.util.locale import get_translation
 

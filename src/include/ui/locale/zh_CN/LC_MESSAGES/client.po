@@ -3131,3 +3131,11 @@ msgstr "回收站"
 #: .\include\ui\models\trash.py
 msgid "Back"
 msgstr "返回"
+
+#: .\include\ui\controls\views\trash.py
+msgid "ID: {item_id}"
+msgstr "ID: {item_id}"
+
+#: .\include\ui\controls\views\trash.py
+msgid "Delete Permanently"
+msgstr "永久删除"
