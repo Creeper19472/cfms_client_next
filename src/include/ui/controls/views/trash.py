@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 t = get_translation()
 _ = t.gettext
 
+
 class TrashItemTile(ft.ListTile):
     """A list tile representing a single deleted item (document or directory)."""
 
@@ -25,8 +26,8 @@ class TrashItemTile(ft.ListTile):
         item_name: str,
         item_type: str,  # "document" or "directory"
         created_time: float | None,
-        on_restore: ft.ControlEventHandler | None = None,
-        on_purge: ft.ControlEventHandler | None = None,
+        on_restore: ft.ControlEventHandler[ft.IconButton] | None = None,
+        on_purge: ft.ControlEventHandler[ft.IconButton] | None = None,
         ref: ft.Ref | None = None,
     ):
         self.item_id = item_id
@@ -48,12 +49,14 @@ class TrashItemTile(ft.ListTile):
             icon=Symbols.RESTORE,
             tooltip=_("Restore"),
             on_click=on_restore,
+            disabled=on_restore is None,
         )
         purge_button = ft.IconButton(
             icon=Symbols.DELETE_FOREVER,
             tooltip=_("Permanently Delete"),
             icon_color=ft.Colors.RED_400,
             on_click=on_purge,
+            disabled=on_restore is None,
         )
 
         super().__init__(
@@ -122,10 +125,13 @@ class RestoreDialog(ft.AlertDialog):
         )
 
     async def _on_confirm_click(self, event):
-        new_name = self.new_name_field.value.strip() if self.new_name_field.value else None
+        new_name = (
+            self.new_name_field.value.strip() if self.new_name_field.value else None
+        )
         self.open = False
         self.update()
-        await self.on_confirm(self.item_id, new_name or None)
+        # Pass item_type back through the callback to ensure reliability
+        await self.on_confirm(self.item_id, self.item_type, new_name)
 
     async def _on_cancel_click(self, event):
         self.open = False
@@ -135,12 +141,7 @@ class RestoreDialog(ft.AlertDialog):
 class PurgeConfirmDialog(ft.AlertDialog):
     """Dialog to confirm permanent deletion of an item."""
 
-    def __init__(
-        self,
-        item_name: str,
-        item_type: str,
-        on_confirm,
-    ):
+    def __init__(self, item_name: str, on_confirm):
         self.on_confirm = on_confirm
 
         self.confirm_button = ft.TextButton(
@@ -158,9 +159,9 @@ class PurgeConfirmDialog(ft.AlertDialog):
             content=ft.Column(
                 controls=[
                     ft.Text(
-                        _('Are you sure you want to permanently delete "{name}"?').format(
-                            name=item_name
-                        ),
+                        _(
+                            'Are you sure you want to permanently delete "{name}"?'
+                        ).format(name=item_name),
                         size=15,
                     ),
                     ft.Text(
@@ -189,9 +190,6 @@ class PurgeConfirmDialog(ft.AlertDialog):
 class TrashView(ft.Container):
     """
     Trash/Recycle Bin view that lists deleted items for a specified directory.
-
-    Supports listing deleted documents and directories, restoring them to their
-    original location (or a new location), and permanently deleting (purging) them.
     """
 
     def __init__(
@@ -213,7 +211,6 @@ class TrashView(ft.Container):
         self.expand = True
         self.alignment = ft.Alignment.TOP_CENTER
 
-        # Folder ID input
         self.folder_id_field = ft.TextField(
             label=_("Folder ID (use / for root)"),
             value="/",
@@ -226,7 +223,6 @@ class TrashView(ft.Container):
             on_click=self._on_browse_click,
         )
 
-        # Status / loading indicators
         self.progress_ring = ft.ProgressRing(visible=False)
         self.empty_label = ft.Text(
             _("No deleted items found in this directory."),
@@ -235,7 +231,6 @@ class TrashView(ft.Container):
             size=14,
         )
 
-        # Items list
         self.items_listview = ft.ListView(
             expand=True,
             spacing=2,
@@ -277,23 +272,16 @@ class TrashView(ft.Container):
         super().did_mount()
 
     def show_loading(self):
-        """Show a loading indicator and hide the item list."""
         self.progress_ring.visible = True
         self.empty_label.visible = False
         self.items_listview.controls.clear()
         self.update()
 
     def hide_loading(self):
-        """Hide the loading indicator."""
         self.progress_ring.visible = False
         self.update()
 
-    def update_items(
-        self,
-        folders: list[dict],
-        documents: list[dict],
-    ):
-        """Populate the list view with the given deleted items."""
+    def update_items(self, folders: list[dict], documents: list[dict]):
         self.progress_ring.visible = False
         self.items_listview.controls.clear()
 
@@ -303,12 +291,10 @@ class TrashView(ft.Container):
             return
 
         self.empty_label.visible = False
-
         user_perms = set(self.app_shared.user_permissions)
         can_restore = "restore" in user_perms
         can_purge = "purge" in user_perms
 
-        # Add section header for directories
         if folders:
             self.items_listview.controls.append(
                 ft.Text(
@@ -341,11 +327,9 @@ class TrashView(ft.Container):
                 )
                 self.items_listview.controls.append(tile)
 
-        # Add divider between sections if both exist
         if folders and documents:
             self.items_listview.controls.append(ft.Divider())
 
-        # Add section header for documents
         if documents:
             self.items_listview.controls.append(
                 ft.Text(
@@ -381,8 +365,6 @@ class TrashView(ft.Container):
         self.update()
 
     def _make_restore_handler(self, item_type: str, item_id: str, item_name: str):
-        """Create an on_restore click handler for a specific item."""
-
         async def handler(event: ft.Event):
             dialog = RestoreDialog(
                 item_id=item_id,
@@ -394,30 +376,16 @@ class TrashView(ft.Container):
 
         return handler
 
-    async def _on_restore_confirm(self, item_id: str, new_name: str | None):
+    async def _on_restore_confirm(
+        self, item_id: str, item_type: str, new_name: str | None
+    ):
         """Execute restore after user confirms in the dialog."""
-        # Determine item type by checking what's in the list
-        # We detect it by looking at controls
-        item_type = self._get_item_type_from_id(item_id)
         if item_type == "document":
-            await self.controller.action_restore_document(
-                item_id, new_title=new_name
-            )
+            await self.controller.action_restore_document(item_id, new_title=new_name)
         elif item_type == "directory":
-            await self.controller.action_restore_directory(
-                item_id, new_name=new_name
-            )
-
-    def _get_item_type_from_id(self, item_id: str) -> str | None:
-        """Look up the type of an item by its ID from the current list."""
-        for ctrl in self.items_listview.controls:
-            if isinstance(ctrl, TrashItemTile) and ctrl.item_id == item_id:
-                return ctrl.item_type
-        return None
+            await self.controller.action_restore_directory(item_id, new_name=new_name)
 
     def _make_purge_handler(self, item_type: str, item_id: str, item_name: str):
-        """Create an on_purge click handler for a specific item."""
-
         async def handler(event: ft.Event):
             async def on_confirm():
                 if item_type == "document":
@@ -427,7 +395,6 @@ class TrashView(ft.Container):
 
             dialog = PurgeConfirmDialog(
                 item_name=item_name,
-                item_type=item_type,
                 on_confirm=on_confirm,
             )
             self.page.show_dialog(dialog)
