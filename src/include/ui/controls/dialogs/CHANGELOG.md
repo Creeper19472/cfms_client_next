@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.11.0
+**Released on:** 2026-03-13
+
+**Title:** Recoverable Deletion Workflow
+
+This version introduces the ability to list and permanently delete objects 
+marked for deletion, in order to accommodate server-side updates.
+
+---
 ## v0.10.1
 **Released on:** 2026-03-09
 
