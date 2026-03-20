@@ -241,10 +241,11 @@ class SettingsField(Generic[_T]):
     browse:
         When not ``BrowseMode.OFF`` on a ``SettingsField[str]`` field, a
         ``Browse...`` button is rendered to the right of the text field.
-        Pressing it opens a directory-picker dialog and inserts the chosen
-        path into the text field.  The button inherits the same disabled
-        state as the text field (from ``depends_on``).  Defaults to
-        ``BrowseMode.OFF``.
+        Pressing it opens a directory-picker dialog when ``browse`` is
+        ``BrowseMode.DIRECTORY`` or a file-picker dialog when ``browse`` is
+        ``BrowseMode.FILE``, and inserts the chosen path into the text field.
+        The button inherits the same disabled state as the text field (from
+        ``depends_on``).  Defaults to ``BrowseMode.OFF``.
     """
 
     def __init__(
@@ -1026,7 +1027,8 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
                 case BrowseMode.DIRECTORY:
                     storage_path = await ft.FilePicker().get_directory_path()
                 case BrowseMode.FILE:
-                    storage_path = (await ft.FilePicker().pick_files())[0].path
+                    result = await ft.FilePicker().pick_files()
+                    storage_path = result[0].path if result else ""
                 case _:
                     raise ValueError(f"Unsupported BrowseMode: {mode}")
 
