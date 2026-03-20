@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.12.0
+**Released on:** 2026-03-20
+
+**Title:** Mutual TLS Authentication Support
+
+This release introduces support for mutual TLS (mTLS) and makes minor tweaks 
+to the application's appearance.
+
+---
 ## v0.11.0
 **Released on:** 2026-03-13
 
