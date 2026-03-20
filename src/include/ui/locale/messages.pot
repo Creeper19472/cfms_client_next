@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-03-13 00:12+0800\n"
+"POT-Creation-Date: 2026-03-20 22:50+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,11 +43,11 @@ msgstr ""
 msgid "(Protocol version {server_protocol_version}), please update the client."
 msgstr ""
 
-#: .\include\controllers\connect.py:98
+#: .\include\controllers\connect.py:97
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr ""
 
-#: .\include\controllers\connect.py:102
+#: .\include\controllers\connect.py:101
 msgid "Please allow the app to access your files in settings."
 msgstr ""
 
@@ -827,10 +827,10 @@ msgstr ""
 #: .\include\ui\controls\dialogs\password_confirm.py:61
 #: .\include\ui\controls\dialogs\twofa_setup.py:91
 #: .\include\ui\controls\dialogs\twofa_verify.py:81
-#: .\include\ui\controls\dialogs\upgrade.py:41
+#: .\include\ui\controls\dialogs\upgrade.py:43
 #: .\include\ui\controls\views\tasks.py:109
-#: .\include\ui\controls\views\trash.py:103
-#: .\include\ui\controls\views\trash.py:152
+#: .\include\ui\controls\views\trash.py:106
+#: .\include\ui\controls\views\trash.py:153
 msgid "Cancel"
 msgstr ""
 
@@ -851,7 +851,7 @@ msgid "Set root directory permissions"
 msgstr ""
 
 #: .\include\ui\controls\components\explorer\bar.py:166
-#: .\include\ui\controls\views\trash.py:247 .\include\ui\models\trash.py:28
+#: .\include\ui\controls\views\trash.py:242 .\include\ui\models\trash.py:28
 msgid "Recycle Bin"
 msgstr ""
 
@@ -906,7 +906,7 @@ msgid "ID: {dir_id}"
 msgstr ""
 
 #: .\include\ui\controls\components\explorer\tile.py:197
-#: .\include\ui\controls\views\trash.py:41
+#: .\include\ui\controls\views\trash.py:42
 msgid "Created at: {created_at}"
 msgstr ""
 
@@ -1273,7 +1273,7 @@ msgid "(No target selected)"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:493
-#: .\include\ui\frameworks\settings\settings_framework.py:818
+#: .\include\ui\frameworks\settings\settings_framework.py:821
 msgid "Browse..."
 msgstr ""
 
@@ -1811,7 +1811,7 @@ msgid "Delete {count} directory(ies)?"
 msgstr ""
 
 #: .\include\ui\controls\dialogs\explorer.py:703
-#: .\include\ui\controls\views\trash.py:167
+#: .\include\ui\controls\views\trash.py:168
 msgid "This action cannot be undone."
 msgstr ""
 
@@ -2083,36 +2083,36 @@ msgstr ""
 msgid "Invalid verification code"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:33
+#: .\include\ui\controls\dialogs\upgrade.py:35
 #: .\include\ui\models\about.py:127
 msgid "Update"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:45
+#: .\include\ui\controls\dialogs\upgrade.py:47
 msgid "Preparing download"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:83
+#: .\include\ui\controls\dialogs\upgrade.py:85
 msgid "Extracting version package"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:100
+#: .\include\ui\controls\dialogs\upgrade.py:102
 msgid "Deleting extracted package"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:110
+#: .\include\ui\controls\dialogs\upgrade.py:112
 msgid "Failed to delete temporary file: {e}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:113
+#: .\include\ui\controls\dialogs\upgrade.py:115
 msgid "Writing update script"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:130
+#: .\include\ui\controls\dialogs\upgrade.py:132
 msgid "Closing application"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:144
+#: .\include\ui\controls\dialogs\upgrade.py:146
 msgid "Error occurred during update: {e}"
 msgstr ""
 
@@ -2120,23 +2120,23 @@ msgstr ""
 msgid "Authorization failed, you will not be able to install updates normally. Please allow the app to install updates in settings."
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:215
+#: .\include\ui\controls\dialogs\upgrade.py:211
 msgid "Downloaded: {downloaded_size} bytes"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:233
+#: .\include\ui\controls\dialogs\upgrade.py:229
 msgid "Download failed, HTTP status code: {status_code}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:242
+#: .\include\ui\controls\dialogs\upgrade.py:238
 msgid "Network error occurred during update: {strerr}"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:249
+#: .\include\ui\controls\dialogs\upgrade.py:245
 msgid "Download timeout, please check network connection"
 msgstr ""
 
-#: .\include\ui\controls\dialogs\upgrade.py:255
+#: .\include\ui\controls\dialogs\upgrade.py:251
 msgid "Unknown error occurred during download: {strerr}"
 msgstr ""
 
@@ -2281,7 +2281,7 @@ msgid "Disable SSL verification (Insecure)"
 msgstr ""
 
 #: .\include\ui\controls\views\connect.py:61
-#: .\include\ui\models\settings\connection.py:25
+#: .\include\ui\models\settings\connection.py:28
 msgid "Connect"
 msgstr ""
 
@@ -2450,69 +2450,69 @@ msgstr ""
 msgid "Clear failed"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:39
+#: .\include\ui\controls\views\trash.py:40
 msgid "ID: {item_id}"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:49
-#: .\include\ui\controls\views\trash.py:99
+#: .\include\ui\controls\views\trash.py:50
+#: .\include\ui\controls\views\trash.py:102
 msgid "Restore"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:54
-#: .\include\ui\controls\views\trash.py:157
+#: .\include\ui\controls\views\trash.py:56
+#: .\include\ui\controls\views\trash.py:158
 msgid "Permanently Delete"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:93
+#: .\include\ui\controls\views\trash.py:96
 msgid "Restore with name"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:94
+#: .\include\ui\controls\views\trash.py:97
 msgid "Leave blank to keep original"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:108
+#: .\include\ui\controls\views\trash.py:111
 msgid "Restore Item"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:112
+#: .\include\ui\controls\views\trash.py:115
 msgid "Restore \"{name}\"?"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:147
+#: .\include\ui\controls\views\trash.py:148
 msgid "Delete Permanently"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:161
+#: .\include\ui\controls\views\trash.py:162
 msgid "Are you sure you want to permanently delete \"{name}\"?"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:218
+#: .\include\ui\controls\views\trash.py:215
 msgid "Folder ID (use / for root)"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:225
+#: .\include\ui\controls\views\trash.py:222
 msgid "Load deleted items"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:232
+#: .\include\ui\controls\views\trash.py:228
 msgid "No deleted items found in this directory."
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:252
+#: .\include\ui\controls\views\trash.py:247
 msgid "View and manage deleted items. Restore items to bring them back, or permanently delete them."
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:315
+#: .\include\ui\controls\views\trash.py:301
 msgid "Directories ({count})"
 msgstr ""
 
-#: .\include\ui\controls\views\trash.py:352
+#: .\include\ui\controls\views\trash.py:336
 msgid "Documents ({count})"
 msgstr ""
 
-#: .\include\ui\frameworks\settings\settings_framework.py:915
+#: .\include\ui\frameworks\settings\settings_framework.py:918
 msgid "Settings Saved."
 msgstr ""
 
@@ -2707,24 +2707,52 @@ msgstr ""
 msgid "Reject and Quit"
 msgstr ""
 
-#: .\include\ui\models\settings\connection.py:26
+#: .\include\ui\models\settings\connection.py:29
 msgid "Change application proxy settings"
 msgstr ""
 
-#: .\include\ui\models\settings\connection.py:39
+#: .\include\ui\models\settings\connection.py:43
+msgid "Basic"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:47
 msgid "Enable proxy"
 msgstr ""
 
-#: .\include\ui\models\settings\connection.py:43
+#: .\include\ui\models\settings\connection.py:51
 msgid "Follow system proxy settings"
 msgstr ""
 
-#: .\include\ui\models\settings\connection.py:50
+#: .\include\ui\models\settings\connection.py:58
 msgid "Custom Proxy"
 msgstr ""
 
-#: .\include\ui\models\settings\connection.py:58
+#: .\include\ui\models\settings\connection.py:66
 msgid "Force IPv4"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:72
+msgid "Client Identity"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:75
+msgid "This option only takes effect if both the certificate file and the key file are set."
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:82
+msgid "Client certificate path"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:85
+msgid "Path to the client certificate file (PEM format) used for mutual TLS authentication with the server. Leave blank if not used."
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:92
+msgid "Client private key path"
+msgstr ""
+
+#: .\include\ui\models\settings\connection.py:95
+msgid "Path to the client private key file (PEM format) used for mutual TLS authentication with the server. Leave blank if not used."
 msgstr ""
 
 #: .\include\ui\models\settings\language.py:23
@@ -2745,76 +2773,76 @@ msgstr ""
 msgid "Language setting saved. Please restart the application for changes to take effect."
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:34
+#: .\include\ui\models\settings\security.py:34
 msgid "Security"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:35
+#: .\include\ui\models\settings\security.py:35
 msgid "Connection history, CA certificates and security settings"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:46
+#: .\include\ui\models\settings\security.py:46
 msgid "Enable connection history logging"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:50
+#: .\include\ui\models\settings\security.py:50
 msgid "Decide whether the app should log the server address of the last connection. While this feature increases convenience, it may also increase the risk of exposing the server address."
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:64
+#: .\include\ui\models\settings\security.py:64
 msgid "CA Certificates"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:66
+#: .\include\ui\models\settings\security.py:66
 msgid "The CA certificate store contains trusted root certificates used to verify secure connections to your server."
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:78
-#: .\include\ui\models\settings\safety.py:131
+#: .\include\ui\models\settings\security.py:78
+#: .\include\ui\models\settings\security.py:131
 msgid "Last checked: Never"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:84
+#: .\include\ui\models\settings\security.py:84
 msgid "Check and Update Now"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:135
+#: .\include\ui\models\settings\security.py:135
 msgid "Last checked: {time}"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:155
+#: .\include\ui\models\settings\security.py:155
 msgid "Certificate update service is not available."
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:170
+#: .\include\ui\models\settings\security.py:170
 msgid "Update failed: {error}"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:181
+#: .\include\ui\models\settings\security.py:181
 msgid "{n} certificate(s) added"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:183
+#: .\include\ui\models\settings\security.py:183
 msgid "{n} certificate(s) updated"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:185
+#: .\include\ui\models\settings\security.py:185
 msgid "{n} certificate(s) removed"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:188
+#: .\include\ui\models\settings\security.py:188
 msgid "{n} certificate(s) already up-to-date"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:197
+#: .\include\ui\models\settings\security.py:197
 msgid "Update completed with errors: {errors}"
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:202
+#: .\include\ui\models\settings\security.py:202
 msgid "Certificate store updated successfully."
 msgstr ""
 
-#: .\include\ui\models\settings\safety.py:204
+#: .\include\ui\models\settings\security.py:204
 msgid "Certificate store is already up-to-date."
 msgstr ""
 

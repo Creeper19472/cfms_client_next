@@ -6,6 +6,7 @@ from typing import Literal
 
 from websockets.asyncio.client import ClientConnection, connect
 
+from include.classes.shared import AppShared
 from include.constants import ROOT_PATH
 
 
@@ -47,6 +48,12 @@ async def get_connection(
         # Disable SSL verification (not recommended for production)
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
+
+    cert_path = AppShared().preferences["settings"].get("client_cert_path")
+    key_path = AppShared().preferences["settings"].get("client_key_path")
+
+    if cert_path and key_path:
+        ssl_context.load_cert_chain(certfile=cert_path, keyfile=key_path)
 
     # Set address family if IPv4 is forced
     family = socket.AF_INET if force_ipv4 else socket.AF_UNSPEC

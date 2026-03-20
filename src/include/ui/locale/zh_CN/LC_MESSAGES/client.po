@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-13 00:12+0800\n"
+"POT-Creation-Date: 2026-03-20 22:50+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -40,11 +40,11 @@ msgstr "您正在连接到一个使用更高版本协议的服务器"
 msgid "(Protocol version {server_protocol_version}), please update the client."
 msgstr "（协议版本 {server_protocol_version}），请更新客户端。"
 
-#: .\include\controllers\connect.py:98
+#: .\include\controllers\connect.py:97
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr "授权失败，您将无法正常下载文件。"
 
-#: .\include\controllers\connect.py:102
+#: .\include\controllers\connect.py:101
 msgid "Please allow the app to access your files in settings."
 msgstr "请在设置中允许应用访问您的文件。"
 
@@ -863,10 +863,10 @@ msgstr "删除"
 #: .\include\ui\controls\dialogs\password_confirm.py:61
 #: .\include\ui\controls\dialogs\twofa_setup.py:91
 #: .\include\ui\controls\dialogs\twofa_verify.py:81
-#: .\include\ui\controls\dialogs\upgrade.py:41
+#: .\include\ui\controls\dialogs\upgrade.py:43
 #: .\include\ui\controls\views\tasks.py:109
-#: .\include\ui\controls\views\trash.py:103
-#: .\include\ui\controls\views\trash.py:152
+#: .\include\ui\controls\views\trash.py:106
+#: .\include\ui\controls\views\trash.py:153
 msgid "Cancel"
 msgstr "取消"
 
@@ -887,7 +887,7 @@ msgid "Set root directory permissions"
 msgstr "设置根目录权限"
 
 #: .\include\ui\controls\components\explorer\bar.py:166
-#: .\include\ui\controls\views\trash.py:247 .\include\ui\models\trash.py:28
+#: .\include\ui\controls\views\trash.py:242 .\include\ui\models\trash.py:28
 msgid "Recycle Bin"
 msgstr "回收站"
 
@@ -941,7 +941,7 @@ msgid "ID: {dir_id}"
 msgstr "ID：{dir_id}"
 
 #: .\include\ui\controls\components\explorer\tile.py:197
-#: .\include\ui\controls\views\trash.py:41
+#: .\include\ui\controls\views\trash.py:42
 msgid "Created at: {created_at}"
 msgstr "创建于：{created_at}"
 
@@ -1318,7 +1318,7 @@ msgid "(No target selected)"
 msgstr "（未选择目标）"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:493
-#: .\include\ui\frameworks\settings\settings_framework.py:818
+#: .\include\ui\frameworks\settings\settings_framework.py:821
 msgid "Browse..."
 msgstr "浏览..."
 
@@ -1870,7 +1870,7 @@ msgid "Delete {count} directory(ies)?"
 msgstr "删除 {count} 个目录？"
 
 #: .\include\ui\controls\dialogs\explorer.py:703
-#: .\include\ui\controls\views\trash.py:167
+#: .\include\ui\controls\views\trash.py:168
 msgid "This action cannot be undone."
 msgstr "此操作不能撤销。"
 
@@ -2146,35 +2146,35 @@ msgstr "无效的恢复代码"
 msgid "Invalid verification code"
 msgstr "验证码无效"
 
-#: .\include\ui\controls\dialogs\upgrade.py:33 .\include\ui\models\about.py:127
+#: .\include\ui\controls\dialogs\upgrade.py:35 .\include\ui\models\about.py:127
 msgid "Update"
 msgstr "更新"
 
-#: .\include\ui\controls\dialogs\upgrade.py:45
+#: .\include\ui\controls\dialogs\upgrade.py:47
 msgid "Preparing download"
 msgstr "正在准备下载"
 
-#: .\include\ui\controls\dialogs\upgrade.py:83
+#: .\include\ui\controls\dialogs\upgrade.py:85
 msgid "Extracting version package"
 msgstr "正在解压缩版本包"
 
-#: .\include\ui\controls\dialogs\upgrade.py:100
+#: .\include\ui\controls\dialogs\upgrade.py:102
 msgid "Deleting extracted package"
 msgstr "正在删除已解压缩的包"
 
-#: .\include\ui\controls\dialogs\upgrade.py:110
+#: .\include\ui\controls\dialogs\upgrade.py:112
 msgid "Failed to delete temporary file: {e}"
 msgstr "删除临时文件失败：{e}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:113
+#: .\include\ui\controls\dialogs\upgrade.py:115
 msgid "Writing update script"
 msgstr "正在写入更新脚本"
 
-#: .\include\ui\controls\dialogs\upgrade.py:130
+#: .\include\ui\controls\dialogs\upgrade.py:132
 msgid "Closing application"
 msgstr "正在关闭应用"
 
-#: .\include\ui\controls\dialogs\upgrade.py:144
+#: .\include\ui\controls\dialogs\upgrade.py:146
 msgid "Error occurred during update: {e}"
 msgstr "更新过程中发生错误：{e}"
 
@@ -2184,23 +2184,23 @@ msgid ""
 "Please allow the app to install updates in settings."
 msgstr "授权失败，您将无法正常安装更新。请在设置中允许应用安装更新。"
 
-#: .\include\ui\controls\dialogs\upgrade.py:215
+#: .\include\ui\controls\dialogs\upgrade.py:211
 msgid "Downloaded: {downloaded_size} bytes"
 msgstr "已下载: {downloaded_size} bytes"
 
-#: .\include\ui\controls\dialogs\upgrade.py:233
+#: .\include\ui\controls\dialogs\upgrade.py:229
 msgid "Download failed, HTTP status code: {status_code}"
 msgstr "下载失败，HTTP状态码：{status_code}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:242
+#: .\include\ui\controls\dialogs\upgrade.py:238
 msgid "Network error occurred during update: {strerr}"
 msgstr "在更新时发生网络错误：{strerr}"
 
-#: .\include\ui\controls\dialogs\upgrade.py:249
+#: .\include\ui\controls\dialogs\upgrade.py:245
 msgid "Download timeout, please check network connection"
 msgstr "下载超时，请检查网络连接"
 
-#: .\include\ui\controls\dialogs\upgrade.py:255
+#: .\include\ui\controls\dialogs\upgrade.py:251
 msgid "Unknown error occurred during download: {strerr}"
 msgstr "下载过程中发生未知错误：{strerr}"
 
@@ -2344,7 +2344,7 @@ msgid "Disable SSL verification (Insecure)"
 msgstr "禁用SSL检查（不安全）"
 
 #: .\include\ui\controls\views\connect.py:61
-#: .\include\ui\models\settings\connection.py:25
+#: .\include\ui\models\settings\connection.py:28
 msgid "Connect"
 msgstr "连接"
 
@@ -2514,71 +2514,71 @@ msgstr "清除已完成"
 msgid "Clear failed"
 msgstr "清除失败"
 
-#: .\include\ui\controls\views\trash.py:39
+#: .\include\ui\controls\views\trash.py:40
 msgid "ID: {item_id}"
 msgstr "ID: {item_id}"
 
-#: .\include\ui\controls\views\trash.py:49
-#: .\include\ui\controls\views\trash.py:99
+#: .\include\ui\controls\views\trash.py:50
+#: .\include\ui\controls\views\trash.py:102
 msgid "Restore"
 msgstr "恢复"
 
-#: .\include\ui\controls\views\trash.py:54
-#: .\include\ui\controls\views\trash.py:157
+#: .\include\ui\controls\views\trash.py:56
+#: .\include\ui\controls\views\trash.py:158
 msgid "Permanently Delete"
 msgstr "永久删除"
 
-#: .\include\ui\controls\views\trash.py:93
+#: .\include\ui\controls\views\trash.py:96
 msgid "Restore with name"
 msgstr "以以下名称恢复"
 
-#: .\include\ui\controls\views\trash.py:94
+#: .\include\ui\controls\views\trash.py:97
 msgid "Leave blank to keep original"
 msgstr "留空保留原名"
 
-#: .\include\ui\controls\views\trash.py:108
+#: .\include\ui\controls\views\trash.py:111
 msgid "Restore Item"
 msgstr "恢复项目"
 
-#: .\include\ui\controls\views\trash.py:112
+#: .\include\ui\controls\views\trash.py:115
 msgid "Restore \"{name}\"?"
 msgstr "恢复 \"{name}\"？"
 
-#: .\include\ui\controls\views\trash.py:147
+#: .\include\ui\controls\views\trash.py:148
 msgid "Delete Permanently"
 msgstr "永久删除"
 
-#: .\include\ui\controls\views\trash.py:161
+#: .\include\ui\controls\views\trash.py:162
 msgid "Are you sure you want to permanently delete \"{name}\"?"
 msgstr "您确定要永久删除 \"{name}\" 吗？"
 
-#: .\include\ui\controls\views\trash.py:218
+#: .\include\ui\controls\views\trash.py:215
 msgid "Folder ID (use / for root)"
 msgstr "文件夹 ID（使用 / 表示根目录）"
 
-#: .\include\ui\controls\views\trash.py:225
+#: .\include\ui\controls\views\trash.py:222
 msgid "Load deleted items"
 msgstr "加载已删除项目"
 
-#: .\include\ui\controls\views\trash.py:232
+#: .\include\ui\controls\views\trash.py:228
 msgid "No deleted items found in this directory."
 msgstr "此目录中未找到已删除项目。"
 
-#: .\include\ui\controls\views\trash.py:252
+#: .\include\ui\controls\views\trash.py:247
 msgid ""
 "View and manage deleted items. Restore items to bring them back, or "
 "permanently delete them."
 msgstr "查看和管理已删除项目。恢复项目以将其还原，或永久删除。"
 
-#: .\include\ui\controls\views\trash.py:315
+#: .\include\ui\controls\views\trash.py:301
 msgid "Directories ({count})"
 msgstr "目录（{count}）"
 
-#: .\include\ui\controls\views\trash.py:352
+#: .\include\ui\controls\views\trash.py:336
 msgid "Documents ({count})"
 msgstr "文档（{count}）"
 
-#: .\include\ui\frameworks\settings\settings_framework.py:915
+#: .\include\ui\frameworks\settings\settings_framework.py:918
 msgid "Settings Saved."
 msgstr "设置已保存。"
 
@@ -2826,25 +2826,62 @@ msgstr "接受"
 msgid "Reject and Quit"
 msgstr "拒绝并退出"
 
-#: .\include\ui\models\settings\connection.py:26
+#: .\include\ui\models\settings\connection.py:29
 msgid "Change application proxy settings"
 msgstr "更改应用使用代理的规则"
 
-#: .\include\ui\models\settings\connection.py:39
+#: .\include\ui\models\settings\connection.py:43
+msgid "Basic"
+msgstr "基础"
+
+#: .\include\ui\models\settings\connection.py:47
 msgid "Enable proxy"
 msgstr "启用代理"
 
-#: .\include\ui\models\settings\connection.py:43
+#: .\include\ui\models\settings\connection.py:51
 msgid "Follow system proxy settings"
 msgstr "跟随系统代理设置"
 
-#: .\include\ui\models\settings\connection.py:50
+#: .\include\ui\models\settings\connection.py:58
 msgid "Custom Proxy"
 msgstr "自定义代理"
 
-#: .\include\ui\models\settings\connection.py:58
+#: .\include\ui\models\settings\connection.py:66
 msgid "Force IPv4"
 msgstr "强制使用 IPv4"
+
+#: .\include\ui\models\settings\connection.py:72
+msgid "Client Identity"
+msgstr "客户端身份"
+
+#: .\include\ui\models\settings\connection.py:75
+msgid ""
+"This option only takes effect if both the certificate file and the key file "
+"are set."
+msgstr "仅当证书文件和私钥文件都已设置时，此选项才生效。"
+
+#: .\include\ui\models\settings\connection.py:82
+msgid "Client certificate path"
+msgstr "客户端证书路径"
+
+#: .\include\ui\models\settings\connection.py:85
+msgid ""
+"Path to the client certificate file (PEM format) used for mutual TLS "
+"authentication with the server. Leave blank if not used."
+msgstr ""
+"用于与服务器进行双向 TLS 认证的客户端证书文件（PEM 格式）的路径。若不使用请留"
+"空。"
+
+#: .\include\ui\models\settings\connection.py:92
+msgid "Client private key path"
+msgstr "客户端私钥路径"
+
+#: .\include\ui\models\settings\connection.py:95
+msgid ""
+"Path to the client private key file (PEM format) used for mutual TLS "
+"authentication with the server. Leave blank if not used."
+msgstr ""
+"用于与服务器进行双向 TLS 身份验证的客户端私钥文件（PEM 格式）路径。若不使用请留空。"
 
 #: .\include\ui\models\settings\language.py:23
 #: .\include\ui\models\settings\language.py:33
@@ -2868,19 +2905,19 @@ msgid ""
 "effect."
 msgstr "语言设置已保存。请重新启动应用，以使更改生效。"
 
-#: .\include\ui\models\settings\safety.py:34
+#: .\include\ui\models\settings\security.py:34
 msgid "Security"
 msgstr "安全"
 
-#: .\include\ui\models\settings\safety.py:35
+#: .\include\ui\models\settings\security.py:35
 msgid "Connection history, CA certificates and security settings"
 msgstr "连接历史，CA 证书和安全设置"
 
-#: .\include\ui\models\settings\safety.py:46
+#: .\include\ui\models\settings\security.py:46
 msgid "Enable connection history logging"
 msgstr "启用连接历史记录"
 
-#: .\include\ui\models\settings\safety.py:50
+#: .\include\ui\models\settings\security.py:50
 msgid ""
 "Decide whether the app should log the server address of the last connection. "
 "While this feature increases convenience, it may also increase the risk of "
@@ -2889,62 +2926,62 @@ msgstr ""
 "决定应用程序是否应记录上次连接的服务器地址。虽然此功能提高了便利性，但也可能"
 "增加服务器地址泄露的风险。"
 
-#: .\include\ui\models\settings\safety.py:64
+#: .\include\ui\models\settings\security.py:64
 msgid "CA Certificates"
 msgstr "CA 证书"
 
-#: .\include\ui\models\settings\safety.py:66
+#: .\include\ui\models\settings\security.py:66
 msgid ""
 "The CA certificate store contains trusted root certificates used to verify "
 "secure connections to your server."
 msgstr "CA 证书存储库包含用于验证与服务器安全连接的受信任根证书。"
 
-#: .\include\ui\models\settings\safety.py:78
-#: .\include\ui\models\settings\safety.py:131
+#: .\include\ui\models\settings\security.py:78
+#: .\include\ui\models\settings\security.py:131
 msgid "Last checked: Never"
 msgstr "上次检查于：从未"
 
-#: .\include\ui\models\settings\safety.py:84
+#: .\include\ui\models\settings\security.py:84
 msgid "Check and Update Now"
 msgstr "立即检查和执行更新"
 
-#: .\include\ui\models\settings\safety.py:135
+#: .\include\ui\models\settings\security.py:135
 msgid "Last checked: {time}"
 msgstr "上次检查于：{time}"
 
-#: .\include\ui\models\settings\safety.py:155
+#: .\include\ui\models\settings\security.py:155
 msgid "Certificate update service is not available."
 msgstr "证书更新服务不可用"
 
-#: .\include\ui\models\settings\safety.py:170
+#: .\include\ui\models\settings\security.py:170
 msgid "Update failed: {error}"
 msgstr "更新失败：{error}"
 
-#: .\include\ui\models\settings\safety.py:181
+#: .\include\ui\models\settings\security.py:181
 msgid "{n} certificate(s) added"
 msgstr "添加了 {n} 个证书"
 
-#: .\include\ui\models\settings\safety.py:183
+#: .\include\ui\models\settings\security.py:183
 msgid "{n} certificate(s) updated"
 msgstr "更新了 {n} 个证书"
 
-#: .\include\ui\models\settings\safety.py:185
+#: .\include\ui\models\settings\security.py:185
 msgid "{n} certificate(s) removed"
 msgstr "移除了 {n} 个证书"
 
-#: .\include\ui\models\settings\safety.py:188
+#: .\include\ui\models\settings\security.py:188
 msgid "{n} certificate(s) already up-to-date"
 msgstr "{n} 个证书已是最新"
 
-#: .\include\ui\models\settings\safety.py:197
+#: .\include\ui\models\settings\security.py:197
 msgid "Update completed with errors: {errors}"
 msgstr "更新完成，但出现错误：{errors}"
 
-#: .\include\ui\models\settings\safety.py:202
+#: .\include\ui\models\settings\security.py:202
 msgid "Certificate store updated successfully."
 msgstr "证书存储库更新成功。"
 
-#: .\include\ui\models\settings\safety.py:204
+#: .\include\ui\models\settings\security.py:204
 msgid "Certificate store is already up-to-date."
 msgstr "证书存储库已是最新。"
 

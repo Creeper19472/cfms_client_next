@@ -61,6 +61,7 @@ from flet_material_symbols import Symbols
 from flet_model import Model, Router
 
 from include.classes.shared import AppShared
+from .enum import BrowseMode
 from include.ui.util.notifications import send_success
 from include.ui.util.route import get_parent_route
 from include.util.locale import get_translation
@@ -238,11 +239,12 @@ class SettingsField(Generic[_T]):
         callable returning such a dict for deferred evaluation.  When the
         current selection has no entry, the description area is cleared.
     browse:
-        When ``True`` on a ``SettingsField[str]`` field, a ``Browse...``
-        button is rendered to the right of the text field.  Pressing it
-        opens a directory-picker dialog and inserts the chosen path into the
-        text field.  The button inherits the same disabled state as the text
-        field (from ``depends_on``).  Defaults to ``False``.
+        When not ``BrowseMode.OFF`` on a ``SettingsField[str]`` field, a
+        ``Browse...`` button is rendered to the right of the text field.
+        Pressing it opens a directory-picker dialog and inserts the chosen
+        path into the text field.  The button inherits the same disabled
+        state as the text field (from ``depends_on``).  Defaults to
+        ``BrowseMode.OFF``.
     """
 
     def __init__(
@@ -264,7 +266,7 @@ class SettingsField(Generic[_T]):
         option_descriptions: (
             dict[str, str] | Callable[[], dict[str, str]] | None
         ) = None,
-        browse: bool = False,
+        browse: BrowseMode = BrowseMode.OFF,
     ) -> None:
         self._label = label
         self.key = key
@@ -411,6 +413,7 @@ class SettingsField(Generic[_T]):
                 expand=self.expand,
                 expand_loose=True,
                 disabled=self.disabled,
+                margin=ft.Margin(top=5),
             )
 
 
@@ -816,7 +819,7 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
             if field.browse and isinstance(control, ft.TextField):
                 browse_btn = ft.Button(
                     _("Browse..."),
-                    on_click=self._make_browse_handler(attr_name),
+                    on_click=self._make_browse_handler(attr_name, field.browse),
                     disabled=field.disabled,
                 )
                 self._browse_button_map[attr_name] = browse_btn
@@ -1015,11 +1018,18 @@ class DeclarativeSettingsPage(Model, RegisteredSettingsPage):
         value = _read_control_value(control) if control is not None else ""
         desc_text.value = descs.get(value or "", "")
 
-    def _make_browse_handler(self, attr_name: str):
+    def _make_browse_handler(self, attr_name: str, mode: BrowseMode):
         """Return an async click handler that opens a directory picker for *attr_name*."""
 
         async def _handler(event: ft.Event[ft.Button]) -> None:
-            storage_path = await ft.FilePicker().get_directory_path()
+            match mode:
+                case BrowseMode.DIRECTORY:
+                    storage_path = await ft.FilePicker().get_directory_path()
+                case BrowseMode.FILE:
+                    storage_path = (await ft.FilePicker().pick_files())[0].path
+                case _:
+                    raise ValueError(f"Unsupported BrowseMode: {mode}")
+
             if storage_path:
                 control = self._control_map.get(attr_name)
                 if control is not None:

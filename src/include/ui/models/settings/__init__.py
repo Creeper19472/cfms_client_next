@@ -22,7 +22,7 @@ from .overview import SettingsModel
 from .language import LanguageSettingsModel
 from .connection import ConnectionSettingsModel
 from .storage import StorageSettingsModel
-from .safety import SafetySettingsModel
+from .security import SafetySettingsModel
 from .updates import UpdatesSettingsModel
 from .twofa import TwoFactorSettingsModel
 

@@ -7,6 +7,9 @@ from flet_material_symbols import Symbols
 
 from include.ui.frameworks.settings import (
     DeclarativeSettingsPage,
+    HelpText,
+    SectionHeader,
+    BrowseMode,
     SettingsField,
     settings_page,
 )
@@ -35,6 +38,11 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
     # They are not persisted directly; ``_on_load`` and ``_on_save`` translate
     # between the three-state ``proxy_settings`` stored in preferences and these
     # two independent boolean controls.
+
+    basic_header: SectionHeader = SectionHeader(
+        title=_("Basic"),
+    )
+
     enable_proxy: SettingsField[bool] = SettingsField(
         label=_("Enable proxy"),
         persist=False,
@@ -58,6 +66,37 @@ class ConnectionSettingsModel(DeclarativeSettingsPage):
         label=_("Force IPv4"),
         key="force_ipv4",
         default=False,
+    )
+
+    cert_section_header: SectionHeader = SectionHeader(
+        title=_("Client Identity"),
+    )
+    cert_hint = HelpText(
+        _(
+            "This option only takes effect if both the certificate file and the "
+            "key file are set."
+        ),
+    )
+
+    client_cert_path: SettingsField[str] = SettingsField(
+        label=_("Client certificate path"),
+        key="client_cert_path",
+        default="",
+        description=_(
+            "Path to the client certificate file (PEM format) used for "
+            "mutual TLS authentication with the server. Leave blank if not used."
+        ),
+        browse=BrowseMode.FILE,
+    )
+    client_key_path: SettingsField[str] = SettingsField(
+        label=_("Client private key path"),
+        key="client_key_path",
+        default="",
+        description=_(
+            "Path to the client private key file (PEM format) used for "
+            "mutual TLS authentication with the server. Leave blank if not used."
+        ),
+        browse=BrowseMode.FILE,
     )
 
     # ---------------------------------------------------------------------------
