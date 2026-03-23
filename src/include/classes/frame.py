@@ -3,7 +3,7 @@ import struct
 from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any, Optional, cast
-from websockets import Data
+from websockets.typing import Data
 from websockets.asyncio.client import ClientConnection
 
 HEADER_FORMAT = "!IB"  # 4 bytes for frame_id, 1 byte for frame_type
@@ -19,7 +19,7 @@ class FrameType(IntEnum):
 class Frame:
     frame_id: int
     frame_type: FrameType
-    data: Any
+    data: bytes
 
 
 class AsyncStream:
@@ -76,6 +76,9 @@ class AsyncMultiplexConnection:
 
                 if len(raw_payload) < HEADER_SIZE:
                     continue
+
+                if isinstance(raw_payload, str):
+                    raw_payload = raw_payload.encode("utf-8")
 
                 frame_id, frame_type_val = struct.unpack_from(
                     HEADER_FORMAT, raw_payload
