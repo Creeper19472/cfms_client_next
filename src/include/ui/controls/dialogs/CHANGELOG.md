@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.13.0
+**Released on:** 2026-03-23
+
+**Title:** Introducing Full-duplex Communication
+
+This version introduces support for full-duplex communication while improving 
+the reusability of single connections to adapt to the latest server version.
+
+---
 ## v0.12.0
 **Released on:** 2026-03-20
 
