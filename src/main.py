@@ -12,6 +12,7 @@ import logging
 import flet as ft
 import flet_permission_handler as fph
 
+from include.backend.event_handlers.lockdown import lockdown_handler
 from include.constants import LOGFILE_PATH, RUNTIME_PATH, ROOT_PATH
 from include.classes.shared import AppShared
 from include.classes.services.manager import ServiceManager
@@ -231,6 +232,8 @@ async def main(page: ft.Page):
     # Handles messages proactively pushed by the server over the active connection
     server_stream_service = ServerStreamHandleService(enabled=True)
     service_manager.register(server_stream_service)
+
+    server_stream_service.add_handler("lockdown", lockdown_handler)
 
     # Register CA certificate update service
     # Checks at most once every 90 days; the schedule is enforced inside execute()
