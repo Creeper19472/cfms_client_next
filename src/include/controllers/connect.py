@@ -22,6 +22,11 @@ class ConnectFormController(Controller["ConnectForm"]):
         super().__init__(control)
 
     async def close_previous_connection(self):
+        if (sm := self.app_shared.service_manager) is not None:
+            ss_service = sm.get_service("server_stream", ServerStreamHandleService)
+            if ss_service is not None:
+                ss_service.connection = None
+
         if self.app_shared.conn:
             await self.app_shared.conn.close()
 
@@ -37,9 +42,7 @@ class ConnectFormController(Controller["ConnectForm"]):
             )
         except ConnectionResetError as e:
             self.control.enable_interactions()
-            if (
-                e.strerror
-            ):
+            if e.strerror:
                 errmsg = _(
                     "Connection failed because the connection was reset: {strerror}"
                 ).format(strerror=e.strerror)

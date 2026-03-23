@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, cast
 from include.classes.exceptions.config import CorruptedEncryptedConfigError
 from include.classes.preferences import UserPreference
 from include.classes.services.download import DownloadManagerService
+from include.classes.services.server_stream import ServerStreamHandleService
 from include.controllers.base import Controller
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
 from include.ui.controls.dialogs.corrupted_config import CorruptedConfigDialog
