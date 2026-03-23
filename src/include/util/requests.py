@@ -173,7 +173,6 @@ async def _request(
     response = await stream.recv()
 
     loaded_response: dict[str, Any] = json.loads(response.data)
-    print(f"Received response for action '{action}': {loaded_response}")
 
     t2 = time.perf_counter()
 
