@@ -18,10 +18,6 @@ t = get_translation()
 _ = t.gettext
 
 
-# Store locks per-connection without attaching them to the connection object
-_conn_locks = weakref.WeakKeyDictionary()
-
-
 async def do_request(
     action: str,
     data: dict[str, Any] = {},
@@ -140,7 +136,7 @@ async def _request(
     Internal function to send a request and receive response.
 
     Serializes the request to JSON, sends it through the connection,
-    and waits for the response. Uses a lock to ensure thread-safety.
+    and waits for the response.
 
     Args:
         conn: Active WebSocket connection

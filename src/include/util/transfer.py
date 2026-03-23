@@ -140,7 +140,7 @@ async def receive_file_from_server(
         7. Removes the output file if verification fails.
 
     Args:
-        client (ClientConnection): The websocket client connection.
+        client (AsyncMultiplexConnection): The websocket client connection.
         task_id (str): The identifier for the file transfer task.
         file_path (str): The path to save the received file.
 

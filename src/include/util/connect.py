@@ -11,21 +11,6 @@ from include.constants import ROOT_PATH
 from include.classes.frame import AsyncMultiplexConnection, FrameType
 
 
-async def handle_server_streams(mux: AsyncMultiplexConnection):
-    while True:
-        stream = await mux.accept_stream()
-        if stream is None:
-            print("Connection closed by server.")
-            break
-
-        # 接收服务端的发来的第一条消息
-        frame = await stream.recv()
-        print(f"[Client] Received unexpected from server: {frame.data}")
-
-        # 答复服务端并结束该流
-        await stream.send({"status": "received"}, FrameType.CONCLUSION)
-
-
 async def get_connection(
     server_address: str,
     disable_ssl_enforcement: bool = False,
