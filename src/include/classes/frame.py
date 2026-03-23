@@ -114,9 +114,9 @@ class AsyncMultiplexConnection:
 
         data_len = len(data)
         payload = bytearray(HEADER_SIZE + data_len)
-        
+
         struct.pack_into(HEADER_FORMAT, payload, 0, frame_id, frame_type.value)
-        
+
         payload[HEADER_SIZE:] = data
 
         await self._ws.send(payload)

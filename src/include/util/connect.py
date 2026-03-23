@@ -4,7 +4,7 @@ import socket
 import ssl
 from typing import Literal
 
-from websockets.asyncio.client import ClientConnection, connect
+from websockets.asyncio.client import connect
 
 from include.classes.shared import AppShared
 from include.constants import ROOT_PATH

@@ -12,7 +12,6 @@ from typing import Awaitable, Callable, Optional
 import aiofiles.os
 from Crypto.Cipher import AES
 from flet import FilePickerFile
-from websockets.asyncio.client import ClientConnection
 
 from include.classes.frame import AsyncMultiplexConnection
 from include.classes.shared import AppShared
@@ -45,7 +44,9 @@ async def calculate_sha256(file_path: str) -> str:
         return hashlib.sha256(mmapped_file).hexdigest()
 
 
-async def upload_file_to_server(client: AsyncMultiplexConnection, task_id: str, file_path: str):
+async def upload_file_to_server(
+    client: AsyncMultiplexConnection, task_id: str, file_path: str
+):
     """
     Upload a file to the server over WebSocket connection.
 

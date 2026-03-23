@@ -181,5 +181,5 @@ async def _request(
         _monitor_ref.current.update_status(
             _("Request '{}' completed in {:.3f} seconds").format(action, t2 - t1)
         )
-        
+
     return loaded_response
