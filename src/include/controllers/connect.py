@@ -38,7 +38,7 @@ class ConnectFormController(Controller["ConnectForm"]):
             self.control.enable_interactions()
             if (
                 e.strerror
-            ):  # We'll use str.format() until Python 3.14 is supported by upstream
+            ):
                 errmsg = _(
                     "Connection failed because the connection was reset: {strerror}"
                 ).format(strerror=e.strerror)
