@@ -1,5 +1,7 @@
 """Service for handling server-initiated (push) messages."""
 
+__all__ = ["ServerStreamHandleService"]
+
 import asyncio
 import json
 from typing import Awaitable, Callable, Dict, List, Optional
@@ -7,9 +9,8 @@ from typing import Awaitable, Callable, Dict, List, Optional
 from include.classes.frame import AsyncMultiplexConnection, AsyncStream
 from include.classes.services.base import BaseService
 
-__all__ = ["ServerStreamHandleService"]
 
-# Type alias for message handlers called with (action, data).
+# Type alias for message handlers called with (event, data).
 MessageHandler = Callable[[str, dict], Awaitable[None]]
 
 
@@ -34,8 +35,8 @@ class ServerStreamHandleService(BaseService):
         # After establishing a connection, hand it to the service
         server_stream_service.set_connection(conn)
 
-        # Register a handler for a specific server action
-        async def on_notify(action: str, data: dict) -> None:
+        # Register a handler for a specific server event
+        async def on_notify(event: str, data: dict) -> None:
             print(f"Server notification: {data}")
 
         server_stream_service.add_handler("notify", on_notify)
@@ -48,9 +49,9 @@ class ServerStreamHandleService(BaseService):
         # Set when set_connection() is called; wakes up a waiting execute().
         self._connection_ready: asyncio.Event = asyncio.Event()
 
-        # Registered handlers keyed by action name.
-        self._action_handlers: Dict[str, List[MessageHandler]] = {}
-        # Handlers that receive every server-pushed message regardless of action.
+        # Registered handlers keyed by event name.
+        self._event_handlers: Dict[str, List[MessageHandler]] = {}
+        # Handlers that receive every server-pushed message regardless of event.
         self._fallback_handlers: List[MessageHandler] = []
 
     # ------------------------------------------------------------------
@@ -72,22 +73,22 @@ class ServerStreamHandleService(BaseService):
         self._connection = connection
         self._connection_ready.set()
 
-    def add_handler(self, action: str, handler: MessageHandler) -> None:
+    def add_handler(self, event: str, handler: MessageHandler) -> None:
         """Register *handler* to be called for server-pushed messages whose
-        ``action`` field equals *action*.
+        ``event`` field equals *event*.
 
         Args:
-            action: The action name to match (case-sensitive).
-            handler: An async callable ``(action, data) -> None``.
+            event: The event name to match (case-sensitive).
+            handler: An async callable ``(event, data) -> None``.
         """
-        self._action_handlers.setdefault(action, []).append(handler)
+        self._event_handlers.setdefault(event, []).append(handler)
 
     def add_fallback_handler(self, handler: MessageHandler) -> None:
         """Register *handler* to be called for **every** server-pushed message,
-        regardless of its ``action`` field.
+        regardless of its ``event`` field.
 
         Args:
-            handler: An async callable ``(action, data) -> None``.
+            handler: An async callable ``(event, data) -> None``.
         """
         self._fallback_handlers.append(handler)
 
@@ -122,9 +123,7 @@ class ServerStreamHandleService(BaseService):
         while True:
             # Race between an incoming server-pushed stream and a new
             # set_connection() call that replaces the current connection.
-            accept_task: asyncio.Task = asyncio.create_task(
-                connection.accept_stream()
-            )
+            accept_task: asyncio.Task = asyncio.create_task(connection.accept_stream())
             ready_task: asyncio.Task = asyncio.create_task(
                 self._connection_ready.wait()
             )
@@ -166,9 +165,7 @@ class ServerStreamHandleService(BaseService):
                 # The connection was closed by the remote end or an error.
                 if self._connection is connection:
                     self._connection = None
-                self.logger.info(
-                    "Connection closed; waiting for a new connection"
-                )
+                self.logger.info("Connection closed; waiting for a new connection")
                 return
 
             # Dispatch the stream concurrently so slow handlers cannot block
@@ -189,25 +186,23 @@ class ServerStreamHandleService(BaseService):
             frame = await stream.recv()
             payload: dict = json.loads(frame.data)
         except Exception as exc:
-            self.logger.warning(
-                "Failed to read/parse server-pushed message: %s", exc
-            )
+            self.logger.warning("Failed to read/parse server-pushed message: %s", exc)
             return
 
-        action: str = payload.get("action", "")
+        event: str = payload.get("event", "")
         data: dict = payload.get("data", {})
 
         handlers: List[MessageHandler] = list(
-            self._action_handlers.get(action, [])
+            self._event_handlers.get(event, [])
         ) + list(self._fallback_handlers)
 
         for handler in handlers:
             try:
-                await handler(action, data)
+                await handler(event, data)
             except Exception as exc:
                 self.logger.error(
-                    "Handler for action '%s' raised an error: %s",
-                    action,
+                    "Handler for event '%s' raised an error: %s",
+                    event,
                     exc,
                     exc_info=True,
                 )
