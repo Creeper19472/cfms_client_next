@@ -14,6 +14,7 @@ from Crypto.Cipher import AES
 from flet import FilePickerFile
 from websockets.asyncio.client import ClientConnection
 
+from include.classes.frame import AsyncMultiplexConnection
 from include.classes.shared import AppShared
 from include.classes.exceptions.request import InvalidResponseError
 from include.classes.exceptions.transmission import (
@@ -44,7 +45,7 @@ async def calculate_sha256(file_path: str) -> str:
         return hashlib.sha256(mmapped_file).hexdigest()
 
 
-async def upload_file_to_server(client: ClientConnection, task_id: str, file_path: str):
+async def upload_file_to_server(client: AsyncMultiplexConnection, task_id: str, file_path: str):
     """
     Upload a file to the server over WebSocket connection.
 
@@ -62,8 +63,9 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
         ValueError: If server response is invalid
         RuntimeError: If upload is rejected by server
     """
+    stream = client.create_stream()
 
-    await client.send(
+    await stream.send(
         json.dumps(
             {
                 "action": "upload_file",
@@ -74,7 +76,7 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
     )
 
     # Receive file metadata from the server
-    response = json.loads(await client.recv())
+    response = json.loads((await stream.recv()).data)
     if response["action"] != "transfer_file":
         raise ValueError
 
@@ -88,9 +90,9 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
             "file_size": file_size,
         },
     }
-    await client.send(json.dumps(task_info, ensure_ascii=False))
+    await stream.send(json.dumps(task_info, ensure_ascii=False))
 
-    received_response = str(await client.recv())
+    received_response = (await stream.recv()).data.decode("utf-8")
     if received_response.startswith("ready"):
         ready = True
     elif received_response == "stop":
@@ -105,7 +107,7 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
             async with aiofiles.open(file_path, "rb") as f:
                 while True:
                     chunk = await f.read(chunk_size)
-                    await client.send(chunk)
+                    await stream.send(chunk)
 
                     yield await f.tell(), file_size
 
@@ -113,14 +115,14 @@ async def upload_file_to_server(client: ClientConnection, task_id: str, file_pat
                         break
 
             # need to wait for server confirmation
-            server_response = json.loads(await client.recv())
+            server_response = json.loads((await stream.recv()).data)
 
         except Exception:
             raise
 
 
 async def receive_file_from_server(
-    client: ClientConnection,
+    client: AsyncMultiplexConnection,
     task_id: str,
     file_path: str,  # filename: str | None = None
 ):
@@ -150,9 +152,10 @@ async def receive_file_from_server(
         FileHashMismatchError: If the received file hash does not match the expected hash.
         Exception: For other errors during transfer or decryption.
     """
+    stream = client.create_stream()
 
     # Send the request for file metadata
-    await client.send(
+    await stream.send(
         json.dumps(
             {
                 "action": "download_file",
@@ -163,7 +166,7 @@ async def receive_file_from_server(
     )
 
     # Receive file metadata from the server
-    response = json.loads(await client.recv())
+    response = json.loads((await stream.recv()).data)
     if response["action"] != "transfer_file":
         raise ValueError("Invalid action received for file transfer")
 
@@ -172,7 +175,7 @@ async def receive_file_from_server(
     chunk_size = response["data"].get("chunk_size", 8192)  # Chunk size
     total_chunks = response["data"].get("total_chunks")  # Total chunks
 
-    await client.send("ready")
+    await stream.send("ready")
 
     downloading_path = FLET_APP_STORAGE_TEMP + "/downloading/" + task_id
     await aiofiles.os.makedirs(downloading_path, exist_ok=True)
@@ -190,7 +193,7 @@ async def receive_file_from_server(
         try:
             while received_chunks + 1 <= total_chunks:
                 # Receive encrypted data from the server
-                data = await client.recv()
+                data = (await stream.recv()).data
                 if not data:
                     raise ValueError("Received empty data from server")
 
@@ -216,7 +219,7 @@ async def receive_file_from_server(
                 yield 0, received_file_size, file_size
 
             # Get decryption information
-            decrypted_data = await client.recv()
+            decrypted_data = (await stream.recv()).data
             decrypted_data_json: dict = json.loads(decrypted_data)
 
             aes_key = base64.b64decode(decrypted_data_json["data"].get("key"))
@@ -547,7 +550,9 @@ async def upload_new_revision(
             disable_ssl_enforcement=app_shared.disable_ssl_enforcement,
             proxy=app_shared.preferences["settings"]["proxy_settings"],
             max_size=max_size,
-            force_ipv4=app_shared.preferences.get("settings", {}).get("force_ipv4", False),
+            force_ipv4=app_shared.preferences.get("settings", {}).get(
+                "force_ipv4", False
+            ),
         )
 
         # Step 3: Upload the file with progress tracking

@@ -8,6 +8,22 @@ from websockets.asyncio.client import ClientConnection, connect
 
 from include.classes.shared import AppShared
 from include.constants import ROOT_PATH
+from include.classes.frame import AsyncMultiplexConnection, FrameType
+
+
+async def handle_server_streams(mux: AsyncMultiplexConnection):
+    while True:
+        stream = await mux.accept_stream()
+        if stream is None:
+            print("Connection closed by server.")
+            break
+
+        # 接收服务端的发来的第一条消息
+        frame = await stream.recv()
+        print(f"[Client] Received unexpected from server: {frame.data}")
+
+        # 答复服务端并结束该流
+        await stream.send({"status": "received"}, FrameType.CONCLUSION)
 
 
 async def get_connection(
@@ -16,7 +32,7 @@ async def get_connection(
     max_size: int = 2**20,
     proxy: str | Literal[True] | None = True,
     force_ipv4: bool = False,
-) -> ClientConnection:
+) -> AsyncMultiplexConnection:
     """
     Establish a WebSocket connection to the server.
 
@@ -58,6 +74,12 @@ async def get_connection(
     # Set address family if IPv4 is forced
     family = socket.AF_INET if force_ipv4 else socket.AF_UNSPEC
 
-    return await connect(
-        server_address, ssl=ssl_context, max_size=max_size, proxy=proxy, family=family
+    return AsyncMultiplexConnection(
+        await connect(
+            server_address,
+            ssl=ssl_context,
+            max_size=max_size,
+            proxy=proxy,
+            family=family,
+        )
     )

@@ -9,6 +9,7 @@ import yaml
 
 from websockets.asyncio.client import ClientConnection
 
+from include.classes.frame import AsyncMultiplexConnection
 from include.classes.preferences import UserPreference
 from include.constants import DEFAULT_UPDATE_CHANNEL, GLOBAL_PREFERENCES_PATH
 from include.util.merging import merge_with_template
@@ -105,7 +106,7 @@ class AppShared:
         self.pending_2fa_verification: bool = False
 
         # Connection and services
-        self.conn: Optional[ClientConnection] = None
+        self.conn: Optional[AsyncMultiplexConnection] = None
         self.service_manager: Optional["ServiceManager"] = None
         self.floating_upgrade_button: Optional["FloatingUpgradeButton"] = None
 

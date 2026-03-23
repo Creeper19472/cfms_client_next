@@ -6,8 +6,8 @@ import json
 import os
 import time
 from typing import Dict, Iterable, List, Optional, Callable, Set
-from websockets.asyncio.client import ClientConnection
 
+from include.classes.frame import AsyncMultiplexConnection
 from include.classes.shared import AppShared
 from include.classes.datacls import DownloadTask, DownloadTaskStatus
 from include.classes.exceptions.config import CorruptedEncryptedConfigError
@@ -161,7 +161,7 @@ class DownloadManagerService(BaseService):
         task.started_at = time.time()
         self._notify_task_update(task)
 
-        transfer_conn: Optional[ClientConnection] = None
+        transfer_conn: Optional[AsyncMultiplexConnection] = None
 
         try:
             self.logger.info(

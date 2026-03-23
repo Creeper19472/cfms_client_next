@@ -1,6 +1,5 @@
 """Utilities for making requests to the server over WebSocket."""
 
-import asyncio
 import json
 import time
 import uuid
@@ -8,8 +7,8 @@ import weakref
 from typing import Any, Optional
 
 from websockets import ConnectionClosed
-from websockets.asyncio.client import ClientConnection
 
+from include.classes.frame import AsyncMultiplexConnection
 from include.classes.shared import AppShared
 from include.classes.response import Response
 from include.util.connect import get_connection
@@ -129,27 +128,8 @@ async def do_request_2(
     )
 
 
-def _get_conn_lock(conn: ClientConnection) -> asyncio.Lock:
-    """
-    Get or create a lock for a specific connection.
-
-    Uses weak references to avoid keeping connections alive.
-
-    Args:
-        conn: WebSocket connection
-
-    Returns:
-        Lock associated with the connection
-    """
-    lock = _conn_locks.get(conn)
-    if lock is None:
-        lock = asyncio.Lock()
-        _conn_locks[conn] = lock
-    return lock
-
-
 async def _request(
-    conn: ClientConnection,
+    client: AsyncMultiplexConnection,
     action: str,
     data: dict[str, Any] = {},
     message: str = "",
@@ -185,14 +165,15 @@ async def _request(
         "nonce": str(uuid.uuid4()),
     }
 
+    stream = client.create_stream()
+
     request_json = json.dumps(request, ensure_ascii=False)
 
-    lock = _get_conn_lock(conn)
-    async with lock:
-        await conn.send(request_json)
-        response = await conn.recv()
+    await stream.send(request_json)
+    response = await stream.recv()
 
-    loaded_response: dict[str, Any] = json.loads(response)
+    loaded_response: dict[str, Any] = json.loads(response.data)
+    print(f"Received response for action '{action}': {loaded_response}")
 
     t2 = time.perf_counter()
 
