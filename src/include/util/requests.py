@@ -83,7 +83,7 @@ async def do_request(
                     "server_stream", ServerStreamHandleService
                 )
                 if ss_service is not None:
-                    ss_service.set_connection(_conn)
+                    ss_service.connection = _conn
             continue
 
         break

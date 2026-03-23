@@ -57,8 +57,13 @@ class ServerStreamHandleService(BaseService):
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+    @property
+    def connection(self) -> Optional[AsyncMultiplexConnection]:
+        """The currently active connection, or None if no connection is active."""
+        return self._connection
 
-    def set_connection(self, connection: AsyncMultiplexConnection) -> None:
+    @connection.setter
+    def connection(self, connection: Optional[AsyncMultiplexConnection]) -> None:
         """Replace the active connection with *connection*.
 
         This may be called at any time – including while the service is
@@ -71,7 +76,10 @@ class ServerStreamHandleService(BaseService):
             connection: The new :class:`AsyncMultiplexConnection` to listen on.
         """
         self._connection = connection
-        self._connection_ready.set()
+        if connection is not None:
+            self._connection_ready.set()
+        else:
+            self._connection_ready.clear()
 
     def add_handler(self, event: str, handler: MessageHandler) -> None:
         """Register *handler* to be called for server-pushed messages whose

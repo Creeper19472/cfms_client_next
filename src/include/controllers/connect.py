@@ -86,7 +86,7 @@ class ConnectFormController(Controller["ConnectForm"]):
                 "server_stream", ServerStreamHandleService
             )
             if ss_service is not None:
-                ss_service.set_connection(conn)
+                ss_service.connection = conn
 
         self.control.page.title = f"CFMS Client - {server_address}"
         self.control.update()
