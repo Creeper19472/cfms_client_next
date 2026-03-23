@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import flet_permission_handler as fph
 
+from include.classes.services.server_stream import ServerStreamHandleService
 from include.constants import PROTOCOL_VERSION
 from include.controllers.base import Controller
 from include.util.connect import get_connection
@@ -77,6 +78,15 @@ class ConnectFormController(Controller["ConnectForm"]):
         self.app_shared.disable_ssl_enforcement = (
             self.control.disable_ssl_enforcement_switch.value
         )
+
+        # Notify the server-stream service about the new connection so it can
+        # start accepting server-pushed messages on it.
+        if self.app_shared.service_manager is not None:
+            ss_service = self.app_shared.service_manager.get_service(
+                "server_stream", ServerStreamHandleService
+            )
+            if ss_service is not None:
+                ss_service.set_connection(conn)
 
         self.control.page.title = f"CFMS Client - {server_address}"
         self.control.update()

@@ -1,18 +1,213 @@
-"""Service for handling server streams."""
+"""Service for handling server-initiated (push) messages."""
 
-from typing import Optional
+import asyncio
+import json
+from typing import Awaitable, Callable, Dict, List, Optional
 
-from include.classes.frame import AsyncMultiplexConnection
+from include.classes.frame import AsyncMultiplexConnection, AsyncStream
 from include.classes.services.base import BaseService
+
+__all__ = ["ServerStreamHandleService"]
+
+# Type alias for message handlers called with (action, data).
+MessageHandler = Callable[[str, dict], Awaitable[None]]
 
 
 class ServerStreamHandleService(BaseService):
-    def __init__(
-        self,
-        enabled: bool = True,
-    ):
-        super().__init__(name="server_stream", enabled=enabled, interval=0)
-        self.connection: Optional["AsyncMultiplexConnection"] = None
+    """Service that accepts and dispatches server-initiated (push) messages.
 
-    def set_connection(self, connection: "AsyncMultiplexConnection"):
-        self.connection = connection
+    The server may proactively open new streams to deliver messages to the
+    client without a preceding client request.  This service waits for those
+    streams and dispatches their JSON payloads to registered handlers.
+
+    Only one connection is active at a time.  Calling :meth:`set_connection`
+    replaces any previous (possibly already-disconnected) connection so the
+    service seamlessly switches to the new one without dropping any incoming
+    messages.
+
+    Usage::
+
+        # Register the service in main.py
+        server_stream_service = ServerStreamHandleService(enabled=True)
+        service_manager.register(server_stream_service)
+
+        # After establishing a connection, hand it to the service
+        server_stream_service.set_connection(conn)
+
+        # Register a handler for a specific server action
+        async def on_notify(action: str, data: dict) -> None:
+            print(f"Server notification: {data}")
+
+        server_stream_service.add_handler("notify", on_notify)
+    """
+
+    def __init__(self, enabled: bool = True) -> None:
+        super().__init__(name="server_stream", enabled=enabled, interval=0)
+
+        self._connection: Optional[AsyncMultiplexConnection] = None
+        # Set when set_connection() is called; wakes up a waiting execute().
+        self._connection_ready: asyncio.Event = asyncio.Event()
+
+        # Registered handlers keyed by action name.
+        self._action_handlers: Dict[str, List[MessageHandler]] = {}
+        # Handlers that receive every server-pushed message regardless of action.
+        self._fallback_handlers: List[MessageHandler] = []
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def set_connection(self, connection: AsyncMultiplexConnection) -> None:
+        """Replace the active connection with *connection*.
+
+        This may be called at any time – including while the service is
+        already listening on a previous connection.  The previous connection
+        is left open (it may still be used for in-flight requests); the
+        listen loop will detect the replacement via the ``_connection_ready``
+        event and switch over on the next iteration.
+
+        Args:
+            connection: The new :class:`AsyncMultiplexConnection` to listen on.
+        """
+        self._connection = connection
+        self._connection_ready.set()
+
+    def add_handler(self, action: str, handler: MessageHandler) -> None:
+        """Register *handler* to be called for server-pushed messages whose
+        ``action`` field equals *action*.
+
+        Args:
+            action: The action name to match (case-sensitive).
+            handler: An async callable ``(action, data) -> None``.
+        """
+        self._action_handlers.setdefault(action, []).append(handler)
+
+    def add_fallback_handler(self, handler: MessageHandler) -> None:
+        """Register *handler* to be called for **every** server-pushed message,
+        regardless of its ``action`` field.
+
+        Args:
+            handler: An async callable ``(action, data) -> None``.
+        """
+        self._fallback_handlers.append(handler)
+
+    # ------------------------------------------------------------------
+    # BaseService implementation
+    # ------------------------------------------------------------------
+
+    async def execute(self) -> None:
+        """Accept and dispatch incoming server-pushed streams.
+
+        Waits for a connection to be provided via :meth:`set_connection`,
+        then loops over server-initiated streams dispatching each one to
+        the registered handlers.  Returns (allowing the base-class run-loop
+        to call :meth:`execute` again) as soon as the active connection
+        closes **or** is replaced by a new :meth:`set_connection` call.
+        """
+        # Block until a connection is available.
+        if self._connection is None:
+            await self._connection_ready.wait()
+
+        # Consume the "ready" signal so we don't immediately return on the
+        # next iteration without waiting for a genuinely new connection.
+        self._connection_ready.clear()
+
+        connection = self._connection
+        if connection is None:
+            # Spurious wake-up; try again on the next execute() call.
+            return
+
+        self.logger.debug("Listening for server-pushed messages")
+
+        while True:
+            # Race between an incoming server-pushed stream and a new
+            # set_connection() call that replaces the current connection.
+            accept_task: asyncio.Task = asyncio.create_task(
+                connection.accept_stream()
+            )
+            ready_task: asyncio.Task = asyncio.create_task(
+                self._connection_ready.wait()
+            )
+
+            try:
+                done, pending = await asyncio.wait(
+                    {accept_task, ready_task},
+                    return_when=asyncio.FIRST_COMPLETED,
+                )
+            except BaseException:
+                # Service is being stopped (CancelledError) or another error;
+                # cancel both tasks and propagate the exception.
+                accept_task.cancel()
+                ready_task.cancel()
+                raise
+
+            # Cancel whichever task lost the race.
+            for task in pending:
+                task.cancel()
+
+            if ready_task in done:
+                # A new connection was provided via set_connection(); return so
+                # execute() will restart and pick up the new connection.
+                self.logger.debug(
+                    "Connection replaced; restarting listen loop on new connection"
+                )
+                return
+
+            # accept_task is in done – a new server-pushed stream arrived.
+            try:
+                stream: Optional[AsyncStream] = accept_task.result()
+            except Exception as exc:
+                self.logger.warning(
+                    "Error while accepting server-pushed stream: %s", exc
+                )
+                stream = None
+
+            if stream is None:
+                # The connection was closed by the remote end or an error.
+                if self._connection is connection:
+                    self._connection = None
+                self.logger.info(
+                    "Connection closed; waiting for a new connection"
+                )
+                return
+
+            # Dispatch the stream concurrently so slow handlers cannot block
+            # the processing of other incoming messages.
+            asyncio.create_task(self._dispatch_stream(stream))
+
+    # ------------------------------------------------------------------
+    # Internals
+    # ------------------------------------------------------------------
+
+    async def _dispatch_stream(self, stream: AsyncStream) -> None:
+        """Read a single server-pushed stream and invoke registered handlers.
+
+        Args:
+            stream: The server-initiated :class:`AsyncStream` to handle.
+        """
+        try:
+            frame = await stream.recv()
+            payload: dict = json.loads(frame.data)
+        except Exception as exc:
+            self.logger.warning(
+                "Failed to read/parse server-pushed message: %s", exc
+            )
+            return
+
+        action: str = payload.get("action", "")
+        data: dict = payload.get("data", {})
+
+        handlers: List[MessageHandler] = list(
+            self._action_handlers.get(action, [])
+        ) + list(self._fallback_handlers)
+
+        for handler in handlers:
+            try:
+                await handler(action, data)
+            except Exception as exc:
+                self.logger.error(
+                    "Handler for action '%s' raised an error: %s",
+                    action,
+                    exc,
+                    exc_info=True,
+                )

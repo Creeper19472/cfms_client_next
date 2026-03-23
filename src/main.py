@@ -23,6 +23,7 @@ from include.classes.services.ca_update import (
 from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
+from include.classes.services.server_stream import ServerStreamHandleService
 from include.ui.controls.components.common.monitor import MonitorStack
 from include.util.locale import set_translation
 from include.util.ca_update import manifest_exists
@@ -225,6 +226,11 @@ async def main(page: ft.Page):
         interval=300.0,  # Check every 5 minutes
     )
     service_manager.register(favorites_validation_service)
+
+    # Register server stream handler service
+    # Handles messages proactively pushed by the server over the active connection
+    server_stream_service = ServerStreamHandleService(enabled=True)
+    service_manager.register(server_stream_service)
 
     # Register CA certificate update service
     # Checks at most once every 90 days; the schedule is enforced inside execute()
