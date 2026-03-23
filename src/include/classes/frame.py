@@ -30,7 +30,7 @@ class AsyncStream:
         self.frame_id = frame_id
         self._queue: asyncio.Queue = asyncio.Queue()
 
-    async def send(self, data: Any, frame_type: FrameType = FrameType.PROCESS):
+    async def send(self, data: Data, frame_type: FrameType = FrameType.PROCESS):
         await self.connection._send_frame(self.frame_id, frame_type, data)
 
     async def recv(self) -> Frame:
@@ -128,6 +128,17 @@ class AsyncMultiplexConnection:
             self._streams.pop(frame_id, None)
 
     async def close(self):
+        # Signal the receive loop to stop
         self._is_running = False
+
+        # Ensure the dispatcher task is cleaned up
+        if self._dispatcher_task is not None and not self._dispatcher_task.done():
+            self._dispatcher_task.cancel()
+            try:
+                await self._dispatcher_task
+            except asyncio.CancelledError:
+                pass
+
+        # Close the underlying websocket connection
         if hasattr(self._ws, "close"):
             await self._ws.close()

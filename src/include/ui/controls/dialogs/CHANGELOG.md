@@ -8,7 +8,7 @@ This document contains the release history and changelog for CFMS Client NEXT.
 
 **Title:** Introducing Full-duplex Communication
 
-This version introduces support for full-duplex communication while improving 
+This version introduces support for full-duplex communication while improving
 the reusability of single connections to adapt to the latest server version.
 
 ---
