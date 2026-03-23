@@ -65,7 +65,7 @@ class LoginFormController(Controller["LoginForm"]):
                 self.control.send_error(f"Unsupported 2FA method: {method}")
             return
 
-        elif code == 403:
+        elif code in [4001, 4002]:
             self.control.page.show_dialog(
                 PasswdUserDialog(
                     username, tip=_("Password must be changed before login.")
