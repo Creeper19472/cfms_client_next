@@ -2,6 +2,7 @@ from typing import Optional
 import asyncio
 from concurrent.futures import Future, CancelledError
 import flet as ft
+from flet_material_symbols import Symbols
 from include.util.locale import get_translation
 
 t = get_translation()
@@ -27,7 +28,7 @@ class LockdownBanner(ft.Container):
         super().__init__(
             content=ft.Row(
                 [
-                    ft.Icon(ft.Icons.WARNING, color=ft.Colors.WHITE),
+                    ft.Icon(Symbols.WARNING, color=ft.Colors.WHITE, fill=1),
                     ft.Text(_("System Lockdown"), color=ft.Colors.WHITE),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,

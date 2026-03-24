@@ -89,7 +89,7 @@ class ServerStreamHandleService(BaseService):
 
         Args:
             event: The event name to match (case-sensitive).
-            handler: An async callable ``(event, data) -> None``.
+            handler: An async callable ``(event, data, page) -> None``.
         """
         self._event_handlers.setdefault(event, []).append(handler)
 
@@ -98,7 +98,7 @@ class ServerStreamHandleService(BaseService):
         regardless of its ``event`` field.
 
         Args:
-            handler: An async callable ``(event, data) -> None``.
+            handler: An async callable ``(event, data, page) -> None``.
         """
         self._fallback_handlers.append(handler)
 

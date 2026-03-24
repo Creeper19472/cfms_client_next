@@ -27,7 +27,7 @@ class HomeModel(Model):
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
 
-        self.floating_action_button = LockdownSwitchButton()
+        self.floating_action_button = LockdownSwitchButton(visible=False)
         self.floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
 
         self.stored_views = [

@@ -10,13 +10,14 @@ _ = t.gettext
 
 
 class LockdownSwitchButton(ft.FloatingActionButton):
-    def __init__(self):
+    def __init__(self, visible=True):
         self.page: ft.Page
         self._lockdown_active: bool = False
         super().__init__(
             icon=ft.Icon(Symbols.SUPERVISED_USER_CIRCLE_OFF, fill=0),
             on_click=self.on_button_click,
             tooltip=_("Toggle Lockdown Mode"),
+            visible=visible,
         )
 
     @property
@@ -36,15 +37,29 @@ class LockdownSwitchButton(ft.FloatingActionButton):
         self.page.run_task(self.request_lockdown)
 
     async def request_lockdown(self):
-        response = await do_request_2(
-            action="lockdown",
-            data={"status": self.lockdown_active},
-            username=AppShared().username,
-            token=AppShared().token,
-        )
+        has_error = False
+        try:
+            response = await do_request_2(
+                action="lockdown",
+                data={"status": self.lockdown_active},
+                username=AppShared().username,
+                token=AppShared().token,
+            )
+        except Exception as e:
+            has_error = True
+            send_error(
+                self.page,
+                _(
+                    "Failed to toggle lockdown mode: ({exc_class_name}) {str_err}"
+                ).format(exc_class_name=e.__class__.__name__, str_err=str(e)),
+            )
+            return
+
         if response.code != 200:
-            # Revert the button state if the request failed
-            self.lockdown_active = not self.lockdown_active
+            has_error = True
             send_error(
                 self.page, _("Failed to toggle lockdown mode: ") + response.message
             )
+
+        if has_error:
+            self.lockdown_active = not self.lockdown_active

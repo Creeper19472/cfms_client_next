@@ -84,8 +84,10 @@ class LockdownModel(Model):
 
     async def _update_time(self):
         ft.context.disable_auto_update()
-        while self._running:
-            self.clock.value = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            self.clock.update()
-            await asyncio.sleep(0.5)
-        ft.context.enable_auto_update()
+        try:
+            while self._running:
+                self.clock.value = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.clock.update()
+                await asyncio.sleep(0.5)
+        finally:
+            ft.context.enable_auto_update()
