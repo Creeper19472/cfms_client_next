@@ -40,6 +40,7 @@ class LockdownModel(Model):
             ),
             size=14,
             color=ft.Colors.WHITE,
+            text_align=ft.TextAlign.CENTER,
         )
         self.reject_button = ft.Button(
             _("Quit"),
@@ -52,12 +53,13 @@ class LockdownModel(Model):
             self.title,
             self.description,
             ft.Divider(),
-            ft.ResponsiveRow(
+            ft.Row(
                 controls=[
                     ft.Text(_("Wait until the state is lifted or")),
                     self.reject_button,
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
+                wrap=True,
             ),
         ]
 
