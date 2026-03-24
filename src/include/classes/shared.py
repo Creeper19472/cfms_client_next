@@ -110,6 +110,9 @@ class AppShared:
         self.service_manager: Optional["ServiceManager"] = None
         self.floating_upgrade_button: Optional["FloatingUpgradeButton"] = None
 
+        # Page status
+        self.lockdown_mode: bool = False
+
         # User preferences
         self.user_perference: Optional[UserPreference] = None
 

@@ -93,7 +93,7 @@ async def main(page: ft.Page):
     from include.ui.models.home import HomeModel
     from include.ui.models.manage import ManageModel
     from include.ui.models.debugging import DebuggingViewModel
-    from include.ui.models.misc import DisclaimerModel
+    from include.ui.models.misc import DisclaimerModel, LockdownModel
     from include.ui.models.trash import TrashModel
     import include.ui.models.settings
 
@@ -230,7 +230,7 @@ async def main(page: ft.Page):
 
     # Register server stream handler service
     # Handles messages proactively pushed by the server over the active connection
-    server_stream_service = ServerStreamHandleService(enabled=True)
+    server_stream_service = ServerStreamHandleService(page=page, enabled=True)
     service_manager.register(server_stream_service)
 
     server_stream_service.add_handler("lockdown", lockdown_handler)

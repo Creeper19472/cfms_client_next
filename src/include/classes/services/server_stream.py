@@ -4,14 +4,15 @@ __all__ = ["ServerStreamHandleService"]
 
 import asyncio
 import json
-from typing import Awaitable, Callable, Dict, List, Optional
+from typing import Any, Awaitable, Callable, Dict, List, Optional
+import flet as ft
 
 from include.classes.frame import AsyncMultiplexConnection, AsyncStream
 from include.classes.services.base import BaseService
 
 
 # Type alias for message handlers called with (event, data).
-MessageHandler = Callable[[str, dict], Awaitable[None]]
+MessageHandler = Callable[[str, dict[str, Any], Optional[ft.Page]], Awaitable[None]]
 
 
 class ServerStreamHandleService(BaseService):
@@ -42,9 +43,10 @@ class ServerStreamHandleService(BaseService):
         server_stream_service.add_handler("notify", on_notify)
     """
 
-    def __init__(self, enabled: bool = True) -> None:
+    def __init__(self, page: Optional[ft.Page] = None, enabled: bool = True) -> None:
         super().__init__(name="server_stream", enabled=enabled, interval=0)
 
+        self.page = page
         self._connection: Optional[AsyncMultiplexConnection] = None
         # Set when set_connection() is called; wakes up a waiting execute().
         self._connection_ready: asyncio.Event = asyncio.Event()
@@ -206,7 +208,7 @@ class ServerStreamHandleService(BaseService):
 
         for handler in handlers:
             try:
-                await handler(event, data)
+                await handler(event, data, self.page)
             except Exception as exc:
                 self.logger.error(
                     "Handler for event '%s' raised an error: %s",

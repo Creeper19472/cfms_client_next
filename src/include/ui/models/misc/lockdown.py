@@ -1,0 +1,66 @@
+import sys
+
+import flet as ft
+from flet_material_symbols import Symbols
+from flet_model import Model, route, Router
+
+from include.classes.shared import AppShared
+from include.util.locale import get_translation
+
+t = get_translation()
+_ = t.gettext
+
+
+@route("lockdown")
+class LockdownModel(Model):
+    """
+    ViewModel for the Lockdown screen.
+
+    This model manages the state and logic for the lockdown screen, including
+    user interactions and data binding for the UI components.
+    """
+
+    # Layout configuration
+    vertical_alignment = ft.MainAxisAlignment.CENTER
+    horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    padding = 20
+    spacing = 10
+    can_pop = False
+
+    def __init__(self, page: ft.Page, router: Router):
+        super().__init__(page, router)
+        # self.scroll = ft.ScrollMode.AUTO
+
+        self.leading = ft.Icon(Symbols.EMERGENCY_HOME, color=ft.Colors.WHITE, size=40)
+        self.title = ft.Text(_("Lockdown"), size=24, weight=ft.FontWeight.BOLD)
+        self.description = ft.Text(
+            _(
+                "The server is currently under lockdown for certain reasons. \n"
+                "If you have any questions, please contact your system administrator."
+            ),
+            size=14,
+            color=ft.Colors.WHITE,
+        )
+        self.reject_button = ft.Button(
+            _("Quit"),
+            on_click=self.quit_button_clicked,
+            visible=not AppShared().is_mobile,
+        )
+
+        self.controls = [
+            ft.SafeArea(self.leading),
+            self.title,
+            self.description,
+            ft.Divider(),
+            ft.ResponsiveRow(
+                controls=[
+                    ft.Text(_("Wait until the state is lifted or")),
+                    self.reject_button,
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+        ]
+
+    async def quit_button_clicked(self, event: ft.Event[ft.Button]):
+        await self.page.window.close()
+        sys.exit(0)
