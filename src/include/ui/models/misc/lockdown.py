@@ -50,7 +50,7 @@ class LockdownModel(Model):
         self.reject_button = ft.Button(
             _("Quit"),
             on_click=self.quit_button_clicked,
-            visible=not AppShared().is_mobile,
+            disabled=AppShared().is_mobile,
         )
 
         self.controls = [
