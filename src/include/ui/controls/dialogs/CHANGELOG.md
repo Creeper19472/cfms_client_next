@@ -3,6 +3,15 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.14.0
+**Released on:** 2026-03-25
+
+**Title:** Event Systems
+
+This version introduces support for event messages, allowing for normal 
+handling of server-side lockdown events.
+
+---
 ## v0.13.0
 **Released on:** 2026-03-23
 

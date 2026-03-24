@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-20 22:50+0800\n"
+"POT-Creation-Date: 2026-03-25 00:00+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -12,39 +12,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .\include\classes\services\autoupdate.py:174
+#: .\include\classes\services\autoupdate.py:165
 msgid "New version {version} is available! Check the About page for details."
 msgstr "新版本 {version} 已发布！请前往关于页面查看详情。"
 
-#: .\include\classes\services\autoupdate.py:178
+#: .\include\classes\services\autoupdate.py:169
 msgid "Go to About"
 msgstr "前往关于"
 
-#: .\include\controllers\connect.py:42
+#: .\include\controllers\connect.py:47
 msgid "Connection failed because the connection was reset: {strerror}"
 msgstr "连接失败，连接被重置：{strerror}"
 
-#: .\include\controllers\connect.py:46
+#: .\include\controllers\connect.py:51
 msgid "Connection failed because the connection was reset."
 msgstr "建立连接失败，因为连接已重置。"
 
-#: .\include\controllers\connect.py:52
+#: .\include\controllers\connect.py:57
 msgid "Connection failed: ({exc_class_name}) {str_err}"
 msgstr "连接失败：({exc_class_name}) {str_err}"
 
-#: .\include\controllers\connect.py:65
+#: .\include\controllers\connect.py:70
 msgid "You are connecting to a server using a higher version protocol"
 msgstr "您正在连接到一个使用更高版本协议的服务器"
 
-#: .\include\controllers\connect.py:67
+#: .\include\controllers\connect.py:72
 msgid "(Protocol version {server_protocol_version}), please update the client."
 msgstr "（协议版本 {server_protocol_version}），请更新客户端。"
 
-#: .\include\controllers\connect.py:97
+#: .\include\controllers\connect.py:118
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr "授权失败，您将无法正常下载文件。"
 
-#: .\include\controllers\connect.py:101
+#: .\include\controllers\connect.py:122
 msgid "Please allow the app to access your files in settings."
 msgstr "请在设置中允许应用访问您的文件。"
 
@@ -574,6 +574,10 @@ msgstr "目录必须先标记为已删除，才能被永久清除。"
 msgid "Failed to purge directory: ({code}) {message}"
 msgstr "永久删除目录失败：({code}) {message}"
 
+#: .\include\ui\controls\banners\lockdown.py:32
+msgid "System Lockdown"
+msgstr "系统封锁"
+
 #: .\include\ui\controls\banners\settings.py:15
 msgid ""
 "The application has not yet been granted permission to access external "
@@ -591,6 +595,18 @@ msgstr "授权"
 #: .\include\ui\controls\banners\settings.py:23
 msgid "Dismiss"
 msgstr "关闭"
+
+#: .\include\ui\controls\buttons\lockdown.py:19
+msgid "Toggle Lockdown Mode"
+msgstr "切换封锁模式"
+
+#: .\include\ui\controls\buttons\lockdown.py:52
+msgid "Failed to toggle lockdown mode: ({exc_class_name}) {str_err}"
+msgstr "切换封锁模式失败：({exc_class_name}) {str_err}"
+
+#: .\include\ui\controls\buttons\lockdown.py:61
+msgid "Failed to toggle lockdown mode: "
+msgstr "切换封锁模式失败："
 
 #: .\include\ui\controls\buttons\upgrade.py:15
 msgid "Check for Updates"
@@ -1318,7 +1334,7 @@ msgid "(No target selected)"
 msgstr "（未选择目标）"
 
 #: .\include\ui\controls\dialogs\admin\accounts.py:493
-#: .\include\ui\frameworks\settings\settings_framework.py:821
+#: .\include\ui\frameworks\settings\settings_framework.py:822
 msgid "Browse..."
 msgstr "浏览..."
 
@@ -1941,7 +1957,7 @@ msgid "Confirm"
 msgstr "确认"
 
 #: .\include\ui\controls\dialogs\password_confirm.py:120
-#: .\include\ui\controls\views\login.py:297
+#: .\include\ui\controls\views\login.py:296
 msgid "Password cannot be empty"
 msgstr "密码不能为空"
 
@@ -2375,7 +2391,7 @@ msgstr "登录"
 msgid "Disconnect"
 msgstr "断开连接"
 
-#: .\include\ui\controls\views\login.py:295
+#: .\include\ui\controls\views\login.py:294
 msgid "Username cannot be empty"
 msgstr "用户名不能为空"
 
@@ -2578,7 +2594,7 @@ msgstr "目录（{count}）"
 msgid "Documents ({count})"
 msgstr "文档（{count}）"
 
-#: .\include\ui\frameworks\settings\settings_framework.py:918
+#: .\include\ui\frameworks\settings\settings_framework.py:919
 msgid "Settings Saved."
 msgstr "设置已保存。"
 
@@ -2826,6 +2842,24 @@ msgstr "接受"
 msgid "Reject and Quit"
 msgstr "拒绝并退出"
 
+#: .\include\ui\models\misc\lockdown.py:37
+msgid "Lockdown"
+msgstr "防范封锁"
+
+#: .\include\ui\models\misc\lockdown.py:39
+msgid ""
+"The server is currently under lockdown for certain reasons. \n"
+"If you have any questions, please contact your system administrator."
+msgstr "出于特定的原因，服务器正处于封锁状态。\n若对此有疑问，请联系您的系统管理员。"
+
+#: .\include\ui\models\misc\lockdown.py:51
+msgid "Quit"
+msgstr "退出"
+
+#: .\include\ui\models\misc\lockdown.py:64
+msgid "Wait until the state is lifted or"
+msgstr "等待直到状态解除或"
+
 #: .\include\ui\models\settings\connection.py:29
 msgid "Change application proxy settings"
 msgstr "更改应用使用代理的规则"
@@ -2881,7 +2915,8 @@ msgid ""
 "Path to the client private key file (PEM format) used for mutual TLS "
 "authentication with the server. Leave blank if not used."
 msgstr ""
-"用于与服务器进行双向 TLS 身份验证的客户端私钥文件（PEM 格式）路径。若不使用请留空。"
+"用于与服务器进行双向 TLS 身份验证的客户端私钥文件（PEM 格式）路径。若不使用请"
+"留空。"
 
 #: .\include\ui\models\settings\language.py:23
 #: .\include\ui\models\settings\language.py:33
@@ -3185,6 +3220,6 @@ msgstr "获取下载任务ID失败"
 msgid "Failed to list directory: ({code}) {message}"
 msgstr "列出目录失败：({code}) {message}"
 
-#: .\include\util\requests.py:202
+#: .\include\util\requests.py:187
 msgid "Request '{}' completed in {:.3f} seconds"
 msgstr "请求 '{}' 完成，用时 {:.3f} 秒"
