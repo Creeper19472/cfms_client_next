@@ -69,10 +69,6 @@ class CACertUpdateService(BaseService):
         self.last_result: Optional[CACertUpdateResult] = None
         self._update_lock: asyncio.Lock = asyncio.Lock()
 
-    def set_page(self, page: ft.Page) -> None:
-        """Attach (or replace) the Flet page used for notifications."""
-        self.page = page
-
     @property
     def is_updating(self) -> bool:
         """Return ``True`` while a CA certificate store update is in progress.

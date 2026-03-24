@@ -62,15 +62,6 @@ class AutoUpdateService(BaseService):
         self.last_checked_version: Optional[str] = None
         self._first_run = True
 
-    def set_page(self, page: ft.Page):
-        """
-        Set or update the page instance.
-
-        Args:
-            page: Flet page instance
-        """
-        self.page = page
-
     async def on_start(self):
         """Initialize service on start."""
         self.logger.info(

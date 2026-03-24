@@ -2,8 +2,10 @@ from typing import TYPE_CHECKING
 
 import flet_permission_handler as fph
 
+from include.classes.services.server_stream import ServerStreamHandleService
 from include.constants import PROTOCOL_VERSION
 from include.controllers.base import Controller
+from include.ui.controls.banners.lockdown import LockdownBanner
 from include.util.connect import get_connection
 from include.util.requests import _request
 
@@ -21,6 +23,11 @@ class ConnectFormController(Controller["ConnectForm"]):
         super().__init__(control)
 
     async def close_previous_connection(self):
+        if (sm := self.app_shared.service_manager) is not None:
+            ss_service = sm.get_service("server_stream", ServerStreamHandleService)
+            if ss_service is not None:
+                ss_service.connection = None
+
         if self.app_shared.conn:
             await self.app_shared.conn.close()
 
@@ -36,9 +43,7 @@ class ConnectFormController(Controller["ConnectForm"]):
             )
         except ConnectionResetError as e:
             self.control.enable_interactions()
-            if (
-                e.strerror
-            ):
+            if e.strerror:
                 errmsg = _(
                     "Connection failed because the connection was reset: {strerror}"
                 ).format(strerror=e.strerror)
@@ -78,8 +83,24 @@ class ConnectFormController(Controller["ConnectForm"]):
             self.control.disable_ssl_enforcement_switch.value
         )
 
+        # Notify the server-stream service about the new connection so it can
+        # start accepting server-pushed messages on it.
+        if self.app_shared.service_manager is not None:
+            ss_service = self.app_shared.service_manager.get_service(
+                "server_stream", ServerStreamHandleService
+            )
+            if ss_service is not None:
+                ss_service.connection = conn
+
         self.control.page.title = f"CFMS Client - {server_address}"
         self.control.update()
+
+        if (
+            self.app_shared.server_info["lockdown"]
+            and LockdownBanner() not in self.control.page.overlay
+        ):
+            self.control.page.overlay.append(LockdownBanner())
+            self.control.page.update()
 
         # temp fix
         ph_service = fph.PermissionHandler()

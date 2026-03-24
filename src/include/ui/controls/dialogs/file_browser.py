@@ -72,7 +72,7 @@ class FileBrowserDialog(AlertDialog):
             excluded_directory_ids: List of directory IDs to exclude from display
             show_select_button: Whether to show a button to select current directory
             select_button_text: Text for the select button (default: "Select Here")
-            select_button_icon: Icon for the select button (default: Icons.CHECK_CIRCLE)
+            select_button_icon: Icon for the select button (default: Symbols.CHECK_CIRCLE)
             show_breadcrumb: Whether to show breadcrumb path (default: True)
             modal: Whether dialog should be initially modal (default: False)
             ref: Flet reference

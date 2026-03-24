@@ -21,6 +21,17 @@ following structure::
 ``files`` maps each managed certificate filename to its git-blob SHA.
 """
 
+__all__ = [
+    "CACertUpdateResult",
+    "CACertUpdateStages",
+    "build_initial_manifest",
+    "check_and_update_ca_certs",
+    "has_expired_certificates",
+    "load_last_check_time",
+    "manifest_exists",
+    "save_last_check_time",
+]
+
 import hashlib
 import json
 import logging
@@ -36,18 +47,8 @@ import requests
 
 from include.constants import CA_CERT_API_URL
 
-__all__ = [
-    "CACertUpdateResult",
-    "CACertUpdateStages",
-    "build_initial_manifest",
-    "check_and_update_ca_certs",
-    "has_expired_certificates",
-    "load_last_check_time",
-    "manifest_exists",
-    "save_last_check_time",
-]
-
 logger = logging.getLogger(__name__)
+
 
 # Progress stage identifiers passed to the on_progress callback.
 # Each constant identifies the current phase of a certificate store update:
@@ -64,6 +65,7 @@ class CACertUpdateStages(Enum):
     DOWNLOADING = "downloading"
     REMOVING = "removing"
     SAVING = "saving"
+
 
 # Name of the local manifest file.
 _MANIFEST_FILENAME = ".manifest.json"

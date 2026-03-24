@@ -3,12 +3,14 @@ from typing import cast
 from flet_model import Model, Router, route
 import flet as ft
 
+from include.ui.controls.buttons.lockdown import LockdownSwitchButton
 from include.ui.controls.components.homepage import HomeView, HomeNavigationBar
 from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
 from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.controls.views.tasks import TasksView
 from include.classes.shared import AppShared
+from include.util.requests import do_request_2
 
 INITIAL_VIEW_INDEX = 2
 
@@ -24,6 +26,10 @@ class HomeModel(Model):
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
+
+        self.floating_action_button = LockdownSwitchButton(visible=False)
+        self.floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
+
         self.stored_views = [
             FileManagerView(parent_model=self),
             TasksView(parent_model=self),
@@ -64,16 +70,25 @@ class HomeModel(Model):
             if await ft.SharedPreferences().get("whatsnew") != changelogs[0].version:
                 self.page.show_dialog(WhatsNewDialog())
 
+        async def lockdown_check():
+            assert self.floating_action_button is not None
+
+            response = await do_request_2("server_info")
+            lockdown = response.data["lockdown"]
+
+            if "apply_lockdown" in AppShared().user_permissions:
+                self.floating_action_button.visible = True
+                cast(
+                    LockdownSwitchButton, self.floating_action_button
+                ).lockdown_active = lockdown
+                self.floating_action_button.update()
+
+            if lockdown and "bypass_lockdown" not in AppShared().user_permissions:
+                AppShared().app_lockdown = True
+                await self.page.push_route(self.page.route + "/lockdown")
+
         self.page.run_task(_popups_check)
-
-    #     self.page.session.store.set("load_directory", load_directory)
-    #     self.page.session.store.set("current_directory_id", current_directory_id)
-    #     self.page.session.store.set("initialization_complete", True)
-
-    #     if self.page.session.store.get("server_info")[
-    #         "lockdown"
-    #     ] and "bypass_lockdown" not in self.page.session.store.get("user_permissions"):
-    #         go_lockdown(self.page)
+        self.page.run_task(lockdown_check)
 
     async def on_pageview_change(self, event: ft.Event[ft.PageView]):
         assert self.navigation_bar

@@ -9,6 +9,7 @@ from typing import Any, Optional
 from websockets import ConnectionClosed
 
 from include.classes.frame import AsyncMultiplexConnection
+from include.classes.services.server_stream import ServerStreamHandleService
 from include.classes.shared import AppShared
 from include.classes.response import Response
 from include.util.connect import get_connection
@@ -75,6 +76,14 @@ async def do_request(
                 force_ipv4=_app_shared.preferences["settings"].get("force_ipv4", False),
             )
             _app_shared.conn = _conn
+            # Notify the server-stream service so it starts listening on the
+            # newly established connection for server-pushed messages.
+            if _app_shared.service_manager is not None:
+                ss_service = _app_shared.service_manager.get_service(
+                    "server_stream", ServerStreamHandleService
+                )
+                if ss_service is not None:
+                    ss_service.connection = _conn
             continue
 
         break

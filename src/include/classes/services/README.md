@@ -41,6 +41,41 @@ Concrete implementation that checks for application updates periodically.
 - User notifications via snackbar
 - Manual check triggering
 
+### ServerStreamHandleService (`server_stream.py`)
+
+Service that accepts and dispatches server-initiated (push) messages sent proactively by the server without a preceding client request.
+
+**Features:**
+- Listens for server-initiated streams on the active `AsyncMultiplexConnection`
+- Single-connection model: only one connection is active at a time
+- Seamlessly switches to a new connection when `set_connection()` is called
+- Automatically detects and clears disconnected connections
+- Handler registry: register callbacks by action name or as catch-all fallback handlers
+- Concurrent message dispatch: slow handlers do not block other incoming messages
+
+**Usage:**
+```python
+# Get the service
+server_stream_service = app_shared.service_manager.get_service(
+    "server_stream", ServerStreamHandleService
+)
+
+# Register a handler for a specific server action
+async def on_notify(action: str, data: dict) -> None:
+    print(f"Received server notification: {data}")
+
+server_stream_service.add_handler("notify", on_notify)
+
+# Register a fallback handler for any action
+async def catch_all(action: str, data: dict) -> None:
+    print(f"Unknown server push: action={action}, data={data}")
+
+server_stream_service.add_fallback_handler(catch_all)
+
+# Hand the active connection to the service (called automatically in connect/reconnect flows)
+server_stream_service.set_connection(conn)
+```
+
 ### DownloadManagerService (`download.py`)
 
 Centralized service for managing file downloads from the server.

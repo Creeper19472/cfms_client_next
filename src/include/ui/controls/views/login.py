@@ -284,7 +284,6 @@ class LoginForm(ft.Container):
             self.avatar_preview.update_preview(username)
 
     async def disconnect_button_click(self, event: ft.Event[ft.IconButton]):
-        assert isinstance(self.page, ft.Page)
         await self.page.push_route("/connect")
 
     async def request_login(self, e: ft.Event[ft.IconButton] | ft.Event[ft.TextField]):
