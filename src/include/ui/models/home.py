@@ -1,6 +1,5 @@
 from typing import cast
 
-from flet_material_symbols import Symbols
 from flet_model import Model, Router, route
 import flet as ft
 
@@ -85,7 +84,7 @@ class HomeModel(Model):
                 self.floating_action_button.update()
 
             if lockdown and "bypass_lockdown" not in AppShared().user_permissions:
-                AppShared().lockdown_mode = True
+                AppShared().app_lockdown = True
                 await self.page.push_route(self.page.route + "/lockdown")
 
         self.page.run_task(_popups_check)

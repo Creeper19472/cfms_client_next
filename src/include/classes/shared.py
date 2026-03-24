@@ -7,8 +7,6 @@ from typing import Any, Optional, TYPE_CHECKING
 
 import yaml
 
-from websockets.asyncio.client import ClientConnection
-
 from include.classes.frame import AsyncMultiplexConnection
 from include.classes.preferences import UserPreference
 from include.constants import DEFAULT_UPDATE_CHANNEL, GLOBAL_PREFERENCES_PATH
@@ -111,7 +109,7 @@ class AppShared:
         self.floating_upgrade_button: Optional["FloatingUpgradeButton"] = None
 
         # Page status
-        self.lockdown_mode: bool = False
+        self.app_lockdown: bool = False
 
         # User preferences
         self.user_perference: Optional[UserPreference] = None
