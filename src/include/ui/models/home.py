@@ -9,6 +9,7 @@ from include.ui.controls.views.explorer import FileManagerView
 from include.ui.controls.views.more import MoreView
 from include.ui.controls.views.tasks import TasksView
 from include.classes.shared import AppShared
+from include.util.requests import do_request_2
 
 INITIAL_VIEW_INDEX = 2
 
@@ -64,16 +65,18 @@ class HomeModel(Model):
             if await ft.SharedPreferences().get("whatsnew") != changelogs[0].version:
                 self.page.show_dialog(WhatsNewDialog())
 
+        async def lockdown_check():
+            response = await do_request_2("server_info")
+
+            if (
+                response.data["lockdown"]
+                and "bypass_lockdown" not in AppShared().user_permissions
+            ):
+                AppShared().lockdown_mode = True
+                await self.page.push_route(self.page.route + "/lockdown")
+
         self.page.run_task(_popups_check)
-
-    #     self.page.session.store.set("load_directory", load_directory)
-    #     self.page.session.store.set("current_directory_id", current_directory_id)
-    #     self.page.session.store.set("initialization_complete", True)
-
-    #     if self.page.session.store.get("server_info")[
-    #         "lockdown"
-    #     ] and "bypass_lockdown" not in self.page.session.store.get("user_permissions"):
-    #         go_lockdown(self.page)
+        self.page.run_task(lockdown_check)
 
     async def on_pageview_change(self, event: ft.Event[ft.PageView]):
         assert self.navigation_bar
