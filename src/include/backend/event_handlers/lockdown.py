@@ -11,8 +11,11 @@ async def lockdown_handler(event: str, data: dict, page: Optional[ft.Page] = Non
     if page is None:
         return
 
+    if not AppShared().username:  # only if logged in
+        return
+
     if data["status"]:
-        if 1: # Placeholder for future conditions (e.g. specific lockdown reasons)
+        if "bypass_lockdown" not in AppShared().user_permissions:
             AppShared().lockdown_mode = True
             await page.push_route(page.route + "/lockdown")
     else:

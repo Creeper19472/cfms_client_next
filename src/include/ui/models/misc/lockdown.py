@@ -1,3 +1,5 @@
+import asyncio
+from datetime import datetime
 import sys
 
 import flet as ft
@@ -42,6 +44,9 @@ class LockdownModel(Model):
             color=ft.Colors.WHITE,
             text_align=ft.TextAlign.CENTER,
         )
+        self.clock = ft.Text(
+            "", size=14, color=ft.Colors.WHITE, margin=ft.Margin(top=5, bottom=5)
+        )
         self.reject_button = ft.Button(
             _("Quit"),
             on_click=self.quit_button_clicked,
@@ -52,6 +57,7 @@ class LockdownModel(Model):
             ft.SafeArea(self.leading),
             self.title,
             self.description,
+            self.clock,
             ft.Divider(),
             ft.Row(
                 controls=[
@@ -66,3 +72,20 @@ class LockdownModel(Model):
     async def quit_button_clicked(self, event: ft.Event[ft.Button]):
         await self.page.window.close()
         sys.exit(0)
+
+    def did_mount(self):
+        self._running = True
+
+        assert self.page
+        self.page.run_task(self._update_time)
+
+    def will_unmount(self):
+        self._running = False
+
+    async def _update_time(self):
+        ft.context.disable_auto_update()
+        while self._running:
+            self.clock.value = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.clock.update()
+            await asyncio.sleep(0.5)
+        ft.context.enable_auto_update()
