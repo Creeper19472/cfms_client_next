@@ -1,8 +1,10 @@
 from typing import cast
 
+from flet_material_symbols import Symbols
 from flet_model import Model, Router, route
 import flet as ft
 
+from include.ui.controls.buttons.lockdown import LockdownSwitchButton
 from include.ui.controls.components.homepage import HomeView, HomeNavigationBar
 from include.ui.controls.dialogs.whatsnew import WhatsNewDialog, changelogs
 from include.ui.controls.views.explorer import FileManagerView
@@ -25,6 +27,10 @@ class HomeModel(Model):
 
     def __init__(self, page: ft.Page, router: Router):
         super().__init__(page, router)
+
+        self.floating_action_button = LockdownSwitchButton()
+        self.floating_action_button_location = ft.FloatingActionButtonLocation.END_FLOAT
+
         self.stored_views = [
             FileManagerView(parent_model=self),
             TasksView(parent_model=self),
@@ -66,12 +72,19 @@ class HomeModel(Model):
                 self.page.show_dialog(WhatsNewDialog())
 
         async def lockdown_check():
-            response = await do_request_2("server_info")
+            assert self.floating_action_button is not None
 
-            if (
-                response.data["lockdown"]
-                and "bypass_lockdown" not in AppShared().user_permissions
-            ):
+            response = await do_request_2("server_info")
+            lockdown = response.data["lockdown"]
+
+            if "apply_lockdown" in AppShared().user_permissions:
+                self.floating_action_button.visible = True
+                cast(
+                    LockdownSwitchButton, self.floating_action_button
+                ).lockdown_active = lockdown
+                self.floating_action_button.update()
+
+            if lockdown and "bypass_lockdown" not in AppShared().user_permissions:
                 AppShared().lockdown_mode = True
                 await self.page.push_route(self.page.route + "/lockdown")
 
