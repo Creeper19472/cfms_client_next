@@ -48,7 +48,7 @@ Service that accepts and dispatches server-initiated (push) messages sent proact
 **Features:**
 - Listens for server-initiated streams on the active `AsyncMultiplexConnection`
 - Single-connection model: only one connection is active at a time
-- Seamlessly switches to a new connection when `set_connection()` is called
+- Seamlessly switches to a new connection when its `connection` property is updated
 - Automatically detects and clears disconnected connections
 - Handler registry: register callbacks by action name or as catch-all fallback handlers
 - Concurrent message dispatch: slow handlers do not block other incoming messages

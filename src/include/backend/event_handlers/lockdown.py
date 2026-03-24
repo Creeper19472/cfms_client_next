@@ -27,7 +27,9 @@ async def lockdown_handler(event: str, data: dict, page: Optional[ft.Page] = Non
 
     if status and "bypass_lockdown" not in shared.user_permissions:
         shared.app_lockdown = True
-        await page.push_route(f"{page.route}/lockdown")
+        if not page.route.endswith("/lockdown"):
+            await page.push_route(f"{page.route}/lockdown")
     elif not status and shared.app_lockdown:
         shared.app_lockdown = False
-        await page.push_route(get_parent_route(page.route))
+        if page.route.endswith("/lockdown"):
+            await page.push_route(get_parent_route(page.route))

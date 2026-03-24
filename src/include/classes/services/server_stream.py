@@ -22,10 +22,7 @@ class ServerStreamHandleService(BaseService):
     client without a preceding client request.  This service waits for those
     streams and dispatches their JSON payloads to registered handlers.
 
-    Only one connection is active at a time.  Calling :meth:`set_connection`
-    replaces any previous (possibly already-disconnected) connection so the
-    service seamlessly switches to the new one without dropping any incoming
-    messages.
+    Only one connection is active at a time.
 
     Usage::
 
@@ -34,7 +31,7 @@ class ServerStreamHandleService(BaseService):
         service_manager.register(server_stream_service)
 
         # After establishing a connection, hand it to the service
-        server_stream_service.set_connection(conn)
+        server_stream_service.connection = conn
 
         # Register a handler for a specific server event
         async def on_notify(event: str, data: dict) -> None:
@@ -113,7 +110,7 @@ class ServerStreamHandleService(BaseService):
         then loops over server-initiated streams dispatching each one to
         the registered handlers.  Returns (allowing the base-class run-loop
         to call :meth:`execute` again) as soon as the active connection
-        closes **or** is replaced by a new :meth:`set_connection` call.
+        closes **or** is replaced.
         """
         # Block until a connection is available.
         if self._connection is None:

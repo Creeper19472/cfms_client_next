@@ -95,12 +95,14 @@ class ConnectFormController(Controller["ConnectForm"]):
         self.control.page.title = f"CFMS Client - {server_address}"
         self.control.update()
 
-        if (
-            self.app_shared.server_info["lockdown"]
-            and LockdownBanner() not in self.control.page.overlay
-        ):
-            self.control.page.overlay.append(LockdownBanner())
-            self.control.page.update()
+        if self.app_shared.server_info["lockdown"]:
+            if LockdownBanner() not in self.control.page.overlay:
+                self.control.page.overlay.append(LockdownBanner())
+                self.control.page.update()
+        else:
+            if LockdownBanner() in self.control.page.overlay:
+                self.control.page.overlay.remove(LockdownBanner())
+                self.control.page.update()
 
         # temp fix
         ph_service = fph.PermissionHandler()

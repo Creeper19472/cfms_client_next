@@ -45,6 +45,12 @@ class LockdownSwitchButton(ft.FloatingActionButton):
                 username=AppShared().username,
                 token=AppShared().token,
             )
+
+            if response.code != 200:
+                has_error = True
+            send_error(
+                self.page, _("Failed to toggle lockdown mode: ") + response.message
+            )
         except Exception as e:
             has_error = True
             send_error(
@@ -54,12 +60,6 @@ class LockdownSwitchButton(ft.FloatingActionButton):
                 ).format(exc_class_name=e.__class__.__name__, str_err=str(e)),
             )
             return
-
-        if response.code != 200:
-            has_error = True
-            send_error(
-                self.page, _("Failed to toggle lockdown mode: ") + response.message
-            )
-
-        if has_error:
-            self.lockdown_active = not self.lockdown_active
+        finally:
+            if has_error:
+                self.lockdown_active = not self.lockdown_active
