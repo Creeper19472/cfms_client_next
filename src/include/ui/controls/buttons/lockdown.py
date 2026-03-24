@@ -14,7 +14,7 @@ class LockdownSwitchButton(ft.FloatingActionButton):
         self.page: ft.Page
         self._lockdown_active: bool = False
         super().__init__(
-            icon=ft.Icon(ft.Icons.LOCK, fill=0),
+            icon=ft.Icon(Symbols.SUPERVISED_USER_CIRCLE_OFF, fill=0),
             on_click=self.on_button_click,
             tooltip=_("Toggle Lockdown Mode"),
         )
@@ -22,11 +22,13 @@ class LockdownSwitchButton(ft.FloatingActionButton):
     @property
     def lockdown_active(self) -> bool:
         return self._lockdown_active
-    
+
     @lockdown_active.setter
     def lockdown_active(self, value: bool):
         self._lockdown_active = value
-        self.icon = ft.Icon(Symbols.LOCK, fill=int(self._lockdown_active))
+        self.icon = ft.Icon(
+            Symbols.SUPERVISED_USER_CIRCLE_OFF, fill=int(self._lockdown_active)
+        )
         self.update()
 
     async def on_button_click(self, event: ft.Event[ft.FloatingActionButton]):

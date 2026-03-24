@@ -1,5 +1,6 @@
 from typing import Optional
 import asyncio
+from concurrent.futures import Future, CancelledError
 import flet as ft
 from include.util.locale import get_translation
 
@@ -9,6 +10,7 @@ _ = t.gettext
 
 class LockdownBanner(ft.Container):
     _instance = None
+    _task: Optional[Future[None]] = None
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -32,27 +34,35 @@ class LockdownBanner(ft.Container):
             ),
             bgcolor=ft.Colors.RED,
             padding=10,
+            animate=ft.Animation(100),
             visible=visible,
             ref=ref,
         )
 
     def did_mount(self):
+        self._stop_task()
         self._running = True
-        self.page.run_task(self._update_banner)
+        self._task = self.page.run_task(self._update_banner)
 
     def will_unmount(self):
+        self._stop_task()
+
+    def _stop_task(self):
+        """彻底停止并清理现有的任务"""
         self._running = False
+        if self._task:
+            self._task.cancel()
+            self._task = None
 
     async def _update_banner(self):
-        while self._running:
-            self.bgcolor = (
-                ft.Colors.TRANSPARENT
-                if self.bgcolor == ft.Colors.RED
-                else ft.Colors.RED
-            )
-            self.update()
-            await asyncio.sleep(1.5)
-
-    def close_banner(self):
-        self.visible = False
-        self.update()
+        try:
+            while self._running:
+                self.bgcolor = (
+                    ft.Colors.TRANSPARENT
+                    if self.bgcolor == ft.Colors.RED
+                    else ft.Colors.RED
+                )
+                self.update()
+                await asyncio.sleep(1.5)
+        except CancelledError:
+            pass

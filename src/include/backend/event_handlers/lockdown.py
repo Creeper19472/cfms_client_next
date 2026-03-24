@@ -9,21 +9,25 @@ from include.ui.util.route import get_parent_route
 
 
 async def lockdown_handler(event: str, data: dict, page: Optional[ft.Page] = None):
-    if page is None:
+    if not page:
         return
 
-    if not data["status"]:
-        LockdownBanner().visible = False
+    status = data.get("status")
+    shared = AppShared()
+    banner = LockdownBanner()
 
-    if not AppShared().username:  # only if logged in
+    if status and banner not in page.overlay:
+        page.overlay.append(banner)
+    elif not status and banner in page.overlay:
+        page.overlay.remove(banner)
+    page.update()
+
+    if not shared.username:
         return
 
-    if data["status"]:
-        LockdownBanner().visible = True
-        if "bypass_lockdown" not in AppShared().user_permissions:
-            AppShared().app_lockdown = True
-            await page.push_route(page.route + "/lockdown")
-    else:
-        if AppShared().app_lockdown:
-            AppShared().app_lockdown = False
-            await page.push_route(get_parent_route(page.route))
+    if status and "bypass_lockdown" not in shared.user_permissions:
+        shared.app_lockdown = True
+        await page.push_route(f"{page.route}/lockdown")
+    elif not status and shared.app_lockdown:
+        shared.app_lockdown = False
+        await page.push_route(get_parent_route(page.route))

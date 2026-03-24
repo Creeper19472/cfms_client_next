@@ -25,7 +25,6 @@ from include.classes.services.download import DownloadManagerService
 from include.classes.services.token_refresh import TokenRefreshService
 from include.classes.services.favorites_validation import FavoritesValidationService
 from include.classes.services.server_stream import ServerStreamHandleService
-from include.ui.controls.banners.lockdown import LockdownBanner
 from include.ui.controls.components.common.monitor import MonitorStack
 from include.util.locale import set_translation
 from include.util.ca_update import manifest_exists
@@ -269,7 +268,6 @@ async def main(page: ft.Page):
     monitor = MonitorStack(ref=monitor_ref, visible=not AppShared().is_production)
     AppShared().monitor_ref = monitor_ref
     page.overlay.append(monitor)
-    page.overlay.append(LockdownBanner(visible=False))
 
 
 if __name__ == "__main__":
