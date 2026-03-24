@@ -75,8 +75,6 @@ class LockdownModel(Model):
 
     def did_mount(self):
         self._running = True
-
-        assert self.page
         self.page.run_task(self._update_time)
 
     def will_unmount(self):

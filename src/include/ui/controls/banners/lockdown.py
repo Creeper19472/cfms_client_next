@@ -49,7 +49,6 @@ class LockdownBanner(ft.Container):
         self._stop_task()
 
     def _stop_task(self):
-        """彻底停止并清理现有的任务"""
         self._running = False
         if self._task:
             self._task.cancel()
