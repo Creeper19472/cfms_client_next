@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING, Literal, Union
 import flet as ft
 
 from include.controllers.base import Controller
-from include.ui.util.notifications import send_error, send_success
-from include.ui.util.path import get_directory
+from ui.util.notifications import send_error, send_success
+from ui.util.path import get_directory
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
 

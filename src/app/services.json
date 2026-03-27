@@ -1,0 +1,47 @@
+[
+  {
+    "class": "include.classes.services.autoupdate.AutoUpdateService",
+    "kwargs": {
+      "enabled": true,
+      "interval": 21600.0,
+      "check_on_start": true,
+      "notify_user": true
+    }
+  },
+  {
+    "class": "include.classes.services.download.DownloadManagerService",
+    "kwargs": {
+      "enabled": true,
+      "max_concurrent": 3,
+      "enable_persistence": true
+    }
+  },
+  {
+    "class": "include.classes.services.token_refresh.TokenRefreshService",
+    "kwargs": {
+      "enabled": true,
+      "interval": 60.0,
+      "refresh_threshold": 300.0
+    }
+  },
+  {
+    "class": "include.classes.services.favorites_validation.FavoritesValidationService",
+    "kwargs": {
+      "enabled": true,
+      "interval": 300.0
+    }
+  },
+  {
+    "class": "include.classes.services.server_stream.ServerStreamHandleService",
+    "kwargs": {
+      "enabled": true
+    }
+  },
+  {
+    "class": "include.classes.services.ca_update.CACertUpdateService",
+    "kwargs": {
+      "enabled": true,
+      "interval": 86400.0
+    }
+  }
+]

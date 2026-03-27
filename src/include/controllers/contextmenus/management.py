@@ -9,7 +9,7 @@ from include.ui.controls.dialogs.admin.accounts import (
     ListUserBlocksDialog,
 )
 from include.ui.controls.dialogs.wait import wait
-from include.ui.util.notifications import send_error
+from ui.util.notifications import send_error
 from include.util.requests import do_request_2
 from include.util.locale import get_translation
 

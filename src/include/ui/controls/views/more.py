@@ -5,7 +5,7 @@ from flet_material_symbols import Symbols
 from include.classes.shared import AppShared
 from include.ui.controls.components.account import AccountBadge
 from include.ui.controls.dialogs.admin.accounts import PasswdUserDialog
-from include.ui.util.quotes import refresh_quote
+from ui.util.quotes import refresh_quote
 
 if TYPE_CHECKING:
     from include.ui.models.home import HomeModel
