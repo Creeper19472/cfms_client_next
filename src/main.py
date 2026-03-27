@@ -13,7 +13,7 @@ import flet_permission_handler as fph
 
 from include.constants import RUNTIME_PATH, ROOT_PATH
 from include.classes.shared import AppShared
-from src.app.bootstrap import configure_logging, setup_services, register_page_close_handler
+from app.bootstrap import configure_logging, setup_services, register_page_close_handler
 from include.ui.controls.components.common.monitor import MonitorStack
 from include.util.locale import set_translation
 from include.util.ca_update import manifest_exists
