@@ -7,24 +7,13 @@ and sets up the UI components and page settings.
 
 import os
 import warnings
-import logging
 
 import flet as ft
 import flet_permission_handler as fph
 
-from include.backend.event_handlers.lockdown import lockdown_handler
-from include.constants import LOGFILE_PATH, RUNTIME_PATH, ROOT_PATH
+from include.constants import RUNTIME_PATH, ROOT_PATH
 from include.classes.shared import AppShared
-from include.classes.services.manager import ServiceManager
-from include.classes.services.autoupdate import AutoUpdateService
-from include.classes.services.ca_update import (
-    CACertUpdateService,
-    DEFAULT_INTERVAL as _CA_CHECK_INTERVAL,
-)
-from include.classes.services.download import DownloadManagerService
-from include.classes.services.token_refresh import TokenRefreshService
-from include.classes.services.favorites_validation import FavoritesValidationService
-from include.classes.services.server_stream import ServerStreamHandleService
+from src.app.bootstrap import configure_logging, setup_services, register_page_close_handler
 from include.ui.controls.components.common.monitor import MonitorStack
 from include.util.locale import set_translation
 from include.util.ca_update import manifest_exists
@@ -32,19 +21,8 @@ from include.util.ca_update import manifest_exists
 DEFAULT_WINDOW_WIDTH = 1366
 DEFAULT_WINDOW_HEIGHT = 768
 
-# There's a reason why the following steps are used to set up logging.
-#
-# `serious_python` configures a StreamHandler before any user code execution to enable
-# console output forwarding on Android, causing :meth:`logging.basicConfig()` to fail.
-
-_formatter = logging.Formatter("[%(asctime)s %(levelname)s] | %(name)s | %(message)s")
-
-_file_handler = logging.FileHandler(LOGFILE_PATH, mode="w", encoding="utf-8")
-_file_handler.setFormatter(_formatter)
-
-_root_logger = logging.getLogger()
-_root_logger.addHandler(_file_handler)
-_root_logger.setLevel(logging.DEBUG)
+# Configure logging via bootstrap helper (moved for testability)
+configure_logging()
 
 
 async def main(page: ft.Page):
@@ -186,74 +164,12 @@ async def main(page: ft.Page):
     app_shared.is_production = bool(RUNTIME_PATH)
     page.window.resizable = not app_shared.is_production
 
-    # Initialize service manager and register services
-    service_manager = ServiceManager()
-    app_shared.service_manager = service_manager
-
-    # Register auto-update service
-    # Check for updates every 6 hours (21600 seconds)
-    autoupdate_service = AutoUpdateService(
-        page=page,
-        enabled=True,
-        interval=21600.0,  # 6 hours
-        check_on_start=True,
-        notify_user=True,
-    )
-    service_manager.register(autoupdate_service)
-
-    # Register download manager service
-    download_manager_service = DownloadManagerService(
-        app_shared=app_shared,
-        enabled=True,
-        max_concurrent=3,
-        enable_persistence=True,  # Save tasks across restarts
-    )
-    service_manager.register(download_manager_service)
-
-    # Register token refresh service
-    # Check every minute and refresh when token expires in 5 minutes
-    token_refresh_service = TokenRefreshService(
-        enabled=True,
-        interval=60.0,  # Check every minute
-        refresh_threshold=300.0,  # Refresh when < 5 minutes remaining
-    )
-    service_manager.register(token_refresh_service)
-
-    # Register favorites validation service
-    # Check every 5 minutes to ensure favorited items still exist
-    favorites_validation_service = FavoritesValidationService(
-        app_shared=app_shared,
-        enabled=True,
-        interval=300.0,  # Check every 5 minutes
-    )
-    service_manager.register(favorites_validation_service)
-
-    # Register server stream handler service
-    # Handles messages proactively pushed by the server over the active connection
-    server_stream_service = ServerStreamHandleService(page=page, enabled=True)
-    service_manager.register(server_stream_service)
-
-    server_stream_service.add_handler("lockdown", lockdown_handler)
-
-    # Register CA certificate update service
-    # Checks at most once every 90 days; the schedule is enforced inside execute()
-    ca_cert_update_service = CACertUpdateService(
-        page=page,
-        enabled=True,
-        interval=_CA_CHECK_INTERVAL,
-    )
-    service_manager.register(ca_cert_update_service)
-
-    # Start all registered services
-    await service_manager.start_all()
+    # Initialize and start services (moved to bootstrap for clarity)
+    service_manager = await setup_services(page, app_shared)
 
     # Register cleanup handler for when the page closes
-    async def on_page_close(e):
-        """Clean up services when the page closes."""
-        logging.info("Page closing, stopping all services...")
-        await service_manager.stop_all()
-
-    page.on_close = on_page_close
+    # Register page close handler to stop services
+    register_page_close_handler(page, service_manager)
 
     # Navigate to initial screen.
     # On first launch the CA cert manifest doesn't exist yet – show the
