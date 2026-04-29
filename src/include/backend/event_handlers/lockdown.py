@@ -5,7 +5,7 @@ import flet as ft
 
 from include.classes.shared import AppShared
 from include.ui.controls.banners.lockdown import LockdownBanner
-from ui.util.route import get_parent_route
+from include.ui.util.route import get_parent_route
 
 
 async def lockdown_handler(event: str, data: dict, page: Optional[ft.Page] = None):
