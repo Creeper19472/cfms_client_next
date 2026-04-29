@@ -102,7 +102,6 @@ async def upload_file_to_server(
         raise RuntimeError
 
     if ready:
-
         try:
             chunk_size = int(received_response.split()[1])
             async with aiofiles.open(file_path, "rb") as f:
@@ -189,7 +188,6 @@ async def receive_file_from_server(
 
     try:
         received_chunks = 0
-        iv: bytes = b""
 
         try:
             while received_chunks + 1 <= total_chunks:
@@ -201,8 +199,6 @@ async def receive_file_from_server(
                 data_json: dict = json.loads(data)
 
                 index = data_json["data"].get("index")
-                if index == 0:
-                    iv = base64.b64decode(data_json["data"].get("iv"))
                 chunk_hash = data_json["data"].get("hash")  # provided but unused
                 chunk_data = base64.b64decode(data_json["data"].get("chunk"))
                 chunk_file_path = os.path.join(downloading_path, str(index))
@@ -220,14 +216,17 @@ async def receive_file_from_server(
                 yield 0, received_file_size, file_size
 
             # Get decryption information
-            decrypted_data = (await stream.recv()).data
-            decrypted_data_json: dict = json.loads(decrypted_data)
+            decryption_info = (await stream.recv()).data
+            decryption_info_json: dict = json.loads(decryption_info)
 
-            aes_key = base64.b64decode(decrypted_data_json["data"].get("key"))
+            aes_key = base64.b64decode(decryption_info_json["data"].get("key"))
+            aes_nonce = base64.b64decode(decryption_info_json["data"].get("nonce"))
 
             # Decrypt chunks
             decrypted_chunks = 1
-            cipher = AES.new(aes_key, AES.MODE_CFB, iv=iv)  # Initialize cipher
+            cipher = AES.new(
+                aes_key, AES.MODE_GCM, nonce=aes_nonce, mac_len=16
+            )  # Initialize cipher
 
             async with aiofiles.open(file_path, "wb") as out_file:
                 while decrypted_chunks <= total_chunks:
@@ -252,7 +251,7 @@ async def receive_file_from_server(
                     decrypted_chunks += 1
 
             # Delete temporary folder
-            yield 2,
+            yield (2,)
 
             await asyncio.get_event_loop().run_in_executor(
                 None, shutil.rmtree, downloading_path
@@ -296,7 +295,7 @@ async def receive_file_from_server(
         if sha256 and actual_sha256 != sha256:
             raise FileHashMismatchError(sha256, actual_sha256)
 
-    yield 3,
+    yield (3,)
 
     try:
         await _action_verify()
@@ -434,7 +433,13 @@ async def batch_upload_file_to_server(
                                 ) in upload_file_to_server(
                                     transfer_conn, task_id, file_path
                                 ):
-                                    yield index, filename, current_size, total_size, None
+                                    yield (
+                                        index,
+                                        filename,
+                                        current_size,
+                                        total_size,
+                                        None,
+                                    )
 
                                 break  # break the retry loop if successful
 

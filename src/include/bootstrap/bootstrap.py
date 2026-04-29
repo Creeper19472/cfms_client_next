@@ -14,7 +14,7 @@ from typing import Optional
 
 import flet as ft
 
-from include.constants import LOGFILE_PATH, ROOT_PATH
+from include.constants import LOGFILE_PATH
 from include.classes.shared import AppShared
 from include.classes.services.manager import ServiceManager
 
