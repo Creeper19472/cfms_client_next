@@ -3,6 +3,16 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.14.3
+**Released on:** 2026-04-30
+
+**Title:** Protocol Version 12
+
+This version provides support for protocol version 12, which uses the AES 
+MODE_GCM mode, which offers superior performance and security, to encrypt 
+file downloads.
+
+---
 ## v0.14.2
 **Released on:** 2026-03-27
 

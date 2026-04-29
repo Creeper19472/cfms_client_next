@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cfms-client-next 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-25 00:00+0800\n"
+"POT-Creation-Date: 2026-04-30 00:46+0800\n"
 "PO-Revision-Date: 2025-10-18 14:19\n"
 "Last-Translator: Auto Generated\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -20,31 +20,35 @@ msgstr "新版本 {version} 已发布！请前往关于页面查看详情。"
 msgid "Go to About"
 msgstr "前往关于"
 
-#: .\include\controllers\connect.py:47
+#: .\include\controllers\connect.py:51
 msgid "Connection failed because the connection was reset: {strerror}"
 msgstr "连接失败，连接被重置：{strerror}"
 
-#: .\include\controllers\connect.py:51
+#: .\include\controllers\connect.py:55
 msgid "Connection failed because the connection was reset."
 msgstr "建立连接失败，因为连接已重置。"
 
-#: .\include\controllers\connect.py:57
+#: .\include\controllers\connect.py:61
 msgid "Connection failed: ({exc_class_name}) {str_err}"
 msgstr "连接失败：({exc_class_name}) {str_err}"
 
-#: .\include\controllers\connect.py:70
-msgid "You are connecting to a server using a higher version protocol"
-msgstr "您正在连接到一个使用更高版本协议的服务器"
+#: .\include\controllers\connect.py:75
+msgid ""
+"You are connecting to a server using a higher version protocol (Protocol "
+"version {server_protocol_version}), please update the client."
+msgstr "您正在连接到一个使用更高版本协议的服务器（协议版本 {server_protocol_version}），请更新客户端。"
 
-#: .\include\controllers\connect.py:72
-msgid "(Protocol version {server_protocol_version}), please update the client."
-msgstr "（协议版本 {server_protocol_version}），请更新客户端。"
+#: .\include\controllers\connect.py:80
+msgid ""
+"The client does not support the protocol version ({server_protocol_version}) "
+"being used by the server."
+msgstr "客户端不支持目标服务端正在使用的协议版本（{server_protocol_version}）。"
 
-#: .\include\controllers\connect.py:118
+#: .\include\controllers\connect.py:130
 msgid "Authorization failed, you will not be able to download files normally."
 msgstr "授权失败，您将无法正常下载文件。"
 
-#: .\include\controllers\connect.py:122
+#: .\include\controllers\connect.py:134
 msgid "Please allow the app to access your files in settings."
 msgstr "请在设置中允许应用访问您的文件。"
 
@@ -243,7 +247,7 @@ msgstr "加载修订版本失败：({code}) {message}"
 msgid "Failed to load revisions: {error}"
 msgstr "加载修订版本失败：{error}"
 
-#: .\include\controllers\dialogs\revision.py:98 .\include\ui\util\path.py:155
+#: .\include\controllers\dialogs\revision.py:98 .\ui\util\path.py:155
 msgid "Download added: {filename}"
 msgstr "已添加下载：{filename}"
 
@@ -601,12 +605,12 @@ msgid "Toggle Lockdown Mode"
 msgstr "切换封锁模式"
 
 #: .\include\ui\controls\buttons\lockdown.py:52
-msgid "Failed to toggle lockdown mode: ({exc_class_name}) {str_err}"
-msgstr "切换封锁模式失败：({exc_class_name}) {str_err}"
-
-#: .\include\ui\controls\buttons\lockdown.py:61
 msgid "Failed to toggle lockdown mode: "
 msgstr "切换封锁模式失败："
+
+#: .\include\ui\controls\buttons\lockdown.py:58
+msgid "Failed to toggle lockdown mode: ({exc_class_name}) {str_err}"
+msgstr "切换封锁模式失败：({exc_class_name}) {str_err}"
 
 #: .\include\ui\controls\buttons\upgrade.py:15
 msgid "Check for Updates"
@@ -658,26 +662,25 @@ msgstr "点击更改头像"
 msgid "User"
 msgstr "用户"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:67
+#: .\include\ui\controls\components\common\monitor.py:12
+msgid "Ready"
+msgstr "就绪"
+
 #: .\include\ui\controls\components\explorer\access_denied.py:65
 #: .\include\ui\controls\dialogs\explorer.py:834
+#: .\ui\controls\components\common\access_denied_content.py:67
 msgid "Access Denied"
 msgstr "拒绝访问"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:75
 #: .\include\ui\controls\components\explorer\access_denied.py:73
+#: .\ui\controls\components\common\access_denied_content.py:75
 msgid ""
 "You don't have permission to access this directory. The reasons are as "
 "follows:"
 msgstr "您无权访问此目录。理由如下："
 
-#: .\include\ui\controls\components\common\access_denied_content.py:101
-msgid ""
-"Please contact your system administrator if you believe this is an error."
-msgstr "若您认为这是一个错误，请与您的系统管理员联系。"
-
-#: .\include\ui\controls\components\common\access_denied_content.py:106
 #: .\include\ui\controls\components\explorer\access_denied.py:98
+#: .\ui\controls\components\common\access_denied_content.py:106
 msgid ""
 "According to the server's protocol, you do not have permission to access the "
 "requested directory. There could be various reasons for this. If you have "
@@ -687,133 +690,11 @@ msgstr ""
 "根据服务器之协议，您无权访问请求的目录。导致此结果的原因可能是多样的。如果您"
 "对此情况有任何疑问，请联系您的系统管理员。此事件将被报告。"
 
-#: .\include\ui\controls\components\common\access_denied_content.py:136
-#: .\include\ui\controls\components\common\error_content.py:135
 #: .\include\ui\controls\components\explorer\access_denied.py:113
+#: .\ui\controls\components\common\access_denied_content.py:136
+#: .\ui\controls\components\common\error_content.py:135
 msgid "Go Back"
 msgstr "返回"
-
-#: .\include\ui\controls\components\common\error_content.py:143
-msgid "Retry"
-msgstr "重试"
-
-#: .\include\ui\controls\components\common\error_content.py:170
-msgid "Connection Error"
-msgstr "连接错误"
-
-#: .\include\ui\controls\components\common\error_content.py:171
-msgid "Could not connect to the server or an unexpected error occurred."
-msgstr "无法连接到服务器，或发生了意料之外的错误。"
-
-#: .\include\ui\controls\components\common\error_content.py:177
-msgid "Not Found"
-msgstr "未找到"
-
-#: .\include\ui\controls\components\common\error_content.py:178
-msgid "The requested directory or file could not be found."
-msgstr "未能找到请求的目录或文件。"
-
-#: .\include\ui\controls\components\common\error_content.py:182
-#: .\include\ui\controls\components\common\error_content.py:187
-#: .\include\ui\controls\components\common\error_content.py:192
-msgid "Server Error"
-msgstr "服务器错误"
-
-#: .\include\ui\controls\components\common\error_content.py:183
-msgid "The server encountered an internal error."
-msgstr "服务器发生了一个内部错误。"
-
-#: .\include\ui\controls\components\common\error_content.py:188
-msgid "The server received an invalid response from upstream."
-msgstr "服务器自上游收到了一个非法响应。"
-
-#: .\include\ui\controls\components\common\error_content.py:193
-msgid "The server is temporarily unavailable."
-msgstr "服务器暂时不可用。"
-
-#: .\include\ui\controls\components\common\error_content.py:197
-msgid "Bad Request"
-msgstr "错误请求"
-
-#: .\include\ui\controls\components\common\error_content.py:198
-msgid "The request was invalid or malformed."
-msgstr "请求非法或格式错误。"
-
-#: .\include\ui\controls\components\common\error_content.py:202
-msgid "Unauthorized"
-msgstr "未授权"
-
-#: .\include\ui\controls\components\common\error_content.py:203
-msgid "Your session may have expired. Please try again."
-msgstr "您的会话可能已经过期。请您重试。"
-
-#: .\include\ui\controls\components\common\error_content.py:207
-msgid "Request Timeout"
-msgstr "请求超时"
-
-#: .\include\ui\controls\components\common\error_content.py:208
-msgid "The request took too long to complete."
-msgstr "请求花了过长的时间来完成。"
-
-#: .\include\ui\controls\components\common\error_content.py:212
-msgid "Error"
-msgstr "错误"
-
-#: .\include\ui\controls\components\common\error_content.py:213
-msgid "An error occurred while processing your request."
-msgstr "处理请求时发生错误。"
-
-#: .\include\ui\controls\components\common\error_content.py:235
-msgid "Check your connection and try again."
-msgstr "请检查您的连接，然后再试。"
-
-#: .\include\ui\controls\components\common\error_content.py:237
-msgid "Please try again later or contact support if the problem persists."
-msgstr "请稍后再试，如果问题仍然存在，请联系支持。"
-
-#: .\include\ui\controls\components\common\error_content.py:241
-msgid "The item may have been moved or deleted."
-msgstr "项目可能已被移动或删除。"
-
-#: .\include\ui\controls\components\common\error_content.py:243
-msgid "Please try again or contact support if needed."
-msgstr "请重试，必要时请联系支持。"
-
-#: .\include\ui\controls\components\common\error_content.py:246
-msgid ""
-"A connection error or unexpected exception occurred. Please check your "
-"network connection and try again. If the problem persists, contact your "
-"system administrator."
-msgstr ""
-"发生连接错误或意外异常。请检查您的网络连接并重试。如果问题仍然存在，请联系您"
-"的系统管理员。"
-
-#: .\include\ui\controls\components\common\error_content.py:252
-msgid ""
-"The server is experiencing technical difficulties. This is typically a "
-"temporary issue. Please wait a moment and try again. If the problem "
-"persists, contact your system administrator."
-msgstr ""
-"服务器出现技术故障。这种问题通常是暂时的。请稍等片刻后重试。如果问题仍然存"
-"在，请联系您的系统管理员。"
-
-#: .\include\ui\controls\components\common\error_content.py:258
-msgid ""
-"The requested resource could not be found on the server. It may have been "
-"moved, renamed, or deleted. Please verify the path and try again."
-msgstr ""
-"未在服务器上找到请求的资源。该资源可能已被移动、重命名或删除。请检查路径并重"
-"试。"
-
-#: .\include\ui\controls\components\common\error_content.py:264
-msgid ""
-"An unexpected error occurred. Please try again. If the problem persists, "
-"contact your system administrator for assistance."
-msgstr "发生意外错误，请重试。如果问题仍然存在，请联系系统管理员寻求帮助。"
-
-#: .\include\ui\controls\components\common\monitor.py:12
-msgid "Ready"
-msgstr "就绪"
 
 #: .\include\ui\controls\components\explorer\bar.py:44
 #: .\include\ui\controls\components\explorer\bar.py:102
@@ -2311,7 +2192,7 @@ msgid "User List"
 msgstr "用户列表"
 
 #: .\include\ui\controls\views\admin\account.py:113
-#: .\include\ui\controls\views\admin\group.py:115 .\include\ui\util\path.py:66
+#: .\include\ui\controls\views\admin\group.py:115 .\ui\util\path.py:66
 msgid "Load failed: ({code}) {message}"
 msgstr "加载失败：({code}) {message}"
 
@@ -2850,7 +2731,9 @@ msgstr "防范封锁"
 msgid ""
 "The server is currently under lockdown for certain reasons. \n"
 "If you have any questions, please contact your system administrator."
-msgstr "出于特定的原因，服务器正处于封锁状态。\n若对此有疑问，请联系您的系统管理员。"
+msgstr ""
+"出于特定的原因，服务器正处于封锁状态。\n"
+"若对此有疑问，请联系您的系统管理员。"
 
 #: .\include\ui\models\misc\lockdown.py:51
 msgid "Quit"
@@ -3171,40 +3054,6 @@ msgstr "返回"
 msgid "Intro Wizard"
 msgstr "引导向导"
 
-#: .\include\ui\util\file_controls.py:45
-msgid "Parent directory"
-msgstr "上级目录"
-
-#: .\include\ui\util\path.py:112
-msgid "download"
-msgstr "下载"
-
-#: .\include\ui\util\quotes.py:15
-msgid ""
-"Stars hang low over the vast plain, the moon surges over the great river."
-msgstr "星垂平野阔，月涌大江流。"
-
-#: .\include\ui\util\quotes.py:18
-msgid "A true hero among mortals, no need to test their cry further."
-msgstr "自是人间英物，不须更试啼声。"
-
-#: .\include\ui\util\quotes.py:21
-msgid ""
-"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
-"echoing with bugles."
-msgstr "醉里挑灯看剑，梦回吹角连营。"
-
-#: .\include\ui\util\quotes.py:24
-msgid ""
-"Though lacking wings like the colorful phoenix to fly side by side, our "
-"hearts connect with the clarity of a rhinoceros horn."
-msgstr "身无彩凤双飞翼，心有灵犀一点通。"
-
-#: .\include\ui\util\quotes.py:27
-msgid ""
-"Seeking each other on dream paths, amid flying rain and falling flowers."
-msgstr "相寻梦里路，飞雨落花中。"
-
 #: .\include\util\batch_operations.py:57 .\include\util\batch_operations.py:83
 #: .\include\util\batch_operations.py:183
 #: .\include\util\batch_operations.py:375
@@ -3223,3 +3072,163 @@ msgstr "列出目录失败：({code}) {message}"
 #: .\include\util\requests.py:187
 msgid "Request '{}' completed in {:.3f} seconds"
 msgstr "请求 '{}' 完成，用时 {:.3f} 秒"
+
+#: .\ui\controls\components\common\access_denied_content.py:101
+msgid ""
+"Please contact your system administrator if you believe this is an error."
+msgstr "若您认为这是一个错误，请与您的系统管理员联系。"
+
+#: .\ui\controls\components\common\error_content.py:143
+msgid "Retry"
+msgstr "重试"
+
+#: .\ui\controls\components\common\error_content.py:170
+msgid "Connection Error"
+msgstr "连接错误"
+
+#: .\ui\controls\components\common\error_content.py:171
+msgid "Could not connect to the server or an unexpected error occurred."
+msgstr "无法连接到服务器，或发生了意料之外的错误。"
+
+#: .\ui\controls\components\common\error_content.py:177
+msgid "Not Found"
+msgstr "未找到"
+
+#: .\ui\controls\components\common\error_content.py:178
+msgid "The requested directory or file could not be found."
+msgstr "未能找到请求的目录或文件。"
+
+#: .\ui\controls\components\common\error_content.py:182
+#: .\ui\controls\components\common\error_content.py:187
+#: .\ui\controls\components\common\error_content.py:192
+msgid "Server Error"
+msgstr "服务器错误"
+
+#: .\ui\controls\components\common\error_content.py:183
+msgid "The server encountered an internal error."
+msgstr "服务器发生了一个内部错误。"
+
+#: .\ui\controls\components\common\error_content.py:188
+msgid "The server received an invalid response from upstream."
+msgstr "服务器自上游收到了一个非法响应。"
+
+#: .\ui\controls\components\common\error_content.py:193
+msgid "The server is temporarily unavailable."
+msgstr "服务器暂时不可用。"
+
+#: .\ui\controls\components\common\error_content.py:197
+msgid "Bad Request"
+msgstr "错误请求"
+
+#: .\ui\controls\components\common\error_content.py:198
+msgid "The request was invalid or malformed."
+msgstr "请求非法或格式错误。"
+
+#: .\ui\controls\components\common\error_content.py:202
+msgid "Unauthorized"
+msgstr "未授权"
+
+#: .\ui\controls\components\common\error_content.py:203
+msgid "Your session may have expired. Please try again."
+msgstr "您的会话可能已经过期。请您重试。"
+
+#: .\ui\controls\components\common\error_content.py:207
+msgid "Request Timeout"
+msgstr "请求超时"
+
+#: .\ui\controls\components\common\error_content.py:208
+msgid "The request took too long to complete."
+msgstr "请求花了过长的时间来完成。"
+
+#: .\ui\controls\components\common\error_content.py:212
+msgid "Error"
+msgstr "错误"
+
+#: .\ui\controls\components\common\error_content.py:213
+msgid "An error occurred while processing your request."
+msgstr "处理请求时发生错误。"
+
+#: .\ui\controls\components\common\error_content.py:235
+msgid "Check your connection and try again."
+msgstr "请检查您的连接，然后再试。"
+
+#: .\ui\controls\components\common\error_content.py:237
+msgid "Please try again later or contact support if the problem persists."
+msgstr "请稍后再试，如果问题仍然存在，请联系支持。"
+
+#: .\ui\controls\components\common\error_content.py:241
+msgid "The item may have been moved or deleted."
+msgstr "项目可能已被移动或删除。"
+
+#: .\ui\controls\components\common\error_content.py:243
+msgid "Please try again or contact support if needed."
+msgstr "请重试，必要时请联系支持。"
+
+#: .\ui\controls\components\common\error_content.py:246
+msgid ""
+"A connection error or unexpected exception occurred. Please check your "
+"network connection and try again. If the problem persists, contact your "
+"system administrator."
+msgstr ""
+"发生连接错误或意外异常。请检查您的网络连接并重试。如果问题仍然存在，请联系您"
+"的系统管理员。"
+
+#: .\ui\controls\components\common\error_content.py:252
+msgid ""
+"The server is experiencing technical difficulties. This is typically a "
+"temporary issue. Please wait a moment and try again. If the problem "
+"persists, contact your system administrator."
+msgstr ""
+"服务器出现技术故障。这种问题通常是暂时的。请稍等片刻后重试。如果问题仍然存"
+"在，请联系您的系统管理员。"
+
+#: .\ui\controls\components\common\error_content.py:258
+msgid ""
+"The requested resource could not be found on the server. It may have been "
+"moved, renamed, or deleted. Please verify the path and try again."
+msgstr ""
+"未在服务器上找到请求的资源。该资源可能已被移动、重命名或删除。请检查路径并重"
+"试。"
+
+#: .\ui\controls\components\common\error_content.py:264
+msgid ""
+"An unexpected error occurred. Please try again. If the problem persists, "
+"contact your system administrator for assistance."
+msgstr "发生意外错误，请重试。如果问题仍然存在，请联系系统管理员寻求帮助。"
+
+#: .\ui\util\file_controls.py:45
+msgid "Parent directory"
+msgstr "上级目录"
+
+#: .\ui\util\path.py:112
+msgid "download"
+msgstr "下载"
+
+#: .\ui\util\quotes.py:15
+msgid ""
+"Stars hang low over the vast plain, the moon surges over the great river."
+msgstr "星垂平野阔，月涌大江流。"
+
+#: .\ui\util\quotes.py:18
+msgid "A true hero among mortals, no need to test their cry further."
+msgstr "自是人间英物，不须更试啼声。"
+
+#: .\ui\util\quotes.py:21
+msgid ""
+"Drunk, I trim the lamp to examine my sword; in dreams I return to camps "
+"echoing with bugles."
+msgstr "醉里挑灯看剑，梦回吹角连营。"
+
+#: .\ui\util\quotes.py:24
+msgid ""
+"Though lacking wings like the colorful phoenix to fly side by side, our "
+"hearts connect with the clarity of a rhinoceros horn."
+msgstr "身无彩凤双飞翼，心有灵犀一点通。"
+
+#: .\ui\util\quotes.py:27
+msgid ""
+"Seeking each other on dream paths, amid flying rain and falling flowers."
+msgstr "相寻梦里路，飞雨落花中。"
+
+#~ msgid "You are connecting to a server using a higher version protocol"
+#~ msgstr "您正在连接到一个使用更高版本协议的服务器"
