@@ -10,7 +10,6 @@ import warnings
 import logging
 
 import flet as ft
-import flet_permission_handler as fph
 
 from include.backend.event_handlers.lockdown import lockdown_handler
 from include.constants import LOGFILE_PATH, RUNTIME_PATH, ROOT_PATH
@@ -86,16 +85,16 @@ async def main(page: ft.Page):
     # These imports are placed here to ensure that the locale
     # is set before any UI components are loaded
     from include.ui.controls.dialogs.dev import DevRequestDialog
-    from include.ui.models.connect import ConnectToServerModel
-    from include.ui.models.init import AppInitModel
-    from include.ui.models.login import LoginModel
-    from include.ui.models.about import AboutModel
-    from include.ui.models.home import HomeModel
-    from include.ui.models.manage import ManageModel
-    from include.ui.models.debugging import DebuggingViewModel
-    from include.ui.models.misc import DisclaimerModel, LockdownModel
-    from include.ui.models.trash import TrashModel
-    import include.ui.models.settings
+    from include.ui.models.connect import ConnectToServerModel  # noqa: F401
+    from include.ui.models.init import AppInitModel  # noqa: F401
+    from include.ui.models.login import LoginModel  # noqa: F401
+    from include.ui.models.about import AboutModel  # noqa: F401
+    from include.ui.models.home import HomeModel  # noqa: F401
+    from include.ui.models.manage import ManageModel  # noqa: F401
+    from include.ui.models.debugging import DebuggingViewModel  # noqa: F401
+    from include.ui.models.misc import DisclaimerModel, LockdownModel  # noqa: F401
+    from include.ui.models.trash import TrashModel  # noqa: F401
+    import include.ui.models.settings  # noqa: F401
 
     # Page settings
 

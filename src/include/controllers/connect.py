@@ -65,19 +65,27 @@ class ConnectFormController(Controller["ConnectForm"]):
             return
 
         server_info_response = await _request(conn, "server_info")
-        if (
-            server_protocol_version := server_info_response["data"]["protocol_version"]
-        ) > PROTOCOL_VERSION:
+        server_protocol_version: int = server_info_response["data"]["protocol_version"]
+
+        if server_protocol_version != PROTOCOL_VERSION:
             await conn.close()
             self.control.enable_interactions()
-            self.control.send_error(
-                _("You are connecting to a server using a higher version protocol")
-                + " "
-                + _(
+
+            if server_protocol_version > PROTOCOL_VERSION:
+                errmsg = _(
+                    "You are connecting to a server using a higher version protocol "
                     "(Protocol version {server_protocol_version}), please update the client."
-                ).format(server_protocol_version=server_protocol_version),
-            )
-            await self.control.push_route("/connect/about")
+                ).format(server_protocol_version=server_protocol_version)
+            else:
+                errmsg = _(
+                    "The client does not support the protocol version "
+                    "({server_protocol_version}) being used by the server."
+                ).format(server_protocol_version=server_protocol_version)
+
+            self.control.send_error(errmsg)
+
+            if server_protocol_version > PROTOCOL_VERSION:
+                await self.control.push_route("/connect/about")
             return
 
         self.app_shared.server_address = server_address
