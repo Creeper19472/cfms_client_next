@@ -49,8 +49,8 @@ serious_python = { git = { url = "https://github.com/cfms-dev/serious-python.git
 [tool.flet.android]
 min_sdk_version = 24
 
-[tool.flet.template]
-url = "gh:cfms-dev/flet-build-template"
+# [tool.flet.template]
+# url = "gh:cfms-dev/flet-build-template"
 
 [dependency-groups]
 dev = [
