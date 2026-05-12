@@ -4,6 +4,7 @@ import asyncio
 import base64
 import hashlib
 import json
+import sqlite3
 import mmap
 import os
 import shutil
@@ -17,10 +18,9 @@ from include.classes.frame import AsyncMultiplexConnection
 from include.classes.shared import AppShared
 from include.classes.exceptions.request import InvalidResponseError
 from include.classes.exceptions.transmission import (
-    FileHashMismatchError,
     FileSizeMismatchError,
 )
-from include.constants import FLET_APP_STORAGE_TEMP
+from include.constants import ENCRYPTION_NONCE_PREFIX, FLET_APP_STORAGE_TEMP
 from include.ui.util.choice import normalize_always_choice
 from include.util.connect import get_connection
 from include.util.requests import do_request_2
@@ -170,7 +170,6 @@ async def receive_file_from_server(
     if response["action"] != "transfer_file":
         raise ValueError("Invalid action received for file transfer")
 
-    sha256 = response["data"].get("sha256")  # SHA256 of original file
     file_size = response["data"].get("file_size")  # Size of original file
     chunk_size = response["data"].get("chunk_size", 8192)  # Chunk size
     total_chunks = response["data"].get("total_chunks")  # Total chunks
@@ -181,12 +180,26 @@ async def receive_file_from_server(
     await aiofiles.os.makedirs(downloading_path, exist_ok=True)
     await aiofiles.os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
+    db_path = os.path.join(downloading_path, "chunks.db")
+
     if not file_size:
         async with aiofiles.open(file_path, "wb") as f:
             await f.truncate(0)
         return
 
     try:
+        conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=OFF")
+        conn.execute(
+            """CREATE TABLE IF NOT EXISTS chunks (
+                idx INTEGER PRIMARY KEY,
+                tag BLOB,
+                chunk_data BLOB
+            )"""
+        )
+        conn.commit()
+
         received_chunks = 0
 
         try:
@@ -199,14 +212,19 @@ async def receive_file_from_server(
                 data_json: dict = json.loads(data)
 
                 index = data_json["data"].get("index")
-                chunk_hash = data_json["data"].get("hash")  # provided but unused
+                tag_b64 = data_json["data"].get("tag")
+                tag = base64.b64decode(tag_b64) if tag_b64 else None
                 chunk_data = base64.b64decode(data_json["data"].get("chunk"))
-                chunk_file_path = os.path.join(downloading_path, str(index))
 
-                async with aiofiles.open(chunk_file_path, "wb") as chunk_file:
-                    await chunk_file.write(chunk_data)
+                conn.execute(
+                    "INSERT OR REPLACE INTO chunks (idx, tag, chunk_data) VALUES (?, ?, ?)",
+                    (index, tag, chunk_data),
+                )
 
                 received_chunks += 1
+
+                if received_chunks % 1000 == 0 or received_chunks == total_chunks:
+                    conn.commit()
 
                 if received_chunks < total_chunks:
                     received_file_size = chunk_size * received_chunks
@@ -220,35 +238,33 @@ async def receive_file_from_server(
             decryption_info_json: dict = json.loads(decryption_info)
 
             aes_key = base64.b64decode(decryption_info_json["data"].get("key"))
-            aes_nonce = base64.b64decode(decryption_info_json["data"].get("nonce"))
+            # aes_nonce is ignored as we have a specific per-chunk nonce generation
+            # based on user's schema.
 
             # Decrypt chunks
             decrypted_chunks = 1
-            cipher = AES.new(
-                aes_key, AES.MODE_GCM, nonce=aes_nonce, mac_len=16
-            )  # Initialize cipher
 
             async with aiofiles.open(file_path, "wb") as out_file:
-                while decrypted_chunks <= total_chunks:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT idx, tag, chunk_data FROM chunks ORDER BY idx ASC"
+                )
+                for row in cursor:
+                    idx, row_tag, encrypted_chunk = row
+
                     yield 1, decrypted_chunks, total_chunks
 
-                    chunk_file_path = os.path.join(
-                        downloading_path, str(decrypted_chunks - 1)
+                    nonce = ENCRYPTION_NONCE_PREFIX + idx.to_bytes(4, "big")
+                    cipher = AES.new(aes_key, AES.MODE_GCM, nonce=nonce)
+
+                    decrypted_chunk = cipher.decrypt_and_verify(
+                        encrypted_chunk, row_tag
                     )
 
-                    async with aiofiles.open(chunk_file_path, "rb") as chunk_file:
-                        encrypted_chunk = await chunk_file.read()
-                        decrypted_chunk = cipher.decrypt(encrypted_chunk)
-                        await out_file.write(decrypted_chunk)
-
-                    # remove the chunk file as we go
-                    try:
-                        await aiofiles.os.remove(chunk_file_path)
-                    except Exception:
-                        # best-effort cleanup; ignore removal errors here
-                        pass
-
+                    await out_file.write(decrypted_chunk)
                     decrypted_chunks += 1
+
+            conn.close()
 
             # Delete temporary folder
             yield (2,)
@@ -258,6 +274,8 @@ async def receive_file_from_server(
             )
 
         except GeneratorExit:
+            if "conn" in locals():
+                conn.close()
             # Clean up partial temp files and partial output file if generator closed early
             loop = asyncio.get_event_loop()
 
@@ -278,6 +296,11 @@ async def receive_file_from_server(
 
             raise
 
+        except Exception:
+            if "conn" in locals():
+                conn.close()
+            raise
+
     except Exception:
         raise
 
@@ -289,11 +312,6 @@ async def receive_file_from_server(
             raise FileSizeMismatchError(
                 file_size, await aiofiles.os.path.getsize(file_path)
             )
-
-        # Verify SHA256
-        actual_sha256 = await calculate_sha256(file_path)
-        if sha256 and actual_sha256 != sha256:
-            raise FileHashMismatchError(sha256, actual_sha256)
 
     yield (3,)
 
