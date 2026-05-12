@@ -3,6 +3,19 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.14.4
+**Released on:** 2026-05-12
+
+**Title:** Patch release
+
+This release introduces a simple fix to allow clients to connect to servers 
+using protocol version 13. 
+
+### Improved
+- File chunks are now managed using an SQLite database, avoiding performance 
+issues caused by a large number of small files.
+
+---
 ## v0.14.3
 **Released on:** 2026-04-30
 
@@ -18,7 +31,7 @@ file downloads.
 
 **Title:** Bugfix
 
-## Fixed
+### Fixed
 - The lockdown banner that appeared during the previous connection will now 
 be cleared when the connection is canceled.
 - The implementation of LockdownBanner has been adjusted, which is expected 
@@ -75,7 +88,7 @@ marked for deletion, in order to accommodate server-side updates.
 
 **Title:** Patch release
 
-## Fixed
+### Fixed
 - Limited the maximum number of changelog entries displayed to 25 and fixed 
 an indexing error.
 - Fixed the "Reject and Quit" button not working on mobile devices; the 
@@ -92,11 +105,11 @@ on mobile devices.
 This version introduces a disclaimer interface, which will be displayed when 
 the application is first launched.
 
-## Added
+### Added
 - Introduced a disclaimer interface.
 - Now the display of the debug timer can be toggled via Ctrl+D.
 
-## Fixed
+### Fixed
 - The maximum number of changelog entries displayed is limited to avoid p
 erformance issues.
 
@@ -108,7 +121,7 @@ erformance issues.
 
 This version introduces a bug fix for the previous stable version.
 
-## Fixed
+### Fixed
 - Logs will now be written to files as before, instead of being appended to the 
 end of the file.
 
@@ -121,13 +134,13 @@ end of the file.
 This version includes several optimizations and fixes for issues discovered 
 in previous versions.
 
-## Added
+### Added
 - Added certificate store update functionality that supports both periodic and 
 manual updates, along with a new initialization interface.
 - (Technical) Added several new framework controls for creating section titles 
 and descriptive text.
 
-## Improved
+### Improved
 - Introduced Material Symbols and updated icon displays throughout the app 
 accordingly.
 - (Technical) Refactored all applicable settings interfaces to use declarative 
@@ -136,7 +149,7 @@ patterns.
 - (Technical) Enhanced the `get_service` method with generic overloads for 
 better type annotation support.
 
-## Fixed
+### Fixed
 - Fixed inconsistent placeholder icon sizes on the login screen.
 - Fixed case sensitivity issue in the server address hash generator.
 - Fixed an issue where pressing the back button on mobile devices caused 
@@ -151,11 +164,11 @@ unexpected screen transitions.
 This version introduces a new settings interface that allows users to configure 
 how downloaded files are saved to external locations.
 
-## Fixed
+### Fixed
 - Fixed a regression bug so that UI updates triggered by updates to the "Favorites" 
 list can be performed promptly.
 
-## Improved
+### Improved
 - Some Chinese translations have been slightly adjusted.
 - Modified the implementation related to user configuration to enable the saving 
 of global and user configurations to be synchronized.
@@ -181,7 +194,7 @@ fixes as soon as they become available.
 
 **Title:** Bug Fixes
 
-## Fixed
+### Fixed
 - The verification code text field for two-step verification now only accepts numbers.
 - The issue of the multi-select toolbar button overflowing on mobile devices has been 
 resolved.
@@ -194,7 +207,7 @@ resolved.
 
 This version introduces several fixes for the previous version.
 
-## Fixed
+### Fixed
 - The NavigationBar below will now update synchronously when switching views by touch.
 - Fixed the issue of overflowing content in the top icon button bar of the file 
 management view on mobile devices.
@@ -233,7 +246,7 @@ This release fixes several issues that prevented the application from building
 successfully and ensures that the application build uses Python 3.14.3. 
 Additionally, it removes an outdated temporary patch for `webview_flutter_android`.
 
-## Added
+### Added
 - (Debugging) An environment variable display has been added to the debug page to 
 help troubleshoot the issue raised at [#5692](https://github.com/flet-dev/flet/issues/5692)
 of the upstream repository.
@@ -244,14 +257,14 @@ of the upstream repository.
 
 **Title:** UI Optimization and New Management Functions
 
-## Added
+### Added
 - Added the ability to block and unblock users to the management interface
 - Added an entry point that allows users to modify access rules for the root directory
 
-## Improved
+### Improved
 - A new code editor will now be used when editing the source code of access rules
 
-## Fixed
+### Fixed
 - Resolved the issue of PageView being unavailable in the build version
 
 ---
