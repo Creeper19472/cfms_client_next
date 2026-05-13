@@ -20,7 +20,7 @@ from include.classes.exceptions.request import InvalidResponseError
 from include.classes.exceptions.transmission import (
     FileSizeMismatchError,
 )
-from include.constants import ENCRYPTION_NONCE_PREFIX, FLET_APP_STORAGE_TEMP
+from include.constants import FLET_APP_STORAGE_TEMP
 from include.ui.util.choice import normalize_always_choice
 from include.util.connect import get_connection
 from include.util.requests import do_request_2
@@ -115,7 +115,7 @@ async def upload_file_to_server(
                         break
 
             # need to wait for server confirmation
-            server_response = json.loads((await stream.recv()).data)
+            server_response = json.loads((await stream.recv()).data)  # noqa: F841
 
         except Exception:
             raise
@@ -194,6 +194,7 @@ async def receive_file_from_server(
         conn.execute(
             """CREATE TABLE IF NOT EXISTS chunks (
                 idx INTEGER PRIMARY KEY,
+                prefix BLOB,
                 tag BLOB,
                 chunk_data BLOB
             )"""
@@ -212,13 +213,15 @@ async def receive_file_from_server(
                 data_json: dict = json.loads(data)
 
                 index = data_json["data"].get("index")
+                prefix_b64 = data_json["data"].get("prefix")
+                prefix = base64.b64decode(prefix_b64) if prefix_b64 else None
                 tag_b64 = data_json["data"].get("tag")
                 tag = base64.b64decode(tag_b64) if tag_b64 else None
                 chunk_data = base64.b64decode(data_json["data"].get("chunk"))
 
                 conn.execute(
-                    "INSERT OR REPLACE INTO chunks (idx, tag, chunk_data) VALUES (?, ?, ?)",
-                    (index, tag, chunk_data),
+                    "INSERT OR REPLACE INTO chunks (idx, prefix, tag, chunk_data) VALUES (?, ?, ?, ?)",
+                    (index, prefix, tag, chunk_data),
                 )
 
                 received_chunks += 1
@@ -247,14 +250,14 @@ async def receive_file_from_server(
             async with aiofiles.open(file_path, "wb") as out_file:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT idx, tag, chunk_data FROM chunks ORDER BY idx ASC"
+                    "SELECT idx, prefix, tag, chunk_data FROM chunks ORDER BY idx ASC"
                 )
                 for row in cursor:
-                    idx, row_tag, encrypted_chunk = row
+                    idx, row_prefix, row_tag, encrypted_chunk = row
 
                     yield 1, decrypted_chunks, total_chunks
 
-                    nonce = ENCRYPTION_NONCE_PREFIX + idx.to_bytes(4, "big")
+                    nonce = row_prefix + idx.to_bytes(4, "big")
                     cipher = AES.new(aes_key, AES.MODE_GCM, nonce=nonce)
 
                     decrypted_chunk = cipher.decrypt_and_verify(
@@ -507,7 +510,7 @@ async def batch_upload_file_to_server(
                     yield index, filename, -1, -1, exc
                     break
 
-                except Exception as exc:
+                except Exception:
                     if transfer_conn:
                         await transfer_conn.close()
                         transfer_conn = None

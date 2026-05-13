@@ -57,6 +57,3 @@ else:
 
 # Protocol
 PROTOCOL_VERSION = 13
-
-# Encryption Magic Constants
-ENCRYPTION_NONCE_PREFIX = bytes.fromhex("0000000000003301")
