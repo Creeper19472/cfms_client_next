@@ -3,6 +3,25 @@
 This document contains the release history and changelog for CFMS Client NEXT.
 
 ---
+## v0.14.5
+**Released on:** 2026-06-02
+
+**Title:** Patch release
+
+This version optimizes the display of the revision list to accommodate 
+adjustments made to the revision ID format on the server side.
+
+### Deprecation Warning
+
+Due to the inherent technical liabilities of the technology stack used in 
+this client implementation, maintaining it is becoming increasingly 
+difficult. Therefore, we are considering deprecating this client branch.
+
+This decision has not yet been formally made, but it could happen at any 
+time as of the date of this announcement—we recommend that you look for 
+suitable alternatives as soon as possible.
+
+---
 ## v0.14.4
 **Released on:** 2026-05-12
 

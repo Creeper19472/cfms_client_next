@@ -44,8 +44,8 @@ CA_CERT_API_URL = f"https://api.github.com/repos/{CA_CERT_REPO}/contents/"
 
 # Version Information
 CHANNEL = ChannelType.STABLE
-BUILD_VERSION = "v0.14.4"
-MODIFIED = "20260512"
+BUILD_VERSION = "v0.14.5"
+MODIFIED = "20260602"
 
 # Default update channel for user preferences
 DEFAULT_UPDATE_CHANNEL = ChannelType.STABLE
