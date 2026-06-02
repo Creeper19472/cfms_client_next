@@ -23,7 +23,7 @@ class RevisionTile(ft.ListTile):
 
     def __init__(
         self,
-        revision_id: int,
+        revision_id: str,
         parent_revision_id: int | None,
         created_time: float,
         is_current: bool,
@@ -41,7 +41,7 @@ class RevisionTile(ft.ListTile):
         )
 
         # Build title and subtitle
-        title_text = _("Revision #{id}").format(id=revision_id)
+        title_text = _("Revision #{id}").format(id=revision_id[:7])
         if is_current:
             title_text += _(" (Current)")
 

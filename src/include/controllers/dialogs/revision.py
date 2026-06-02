@@ -48,7 +48,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                 _("Failed to load revisions: {error}").format(error=str(e))
             )
 
-    async def action_view_revision(self, revision_id: int, is_current: bool):
+    async def action_view_revision(self, revision_id: str, is_current: bool):
         """View/download a specific revision."""
         try:
             # Request the revision data
@@ -66,7 +66,6 @@ class RevisionDialogController(Controller["RevisionDialog"]):
                     from include.classes.services.download import DownloadManagerService
                     from include.ui.util.notifications import send_info
                     from include.util.download_path import get_download_file_path
-                    from typing import cast
 
                     task_id = task_data["task_id"]
 
@@ -118,7 +117,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
             )
 
     @wait("set_current_revision")
-    async def action_set_current_revision(self, revision_id: int):
+    async def action_set_current_revision(self, revision_id: str):
         """Set a revision as the current revision."""
         try:
             response = await do_request_2(
@@ -155,7 +154,7 @@ class RevisionDialogController(Controller["RevisionDialog"]):
             )
 
     @wait("delete_revision")
-    async def action_delete_revision(self, revision_id: int):
+    async def action_delete_revision(self, revision_id: str):
         """Delete a specific revision."""
         try:
             response = await do_request_2(
