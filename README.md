@@ -7,7 +7,7 @@ document management, using the newest version of Flet framework.
 > [!IMPORTANT]
 > This project has been discontinued and archived since June 15, 2026. It will no longer be adapted for future versions of the CFMS communication protocol. 
 > 
-> Anyone seeking to continue working on a CFMS system should move to other active client branches, such as [CFMS Client Tauri](https://github.com/cfms-dev/cfms-client-tauri). This client implementation is a superior replacement for this project, continuing support for all its features while introducing new ones and improvements in performance and appearance.
+> Anyone seeking to continue working on a CFMS system should move to other active client branches, such as [CFMS Client Tauri](https://github.com/cfms-dev/cfms_client_tauri). This client implementation is a superior replacement for this project, continuing support for all its features while introducing new ones and improvements in performance and appearance.
 
 ## Run the app
 
